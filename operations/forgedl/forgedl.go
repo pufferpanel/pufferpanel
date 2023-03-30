@@ -17,6 +17,8 @@
 package forgedl
 
 import (
+	"encoding/json"
+	"errors"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"path"
@@ -24,13 +26,23 @@ import (
 )
 
 const InstallerUrl = "https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-installer.jar"
+const PromoUrl = "https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json"
 
 type ForgeDl struct {
-	Version  string
-	Filename string
+	Version          string
+	Filename         string
+	MinecraftVersion string
 }
 
 func (op ForgeDl) Run(env pufferpanel.Environment) error {
+	if op.Version == "" {
+		version, err := getLatestForMCVersion(op.MinecraftVersion)
+		if err != nil {
+			return err
+		}
+		op.Version = op.MinecraftVersion + "-" + version
+	}
+
 	jarDownload := strings.Replace(InstallerUrl, "${version}", op.Version, -1)
 
 	localFile, err := environments.DownloadViaMaven(jarDownload, env)
@@ -40,4 +52,28 @@ func (op ForgeDl) Run(env pufferpanel.Environment) error {
 
 	//copy from the cache
 	return pufferpanel.CopyFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
+}
+
+func getLatestForMCVersion(minecraftVersion string) (string, error) {
+	response, err := pufferpanel.HttpGet(PromoUrl)
+	defer pufferpanel.CloseResponse(response)
+	if err != nil {
+		return "", err
+	}
+
+	var promos ForgePromos
+	err = json.NewDecoder(response.Body).Decode(&promos)
+	if err != nil {
+		return "", err
+	}
+	version := promos.VersionMap[minecraftVersion+"-latest"]
+	if version == "" {
+		return "", errors.New("no forge available for mc version")
+	}
+	return version, nil
+}
+
+type ForgePromos struct {
+	Homepage   string            `json:"homepage"`
+	VersionMap map[string]string `json:"promos"`
 }

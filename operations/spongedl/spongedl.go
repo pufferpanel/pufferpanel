@@ -27,7 +27,7 @@ import (
 	"strings"
 )
 
-const SpongeApiBaseUrl = "https://dl-api-new.spongepowered.org/api/v2/groups/org.spongepowered/artifacts/"
+var SpongeApiBaseUrl = "https://dl-api-new.spongepowered.org/api/v2/groups/org.spongepowered/artifacts/"
 
 type SpongeDl struct {
 	Recommended      bool
@@ -42,6 +42,7 @@ type SpongeApiV2Versions struct {
 
 type SpongeApiV2Latest struct {
 	Assets []SpongeApiV2Asset `json:"assets"`
+	Tags   map[string]string
 }
 
 type SpongeApiV2Asset struct {
@@ -88,16 +89,18 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 		}
 	}
 
+	if url == "" {
+		return errors.New("no asset found to download")
+	}
+
 	switch strings.ToLower(op.SpongeType) {
 	case "spongeforge":
 		{
 			mapping := make(map[string]interface{})
-
-			var version = ""
-
-			mapping["version"] = version
+			mapping["minecraftVersion"] = data.Tags["minecraft"]
 			mapping["target"] = "forge-installer.jar"
-			forgeDlOp, err := forgedl.Factory.Create(pufferpanel.CreateOperation{OperationArgs: mapping})
+			var forgeDlOp pufferpanel.Operation
+			forgeDlOp, err = forgedl.Factory.Create(pufferpanel.CreateOperation{OperationArgs: mapping})
 			if err != nil {
 				return err
 			}
@@ -118,7 +121,7 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 			}
 
 			//going to stick the spongeforge rename in, to assist with those modpacks
-			err = pufferpanel.CopyFile(file, path.Join(env.GetRootDirectory(), "mods", "spongeforge.jar"))
+			err = pufferpanel.CopyFile(file, path.Join(env.GetRootDirectory(), "mods", "_aspongeforge.jar"))
 			if err != nil {
 				return err
 			}

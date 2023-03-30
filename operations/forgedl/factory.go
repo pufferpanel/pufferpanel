@@ -17,6 +17,7 @@
 package forgedl
 
 import (
+	"errors"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/spf13/cast"
 )
@@ -29,10 +30,15 @@ func (of OperationFactory) Key() string {
 	return "forgedl"
 }
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
+	minecraftVersion := cast.ToString(op.OperationArgs["minecraftVersion"])
 	version := cast.ToString(op.OperationArgs["version"])
 	filename := cast.ToString(op.OperationArgs["target"])
 
-	return ForgeDl{Version: version, Filename: filename}, nil
+	if version == "" && minecraftVersion == "" {
+		return nil, errors.New("missing version and minecraftVersion")
+	}
+
+	return ForgeDl{Version: version, Filename: filename, MinecraftVersion: minecraftVersion}, nil
 }
 
 var Factory OperationFactory
