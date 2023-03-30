@@ -191,7 +191,7 @@ jobs:
     runs-on: windows-latest
     needs: ['build-windows-amd64-binaries']
 
-    timeout-minutes: 5
+    timeout-minutes: 10
     
     steps:
     - name: Get the version
