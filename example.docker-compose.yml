@@ -1,0 +1,24 @@
+Version: '3'
+Service:
+  Pufferpanel:
+    Image: pufferpanel/pufferpanel
+    Container_name: Pufferpanel
+    Restart: on-failure
+    Environment: 
+      - 'PUFFER_LOGS=/etc/pufferpanel/logs', # Location of your logs
+      - 'PUFFER_PANEL_DATABASE_DIALECT=sqlite3', # Databse type https://docs.pufferpanel.com/en/2.x/guides/database.html
+      - 'PUFFER_PANEL_DATABASE_URL=file:/etc/pufferpanel/pufferpanel.db?cache=shared', # SQL URL https://docs.pufferpanel.com/en/2.x/guides/da>
+      - 'PUFFER_DAEMON_DATA_CACHE=/var/lib/pufferpanel/cache', # Cache location within the container
+      - 'PUFFER_DAEMON_DATA_SERVERS=/var/lib/pufferpanel/servers', # Server data location within the container
+      - 'PUFFER_DAEMON_DATA_MODULES=/var/lib/pufferpanel/modules', # Location for Modules within the container
+
+    Volumes:
+      - '/etc/pufferpanel:/etc/pufferpanel', # Config/logs folder
+      - '/var/lib/pufferpanel:/var/lib/pufferpanel', # Data folder
+      - '/var/run/docker.sock:/var/run/docker.sock', # Docker socket, leave this in.
+
+    Ports:
+      - '8080:8080' # Panel port
+      - '5657:5657' # SFTP port
+      - '27015:27015' # Default SRCDS port
+      - '25565:25565' # Default Minecraft Java port
