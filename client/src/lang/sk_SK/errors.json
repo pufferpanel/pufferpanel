@@ -29,7 +29,7 @@
   "ErrNoNodes": "Nie sú k dispozícii žiadne uzly",
   "ErrNoTemplates": "Nie sú k dispozícii žiadne šablóny",
   "ErrPasswordRequirements": "Heslo musí byť dlhé aspoň 8 znakov",
-  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "Používateľské meno musí mať aspoň 5 znakov a obsahovať len alfanumerické znaky, _ alebo -",
   "ErrPasswordsNotIdentical": "Heslá sa nezhodujú",
   "ErrSessionTimedOut": "Vaša relácia skončila, prihláste sa znova",
   "ErrMissingScope": "Nie ste oprávnení vykonať túto činnosť",
