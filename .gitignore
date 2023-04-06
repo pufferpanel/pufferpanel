@@ -15,7 +15,6 @@ client/node_modules/
 web/swagger/swagger.json
 web/swagger/swagger.yaml
 .vs/
-email/
 www/
 client/frontend/src/lang
 

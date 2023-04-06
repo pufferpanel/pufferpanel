@@ -89,7 +89,6 @@ jobs:
         mkdir -p ~/go/bin
         tar -zxf swag*.tar.gz -C ~/go/bin
         rm -rf swag*.tar.gz
-        go get ./...
 
     - name: yarn install, build
       run: |
@@ -101,6 +100,7 @@ jobs:
 
     - name: Generate Swagger Docs
       run: |
+        go get ./...
         ~/go/bin/swag init -o web/swagger -g web/loader.go
 
     - name: Upload Swagger docs
