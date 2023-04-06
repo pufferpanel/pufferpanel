@@ -21,6 +21,7 @@ import (
 	_ "github.com/alecthomas/template"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v3/client/dist" //you cannot change this, it will always look like an error in the IDE
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/web/api"
@@ -31,12 +32,10 @@ import (
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 	_ "github.com/swaggo/swag"
+	"io/fs"
 	"net/http"
 	"strings"
 )
-
-var ClientPath string
-var IndexFile string
 
 var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/", "/proxy/"}
 
@@ -59,9 +58,6 @@ func RegisterRoutes(e *gin.Engine) {
 	}
 
 	if config.PanelEnabled.Value() {
-		ClientPath = config.WebRoot.Value()
-		IndexFile = ClientPath + "/index.html"
-
 		api.RegisterRoutes(e.Group("/api"))
 		e.GET("/manifest.json", webManifest)
 		oauth2.RegisterRoutes(e.Group("/oauth2"))
@@ -70,24 +66,51 @@ func RegisterRoutes(e *gin.Engine) {
 		css := e.Group("/css")
 		{
 			css.Use(gzip.Gzip(gzip.DefaultCompression))
-			css.StaticFS("", http.Dir(ClientPath+"/css"))
+			css.Use(setContentType("text/css"))
+			f, err := fs.Sub(dist.ClientFiles, "css")
+			if err != nil {
+				panic(err)
+			}
+			css.StaticFS("", http.FS(f))
 		}
 		fonts := e.Group("/fonts")
 		{
 			fonts.Use(gzip.Gzip(gzip.DefaultCompression))
-			fonts.StaticFS("", http.Dir(ClientPath+"/fonts"))
+			f, err := fs.Sub(dist.ClientFiles, "fonts")
+			if err != nil {
+				panic(err)
+			}
+			fonts.StaticFS("", http.FS(f))
 		}
 		img := e.Group("/img")
 		{
-			img.StaticFS("", http.Dir(ClientPath+"/img"))
+			f, err := fs.Sub(dist.ClientFiles, "img")
+			if err != nil {
+				panic(err)
+			}
+			img.StaticFS("", http.FS(f))
 		}
-		js := e.Group("/js", setContentType("application/javascript"))
+		js := e.Group("/js")
 		{
 			js.Use(gzip.Gzip(gzip.DefaultCompression))
-			js.StaticFS("", http.Dir(ClientPath+"/js"))
+			js.Use(setContentType("application/javascript"))
+			f, err := fs.Sub(dist.ClientFiles, "js")
+			if err != nil {
+				panic(err)
+			}
+			js.StaticFS("", http.FS(f))
 		}
-		e.StaticFile("/favicon.png", ClientPath+"/favicon.png")
-		e.StaticFile("/favicon.ico", ClientPath+"/favicon.ico")
+		js := e.Group("/theme")
+		{
+			js.Use(setContentType("application/zip"))
+			f, err := fs.Sub(dist.ClientFiles, "theme")
+			if err != nil {
+				panic(err)
+			}
+			js.StaticFS("", http.FS(f))
+		}
+		e.StaticFileFS("/favicon.png", "favicon.png", http.FS(dist.ClientFiles))
+		e.StaticFileFS("/favicon.ico", "favicon.ico", http.FS(dist.ClientFiles))
 		e.NoRoute(handle404)
 	}
 }
@@ -100,31 +123,20 @@ func handle404(c *gin.Context) {
 		}
 	}
 
-	if strings.HasSuffix(c.Request.URL.Path, ".js") {
-		c.Writer.Header().Set("Content-Type", "application/javascript")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
-	}
-
-	if strings.HasSuffix(c.Request.URL.Path, ".json") {
-		c.Writer.Header().Set("Content-Type", "application/json")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
-	}
-
-	if strings.HasSuffix(c.Request.URL.Path, ".css") {
-		c.Writer.Header().Set("Content-Type", "text/css")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
-	}
-
-	if strings.HasSuffix(c.Request.URL.Path, ".tar") {
+	/*if strings.HasSuffix(c.Request.URL.Path, ".tar") {
 		c.Writer.Header().Set("Content-Type", "application/x-tar")
 		c.File(ClientPath + c.Request.URL.Path)
 		return
-	}
+	}*/
 
-	c.File(IndexFile)
+	//c.FileFromFS("index.html", http.FS(dist.ClientFiles))
+	var fs fs.ReadFileFS = dist.ClientFiles
+	file, err := fs.ReadFile("index.html")
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	c.Data(http.StatusOK, "text/html", file)
 }
 
 func webManifest(c *gin.Context) {

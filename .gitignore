@@ -3,14 +3,14 @@
 *.prof
 .idea/
 *.iml
+*.pem
 .DS_Store
 
 logs/
 config.json
-*/node_modules/*
 vendor/
 client/dist/
-*.pem
+!client/dist/webfiles.go
 client/node_modules/
 web/swagger/swagger.json
 web/swagger/swagger.yaml
