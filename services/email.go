@@ -18,11 +18,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/assets/email"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"html/template"
+	"io/fs"
 	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -49,9 +50,14 @@ type emailService struct {
 func LoadEmailService() {
 	globalEmailService = &emailService{templates: make(map[string]*emailTemplate)}
 
-	jsonPath := config.EmailTemplateJson.Value()
-	parentDir := filepath.Dir(jsonPath)
-	emailDefinition, err := os.Open(jsonPath)
+	var merged fs.ReadFileFS
+	if config.EmailTemplateFolder.Value() != "" {
+		merged = pufferpanel.NewMergedFS(os.DirFS(config.EmailTemplateFolder.Value()), email.FS)
+	} else {
+		merged = email.FS
+	}
+
+	emailDefinition, err := merged.Open("emails.json")
 	if err != nil {
 		panic(err)
 	}
@@ -69,7 +75,7 @@ func LoadEmailService() {
 			panic(errors.New(fmt.Sprintf("Error processing email template subject %s: %s", templateName, err.Error())))
 		}
 
-		body, err := os.ReadFile(filepath.Join(parentDir, data.Body))
+		body, err := merged.ReadFile(data.Body)
 		if err != nil {
 			panic(errors.New(fmt.Sprintf("Error processing email template subject %s: %s", templateName, err.Error())))
 		}
