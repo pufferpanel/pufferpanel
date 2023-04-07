@@ -20,10 +20,10 @@ import (
 
 func TestFromNodes(t *testing.T) {
 	type args struct {
-		n *Nodes
+		n []*Node
 	}
 
-	sourceNode := make(Nodes, 1)
+	sourceNode := make([]*Node, 1)
 	sourceNode[0] = &Node{
 		ID:          5,
 		Name:        "node",
@@ -54,7 +54,7 @@ func TestFromNodes(t *testing.T) {
 		{
 			name: "conversion",
 			args: args{
-				n: &sourceNode,
+				n: sourceNode,
 			},
 			want: &desired,
 		},
