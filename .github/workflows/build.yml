@@ -60,7 +60,7 @@ jobs:
         path: ~/.yarn
         key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-${{ hashFiles('client/yarn.lock') }}
         restore-keys: |
-          ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}
+          ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-
 
     - name: Restore yarn cache
       uses: actions/cache@v3
@@ -81,7 +81,16 @@ jobs:
           ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go-${{ env.GO_VERSION }}
+          ${{ runner.os }}-go-${{ env.GO_VERSION }}-
+
+    - name: Restore Go BIN
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/go/bin
+        key: ${{ runner.os }}-swag-${{ env.SWAG_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-swag-
 
     - name: Download Go Binaries
       run: |
@@ -98,9 +107,19 @@ jobs:
         CI: true
       working-directory: client
 
+    - name: Restore Go Modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ env.GO_VERSION }}
+
     - name: Generate Swagger Docs
       run: |
-        go get ./...
+        go mod download
         ~/go/bin/swag init -o web/swagger -g web/loader.go
 
     - name: Upload Swagger docs
@@ -159,16 +178,6 @@ jobs:
     - name: APT Install
       run: |
         sudo apt-get install -y gcc-mingw-w64
-
-    - name: Restore Go Modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-${{ env.GO_VERSION }}
 
     - name: Build Windows
       run: |

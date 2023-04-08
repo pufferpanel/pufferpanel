@@ -42,7 +42,7 @@ jobs:
           ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}
 
     - name: Restore yarn cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           client/node_modules
@@ -51,6 +51,25 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('client/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-node-
+
+    - name: Restore Go Modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ env.GO_VERSION }}-
+
+    - name: Restore Go BIN
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/go/bin
+        key: ${{ runner.os }}-swag-${{ env.SWAG_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-swag-
           
     - name: Download Go Binaries
       run: |
@@ -63,6 +82,14 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y gcc-mingw-w64
+        
+    - name: yarn install, build
+      run: |
+        yarn install
+        yarn build
+      env:
+        CI: true
+      working-directory: client
         
     - name: Generate Swagger Docs
       run: |
@@ -85,11 +112,3 @@ jobs:
         CC: x86_64-w64-mingw32-gcc
         CXX: x86_64-w64-mingw32-g++
         CGO_ENABLED: 1
-        
-    - name: yarn install, build
-      run: |
-        yarn install
-        yarn build
-      env:
-        CI: true
-      working-directory: client

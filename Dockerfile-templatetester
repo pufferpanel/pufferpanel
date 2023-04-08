@@ -1,14 +1,34 @@
 ###
 # Builder container
 ###
-FROM golang:1.19 AS builder
+FROM node:18-alpine AS node
+FROM golang:1.19-alpine AS builder
 
-ENV CGOENABLED=1
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/share /usr/local/share
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
+COPY --from=node /opt /opt
+
+ARG tags=docker
+ARG version=devel
+ARG sha=devel
+ARG goproxy
+ARG npmproxy
+ARG swagversion=1.8.10
+
+ENV CGOENABLED=1 \
+    YARN_REGISTRY=$npmproxy \
+    GOPROXY=$goproxy
 
 RUN go version && \
-    apt update && \
-    apt install -y build-essential git curl && \
-    mkdir /pufferpanel
+    apk add --update --no-cache gcc musl-dev git curl make gcc g++ && \
+    mkdir /pufferpanel && \
+    wget https://github.com/swaggo/swag/releases/download/v${swagversion}/swag_${swagversion}_Linux_x86_64.tar.gz && \
+    mkdir -p ~/go/bin && \
+    tar -zxf swag*.tar.gz -C ~/go/bin && \
+    rm -rf swag*.tar.gz
 
 WORKDIR /build/pufferpanel
 
@@ -16,7 +36,15 @@ COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY . .
-RUN go build -v -buildvcs=false -tags "docker host" -o /pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester
+
+RUN cd client && \
+    rm -f frontend/src/lang && \
+    ln -s ../../src/lang frontend/src/lang && \
+    yarn install && \
+    yarn build && \
+    ~/go/bin/swag init -o web/swagger -g web/loader.go && \
+    go build -v -buildvcs=false -tags "$tags" -o /pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester && \
+    mv assets/email /pufferpanel/email
 
 ###
 # Generate final image
