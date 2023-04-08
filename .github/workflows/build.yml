@@ -134,12 +134,13 @@ jobs:
     - name: Generate folders and remove excess files
       run: |
         rm -rf .git .github web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
+        zip * pufferpanel_build_artifact.zip
 
     - name: Generate job artifact
       uses: actions/upload-artifact@v3
       with:
         name: pufferpanel_build_artifact
-        path: .
+        path: pufferpanel_build_artifact.zip
         if-no-files-found: error
         retention-days: 1
 
@@ -166,6 +167,10 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: pufferpanel_build_artifact
+
+    - name: Unzip archive
+      run: |
+        unzip pufferpanel_build_artifact.zip
         
     - name: Download APT packages
       run: |
@@ -217,6 +222,11 @@ jobs:
       with:
         name: pufferpanel_build_artifact
         path: artifacts
+
+    - name: Unzip archive
+      run: |
+        cd artifacts
+        unzip pufferpanel_build_artifact.zip
     
     - name: Generate MSI     
       run: |
@@ -265,6 +275,10 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: pufferpanel_build_artifact
+
+    - name: Unzip archive
+      run: |
+        unzip pufferpanel_build_artifact.zip
 
     - name: Restore Go Modules
       uses: actions/cache@v3
@@ -392,6 +406,10 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: pufferpanel_build_artifact
+
+    - name: Unzip archive
+      run: |
+        unzip pufferpanel_build_artifact.zip
 
     - name: Download APT packages
       run: |
