@@ -359,7 +359,6 @@ jobs:
             RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
             RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
           config: |
-            /etc/pufferpanel/email/*
             /etc/pufferpanel/config.json:noreplace
           suggested-packages: |
             glibc.i686

@@ -35,8 +35,6 @@
         <!-- Step 3: Tell WiX to install the files -->
         <Feature Id="MainApplication" Title="Main Application" Level="1">
             <ComponentRef Id="pufferpanel" />
-            <ComponentGroupRef Id="WwwComponent" />
-			<ComponentGroupRef Id="EmailComponent" />
             <ComponentRef Id="RegistryEntries" />
         </Feature>
 		
