@@ -218,7 +218,7 @@ jobs:
         name: pufferpanel_${{ env.VERSION }}_windows_amd64
         path: binaries
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: pufferpanel_build_artifact
         path: artifacts
@@ -233,6 +233,7 @@ jobs:
         Copy-Item -Recurse -Path binaries\* -Destination .
         Copy-Item -Path artifacts\LICENSE.rtf -Destination .
         Copy-Item -Path artifacts\installer.wxs -Destination .
+        Copy-Item -Path artifacts\client\frontend\public\favicon.ico -Destination .
         $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
         candle *.wxs -arch x64 -dProductVersion="${{ env.VERSION }}" -ext WixFirewallExtension
         light *.wixobj -out pufferpanel.msi -b email -b www -ext WixUIExtension -ext WixFirewallExtension -cultures:en-us

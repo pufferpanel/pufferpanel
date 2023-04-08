@@ -38,7 +38,7 @@
             <ComponentRef Id="RegistryEntries" />
         </Feature>
 		
-		<Icon Id="icon.ico" SourceFile="client\frontend\public\favicon.ico"/>
+		<Icon Id="icon.ico" SourceFile="favicon.ico"/>
 		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
 		<Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
