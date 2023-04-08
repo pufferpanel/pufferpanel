@@ -134,7 +134,7 @@ jobs:
     - name: Generate folders and remove excess files
       run: |
         rm -rf .git .github web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
-        zip * pufferpanel_build_artifact.zip
+        zip pufferpanel_build_artifact.zip *
 
     - name: Generate job artifact
       uses: actions/upload-artifact@v3
