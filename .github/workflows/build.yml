@@ -133,7 +133,7 @@ jobs:
 
     - name: Generate folders and remove excess files
       run: |
-        rm -rf .git .github client web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
+        rm -rf .git .github web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
 
     - name: Generate job artifact
       uses: actions/upload-artifact@v3
