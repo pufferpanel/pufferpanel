@@ -41,8 +41,9 @@ RUN cd client && \
     rm -f frontend/src/lang && \
     ln -s ../../src/lang frontend/src/lang && \
     yarn install && \
-    yarn build && \
-    ~/go/bin/swag init -o web/swagger -g web/loader.go && \
+    yarn build
+
+RUN ~/go/bin/swag init -o web/swagger -g web/loader.go && \
     go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd && \
     mv assets/email /pufferpanel/email
 

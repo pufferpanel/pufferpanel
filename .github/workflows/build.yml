@@ -133,10 +133,7 @@ jobs:
 
     - name: Generate folders and remove excess files
       run: |
-        mkdir -p build-artifacts/www
-        mv client/frontend/dist/* build-artifacts/www
-        mv assets/email build-artifacts
-        rm -rf .git .github client web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/www/js/*.map
+        rm -rf .git .github client web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
 
     - name: Generate job artifact
       uses: actions/upload-artifact@v3
@@ -227,8 +224,6 @@ jobs:
         Copy-Item -Path artifacts\LICENSE.rtf -Destination .
         Copy-Item -Path artifacts\installer.wxs -Destination .
         $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
-        heat dir www -out www.wxs -gg -g1 -ke -nologo -cg WwwComponent -dr APPLICATIONROOTDIRECTORY
-        heat dir email -out email.wxs -gg -g1 -ke -nologo -cg EmailComponent -dr APPLICATIONROOTDIRECTORY
         candle *.wxs -arch x64 -dProductVersion="${{ env.VERSION }}" -ext WixFirewallExtension
         light *.wixobj -out pufferpanel.msi -b email -b www -ext WixUIExtension -ext WixFirewallExtension -cultures:en-us
         
@@ -295,8 +290,6 @@ jobs:
         mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
         cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
-        cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
-        cp -r build-artifacts/email DEBBUILD/etc/pufferpanel
         cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
         
         mkdir -p RPMBUILD/var/lib/pufferpanel RPMBUILD/var/log/pufferpanel RPMBUILD/var/lib/pufferpanel/binaries
@@ -347,8 +340,6 @@ jobs:
           group: pufferpanel
           files: |
             build-artifacts/pufferpanel:/usr/sbin/pufferpanel
-            build-artifacts/www:/var/www/pufferpanel
-            build-artifacts/email:/etc/pufferpanel/email
             config.linux.json:/etc/pufferpanel/config.json
             systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
             RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
@@ -437,8 +428,6 @@ jobs:
         mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
         cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
-        cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
-        cp -r build-artifacts/email DEBBUILD/etc/pufferpanel
         cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
 
     - name: Build Package DEB ARM64

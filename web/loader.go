@@ -21,7 +21,7 @@ import (
 	_ "github.com/alecthomas/template"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/pufferpanel/v3/client/dist" //you cannot change this, it will always look like an error in the IDE
+	"github.com/pufferpanel/pufferpanel/v3/client/frontend/dist"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/web/api"
@@ -100,14 +100,14 @@ func RegisterRoutes(e *gin.Engine) {
 			}
 			js.StaticFS("", http.FS(f))
 		}
-		js := e.Group("/theme")
+		theme := e.Group("/theme")
 		{
-			js.Use(setContentType("application/zip"))
+			theme.Use(setContentType("application/zip"))
 			f, err := fs.Sub(dist.ClientFiles, "theme")
 			if err != nil {
 				panic(err)
 			}
-			js.StaticFS("", http.FS(f))
+			theme.StaticFS("", http.FS(f))
 		}
 		e.StaticFileFS("/favicon.png", "favicon.png", http.FS(dist.ClientFiles))
 		e.StaticFileFS("/favicon.ico", "favicon.ico", http.FS(dist.ClientFiles))
