@@ -24,6 +24,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"gorm.io/gorm"
 	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -190,7 +191,7 @@ func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseW
 	if ssl {
 		scheme = "wss"
 	}
-	addr := fmt.Sprintf("%s:%d", node.PrivateHost, node.PrivatePort)
+	addr := net.JoinHostPort(node.PrivateHost, strconv.Itoa(int(node.PrivatePort)))
 
 	u := url.URL{Scheme: scheme, Host: addr, Path: path}
 	logging.Debug.Printf("Proxying connection to %s", u.String())
@@ -233,7 +234,7 @@ func doesDaemonUseSSL(node *models.Node) (bool, error) {
 		return false, nil
 	}
 
-	path := fmt.Sprintf("://%s:%d/daemon", node.PrivateHost, node.PrivatePort)
+	path := fmt.Sprintf("://%s/daemon", net.JoinHostPort(node.PrivateHost, strconv.Itoa(int(node.PrivatePort))))
 
 	//we want to do options so we can avoid auth
 	u, err := url.Parse("https" + path)
@@ -277,7 +278,7 @@ func createNodeURL(node *models.Node, path string) (string, error) {
 		protocol = "https"
 	}
 
-	return fmt.Sprintf("%s://%s:%d/%s", protocol, node.PrivateHost, node.PrivatePort, path), nil
+	return fmt.Sprintf("%s://%s/%s", protocol, net.JoinHostPort(node.PrivateHost, strconv.Itoa(int(node.PrivatePort))), path), nil
 }
 
 func proxyRead(source, dest *websocket.Conn, ch chan error) {
