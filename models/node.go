@@ -14,8 +14,8 @@
 package models
 
 import (
+	uuid "github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3"
-	uuid "github.com/satori/go.uuid"
 	"gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
 	"strings"
@@ -62,5 +62,12 @@ var LocalNode = &Node{
 	PublicPort:  8080,
 	PrivatePort: 8080,
 	SFTPPort:    5657,
-	Secret:      strings.Replace(uuid.NewV4().String(), "-", "", -1),
+}
+
+func init() {
+	u, err := uuid.NewV4()
+	if err != nil {
+		panic(err)
+	}
+	LocalNode.Secret = strings.Replace(u.String(), "-", "", -1)
 }

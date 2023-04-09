@@ -22,16 +22,15 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid/v5"
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/programs"
 	"github.com/pufferpanel/pufferpanel/v3/response"
-	"github.com/satori/go.uuid"
 	"github.com/spf13/cast"
 	"io"
-	"io/ioutil"
 	"mime"
 	"net/http"
 	"os"
@@ -178,7 +177,10 @@ func KillServer(c *gin.Context) {
 func CreateServer(c *gin.Context) {
 	serverId := c.Param("serverId")
 	if serverId == "" {
-		id := uuid.NewV4()
+		id, err := uuid.NewV4()
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
 		serverId = id.String()
 	}
 	prg, _ := programs.Get(serverId)
@@ -497,7 +499,7 @@ func PostConsole(c *gin.Context) {
 	item, _ := c.Get("program")
 	prg := item.(*programs.Program)
 
-	d, _ := ioutil.ReadAll(c.Request.Body)
+	d, _ := io.ReadAll(c.Request.Body)
 	cmd := string(d)
 	err := prg.Execute(cmd)
 	if response.HandleError(c, err, http.StatusInternalServerError) {

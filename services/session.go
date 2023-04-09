@@ -1,8 +1,8 @@
 package services
 
 import (
+	uuid "github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3/models"
-	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"time"
 )
@@ -12,29 +12,35 @@ type Session struct {
 }
 
 func (ss *Session) CreateForUser(user *models.User) (string, error) {
-	token := uuid.NewV4().String()
+	token, err := uuid.NewV4()
+	if err != nil {
+		return "", err
+	}
 
 	session := &models.Session{
-		Token:          token,
+		Token:          token.String(),
 		ExpirationTime: time.Now().Add(time.Hour),
 		UserId:         &user.ID,
 	}
 
-	err := ss.DB.Create(session).Error
-	return token, err
+	err = ss.DB.Create(session).Error
+	return token.String(), err
 }
 
 func (ss *Session) CreateForClient(node *models.Client) (string, error) {
-	token := uuid.NewV4().String()
+	token, err := uuid.NewV4()
+	if err != nil {
+		return "", err
+	}
 
 	session := &models.Session{
-		Token:          token,
+		Token:          token.String(),
 		ExpirationTime: time.Now().Add(time.Hour),
 		ClientId:       &node.ID,
 	}
 
-	err := ss.DB.Create(session).Error
-	return token, err
+	err = ss.DB.Create(session).Error
+	return token.String(), err
 }
 
 func (ss *Session) Validate(token string) (*models.Session, error) {

@@ -15,13 +15,13 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	uuid "github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
-	uuid "github.com/satori/go.uuid"
 	"net/http"
 )
 
@@ -303,8 +303,12 @@ func createPersonalOAuth2Client(c *gin.Context) {
 		return
 	}
 
+	id, err := uuid.NewV4()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
 	client := &models.Client{
-		ClientId:    uuid.NewV4().String(),
+		ClientId:    id.String(),
 		UserId:      user.ID,
 		Name:        request.Name,
 		Description: request.Description,

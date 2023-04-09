@@ -1,7 +1,7 @@
 package legacy
 
 import (
-	uuid "github.com/satori/go.uuid"
+	uuid "github.com/gofrs/uuid/v5"
 )
 
 type PanelConfig struct {

@@ -22,6 +22,7 @@ import (
 	"errors"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
@@ -29,7 +30,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
-	"github.com/satori/go.uuid"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
 	"io"
@@ -308,7 +308,11 @@ func createServer(c *gin.Context) {
 	serverId := c.Param("serverId")
 
 	if serverId == "" {
-		serverId = uuid.NewV4().String()[:8]
+		gen, err := uuid.NewV4()
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+		serverId = gen.String()[:8]
 	}
 
 	postBody := &models.ServerCreation{}
@@ -700,11 +704,19 @@ func editServerUser(c *gin.Context) {
 		}
 		//we need to create the user here, since it's a new email we've not seen
 
+		un, err := uuid.NewV4()
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
 		user = &models.User{
-			Username: uuid.NewV4().String(),
+			Username: un.String(),
 			Email:    email,
 		}
-		registerToken = uuid.NewV4().String()
+		token, err := uuid.NewV4()
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+		registerToken = token.String()
 		err = user.SetPassword(registerToken)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
@@ -965,8 +977,12 @@ func createOAuth2Client(c *gin.Context) {
 		return
 	}
 
+	id, err := uuid.NewV4()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
 	client := &models.Client{
-		ClientId:    uuid.NewV4().String(),
+		ClientId:    id.String(),
 		UserId:      user.ID,
 		ServerId:    server.Identifier,
 		Name:        request.Name,

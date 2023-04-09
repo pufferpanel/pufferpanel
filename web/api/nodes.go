@@ -17,13 +17,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	uuid "github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/pufferpanel/pufferpanel/v3/web/daemon"
-	uuid "github.com/satori/go.uuid"
 	"net/http"
 	"strconv"
 	"strings"
@@ -126,7 +126,13 @@ func createNode(c *gin.Context) {
 
 	create := &models.Node{}
 	model.CopyToModel(create)
-	create.Secret = strings.Replace(uuid.NewV4().String(), "-", "", -1)
+
+	srt, err := uuid.NewV4()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	create.Secret = strings.Replace(srt.String(), "-", "", -1)
 	if err = ns.Create(create); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -276,7 +282,7 @@ func getFeatures(c *gin.Context) {
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
-	defer res.Body.Close()
+	defer pufferpanel.CloseResponse(res)
 
 	features := &daemon.Features{}
 	err = json.NewDecoder(res.Body).Decode(&features)

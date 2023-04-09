@@ -14,8 +14,8 @@
 package services
 
 import (
+	"github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3/models"
-	uuid2 "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"strings"
@@ -117,17 +117,19 @@ func (ss *Server) Delete(id string) error {
 	return nil
 }
 
-func (ss *Server) Create(model *models.Server) (err error) {
+func (ss *Server) Create(model *models.Server) error {
 	if model.Identifier == "" {
-		uuid := uuid2.NewV4()
-		generatedId := strings.ToUpper(uuid.String())[0:8]
+		uniqueId, err := uuid.NewV4()
+		if err != nil {
+			return err
+		}
+		generatedId := strings.ToUpper(uniqueId.String())[0:8]
 		model.Identifier = generatedId
 	}
 
 	res := ss.DB.Omit(clause.Associations).Create(model)
 	if res.Error != nil {
-		err = res.Error
-		return
+		return res.Error
 	}
-	return
+	return nil
 }
