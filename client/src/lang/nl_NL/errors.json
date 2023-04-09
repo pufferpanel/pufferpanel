@@ -29,7 +29,7 @@
   "ErrNoNodes": "Geen nodes beschikbaar",
   "ErrNoTemplates": "Geen sjablonen beschikbaar",
   "ErrPasswordRequirements": "Wachtwoord moet ten minste 8 tekens bevatten",
-  "ErrUsernameRequirements": "Gebruikersnaam moet ten minste 3 tekens bevatten en mag alleen _, - of alfanumerieke tekens bevatten",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Wachtwoorden komen niet overeen",
   "ErrSessionTimedOut": "Je sessie is verlopen, log opnieuw in",
   "ErrMissingScope": "Je bent niet bevoegd om deze actie uit te voeren",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Er is al een bestand met deze naam",
   "ErrDirectoryUploadNotSupported": "Kan geen folders uploaden",
   "ErrDockerNotSupported": "Docker wordt niet ondersteund op deze node",
-  "ErrMissingBinary": "Ontbrekende binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) wordt niet ondersteund. Ondersteunde OS: ${expected}",
-  "ErrUnsupportedArch": "Arcitectuur ${actual} wordt niet ondersteund. Ondersteunde Architecturen: ${expected}"
+  "ErrMissingBinary": "Missend binair: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) wordt niet ondersteund. Ondersteund OS: {expected}",
+  "ErrUnsupportedArch": "Architectuur {actual} wordt niet ondersteund. Ondersteunde Architecturen: {expected}"
 }

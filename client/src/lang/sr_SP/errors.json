@@ -29,7 +29,7 @@
   "ErrNoNodes": "No nodes available",
   "ErrNoTemplates": "No templates available",
   "ErrPasswordRequirements": "Password must be at least 8 characters",
-  "ErrUsernameRequirements": "Username must be at least 3 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Passwords are not the same",
   "ErrSessionTimedOut": "Your session timed out, please log in again",
   "ErrMissingScope": "You are not authorized to perform this action",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Cannot upload folders",
   "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }

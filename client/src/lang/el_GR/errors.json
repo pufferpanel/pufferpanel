@@ -29,7 +29,7 @@
   "ErrNoNodes": "Δεν υπάρχουν διαθέσιμοι κόμβοι",
   "ErrNoTemplates": "Δεν υπάρχουν διαθέσιμα πρότυπα",
   "ErrPasswordRequirements": "Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον 8 χαρακτήρες",
-  "ErrUsernameRequirements": "Το όνομα χρήστη πρέπει να είναι τουλάχιστον 3 χαρακτήρες και να περιέχει μόνο αλφαριθμητικά, _, ή -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Οι κωδικοί πρόσβασης δεν ταιριάζουν",
   "ErrSessionTimedOut": "Έχει λήξει η συνεδρία σας. Παρακαλούμε συνδεθείτε ξανά",
   "ErrMissingScope": "Δεν είστε εξουσιοδοτημένοι να εκτελέσετε αυτή την ενέργεια",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Υπάρχει ήδη ένας κόμβος με αυτό το όνομα",
   "ErrDirectoryUploadNotSupported": "Αδυναμία μεταφόρτωσης φακέλων",
   "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }

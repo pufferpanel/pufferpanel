@@ -10,6 +10,6 @@
   "ConfirmDelete": "Jeg er klar over effektene ved å slette denne OAuth2-klienten vil ha, og jeg ønsker å fortsette.",
   "Delete": "Slett {clientName}?",
   "Clients": "OAuth2 klienter",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "AccountDescription": "OAuth2 klientene listet opp her får alle dine kontotillatelser",
+  "ServerDescription": "OAuth2 klientene oppført her får bare dine kontotillatelser på denne serveren"
 }

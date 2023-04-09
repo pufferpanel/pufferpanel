@@ -13,7 +13,7 @@
   "AddInstallStep": "Legg til installasjonstrinn",
   "DeleteInstallStep": "Slett installasjonstrinn",
   "Description": "Beskrivelse",
-  "DataType": "Data Type",
+  "DataType": "Type data",
   "DefaultValue": "Standardverdi",
   "Required": "Påkrevd",
   "UserEditable": "Brukere kan redigere",
@@ -25,35 +25,35 @@
   "Source": "Kilde",
   "Target": "Mål",
   "Version": "Versjon",
-  "ReleaseType": "Release Type",
+  "ReleaseType": "Utgivelsestype",
   "AddFile": "Legg til fil",
   "AddVariable": "Legg til variabel",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
+  "Environment": "Miljø",
+  "Environments": "Miljøer",
+  "AddEnvironment": "Legg til miljø",
+  "DefaultEnvironment": "Standard miljø",
+  "AddEnvVar": "Legg til env-variabel",
+  "EnvVars": "Miljøvariabel",
+  "DockerImage": "Docker bilde",
   "SaveSuccess": "Lagret mal",
   "VarNameNoSpaces": "Et variabelnavn kan ikke være tomt eller inneholde mellomrom",
   "SupportedEnvironments": "Støttede miljøer",
   "RunConfig": "Kjøre konfigurasjon",
   "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
+  "PostHook": "Pre Run Hook",
+  "AddPreStep": "Legg til pre run steg",
+  "AddPostStep": "Legg til post run steg",
+  "DeletePreStep": "Slett pre run steg",
+  "DeletePostStep": "Slett post run steg",
   "Shutdown": "Avslutt",
   "Command": "Kommando",
-  "WorkingDirectory": "Working Directory",
+  "WorkingDirectory": "Arbeidsmappe",
   "Arguments": "Argumenter",
   "AddArgument": "Legg til argument",
   "Convert": "Konverter",
   "OfferV1Convert": "Denne malen av json ser ut som en mal for PufferPanel 1.x, vil du automatisk konvertere denne til en mal for PufferPanel 2.x?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
+    "CommunityWarning": "Disse malene lages av fellesskapet og leveres uten garantier",
     "OverrideWarning": "Advarsel: Importerte maler VIL overskrive eksisterende maler med samme ID",
     "Import": "Importere maler",
     "Tooltip": "Importer maler fra det offisielle arkivet",
@@ -78,8 +78,8 @@
     },
     "alterfile": {
       "ProcessorName": "Endre fil",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
+      "regex": "Behandle søk som RegEx",
+      "search": "Søk etter tekst",
       "replace": "Erstatt med"
     },
     "writefile": {
@@ -89,7 +89,7 @@
     "move": {
       "ProcessorName": "Flytt fil",
       "source": "Kilde",
-      "target": "Target"
+      "target": "Mål"
     },
     "mkdir": {
       "ProcessorName": "Opprett mappe"
@@ -106,6 +106,14 @@
     },
     "fabricdl": {
       "ProcessorName": "Last ned Minecraft Fabric"
+    },
+    "javadl": {
+      "ProcessorName": "Last ned Java",
+      "version": "Versjon av Java å installere (8, 16, 17)"
+    },
+    "steamgamedl": {
+      "ProcessorName": "Last ned spill fra Steam",
+      "appId": "App Id"
     }
   }
 }

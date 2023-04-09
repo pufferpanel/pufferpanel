@@ -29,7 +29,7 @@
   "ErrNoNodes": "Žádné uzly nejsou k dispozici",
   "ErrNoTemplates": "Žádné šablony nejsou k dispozici",
   "ErrPasswordRequirements": "Heslo musí být nejméně 8 znaků dlouhé",
-  "ErrUsernameRequirements": "Uživatelské jméno musí mít alespoň 3 znaky a obsahovat pouze alfanumerické znaky, _, nebo -",
+  "ErrUsernameRequirements": "Uživatelské jméno musí mít alespoň 5 znaků, a obsahovat pouze alfanumerické znaky, _ a -",
   "ErrPasswordsNotIdentical": "Hesla nejsou stejná",
   "ErrSessionTimedOut": "Vypršel časový limit relace, přihlaste se prosím znovu",
   "ErrMissingScope": "Nemáte oprávnění k provedení této akce",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Uzel s tímto názvem již existuje",
   "ErrDirectoryUploadNotSupported": "Nelze nahrát složky",
   "ErrDockerNotSupported": "Docker není v tomto uzlu podporován",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrMissingBinary": "Chybějící binární soubor {expected}",
+  "ErrUnsupportedOS": "Operační Systém ({actual}) není podporován. Podporovaný operační systém: {expected}",
+  "ErrUnsupportedArch": "Architektura {actual} není podporována. Podporované architektury: {expected}"
 }
