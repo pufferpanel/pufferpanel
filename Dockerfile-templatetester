@@ -41,10 +41,10 @@ RUN cd client && \
     rm -f frontend/src/lang && \
     ln -s ../../src/lang frontend/src/lang && \
     yarn install && \
-    yarn build && \
-    ~/go/bin/swag init -o web/swagger -g web/loader.go && \
-    go build -v -buildvcs=false -tags "$tags" -o /pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester && \
-    mv assets/email /pufferpanel/email
+    yarn build
+
+RUN ~/go/bin/swag init -o web/swagger -g web/loader.go && \
+    go build -v -buildvcs=false -tags "$tags" -o /pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester
 
 ###
 # Generate final image

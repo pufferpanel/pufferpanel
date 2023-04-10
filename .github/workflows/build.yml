@@ -2,11 +2,11 @@ name: Build
 on:
   push:
     branches:
-    - master
-    - v3
+      - master
+      - v3
     tags:
-    - v2.*
-    - v3.*
+      - v2.*
+      - v3.*
     paths-ignore:
       - '.github/workflows/release.yml'
       - '.github/workflows/pr.yml'
@@ -22,17 +22,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  skip-build:
-    runs-on: ubuntu-20.04
-    if: "!startsWith(github.ref, 'refs/tags/v') && contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master')"
-    name: "Build skipped"
-
-    timeout-minutes: 1
-
-    steps:
-      - name: Skipping
-        run: echo "Skipping build"
-
   build-shared:
     name: Build Shared Objects
     runs-on: ubuntu-20.04
@@ -41,279 +30,269 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - name: Set up Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ env.NODE_VERSION }}
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: ^${{ env.GO_VERSION }}
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^${{ env.GO_VERSION }}
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v3
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v3
 
-    - name: Restore yarn cache
-      uses: actions/cache@v3
-      with:
-        path: ~/.yarn
-        key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-${{ hashFiles('client/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-
+      - name: Restore yarn cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.yarn
+          key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-${{ hashFiles('client/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-
 
-    - name: Restore yarn cache
-      uses: actions/cache@v3
-      with:
-        path: |
-          client/node_modules
-          client/api/node_modules
-          client/frontend/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('client/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-        
-    - name: Restore Go Modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-${{ env.GO_VERSION }}-
+      - name: Restore yarn cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            client/node_modules
+            client/api/node_modules
+            client/frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('client/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-    - name: Restore Go BIN
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/go/bin
-        key: ${{ runner.os }}-swag-${{ env.SWAG_VERSION }}
-        restore-keys: |
-          ${{ runner.os }}-swag-
+      - name: Restore Go Modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ env.GO_VERSION }}-
 
-    - name: Download Go Binaries
-      run: |
-        wget https://github.com/swaggo/swag/releases/download/v${{ env.SWAG_VERSION }}/swag_${{ env.SWAG_VERSION }}_Linux_x86_64.tar.gz
-        mkdir -p ~/go/bin
-        tar -zxf swag*.tar.gz -C ~/go/bin
-        rm -rf swag*.tar.gz
+      - name: Restore Go BIN
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/go/bin
+          key: ${{ runner.os }}-swag-${{ env.SWAG_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-swag-
 
-    - name: yarn install, build
-      run: |
-        yarn install
-        yarn build
-      env:
-        CI: true
-      working-directory: client
+      - name: Download Go Binaries
+        run: |
+          wget https://github.com/swaggo/swag/releases/download/v${{ env.SWAG_VERSION }}/swag_${{ env.SWAG_VERSION }}_Linux_x86_64.tar.gz
+          mkdir -p ~/go/bin
+          tar -zxf swag*.tar.gz -C ~/go/bin
+          rm -rf swag*.tar.gz
 
-    - name: Restore Go Modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-${{ env.GO_VERSION }}
+      - name: yarn install, build
+        run: |
+          yarn install
+          yarn build
+        env:
+          CI: true
+        working-directory: client
 
-    - name: Generate Swagger Docs
-      run: |
-        go mod download
-        ~/go/bin/swag init -o web/swagger -g web/loader.go
+      - name: Generate Swagger Docs
+        run: |
+          go mod download
+          ~/go/bin/swag init -o web/swagger -g web/loader.go
 
-    - name: Upload Swagger docs
-      uses: actions/upload-artifact@v3
-      with:
-        name: pufferpanel_swagger
-        path: |
-          web/swagger/swagger.json
-          web/swagger/swagger.yaml
-        if-no-files-found: error
+      - name: Upload Swagger docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: pufferpanel_swagger
+          path: |
+            web/swagger/swagger.json
+            web/swagger/swagger.yaml
+          if-no-files-found: error
 
-    - name: Generate folders and remove excess files
-      run: |
-        rm -rf .git .github web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
-        zip -r pufferpanel_build_artifact.zip *
+      - name: Generate folders and remove excess files
+        run: |
+          rm -rf .git .github web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
+          zip -r pufferpanel_build_artifact.zip *
 
-    - name: Generate job artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: pufferpanel_build_artifact
-        path: pufferpanel_build_artifact.zip
-        if-no-files-found: error
-        retention-days: 1
+      - name: Generate job artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pufferpanel_build_artifact
+          path: pufferpanel_build_artifact.zip
+          if-no-files-found: error
+          retention-days: 1
 
   build-windows-amd64-binaries:
     name: Build Binaries - Windows AMD64
     runs-on: ubuntu-20.04
-    needs: ['build-shared']
+    needs: [ 'build-shared' ]
 
     timeout-minutes: 10
 
     steps:
-    - name: Get the version
-      run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+      - name: Get the version
+        run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
-    - name: Get the version
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+      - name: Get the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: ^${{ env.GO_VERSION }}
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^${{ env.GO_VERSION }}
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: pufferpanel_build_artifact
+      - uses: actions/download-artifact@v2
+        with:
+          name: pufferpanel_build_artifact
 
-    - name: Unzip archive
-      run: |
-        unzip pufferpanel_build_artifact.zip
-        
-    - name: Download APT packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install --download-only -y gcc-mingw-w64
+      - name: Unzip archive
+        run: |
+          unzip pufferpanel_build_artifact.zip
 
-    - name: APT Install
-      run: |
-        sudo apt-get install -y gcc-mingw-w64
+      - name: Download APT packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --download-only -y gcc-mingw-w64
 
-    - name: Build Windows
-      run: |
-        go build -o build-artifacts/pufferpanel.exe -tags "docker standard" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
-      env:
-        GOOS: windows
-        GOARCH: amd64
-        CC: x86_64-w64-mingw32-gcc
-        CXX: x86_64-w64-mingw32-g++
-        CGO_ENABLED: 1
+      - name: APT Install
+        run: |
+          sudo apt-get install -y gcc-mingw-w64
 
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: pufferpanel_${{ env.VERSION }}_windows_amd64
-        path: build-artifacts/
+      - name: Build Windows
+        run: |
+          go build -o build-artifacts/pufferpanel.exe -tags "docker host" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+        env:
+          GOOS: windows
+          GOARCH: amd64
+          CC: x86_64-w64-mingw32-gcc
+          CXX: x86_64-w64-mingw32-g++
+          CGO_ENABLED: 1
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: pufferpanel_${{ env.VERSION }}_windows_amd64
+          path: build-artifacts/
 
   build-windows-installer:
     name: Build Windows Installer
     runs-on: windows-latest
-    needs: ['build-windows-amd64-binaries']
+    needs: [ 'build-windows-amd64-binaries' ]
 
     timeout-minutes: 10
     
     steps:
-    - name: Get the version
-      run: |
-        $VERSION="0.0.${{ github.run_number }}"
-        if ("${{ github.ref }}".startsWith("refs/tags/v")) {
-          $VERSION="${{ github.ref }}".substring('refs/tags/v'.length)
-        }
-        echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-    
-    - uses: actions/download-artifact@v3
-      with:
-        name: pufferpanel_${{ env.VERSION }}_windows_amd64
-        path: binaries
+      - name: Get the version
+        run: |
+          $VERSION="0.0.${{ github.run_number }}"
+          if ("${{ github.ref }}".startsWith("refs/tags/v")) {
+            $VERSION="${{ github.ref }}".substring('refs/tags/v'.length)
+          }
+          echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
 
-    - uses: actions/download-artifact@v3
-      with:
-        name: pufferpanel_build_artifact
-        path: artifacts
+      - uses: actions/download-artifact@v3
+        with:
+          name: pufferpanel_${{ env.VERSION }}_windows_amd64
+          path: binaries
 
-    - name: Unzip archive
-      run: |
-        cd artifacts
-        unzip pufferpanel_build_artifact.zip
-    
-    - name: Generate MSI     
-      run: |
-        Copy-Item -Recurse -Path binaries\* -Destination .
-        Copy-Item -Path artifacts\LICENSE.rtf -Destination .
-        Copy-Item -Path artifacts\installer.wxs -Destination .
-        Copy-Item -Path artifacts\client\frontend\public\favicon.ico -Destination .
-        $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
-        candle *.wxs -arch x64 -dProductVersion="${{ env.VERSION }}" -ext WixFirewallExtension
-        light *.wixobj -out pufferpanel.msi -b email -b www -ext WixUIExtension -ext WixFirewallExtension -cultures:en-us
-        
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: pufferpanel_${{ env.VERSION }}_installer.msi
-        path: pufferpanel.msi
+      - uses: actions/download-artifact@v3
+        with:
+          name: pufferpanel_build_artifact
+          path: artifacts
+
+      - name: Unzip archive
+        run: |
+          cd artifacts
+          unzip pufferpanel_build_artifact.zip
+
+      - name: Generate MSI
+        run: |
+          Copy-Item -Recurse -Path binaries\* -Destination .
+          Copy-Item -Path artifacts\LICENSE.rtf -Destination .
+          Copy-Item -Path artifacts\installer.wxs -Destination .
+          Copy-Item -Path artifacts\client\frontend\public\favicon.ico -Destination .
+          $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
+          candle *.wxs -arch x64 -dProductVersion="${{ env.VERSION }}" -ext WixFirewallExtension
+          light *.wixobj -out pufferpanel.msi -b email -b www -ext WixUIExtension -ext WixFirewallExtension -cultures:en-us
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: pufferpanel_${{ env.VERSION }}_installer.msi
+          path: pufferpanel.msi
 
   build-linux-amd64-binaries:
     name: Build Binaries - Linux AMD64
     runs-on: ubuntu-20.04
-    needs: ['build-shared']
+    needs: [ 'build-shared' ]
 
     timeout-minutes: 10
 
     steps:
-    - name: Get the version
-      run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+      - name: Get the version
+        run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
-    - name: Get the version
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+      - name: Get the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: ^${{ env.GO_VERSION }}
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^${{ env.GO_VERSION }}
 
-    - name: Download APT packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install --download-only -y rpm
+      - name: Download APT packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --download-only -y rpm
 
-    - name: APT Install
-      run: |
-        sudo apt-get install -y rpm
+      - name: APT Install
+        run: |
+          sudo apt-get install -y rpm
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: pufferpanel_build_artifact
+      - uses: actions/download-artifact@v2
+        with:
+          name: pufferpanel_build_artifact
 
-    - name: Unzip archive
-      run: |
-        unzip pufferpanel_build_artifact.zip
+      - name: Unzip archive
+        run: |
+          unzip pufferpanel_build_artifact.zip
 
-    - name: Restore Go Modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-${{ env.GO_VERSION }}
+      - name: Restore Go Modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ env.GO_VERSION }}
 
-    - name: Build Linux
-      run: |
-        go build -o build-artifacts/pufferpanel -tags "docker tty" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
-      env:
-        GOOS: linux
-        GOARCH: amd64
+      - name: Build Linux
+        run: |
+          go build -o build-artifacts/pufferpanel -tags "docker host" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+        env:
+          GOOS: linux
+          GOARCH: amd64
 
-    - name: Set up build folder
-      run: |
-        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel 
-        mkdir -p DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
-        mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
-        cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
-        cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
-        cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
-        
-        mkdir -p RPMBUILD/var/lib/pufferpanel RPMBUILD/var/log/pufferpanel RPMBUILD/var/lib/pufferpanel/binaries
+      - name: Set up build folder
+        run: |
+          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel 
+          mkdir -p DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+          mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
+          cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
+          cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
+          cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+          
+          mkdir -p RPMBUILD/var/lib/pufferpanel RPMBUILD/var/log/pufferpanel RPMBUILD/var/lib/pufferpanel/binaries
 
-    - name: Build Package DEB AMD64
-      id: debamd64
-      uses: pufferpanel/build-deb@master
-      with:
-          data-folder:  DEBBUILD
+      - name: Build Package DEB AMD64
+        id: debamd64
+        uses: pufferpanel/build-deb@master
+        with:
+          data-folder: DEBBUILD
           package: pufferpanel
           version: ${{ env.VERSION }}
           license: Apache 2.0
@@ -333,10 +312,10 @@ jobs:
           suggested-packages: |
             lib32gcc1
 
-    - name: Build Package RPM AMD64
-      id: rpmamd64
-      uses: pufferpanel/build-rpm@master
-      with:
+      - name: Build Package RPM AMD64
+        id: rpmamd64
+        uses: pufferpanel/build-rpm@master
+        with:
           package: pufferpanel
           version: ${{ env.VERSION }}
           license: Apache 2.0
@@ -365,94 +344,94 @@ jobs:
             glibc.i686
             libstdc++.i686
 
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: pufferpanel_${{ env.VERSION }}_linux_amd64
-        path: build-artifacts/
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: pufferpanel_${{ env.VERSION }}_linux_amd64
+          path: build-artifacts/
 
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: pufferpanel_${{ env.VERSION }}_amd64.deb
-        path: pufferpanel_${{ env.VERSION }}_amd64.deb
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: pufferpanel_${{ env.VERSION }}_amd64.deb
+          path: pufferpanel_${{ env.VERSION }}_amd64.deb
 
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
-        path: ${{ steps.rpmamd64.outputs.file }}
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+          path: ${{ steps.rpmamd64.outputs.file }}
 
   build-linux-arm64-binaries:
     name: Build Binaries - Linux ARM64
     runs-on: ubuntu-20.04
-    needs: ['build-shared']
+    needs: [ 'build-shared' ]
 
     timeout-minutes: 10
 
     steps:
-    - name: Get the version
-      run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+      - name: Get the version
+        run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
-    - name: Get the version
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+      - name: Get the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: ^${{ env.GO_VERSION }}
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^${{ env.GO_VERSION }}
 
-    - uses: actions/download-artifact@v3
-      with:
-        name: pufferpanel_build_artifact
+      - uses: actions/download-artifact@v3
+        with:
+          name: pufferpanel_build_artifact
 
-    - name: Unzip archive
-      run: |
-        unzip pufferpanel_build_artifact.zip
+      - name: Unzip archive
+        run: |
+          unzip pufferpanel_build_artifact.zip
 
-    - name: Download APT packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install --download-only -y gcc-aarch64-linux-gnu
+      - name: Download APT packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --download-only -y gcc-aarch64-linux-gnu
 
-    - name: APT Install
-      run: |
-        sudo apt-get install -y gcc-aarch64-linux-gnu
-        
-    - name: Restore Go Modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-${{ env.GO_VERSION }}
+      - name: APT Install
+        run: |
+          sudo apt-get install -y gcc-aarch64-linux-gnu
 
-    - name: Build ARM64
-      run: |
-        go build -o build-artifacts/pufferpanel -tags "docker tty" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
-      env:
-        GOOS: linux
-        GOARCH: arm64
-        CC: aarch64-linux-gnu-gcc
-        CGO_ENABLED: 1
+      - name: Restore Go Modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ env.GO_VERSION }}
 
-    - name: Set up build folder
-      run: |
-        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel 
-        mkdir -p DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
-        mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
-        cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
-        cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
-        cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+      - name: Build ARM64
+        run: |
+          go build -o build-artifacts/pufferpanel -tags "docker host" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+        env:
+          GOOS: linux
+          GOARCH: arm64
+          CC: aarch64-linux-gnu-gcc
+          CGO_ENABLED: 1
 
-    - name: Build Package DEB ARM64
-      id: debarm64
-      uses: pufferpanel/build-deb@master
-      with:
-          data-folder:  DEBBUILD
+      - name: Set up build folder
+        run: |
+          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel 
+          mkdir -p DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+          mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
+          cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
+          cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
+          cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+
+      - name: Build Package DEB ARM64
+        id: debarm64
+        uses: pufferpanel/build-deb@master
+        with:
+          data-folder: DEBBUILD
           package: pufferpanel
           version: ${{ env.VERSION }}
           license: Apache 2.0
@@ -472,17 +451,32 @@ jobs:
           suggested-packages: |
             lib32gcc1
 
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: pufferpanel_${{ env.VERSION }}_linux_arm64
-        path: build-artifacts
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: pufferpanel_${{ env.VERSION }}_linux_arm64
+          path: build-artifacts
 
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: pufferpanel_${{ env.VERSION }}_arm64.deb
-        path: pufferpanel_${{ env.VERSION }}_arm64.deb
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: pufferpanel_${{ env.VERSION }}_arm64.deb
+          path: pufferpanel_${{ env.VERSION }}_arm64.deb
+
+  cleanup:
+    runs-on: ubuntu-20.04
+    name: "Cleanup"
+
+    if: ${{ always() }}
+    needs: [ build-shared, build-windows-amd64-binaries, build-windows-installer, build-linux-amd64-binaries, build-linux-arm64-binaries ]
+
+    continue-on-error: true
+
+    steps:
+      - name: Delete artifacts
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: pufferpanel_build_artifact
 
   build-docker-image-base:
     runs-on: ubuntu-20.04
@@ -493,53 +487,53 @@ jobs:
       VERSION: latest
     strategy:
       matrix:
-        platform: ["linux/amd64"]
+        platform: [ "linux/amd64" ]
 
     timeout-minutes: 10
 
     steps:
-    - name: Get the version
-      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-      run:
-        echo "TAG=$REPO:base-devel" >> $GITHUB_ENV
+      - name: Get the version
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run:
+          echo "TAG=$REPO:base-devel" >> $GITHUB_ENV
 
-    - name: Get the version
-      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-      run:
-        echo "VERSION=devel" >> $GITHUB_ENV
+      - name: Get the version
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run:
+          echo "VERSION=devel" >> $GITHUB_ENV
 
-    - name: Get the version
-      if: startsWith(github.ref, 'refs/tags/v')
-      run:
-        echo "TAG=$REPO:base-${GITHUB_REF/refs\/tags\/v/},$REPO:base" >> $GITHUB_ENV
+      - name: Get the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run:
+          echo "TAG=$REPO:base-${GITHUB_REF/refs\/tags\/v/},$REPO:base" >> $GITHUB_ENV
 
-    - name: Get the version
-      if: startsWith(github.ref, 'refs/tags/v')
-      run:
-        echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+      - name: Get the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run:
+          echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v3
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v3
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build master container
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: ${{ env.TAG }}
-        build-args: |
-          sha: ${{ github.sha }}
-          version: ${{ env.VERSION }}
-        platforms: ${{ matrix.platform }}
+      - name: Build master container
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ env.TAG }}
+          build-args: |
+            sha: ${{ github.sha }}
+            version: ${{ env.VERSION }}
+          platforms: ${{ matrix.platform }}

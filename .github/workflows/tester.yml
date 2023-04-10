@@ -1,6 +1,6 @@
 name: Build Tester
 on:
-  push:
+  workflow_dispatch:
 
 jobs:
   build-tester:
