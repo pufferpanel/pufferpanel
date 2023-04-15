@@ -8,6 +8,7 @@
     :filled="lookValue === 'filled'"
     :flat="flat"
     :autofocus="autofocus"
+    :autocomplete="autocomplete"
     :dense="dense"
     :disabled="disabled"
     :label="label"
@@ -39,6 +40,7 @@ const allowedLooks = ['outlined', 'solo', 'solo-flat', 'filled', 'material']
 export default {
   props: {
     autofocus: { type: Boolean, default: () => false },
+    autocomplete: { type: String, default: () => undefined },
     dense: { type: Boolean, default: () => false },
     disabled: { type: Boolean, default: () => false },
     endIcon: { type: String, default: () => undefined },
