@@ -29,7 +29,7 @@
   "ErrNoNodes": "Aucun nœud disponible",
   "ErrNoTemplates": "Aucun modèle n'est disponible",
   "ErrPasswordRequirements": "Le mot de passe doit contenir au moins 8 caractères",
-  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "Le nom d'utilisateur doit comporter au moins 5 caractères et ne contenir que des caractères alphanumériques, _, ou -",
   "ErrPasswordsNotIdentical": "Les mot de passe ne sont pas identiques",
   "ErrSessionTimedOut": "Session expirée, merci de vous reconnecter",
   "ErrMissingScope": "Vous n'êtes pas autorisé à effectuer cette action",
