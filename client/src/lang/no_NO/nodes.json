@@ -16,5 +16,7 @@
   "SavePublicKey": "Lagre offentlig nøkkel",
   "DeploymentInstruction": "For å starte noden, installer PufferPanel på den nye serveren og plasser konfigurasjonsfilen i `/etc/pufferpanel/`<br/>Start PufferPanel på nytt på den nye serveren etterpå.",
   "UpdateSuccess": "Noden er oppdatert",
-  "UpdateError": "Feil ved oppdatering av node"
+  "UpdateError": "Feil ved oppdatering av node",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }
