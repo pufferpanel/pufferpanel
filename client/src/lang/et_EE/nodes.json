@@ -16,5 +16,7 @@
   "SavePublicKey": "Salvesta Avalik Võti",
   "DeploymentInstruction": "Et juurutada sõlme, paigalda PufferPanel uuele serverile ja pane konfiguratsioon asukohta `/etc/pufferpanel/`<br/>Taaskäivita PufferPanel uuel serveril pärast.",
   "UpdateSuccess": "Sõlm edukalt muudetud",
-  "UpdateError": "Sõlme uuendamise viga"
+  "UpdateError": "Sõlme uuendamise viga",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

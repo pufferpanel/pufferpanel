@@ -34,9 +34,9 @@
   "DefaultEnvironment": "Ambiente padrão",
   "AddEnvVar": "Add env variable",
   "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
+  "DockerImage": "Imagem Docker",
+  "SaveSuccess": "Modelo Guardado",
+  "VarNameNoSpaces": "O nome da variável não pode estar em branco ou conter espaços",
   "SupportedEnvironments": "Supported Environments",
   "RunConfig": "Run Configuration",
   "PreHook": "Pre Run Hook",
@@ -45,12 +45,12 @@
   "AddPostStep": "Add Post Run Step",
   "DeletePreStep": "Delete Pre Run Step",
   "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
+  "Shutdown": "Encerrar",
+  "Command": "Comando",
   "WorkingDirectory": "Working Directory",
   "Arguments": "Arguments",
   "AddArgument": "Add an argument",
-  "Convert": "Convert",
+  "Convert": "Converter",
   "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
   "import": {
     "CommunityWarning": "These templates are made by the community and provided without any warranties",
@@ -77,10 +77,10 @@
       "commands": "Commands"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
+      "ProcessorName": "Alterar ficheiro",
       "regex": "Treat search as RegEx",
       "search": "Text to search",
-      "replace": "Replace with"
+      "replace": "Substituir por"
     },
     "writefile": {
       "ProcessorName": "Write to file",
@@ -88,31 +88,31 @@
     },
     "move": {
       "ProcessorName": "Move File",
-      "source": "Source",
+      "source": "Fonte",
       "target": "Target"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Criar diretório"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Transferir Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Transferir o Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
+      "ProcessorName": "Transferir o Minecraft SpongeForge",
       "releaseType": "Release Type"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Transferir o Minecraft Fabric"
     },
     "javadl": {
-      "ProcessorName": "Download Java",
-      "version": "Version of Java to install (8, 16, 17)"
+      "ProcessorName": "Transferir Java",
+      "version": "Versão do Java a instalar (8, 16, 17)"
     },
     "steamgamedl": {
-      "ProcessorName": "Download Game from Steam",
+      "ProcessorName": "Transferir Jogo da Steam",
       "appId": "App Id"
     }
   }

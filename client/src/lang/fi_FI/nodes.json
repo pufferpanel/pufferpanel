@@ -16,5 +16,7 @@
   "SavePublicKey": "Tallenna Julkinen Avain",
   "DeploymentInstruction": "Jos haluat ottaa solmun käyttöön, asenna PufferPanel uudelle palvelimelle ja lisää asetustiedosto `/etc/pufferpanel/`<br/>Käynnistä PufferPanel uudelleen uudella palvelimella tämän jälkeen.",
   "UpdateSuccess": "Solmu päivitetty onnistuneesti",
-  "UpdateError": "Virhe päivitettäessä solmua"
+  "UpdateError": "Virhe päivitettäessä solmua",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

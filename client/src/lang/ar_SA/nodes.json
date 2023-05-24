@@ -16,5 +16,7 @@
   "SavePublicKey": "حفظ المفتاح العام",
   "DeploymentInstruction": "لنشر ال Node ، قم بتثبيت لوحة تحكم بافر بانل على الخادم الجديد و ضع ملف الإعدادات في\n`/etc/pufferpanel/` <br/> قم بإعادة تشغيل لوحة تحكم بافر بنل على الخادم الجديد بعد ذلك.",
   "UpdateSuccess": "تم تحديث ال Node بنجاح",
-  "UpdateError": "حدث خطأ أثناء تحديث ال Node"
+  "UpdateError": "حدث خطأ أثناء تحديث ال Node",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

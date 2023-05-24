@@ -16,5 +16,7 @@
   "SavePublicKey": "Publieke Sleutel Opslaan",
   "DeploymentInstruction": "Op deze node te deployen, installeer PufferPanel op de nieuwe server en plaats het config bestand in `/etc/pufferpanel`<br/>Herstart PufferPanel op de nieuwe server daarna.",
   "UpdateSuccess": "Node succesvol geüpdatet",
-  "UpdateError": "Fout bij het updaten van de node"
+  "UpdateError": "Fout bij het updaten van de node",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

@@ -16,5 +16,7 @@
   "SavePublicKey": "Salvar chave pública",
   "DeploymentInstruction": "Para instalar o node, instale o PufferPanel no novo servidor e coloque o arquivo de configuração em `/etc/pufferpanel/`<br/>Reinicie o PufferPanel no novo servidor.",
   "UpdateSuccess": "Node atualizado com sucesso",
-  "UpdateError": "Erro ao atualizar o node"
+  "UpdateError": "Erro ao atualizar o node",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

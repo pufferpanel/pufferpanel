@@ -1,8 +1,8 @@
 {
   "Id": "ID",
-  "Name": "nimi",
-  "Address": "osoite",
-  "Online": "päällä",
+  "Name": "Nimi",
+  "Address": "Osoite",
+  "Online": "Päällä",
   "Offline": "Poissa päältä",
   "Loading": "Ladataan...",
   "General": "Yleinen",

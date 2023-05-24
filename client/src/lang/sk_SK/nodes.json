@@ -16,5 +16,7 @@
   "SavePublicKey": "Uložiť verejný kľúč (Public Key)",
   "DeploymentInstruction": "Ak chcete uzol nasadiť, nainštalujte PufferPanel na nový server a umiestnite konfiguračný súbor do adresára `/etc/pufferpanel/`<br/>Potom spustite PufferPanel na novom serveri.",
   "UpdateSuccess": "Uzol bol úspešne aktualizovaný",
-  "UpdateError": "Chyba pri aktualizovaní uzla"
+  "UpdateError": "Chyba pri aktualizovaní uzla",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

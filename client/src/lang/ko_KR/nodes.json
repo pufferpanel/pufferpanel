@@ -16,5 +16,7 @@
   "SavePublicKey": "공개키 저장",
   "DeploymentInstruction": "이 노드를 추가하기 위해서 새 서버에 PufferPanel을 설치하고 이 설정 파일을 `/etc/pufferpanel`에 넣어주세요.<br/>그 후에 새로운 서버에 설치된 PufferPanel을 재시작 해주세요.",
   "UpdateSuccess": "노드를 수정했습니다.",
-  "UpdateError": "노드 수정 중 오류가 발생했습니다."
+  "UpdateError": "노드 수정 중 오류가 발생했습니다.",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

@@ -16,5 +16,7 @@
   "SavePublicKey": "Lưu Khoá công cộng",
   "DeploymentInstruction": "Để triển khai Node, hãy cài đặt PufferPanel ở máy chủ mới và đặt file cấu hình tại `/etc/pufferpanel/`<br/>Sau đó khởi động lại PufferPanel ở máy chủ mới.",
   "UpdateSuccess": "Cập nhật Node thành công",
-  "UpdateError": "Có lỗi khi cập nhật Node"
+  "UpdateError": "Có lỗi khi cập nhật Node",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

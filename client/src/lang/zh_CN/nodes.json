@@ -16,5 +16,7 @@
   "SavePublicKey": "保存公钥",
   "DeploymentInstruction": "要部署节点，请在新服务器上安装 PufferPanel 并将配置文件放置于 `/etc/pufferpanel/`<br/>之后请重启新服务器上的 PufferPanel。",
   "UpdateSuccess": "已成功更新节点",
-  "UpdateError": "更新节点时出错"
+  "UpdateError": "更新节点时出错",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }
