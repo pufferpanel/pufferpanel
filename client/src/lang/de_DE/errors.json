@@ -29,7 +29,7 @@
   "ErrNoNodes": "Keine Knoten verfügbar",
   "ErrNoTemplates": "Keine Vorlagen verfügbar",
   "ErrPasswordRequirements": "Passwort muss mindestens 8 Zeichen lang sein",
-  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "Benutzername muss mindestens 5 Zeichen lang sein und darf nur alphanumerische Zeichen, _, oder - enthalten",
   "ErrPasswordsNotIdentical": "Die Passwörter stimmen nicht überein",
   "ErrSessionTimedOut": "Ihre Sitzung ist abgelaufen, bitte melden Sie sich erneut an",
   "ErrMissingScope": "Sie sind nicht berechtigt, diese Aktion auszuführen",
