@@ -16,5 +16,7 @@
   "SavePublicKey": "Nyílvános kulcs mentése",
   "DeploymentInstruction": "A csomópont berendezéséhez telepítse a PufferPanelt az új szerveren és helyezze a konfigurációs fájlt a következő helyre: `/etc/pufferpanel/`<br/>Majd indítsa újra a PufferPanelt az új szerveren.",
   "UpdateSuccess": "Csomópont sikeresen frissítve",
-  "UpdateError": "Hiba történt a csomópont frissítése közben"
+  "UpdateError": "Hiba történt a csomópont frissítése közben",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }
