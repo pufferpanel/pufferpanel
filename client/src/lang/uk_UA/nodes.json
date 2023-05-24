@@ -16,5 +16,7 @@
   "SavePublicKey": "Зберегти відкритий ключ",
   "DeploymentInstruction": "Щоб розгорнути вузол, встановіть PufferPanel на новий сервер і помістіть файл конфігурації в меню `/etc/pufferpanel/`<br/>Перезапустіть PufferPanel на новий сервер після цього.",
   "UpdateSuccess": "Успішно оновлено вузол",
-  "UpdateError": "Помилка оновлення вузла"
+  "UpdateError": "Помилка оновлення вузла",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }
