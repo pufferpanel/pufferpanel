@@ -17,6 +17,6 @@
   "DeploymentInstruction": "Pour déployer le nœud, installez PufferPanel sur le nouveau serveur et placez le fichier de configuration dans `/etc/pufferpanel`<br/>Redémarrez PufferPanel sur le nouveau serveur une fois terminé.",
   "UpdateSuccess": "Nœud mis à jour avec succès",
   "UpdateError": "Erreur lors de la mise à jour du nœud",
-  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
-  "CannotEdit": "Cannot Edit"
+  "LocalNodeInstructions": "Le nœud local n'est pas modifiable via cet écran. Pour modifier les informations d'hôte ou de port, veuillez mettre à jour l'\"URL principale\" dans les paramètres.",
+  "CannotEdit": "Impossible de modifier"
 }
