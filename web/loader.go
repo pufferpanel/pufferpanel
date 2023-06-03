@@ -68,27 +68,18 @@ func RegisterRoutes(e *gin.Engine) {
 
 		proxy.RegisterRoutes(e.Group("/proxy"))
 
-		css := e.Group("/css")
-		{
-			css.Use(gzip.Gzip(gzip.DefaultCompression))
-			css.StaticFS("", http.Dir(ClientPath+"/css"))
-		}
-		fonts := e.Group("/fonts")
-		{
-			fonts.Use(gzip.Gzip(gzip.DefaultCompression))
-			fonts.StaticFS("", http.Dir(ClientPath+"/fonts"))
-		}
-		img := e.Group("/img")
-		{
-			img.StaticFS("", http.Dir(ClientPath+"/img"))
-		}
-		js := e.Group("/js", setContentType("application/javascript"))
-		{
-			js.Use(gzip.Gzip(gzip.DefaultCompression))
-			js.StaticFS("", http.Dir(ClientPath+"/js"))
-		}
+		e.Group("/ace", gzip.Gzip(gzip.DefaultCompression), setContentType("application/javascript")).StaticFS("", http.Dir(ClientPath+"/ace"))
+		e.Group("/css", gzip.Gzip(gzip.DefaultCompression)).StaticFS("", http.Dir(ClientPath+"/css"))
+		e.Group("/fonts", gzip.Gzip(gzip.DefaultCompression)).StaticFS("", http.Dir(ClientPath+"/fonts"))
+		e.Group("/img").StaticFS("", http.Dir(ClientPath+"/img"))
+		e.Group("/js", gzip.Gzip(gzip.DefaultCompression), setContentType("application/javascript")).StaticFS("", http.Dir(ClientPath+"/js"))
+		e.Group("/theme", setContentType("application/x-tar")).StaticFS("", http.Dir(ClientPath+"/theme"))
+
 		e.StaticFile("/favicon.png", ClientPath+"/favicon.png")
 		e.StaticFile("/favicon.ico", ClientPath+"/favicon.ico")
+		e.StaticFile("/apple-touch-icon.png", ClientPath+"/apple-touch-icon.png")
+		e.StaticFile("/service-worker.js", ClientPath+"/service-worker.js")
+		e.StaticFile("/service-worker-dev.js", ClientPath+"/service-worker-dev.js")
 		e.NoRoute(handle404)
 	}
 }
@@ -99,30 +90,6 @@ func handle404(c *gin.Context) {
 			c.AbortWithStatus(http.StatusNotFound)
 			return
 		}
-	}
-
-	if strings.HasSuffix(c.Request.URL.Path, ".js") {
-		c.Writer.Header().Set("Content-Type", "application/javascript")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
-	}
-
-	if strings.HasSuffix(c.Request.URL.Path, ".json") {
-		c.Writer.Header().Set("Content-Type", "application/json")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
-	}
-
-	if strings.HasSuffix(c.Request.URL.Path, ".css") {
-		c.Writer.Header().Set("Content-Type", "text/css")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
-	}
-
-	if strings.HasSuffix(c.Request.URL.Path, ".tar") {
-		c.Writer.Header().Set("Content-Type", "application/x-tar")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
 	}
 
 	c.File(IndexFile)

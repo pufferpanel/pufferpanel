@@ -81,7 +81,7 @@ func GenerateOAuthForClient(client *models.Client) (string, error) {
 		},
 		PanelClaims: pufferpanel.PanelClaims{
 			Scopes: map[string][]pufferpanel.Scope{
-				client.ServerId: client.Scopes,
+				client.ServerId.String: client.Scopes,
 			},
 		},
 	}

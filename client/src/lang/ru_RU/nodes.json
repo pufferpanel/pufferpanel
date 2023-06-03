@@ -16,5 +16,7 @@
   "SavePublicKey": "Сохранить публичный ключ",
   "DeploymentInstruction": "Чтобы развернуть хост, установите PufferPanel на новый сервер и поместите конфигурационный файл в `/etc/pufferpanel/`<br/>После, перезагрузите PufferPanel на сервере.",
   "UpdateSuccess": "Хост успешно обновлен",
-  "UpdateError": "Ошибка при обновлении хоста"
+  "UpdateError": "Ошибка при обновлении хоста",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

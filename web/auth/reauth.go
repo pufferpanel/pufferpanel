@@ -47,7 +47,8 @@ func Reauth(c *gin.Context) {
 	if c.Request.TLS != nil {
 		secure = true
 	}
-	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, true)
+	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, false)
+	//c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, true)
 
 	c.JSON(http.StatusOK, data)
 }

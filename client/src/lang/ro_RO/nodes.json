@@ -16,5 +16,7 @@
   "SavePublicKey": "Salvează cheia publică",
   "DeploymentInstruction": "Pentru a implementa acest modul, instalati PufferPanel pe noul server si plasati fisierul de configurare in `/etc/pufferpanel/`<br/>Reporniţi PufferPanel pe noul server dupa.",
   "UpdateSuccess": "Actualizare reusita",
-  "UpdateError": "Eroare la actualizarea nodeului"
+  "UpdateError": "Eroare la actualizarea nodeului",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

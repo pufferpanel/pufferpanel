@@ -276,13 +276,16 @@ jobs:
 
     - name: Set up build folder
       run: |
-        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel 
+        mkdir -p DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
         cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
         cp -r build-artifacts/email DEBBUILD/etc/pufferpanel
         cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
-        mkdir -p RPMBUILD/var/lib/pufferpanel RPMBUILD/var/log/pufferpanel
+        
+        mkdir -p RPMBUILD/var/lib/pufferpanel RPMBUILD/var/log/pufferpanel RPMBUILD/var/lib/pufferpanel/binaries
 
     - name: Build Package DEB AMD64
       id: debamd64
@@ -418,8 +421,9 @@ jobs:
 
     - name: Set up build folder
       run: |
-        mkdir DEBBUILD
-        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel 
+        mkdir -p DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
         cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
@@ -466,6 +470,7 @@ jobs:
   build-docker-image-base:
     runs-on: ubuntu-20.04
     name: "Build Docker images"
+    if: "startsWith(github.ref, 'refs/tags/v') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
     env:
       REPO: pufferpanel/pufferpanel
       VERSION: latest

@@ -37,7 +37,7 @@ func migrate(dbConn *gorm.DB) error {
 					return nil
 				}
 
-				err = db.Table("servers").Where("node_id = ?", local.ID).Update("node_id", 0).Error
+				err = db.Table("servers").Where("node_id = ?", local.ID).Update("node_id", nil).Error
 				if err != nil {
 					return err
 				}
@@ -47,6 +47,29 @@ func migrate(dbConn *gorm.DB) error {
 				}
 
 				return nil
+			},
+		},
+		{
+			ID: "1677519979",
+			Migrate: func(db *gorm.DB) error {
+				err := db.Migrator().AlterColumn(&models.Client{}, "ServerId")
+				if err != nil {
+					return err
+				}
+				err = db.Table("clients").Where("server_id = ?", "").Update("server_id", nil).Error
+				return err
+			},
+		},
+		{
+			ID: "1677519987",
+			Migrate: func(db *gorm.DB) error {
+				err := db.Migrator().AlterColumn(&models.Server{}, "RawNodeID")
+				if err != nil {
+					return err
+				}
+
+				err = db.Table("servers").Where("node_id = ?", 0).Update("node_id", nil).Error
+				return err
 			},
 		},
 	})

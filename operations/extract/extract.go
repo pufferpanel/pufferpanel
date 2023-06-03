@@ -1,7 +1,7 @@
 package extract
 
 import (
-	"github.com/mholt/archiver"
+	"github.com/mholt/archiver/v3"
 	"github.com/pufferpanel/pufferpanel/v2"
 )
 

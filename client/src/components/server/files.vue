@@ -490,9 +490,10 @@ export default {
         if (!dropped) return
         await Promise.all(([...dropped]).map(async item => {
           if (item.kind === 'file') {
-            if (await this.isFile(item.getAsFile())) {
-              const filesFound = this.uploadFiles.filter(file => file.name === item.getAsFile().name).length
-              if (filesFound === 0) this.uploadFiles.push(item.getAsFile())
+            const file = item.getAsFile()
+            if (await this.isFile(file)) {
+              const filesFound = this.uploadFiles.filter(f => f.name === file.name).length
+              if (filesFound === 0) this.uploadFiles.push(file)
             } else {
               if (!dirWarningPushed) {
                 this.$toast.error(this.$t('errors.ErrDirectoryUploadNotSupported'))

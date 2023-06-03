@@ -29,7 +29,7 @@
   "ErrNoNodes": "Sõlmesid pole saadaval",
   "ErrNoTemplates": "Ühtegi malli pole saadaval",
   "ErrPasswordRequirements": "Salasõna peab olema vähemalt {min} tähemärki",
-  "ErrUsernameRequirements": "Kasutajanimi peab olema vähemalt {min} tähemärki ja sisaldama ainult tähtnumbreid,_, või -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Salasõnad ei ühti",
   "ErrSessionTimedOut": "Sinu sessioon on aegunud, palun logi uuesti sisse",
   "ErrMissingScope": "Teil puudub õigus selle tegevuse jaoks",
@@ -40,8 +40,8 @@
   "ErrDuplicateServerName": "Selle nimega server eksisteerib juba",
   "ErrDuplicateNodeName": "Selle nimega sõlm juba eksisteerib",
   "ErrDirectoryUploadNotSupported": "Kaustu ei saa üles laadida",
-  "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrDockerNotSupported": "Docker ei ole toetatud selles sõlmes",
+  "ErrMissingBinary": "Puuduv binaar: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) ei toetata. toetatakse OS: {expected}",
+  "ErrUnsupportedArch": "Arhitektuur {actual} ei ole toetatud. Toetatud arhitektuurid: {expected}"
 }

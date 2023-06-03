@@ -1,111 +1,119 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
+  "Templates": "Šablóny",
+  "NoTemplates": "Zatiaľ tu nie sú k dispozícii žiadne šablóny",
+  "Deleted": "Šablóna bola odstránená",
+  "New": "Vytvoriť novú šablónu",
+  "Edit": "Upraviť šablónu",
   "Editor": "Editor",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Display": "Zobrazované meno",
+  "Type": "Typ",
+  "Variables": "Premenné",
+  "Install": "Inštalovať",
+  "AddInstallStep": "Pridať krok inštalácie",
+  "DeleteInstallStep": "Odstrániť krok inštalácie",
+  "Description": "Popis",
+  "DataType": "Dátový typ",
+  "DefaultValue": "Predvolená hodnota",
+  "Required": "Povinné",
+  "UserEditable": "Používatelia môžu upravovať",
+  "Value": "Hodnota",
+  "AddOption": "Pridať možnosť",
+  "AddCommand": "Pridať príkaz",
+  "Filename": "Názov súboru",
+  "Content": "Obsah",
+  "Source": "Zdroj",
+  "Target": "Cieľ",
+  "Version": "Verzia",
+  "ReleaseType": "Typ vydania",
+  "AddFile": "Pridať súbor",
+  "AddVariable": "Pridať premennú",
+  "Environment": "Prostredie",
+  "Environments": "Prostredia",
+  "AddEnvironment": "Pridať prostredie",
+  "DefaultEnvironment": "Predvolené prostredie",
+  "AddEnvVar": "Pridať premennú prostredia",
+  "EnvVars": "Premenné prostredia",
+  "DockerImage": "Docker obraz",
+  "SaveSuccess": "Šablóna uložená",
+  "VarNameNoSpaces": "Názov premennej nemôže byť prázdny alebo obsahovať medzery",
+  "SupportedEnvironments": "Podporované prostredia",
+  "RunConfig": "Spustiť konfiguráciu",
+  "PreHook": "Hook pred spustením",
+  "PostHook": "Hook po spustení",
+  "AddPreStep": "Pridanie kroku pred spustením",
+  "AddPostStep": "Pridanie kroku po spustení",
+  "DeletePreStep": "Vymazať krok pred spustením",
+  "DeletePostStep": "Odstrániť krok po spustení",
+  "Shutdown": "Vypnúť",
+  "Command": "Príkaz",
+  "WorkingDirectory": "Pracovný priečinok",
+  "Arguments": "Parametre",
+  "AddArgument": "Pridať argument",
+  "Convert": "Konvertovať",
+  "OfferV1Convert": "Táto šablóna JSON vyzerá ako šablóna pre PufferPanel 1.x, chcete ju automaticky konvertovať na šablónu pre PufferPanel 2.x?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "CommunityWarning": "Tieto šablóny sú vytvorené komunitou a sú poskytované bez akýchkoľvek záruk",
+    "OverrideWarning": "VAROVANIE: Importované šablóny prepíšu existujúce šablóny s rovnakým ID",
+    "Import": "Importovať šablóny",
+    "Tooltip": "Importovať šablóny z oficiálneho repozitáru",
+    "Select": "Výber šablón na import",
+    "Started": "Importovanie šablón, chvíľu počkajte",
+    "Successful": "Úspešne importovaná šablóna {template}",
+    "NoTemplatesTitle": "Chcete importovať šablóny?",
+    "NoTemplatesContent": "Nemáte žiadne šablóny. Šablóny sú potrebné na vytvorenie serverov.<br/>Chcete teraz importovať nejaké šablóny z oficiálneho repozitára šablón PufferPanel?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "Príkaz",
+    "Signal": "Signál"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Stiahnuť",
+      "files": "Súbory"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Spustiť príkaz",
+      "commands": "Príkazy"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Zmeniť súbor",
+      "regex": "Vyhľadávať ako RegEx",
+      "search": "Text na vyhľadávanie",
+      "replace": "Nahradiť s"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Zapísať do súboru",
+      "text": "Obsah"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Presunúť súbor",
+      "source": "Zdroj",
+      "target": "Cieľ"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Vytvoriť adresár"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Stiahnuť Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Stiahnuť Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Stiahnuť Minecraft SpongeForge",
+      "releaseType": "Typ vydania"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Stiahnuť Minecraft Fabric"
+    },
+    "javadl": {
+      "ProcessorName": "Stiahnuť Javu",
+      "version": "Verzia Javy na inštaláciu (8, 16, 17)"
+    },
+    "steamgamedl": {
+      "ProcessorName": "Stiahnuť hru zo služby Steam",
+      "appId": "App Id"
     }
   }
 }

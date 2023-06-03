@@ -15,5 +15,8 @@
       "servers": "/var/lib/pufferpanel/servers",
       "binaries": "/var/lib/pufferpanel/binaries"
     }
+  },
+  "web": {
+    "host": "0.0.0.0:8080"
   }
 }

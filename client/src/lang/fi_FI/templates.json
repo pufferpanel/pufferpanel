@@ -3,8 +3,8 @@
   "NoTemplates": "Mallipohjia ei ole vielä lisätty",
   "Deleted": "Mallipohja poistettu",
   "New": "Luo uusi mallipohja",
-  "Edit": "Muokka mallipohja",
-  "Editor": "Edittori",
+  "Edit": "Muokka mallipohjaa",
+  "Editor": "Editori",
   "Json": "JSON",
   "Display": "Näyttönimi",
   "Type": "Tyyppi",
@@ -34,78 +34,86 @@
   "DefaultEnvironment": "Oletus ympäristö",
   "AddEnvVar": "Lisää env muuttuja",
   "EnvVars": "Ympäristön muuttujat",
-  "DockerImage": "Docker Image",
+  "DockerImage": "Docker-kuva",
   "SaveSuccess": "Tallennettu mallipohja",
   "VarNameNoSpaces": "Muuttujan nimi ei voi olla tyhjä tai sisältää välilyöntejä",
   "SupportedEnvironments": "Tuetut Ympäristöt",
   "RunConfig": "Suorita Asetukset",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "WorkingDirectory": "Working Directory",
+  "PreHook": "Ajoa edeltävä koukku",
+  "PostHook": "Ajon jälkeinen koukku",
+  "AddPreStep": "Lisää ajoa edeltävä vaihe",
+  "AddPostStep": "Lisää ajon jälkeinen vaihe",
+  "DeletePreStep": "Poista ajoa edeltävä vaihe",
+  "DeletePostStep": "Poista ajon jälkeinen vaihe",
+  "Shutdown": "Sammuta",
+  "Command": "Komento",
+  "WorkingDirectory": "Työhakemisto",
   "Arguments": "Argumentit",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "AddArgument": "Lisää argumentti",
+  "Convert": "Muunna",
+  "OfferV1Convert": "Tämän pohjan json näyttää olevan pohja PufferPanelin 1.x-versiolle. Haluatko automaattisesti muuntaa sen PufferPanelin 2.x-versiolle?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "CommunityWarning": "Nämä pohjat ovat yhteisön tekemiä ja annetaan ilman takuita",
+    "OverrideWarning": "VAROITUS: Tuodut pohjat korvaavat olemassa olevat pohjat, joilla on sama ID",
+    "Import": "Tuo mallit",
+    "Tooltip": "Tuo mallipohjat virallisesta arkistosta",
+    "Select": "Valitse tuotavat pohjat",
+    "Started": "Pohjia tuodaan, odota hetki",
+    "Successful": "Tuotu onnistuneesti pohja {template}",
+    "NoTemplatesTitle": "Haluatko tuoda pohjat?",
+    "NoTemplatesContent": "Sinulla ei ole tällä hetkellä yhtään pohjaa. Pohjia tarvitaan palvelinten luontiin.<br/>Haluatko tuoda joitakin pohjia virallisesta PufferPanelin pohjien arkistosta?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "Komento",
+    "Signal": "Signaali"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Lataa",
+      "files": "Tiedostot"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Suorita komento",
+      "commands": "Komennot"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Muuta tiedostoa",
+      "regex": "Käsittele hakua RegEx-lausekkeena",
+      "search": "Haettava teksti",
+      "replace": "Korvaa"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Kirjoita tiedostoon",
+      "text": "Sisältö"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Siirrä tiedosto",
+      "source": "Lähde",
+      "target": "Kohde"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Luo hakemisto"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Lataa Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Lataa Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Lataa Minecraft SpongeForge",
+      "releaseType": "Julkaisun tyyppi"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Lataa Minecraft Fabric"
+    },
+    "javadl": {
+      "ProcessorName": "Download Java",
+      "version": "Version of Java to install (8, 16, 17)"
+    },
+    "steamgamedl": {
+      "ProcessorName": "Download Game from Steam",
+      "appId": "App Id"
     }
   }
 }

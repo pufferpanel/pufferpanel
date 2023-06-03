@@ -30,6 +30,7 @@ import (
 	"github.com/docker/go-connections/nat"
 	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/spf13/cast"
@@ -63,8 +64,6 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	if running {
 		return pufferpanel.ErrContainerRunning
 	}
-
-	d.Wait.Wait()
 
 	if d.downloadingImage {
 		return pufferpanel.ErrImageDownloading
@@ -370,14 +369,6 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		return err
 	}
 
-	cmdSlice := strslice.StrSlice{}
-
-	cmdSlice = append(cmdSlice, cmd)
-
-	for _, v := range args {
-		cmdSlice = append(cmdSlice, v)
-	}
-
 	//newEnv := os.Environ()
 	newEnv := []string{"HOME=" + containerRoot}
 
@@ -387,6 +378,22 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 
 	if workDir == "" {
 		workDir = containerRoot
+	}
+
+	binaryFolder := config.BinariesFolder.Value()
+	if !filepath.IsAbs(binaryFolder) {
+		var ef error
+		binaryFolder, ef = filepath.Abs(binaryFolder)
+		if ef != nil {
+			logging.Error.Printf("Failed to resolve binary folder to absolute path: %s", ef)
+			binaryFolder = ""
+		}
+	}
+
+	cmdSlice := strslice.StrSlice{}
+	cmdSlice = append(cmdSlice, cmd)
+	for _, v := range args {
+		cmdSlice = append(cmdSlice, v)
 	}
 
 	d.Log(logging.Debug, "Container command: %s\n", cmdSlice)
@@ -402,6 +409,9 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		WorkingDir:      workDir,
 		Env:             newEnv,
 		Entrypoint:      cmdSlice,
+		Labels: map[string]string{
+			"pufferpanel.server": d.ContainerId,
+		},
 	}
 
 	if runtime.GOOS == "linux" {
@@ -419,11 +429,16 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		dir = filepath.Join(pwd, dir)
 	}
 
+	bindDirs := []string{dir + ":" + containerRoot}
+	if binaryFolder != "" {
+		bindDirs = append(bindDirs, binaryFolder+":"+binaryFolder)
+	}
+
 	hostConfig := &container.HostConfig{
 		AutoRemove:   true,
 		NetworkMode:  container.NetworkMode(d.NetworkMode),
 		Resources:    d.Resources,
-		Binds:        []string{dir + ":" + containerRoot},
+		Binds:        bindDirs,
 		PortBindings: nat.PortMap{},
 	}
 

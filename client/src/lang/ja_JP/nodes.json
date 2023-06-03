@@ -16,5 +16,7 @@
   "SavePublicKey": "公開鍵を保存",
   "DeploymentInstruction": "ノードをデプロイするには、新しいサーバに PufferPanel をインストールし、`/etc/pufferpanel/` にconfig ファイルを配置します。<br/>その後、新しいサーバで PufferPanel を再起動します。",
   "UpdateSuccess": "ノードは正常に更新されました",
-  "UpdateError": "ノードの更新中にエラーが発生しました"
+  "UpdateError": "ノードの更新中にエラーが発生しました",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

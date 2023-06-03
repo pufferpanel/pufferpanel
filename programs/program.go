@@ -20,12 +20,13 @@ import (
 	"container/list"
 	"encoding/json"
 	"fmt"
-	"github.com/mholt/archiver"
+	"github.com/mholt/archiver/v3"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/pufferpanel/pufferpanel/v2/operations"
+	"github.com/spf13/cast"
 	"io"
 	"io/ioutil"
 	"log"
@@ -436,15 +437,11 @@ func (p *Program) GetNetwork() string {
 	port := "0"
 
 	if ipData, ok := data["ip"]; ok {
-		if _, ok = ipData.Value.(string); ok {
-			ip = ipData.Value.(string)
-		}
+		ip = cast.ToString(ipData.Value)
 	}
 
 	if portData, ok := data["port"]; ok {
-		if _, ok = portData.Value.(string); ok {
-			port = portData.Value.(string)
-		}
+		port = cast.ToString(portData.Value)
 	}
 
 	return ip + ":" + port

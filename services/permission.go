@@ -16,6 +16,7 @@ package services
 import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Permission struct {
@@ -28,7 +29,7 @@ func (ps *Permission) GetForUser(id uint) ([]*models.Permissions, error) {
 		UserId: &id,
 	}
 
-	err := ps.DB.Preload("User").Preload("Server").Where(permissions).Find(&allPerms).Error
+	err := ps.DB.Preload(clause.Associations).Where(permissions).Find(&allPerms).Error
 
 	return *allPerms, err
 }
@@ -39,7 +40,7 @@ func (ps *Permission) GetForServer(serverId string) ([]*models.Permissions, erro
 		ServerIdentifier: &serverId,
 	}
 
-	err := ps.DB.Preload("User").Preload("Server").Where(permissions).Find(&allPerms).Error
+	err := ps.DB.Preload(clause.Associations).Where(permissions).Find(&allPerms).Error
 
 	return *allPerms, err
 }
@@ -50,7 +51,7 @@ func (ps *Permission) GetForUserAndServer(userId uint, serverId *string) (*model
 		ServerIdentifier: serverId,
 	}
 
-	err := ps.DB.Preload("User").Preload("Server").Where(permissions).First(permissions).Error
+	err := ps.DB.Preload(clause.Associations).Where(permissions).First(permissions).Error
 
 	if err != nil && err == gorm.ErrRecordNotFound {
 		return permissions, nil
@@ -66,7 +67,7 @@ func (ps *Permission) GetForClient(id uint) ([]*models.Permissions, error) {
 		ClientId: &id,
 	}
 
-	err := ps.DB.Preload("ClientId").Preload("User").Preload("Server").Where(permissions).Find(&allPerms).Error
+	err := ps.DB.Preload(clause.Associations).Where(permissions).Find(&allPerms).Error
 
 	return *allPerms, err
 }
@@ -77,7 +78,7 @@ func (ps *Permission) GetForClientAndServer(id uint, serverId *string) (*models.
 		ServerIdentifier: serverId,
 	}
 
-	err := ps.DB.Preload("User").Preload("Server").Where(permissions).FirstOrCreate(permissions).Error
+	err := ps.DB.Preload(clause.Associations).Where(permissions).FirstOrCreate(permissions).Error
 
 	return permissions, err
 }

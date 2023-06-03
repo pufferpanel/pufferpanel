@@ -14,6 +14,7 @@
 package services
 
 import (
+	"database/sql"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"gorm.io/gorm"
 )
@@ -45,8 +46,11 @@ func (o *OAuth2) GetForUserAndServer(userId uint, serverId string) ([]*models.Cl
 	clients := &models.Clients{}
 
 	client := &models.Client{
-		UserId:   userId,
-		ServerId: serverId,
+		UserId: userId,
+		ServerId: sql.NullString{
+			String: serverId,
+			Valid:  serverId != "",
+		},
 	}
 
 	err := o.DB.Where(client).Find(clients).Error
@@ -54,11 +58,9 @@ func (o *OAuth2) GetForUserAndServer(userId uint, serverId string) ([]*models.Cl
 }
 
 func (o *OAuth2) Update(client *models.Client) error {
-	o.DB.Save(client)
-	return nil
+	return o.DB.Save(client).Error
 }
 
 func (o *OAuth2) Delete(client *models.Client) error {
-	o.DB.Where(client).Delete(client)
-	return nil
+	return o.DB.Where(client).Delete(client).Error
 }

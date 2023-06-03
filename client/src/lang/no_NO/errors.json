@@ -29,7 +29,7 @@
   "ErrNoNodes": "Ingen noder tilgjengelig",
   "ErrNoTemplates": "Ingen maler tilgjengelig",
   "ErrPasswordRequirements": "Passordet må inneholde minst 8 tegn",
-  "ErrUsernameRequirements": "Brukernavnet må være minst 3 tegn og bare inneholde alfanumeriske, _, eller -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Passord er ikke det samme",
   "ErrSessionTimedOut": "Økten ble tidsavbrutt, vennligst logg inn igjen",
   "ErrMissingScope": "Du har ikke tilgang til å utføre denne handlingen",
@@ -37,11 +37,11 @@
   "ErrSocketFailed": "WebSocket forbindelsen opplevde en feil, noen funksjoner kan være trege eller ødelagt",
   "ErrInviteLinkInvalid": "Invitasjonslenken din ser ut til å være ugyldig",
   "ErrSavingInviteduser": "Det oppstod en feil under oppretting av kontoen",
-  "ErrDuplicateServerName": "A server with this name already exists",
-  "ErrDuplicateNodeName": "A node with this name already exists",
+  "ErrDuplicateServerName": "En server med dette navnet finnes allerede",
+  "ErrDuplicateNodeName": "En node med dette navnet finnes allerede",
   "ErrDirectoryUploadNotSupported": "Kan ikke laste opp mapper",
-  "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrDockerNotSupported": "Docker støttes ikke på denne noden",
+  "ErrMissingBinary": "Mangler binær fil: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) støttes ikke. Støttet OS: {expected}",
+  "ErrUnsupportedArch": "Arkitektur {actual} er ikke støttet. Støttede arkitekturer: {expected}"
 }

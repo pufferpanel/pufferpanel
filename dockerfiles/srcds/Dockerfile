@@ -8,7 +8,7 @@ ENV HOME /root/installer
 WORKDIR $HOME
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl tar
-RUN curl http://media.steampowered.com/installer/steamcmd_linux.tar.gz \
+RUN curl https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz \
     --output steamcmd.tar.gz --silent
 RUN tar -xvzf steamcmd.tar.gz && rm steamcmd.tar.gz
 

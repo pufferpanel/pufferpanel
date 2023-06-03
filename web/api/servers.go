@@ -15,6 +15,7 @@ package api
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -856,9 +857,12 @@ func createOAuth2Client(c *gin.Context) {
 	}
 
 	client := &models.Client{
-		ClientId:    uuid.NewV4().String(),
-		UserId:      user.ID,
-		ServerId:    server.Identifier,
+		ClientId: uuid.NewV4().String(),
+		UserId:   user.ID,
+		ServerId: sql.NullString{
+			String: server.Identifier,
+			Valid:  server.Identifier != "",
+		},
 		Name:        request.Name,
 		Description: request.Description,
 	}
@@ -903,18 +907,18 @@ func deleteOAuth2Client(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
-	client, err := os.Get(clientId)
+	cl, err := os.Get(clientId)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	//ensure the client id is specific for this server, and this user
-	if client.UserId != user.ID || client.ServerId != server.Identifier {
+	if cl.UserId != user.ID || !cl.ServerId.Valid || cl.ServerId.String != server.Identifier {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
-	err = os.Delete(client)
+	err = os.Delete(cl)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

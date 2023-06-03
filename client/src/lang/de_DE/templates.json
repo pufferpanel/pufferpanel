@@ -106,6 +106,14 @@
     },
     "fabricdl": {
       "ProcessorName": "Minecraft Fabric herunterladen"
+    },
+    "javadl": {
+      "ProcessorName": "Java Herunterladen",
+      "version": "Zu installierende Java Version (8, 16, 17)"
+    },
+    "steamgamedl": {
+      "ProcessorName": "Spiel von Steam herunterladen",
+      "appId": "App Id"
     }
   }
 }
