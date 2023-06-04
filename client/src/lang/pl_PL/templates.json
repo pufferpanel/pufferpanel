@@ -106,6 +106,14 @@
     },
     "fabricdl": {
       "ProcessorName": "Pobierz Minecraft Fabric"
+    },
+    "javadl": {
+      "ProcessorName": "Pobierz Javę",
+      "version": "Wersja Javy do zainstalowania (8, 16, 17)"
+    },
+    "steamgamedl": {
+      "ProcessorName": "Pobierz grę ze Steam",
+      "appId": "Id aplikacji"
     }
   }
 }

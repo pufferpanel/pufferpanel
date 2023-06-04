@@ -7,13 +7,13 @@
   "Upload": "Unggah",
   "Download": "Unduh",
   "Size": "Ukuran",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
+  "NoFiles": "Belum ada file di sini, buka dan buat beberapa misalnya dengan mengklik tombol Install di bagian atas halaman",
   "FileLoadFailed": "Gagal memuat file",
-  "Refresh": "Refresh",
-  "CreateFile": "Create file",
-  "CreateFolder": "Create folder",
-  "ArchiveCurrentFolder": "Create archive from current folder",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "Refresh": "Segarkan",
+  "CreateFile": "Buat berkas",
+  "CreateFolder": "Buat direktori",
+  "ArchiveCurrentFolder": "Buat arsip dari folder saat ini",
+  "ArchiveFolder": "Buat arsip dari direktori saat ini",
+  "ExtractArchive": "Ekstrak Arsip",
+  "DropToUpload": "Tempatkan berkas di sini untuk mengunggah"
 }

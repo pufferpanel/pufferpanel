@@ -29,7 +29,7 @@
   "ErrNoNodes": "사용 가능한 노드가 없습니다.",
   "ErrNoTemplates": "사용 가능한 템플릿이 없습니다.",
   "ErrPasswordRequirements": "비밀번호는 8글자 이상이어야 합니다.",
-  "ErrUsernameRequirements": "닉네임은 3글자 이상이어야 하고 알파벳, 문자 또는 _, -만을 포함해야 합니다.",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "암호가 일치하지 않습니다.",
   "ErrSessionTimedOut": "세션이 닫혔습니다. 다시 로그인 해주세요.",
   "ErrMissingScope": "이 작업을 수행할 권한이 없습니다.",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "이미 같은 이름의 노드가 있습니다",
   "ErrDirectoryUploadNotSupported": "폴더를 업로드할수 없음",
   "ErrDockerNotSupported": "이 노드에서는 Docker를 지원하지 않습니다",
-  "ErrMissingBinary": "바이너리가 누락되었습니다( ${expected})",
-  "ErrUnsupportedOS": "지원되지 않는 OS입니다(현재 OS: ${actual}) 지원되는 OS: ( ${expected})",
-  "ErrUnsupportedArch": "지원되지 않는 Cpu 아키텍처입니다 (현재 아키텍처: ${actual}) 지원되는 아키텍처: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }

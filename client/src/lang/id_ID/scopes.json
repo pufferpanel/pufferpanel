@@ -18,10 +18,10 @@
   "EditServerAdmin": "Edit penganturan server",
   "ViewNodes": "Lihat node",
   "EditNodes": "Edit node",
-  "DeployNodes": "Deploy new Nodes",
+  "DeployNodes": "Sebarkan node baru",
   "ViewTemplates": "Lihat tempelate",
   "EditTemplates": "Edit Tempelate",
   "ViewUsers": "Lihat semua penguna",
   "EditUsers": "Edit penguna lain",
-  "PanelSettings": "Change panel settings"
+  "PanelSettings": "Ubah setelan panel"
 }

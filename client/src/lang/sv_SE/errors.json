@@ -29,7 +29,7 @@
   "ErrNoNodes": "Inga noder tillgängliga",
   "ErrNoTemplates": "Ingen mall tillgänglig",
   "ErrPasswordRequirements": "Lösenord måste vara minst 8 tecken",
-  "ErrUsernameRequirements": "Användarnamn måste vara minst 3 tecken och innehålla alfanumeriska tecken, _, eller -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Lösenorden är inte likadana",
   "ErrSessionTimedOut": "Din session har gått ut, vänligen logga in igen",
   "ErrMissingScope": "Du har inte behörighet att utföra denna åtgärd",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "En nod med detta namn finns redan",
   "ErrDirectoryUploadNotSupported": "Kan inte ladda upp mappar",
   "ErrDockerNotSupported": "Docker stöds inte på denna nod",
-  "ErrMissingBinary": "Saknar binär: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) stöds inte. OS som stöds: ${expected}",
-  "ErrUnsupportedArch": "Arkitektur ${actual} stöds inte. Arkitekturer: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }

@@ -29,7 +29,7 @@
   "ErrNoNodes": "Não há nodes disponíveis",
   "ErrNoTemplates": "Não há modelos disponíveis",
   "ErrPasswordRequirements": "A senha deve possuir ao menos 8 caracteres",
-  "ErrUsernameRequirements": "Nome de usuário deve ter pelo menos 3 caracteres e conter apenas alfanuméricos, _, ou -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "As senhas não são iguais",
   "ErrSessionTimedOut": "Sua sessão expirou. Faça login novamente",
   "ErrMissingScope": "Você não está autorizado a realizar esta ação",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Já existe uma nó com esse nome",
   "ErrDirectoryUploadNotSupported": "Não é possível enviar pastas",
   "ErrDockerNotSupported": "O Docker não é compatível com este nó",
-  "ErrMissingBinary": "Binário ausente: ${expected}",
-  "ErrUnsupportedOS": "SO (${actual}) não suportado. SO Suportados: ${expected}",
-  "ErrUnsupportedArch": "Arquitetura ${actual} não suportada. Arquiteturas Suportadas: ${expected}"
+  "ErrMissingBinary": "Binário ausente: {expected}",
+  "ErrUnsupportedOS": "Sistema Operacional ({actual}) não suportado. Sistemas Operacionais Suportados: {expected}",
+  "ErrUnsupportedArch": "Arquitetura {actual} não suportada. Arquiteturas Suportadas: {expected}"
 }

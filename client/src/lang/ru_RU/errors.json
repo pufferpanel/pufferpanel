@@ -29,7 +29,7 @@
   "ErrNoNodes": "Нет доступных хостов",
   "ErrNoTemplates": "Нет доступных шаблонов",
   "ErrPasswordRequirements": "Пароль должен состоять из как минимум {min} символов",
-  "ErrUsernameRequirements": "Имя пользователя должно быть не менее {min} символов и содержать только буквы, _, или -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Пароли не совпадают",
   "ErrSessionTimedOut": "Время сессии истекло, пожалуйста, повторите вход",
   "ErrMissingScope": "У вас нет прав для совершения данного действия",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Узел с таким именем уже существует",
   "ErrDirectoryUploadNotSupported": "Не удается загрузить папки",
   "ErrDockerNotSupported": "Docker не поддерживается на этом хосте",
-  "ErrMissingBinary": "Отсутствует библиотека: ${expected}",
-  "ErrUnsupportedOS": "Ваша ОС (${actual}) не поддерживается. Поддерживаемые ОС: ${expected}",
-  "ErrUnsupportedArch": "Архитектура ${actual} не поддерживается. Поддерживаемые архитектуры: ${expected}"
+  "ErrMissingBinary": "Отсутствует библиотека: {expected}",
+  "ErrUnsupportedOS": "Ваша ОС ({actual}) не поддерживается. Поддерживаемые ОС: {expected}",
+  "ErrUnsupportedArch": "Архитектура {actual} не поддерживается. Поддерживаемые архитектуры: {expected}"
 }

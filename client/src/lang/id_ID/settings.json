@@ -1,17 +1,17 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
-  "EmailProvider": "Email Provider",
+  "Settings": "Pengaturan",
+  "PanelSettings": "Pengaturan Panel",
+  "EmailSettings": "Setelan email",
+  "MasterUrl": "URL Utama",
+  "MasterUrlHint": "URL Panel utama dapat ditemukan di bawah dalam format http://localhost:8080",
+  "CompanyName": "Nama Perusahaan",
+  "DefaultTheme": "Tema Utama",
+  "RegistrationEnabled": "Izinkan pengguna untuk mendaftar sendiri",
+  "RegistrationEnabledHint1": "Pengguna yang terdaftar sendiri tidak dapat melakukan apa pun sampai izin yang diberikan",
+  "RegistrationEnabledHint2": "Menonaktifkan ini hanya mencegah pendaftaran langsung, undangan ke server dan halaman pengguna tidak lah terpengaruh",
+  "EmailProvider": "Provider Email",
   "emailProviders": {
-    "none": "None",
+    "none": "Tidak ada",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
@@ -21,7 +21,7 @@
     "domain": "Domain",
     "key": "API Key",
     "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "username": "Nama Pengguna",
+    "password": "Kata Sandi"
   }
 }

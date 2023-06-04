@@ -16,5 +16,7 @@
   "SavePublicKey": "Αποθήκευση Δημόσιου Κλειδιού",
   "DeploymentInstruction": "Για να αναρτήσετε/χρησιμοποιήσετε τον κόμβο, εγκαταστήστε το PufferPanel στο νέο διακομιστή και τοποθετήστε το αρχείο config στον φάκελο `/etc/pufferpanel/`<br/>. Επανεκκινήστε το PufferPanel στο νέο διακομιστή αμέσως μετά.",
   "UpdateSuccess": "Επιτυχής ενημέρωση κόμβου",
-  "UpdateError": "Σφάλμα ενημέρωσης κόμβου"
+  "UpdateError": "Σφάλμα ενημέρωσης κόμβου",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

@@ -3,7 +3,7 @@
   "PanelSettings": "Paneelin Asetukset",
   "EmailSettings": "Sähköpostin Asetukset",
   "MasterUrl": "Pääkäyttäjän URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
+  "MasterUrlHint": "URL-osoite, jossa paneeli on tavoitettavissa muodossa http://localhost:8080",
   "CompanyName": "Yrityksen Nimi",
   "DefaultTheme": "Oletusteema",
   "RegistrationEnabled": "Salli käyttäjien rekisteröityä itse",

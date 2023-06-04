@@ -16,5 +16,7 @@
   "SavePublicKey": "Zapisz klucz publiczny",
   "DeploymentInstruction": "Aby wdrożyć węzeł, zainstaluj PufferPanel na nowym serwerze i umieść plik konfiguracyjny w `/etc/pufferpanel/`<br/>Następnie uruchom ponownie PufferPanel na nowym serwerze.",
   "UpdateSuccess": "Pomyślnie zaktualizowano węzeł",
-  "UpdateError": "Błąd podczas aktualizacji węzła"
+  "UpdateError": "Błąd podczas aktualizacji węzła",
+  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "CannotEdit": "Cannot Edit"
 }

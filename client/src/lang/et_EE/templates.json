@@ -53,7 +53,7 @@
   "Convert": "Teisenda",
   "OfferV1Convert": "Selle malli json näeb välja, nagu see oleks PufferPanel 1.x pärit, kas soovite selle automaatselt teisendada PufferPanel 2.x malliks?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
+    "CommunityWarning": "Need mallid on tehtud kogukonna poolt ja need on saadaval ilma igasuguse garantiiga",
     "OverrideWarning": "HOIATUS: Imporditud mallid kirjutatakse üle sama ID-ga olevasolevad mallid",
     "Import": "Impordi mall",
     "Tooltip": "Impordi mall ametlikust repositooriumist",
@@ -106,6 +106,14 @@
     },
     "fabricdl": {
       "ProcessorName": "Laadi Minecraft Fabric alla"
+    },
+    "javadl": {
+      "ProcessorName": "Laadi alla Java",
+      "version": "Installi java versioon (8, 16 17)"
+    },
+    "steamgamedl": {
+      "ProcessorName": "Laadi alla mäng steamist",
+      "appId": "Rakenduse id"
     }
   }
 }

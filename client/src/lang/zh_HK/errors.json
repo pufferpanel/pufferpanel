@@ -29,7 +29,7 @@
   "ErrNoNodes": "沒有可用主機",
   "ErrNoTemplates": "沒有可用範本",
   "ErrPasswordRequirements": "密碼不能少於8個字符",
-  "ErrUsernameRequirements": "用戶名稱不可少於3個字，當中只能包含字母、數字、 _ 或 -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "密碼不相同",
   "ErrSessionTimedOut": "你的登入時效已過，請重新登入",
   "ErrMissingScope": "您沒權限執行此操作",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Cannot upload folders",
   "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }

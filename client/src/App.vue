@@ -235,6 +235,7 @@
             <ui-input
               v-model="otpToken"
               autofocus
+              autocomplete="one-time-code"
               @keyup.enter="confirmOtp"
             />
           </v-col>

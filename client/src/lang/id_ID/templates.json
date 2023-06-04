@@ -35,77 +35,85 @@
   "AddEnvVar": "Tambah env variabel",
   "EnvVars": "Environment variables",
   "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
+  "SaveSuccess": "Template yang disimpan",
+  "VarNameNoSpaces": "Nama variabel tidak dapat kosong atau berisi spasi",
+  "SupportedEnvironments": "Env didukung",
+  "RunConfig": "Jalankan Konfigurasi",
   "PreHook": "Pre Run Hook",
   "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
+  "AddPreStep": "Tambahkan langkah pra aktif",
+  "AddPostStep": "Tambahkan Post Run Step",
+  "DeletePreStep": "Hapus Pre Run Step",
+  "DeletePostStep": "Hapus Post Run Step",
   "Shutdown": "Matikan",
   "Command": "Perintah",
-  "WorkingDirectory": "Working Directory",
+  "WorkingDirectory": "Direktory Kerja",
   "Arguments": "Arguments",
   "AddArgument": "Tambahkan Arguments",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Convert": "Konversi",
+  "OfferV1Convert": "Template Json ini terlihat seperti templat untuk pufferpanel 1.x, apakah kamu ingin secara otomatis mengonversi ini menjadi templat untuk pufferpanel 2.x?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "CommunityWarning": "Templat ini dibuat oleh komunitas dan disediakan tanpa jaminan apa pun",
+    "OverrideWarning": "PERINGATAN: Templat yang diimpor akan menimpa templat yang ada dengan ID yang sama",
+    "Import": "Impor templat",
+    "Tooltip": "Impor templat dari repositori resmi",
+    "Select": "Pilih Templat untuk Mengimpor",
+    "Started": "Mengimpor template, harap tunggu sebentar",
+    "Successful": "Template yang berhasil diimpor {template}",
+    "NoTemplatesTitle": "Apakah kamu ingin mengimpor template?",
+    "NoTemplatesContent": "Kamu saat ini tidak memiliki templat. Templat diperlukan untuk membuat server. <br/> Apakah Anda ingin mengimpor beberapa templat dari repositori templat pufferpanel resmi sekarang?"
   },
   "stop": {
-    "Command": "Command",
+    "Command": "Perintah",
     "Signal": "Signal"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Unduh",
+      "files": "Berkas"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Jalankan Perintah",
+      "commands": "Perintah"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Mengubah berkas",
+      "regex": "Perlakukan pencarian sebagai RegEx",
+      "search": "Pencarian Teks",
+      "replace": "Ganti dengan"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Write ke berkas",
+      "text": "Daftar isi"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
+      "ProcessorName": "Pindahkan berkas",
+      "source": "Sumber",
       "target": "Target"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Buat Direktori"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Mengunduh Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Mengunduh Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Mengunduh Minecraft SpongeForge",
+      "releaseType": "Jenis Rilis"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Mengunduh Minecraft Fabric"
+    },
+    "javadl": {
+      "ProcessorName": "Unduh Java",
+      "version": "Veri java yg diinstall (8, 16, 17)"
+    },
+    "steamgamedl": {
+      "ProcessorName": "Unduh Game dari Steam",
+      "appId": "App-Id"
     }
   }
 }
