@@ -1,5 +1,5 @@
-Version: '3'
-Service:
+version: '3'
+service:
   pufferpanel:
     image: pufferpanel/pufferpanel
     container_name: Pufferpanel
