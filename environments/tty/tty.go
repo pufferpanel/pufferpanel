@@ -58,7 +58,6 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 		pr.Env = append(pr.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
-	wrapper := t.CreateWrapper()
 	t.Wait.Add(1)
 	pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 	t.mainProcess = pr
@@ -78,7 +77,7 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 
 	go func(proxy io.Writer) {
 		_, _ = io.Copy(proxy, processTty)
-	}(wrapper)
+	}(t.Wrapper)
 
 	go t.handleClose(steps.Callback)
 	return

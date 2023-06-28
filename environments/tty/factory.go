@@ -28,6 +28,7 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 	}
 	t.BaseEnvironment.ExecutionFunction = t.ttyExecuteAsync
 	t.BaseEnvironment.WaitFunction = t.WaitForMainProcess
+	t.BaseEnvironment.Wrapper = t.CreateWrapper()
 	return t
 }
 

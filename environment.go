@@ -72,19 +72,31 @@ type Environment interface {
 	GetBase() *BaseEnvironment
 
 	GetLastExitCode() int
+
+	GetStdOutConfiguration() ConsoleConfiguration
+
+	GetWrapper() io.Writer
 }
 
 type BaseEnvironment struct {
 	Environment
-	Type              string
-	RootDirectory     string             `json:"root"`
-	ConsoleBuffer     Cache              `json:"-"`
-	WSManager         *Tracker           `json:"-"`
-	Wait              *sync.WaitGroup    `json:"-"`
-	ExecutionFunction ExecutionFunction  `json:"-"`
-	WaitFunction      func() (err error) `json:"-"`
-	ServerId          string             `json:"-"`
-	LastExitCode      int                `json:"-"`
+	Type              string               `json:"type"`
+	RootDirectory     string               `json:"root,omitempty"`
+	ConsoleBuffer     Cache                `json:"-"`
+	WSManager         *Tracker             `json:"-"`
+	Wait              *sync.WaitGroup      `json:"-"`
+	ExecutionFunction ExecutionFunction    `json:"-"`
+	WaitFunction      func() (err error)   `json:"-"`
+	ServerId          string               `json:"-"`
+	LastExitCode      int                  `json:"-"`
+	StdOutConfig      ConsoleConfiguration `json:"stdout,omitempty"`
+	StdInConfig       ConsoleConfiguration `json:"stdin,omitempty"`
+	Wrapper           io.Writer            `json:"-"` //our proxy back to the main
+}
+
+type ConsoleConfiguration struct {
+	Type string `json:"type"`
+	File string `json:"file,omitempty"`
 }
 
 type ExecutionData struct {
@@ -170,6 +182,14 @@ func (e *BaseEnvironment) GetBase() *BaseEnvironment {
 
 func (e *BaseEnvironment) GetLastExitCode() int {
 	return e.LastExitCode
+}
+
+func (e *BaseEnvironment) GetStdOutConfiguration() ConsoleConfiguration {
+	return e.StdOutConfig
+}
+
+func (e *BaseEnvironment) GetWrapper() io.Writer {
+	return e.Wrapper
 }
 
 func (e *BaseEnvironment) Log(l *log.Logger, format string, obj ...interface{}) {

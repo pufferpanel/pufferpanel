@@ -104,8 +104,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 
 	go func() {
 		defer d.connection.Close()
-		wrapper := d.CreateWrapper()
-		_, _ = io.Copy(wrapper, d.connection.Reader)
+		_, _ = io.Copy(d.Wrapper, d.connection.Reader)
 	}()
 
 	go func() {

@@ -62,15 +62,17 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	for k, v := range steps.Environment {
 		s.mainProcess.Env = append(s.mainProcess.Env, fmt.Sprintf("%s=%s", k, v))
 	}
-	wrapper := s.CreateWrapper()
-	s.mainProcess.Stdout = wrapper
-	s.mainProcess.Stderr = wrapper
+
+	s.mainProcess.Stdout = s.Wrapper
+	s.mainProcess.Stderr = s.Wrapper
 	pipe, err := s.mainProcess.StdinPipe()
 	if err != nil {
 		s.Wait.Done()
 		return
 	}
+
 	s.stdInWriter = pipe
+
 	s.Log(logging.Info, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 	s.DisplayToConsole(true, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 

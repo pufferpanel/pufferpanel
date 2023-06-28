@@ -44,6 +44,8 @@ type Program struct {
 	CrashCounter       int                     `json:"-"`
 	RunningEnvironment pufferpanel.Environment `json:"-"`
 	Scheduler          Scheduler               `json:"-"`
+	stopChan           chan bool
+	waitForConsole     sync.Locker
 }
 
 var queue *list.List
@@ -141,6 +143,8 @@ func CreateProgram() *Program {
 		},
 	}
 	p.Scheduler = NewScheduler(p)
+	p.stopChan = make(chan bool)
+	p.waitForConsole = &sync.Mutex{}
 	return p
 }
 
@@ -201,6 +205,26 @@ func (p *Program) Start() error {
 	if err != nil {
 		p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
 		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
+	}
+
+	//server started, now kick off our special "hook" for the console
+	consoleConfig := p.GetEnvironment().GetStdOutConfiguration()
+	switch consoleConfig.Type {
+	case "file":
+		{
+			go func() {
+				defer p.waitForConsole.Unlock()
+				p.waitForConsole.Lock()
+				//now... we need to wait for a file to exist
+				//once it's there, we read until we die
+				var file *os.File
+				err := os.ErrNotExist
+				for file, err = os.Open(consoleConfig.File); os.IsNotExist(err); {
+				}
+
+				_, _ = io.Copy(p.RunningEnvironment.GetWrapper(), file)
+			}()
+		}
 	}
 
 	return err
@@ -407,7 +431,7 @@ func (p *Program) Save() (err error) {
 		return
 	}
 
-	err = ioutil.WriteFile(file, data, 0664)
+	err = os.WriteFile(file, data, 0664)
 	return
 }
 
@@ -483,6 +507,11 @@ func (p *Program) afterExit(exitCode int) {
 	if !p.Execution.AutoRestartFromCrash && !p.Execution.AutoRestartFromGraceful {
 		return
 	}
+
+	p.stopChan <- true
+	//wait for the console to be done with it's work, if it has any
+	p.waitForConsole.Lock()
+	p.waitForConsole.Unlock()
 
 	if graceful && p.Execution.AutoRestartFromGraceful {
 		StartViaService(p)
