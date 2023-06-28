@@ -38,8 +38,6 @@ RUN go mod download && go mod verify
 COPY . .
 
 RUN cd client && \
-    rm -f frontend/src/lang && \
-    ln -s ../../src/lang frontend/src/lang && \
     yarn install && \
     yarn build
 
