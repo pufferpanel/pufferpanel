@@ -14,7 +14,6 @@
 package database
 
 import (
-	"errors"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -79,7 +78,7 @@ func openConnection() (err error) {
 	case "sqlserver":
 		dialector = sqlserver.Open(connString)
 	default:
-		return errors.New(fmt.Sprintf("unknown dialect %s", dialect))
+		return fmt.Errorf("unknown dialect %s", dialect)
 	}
 
 	gormConfig := gorm.Config{}

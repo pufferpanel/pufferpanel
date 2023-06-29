@@ -64,7 +64,7 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 			return errors.New("no valid sponge versions found")
 		}
 
-		for k, _ := range data.Artifacts {
+		for k := range data.Artifacts {
 			op.SpongeVersion = k
 			break
 		}
@@ -126,7 +126,6 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 				return err
 			}
 		}
-		break
 	case "spongevanilla":
 		{
 			file, err := environments.DownloadViaMaven(url, env)
@@ -139,7 +138,6 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 				return err
 			}
 		}
-		break
 	default:
 		return errors.New("invalid sponge type")
 	}

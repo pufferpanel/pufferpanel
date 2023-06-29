@@ -20,15 +20,11 @@ const PageSize = 10
 type CurseForge struct {
 	ProjectId  uint
 	FileId     uint
-	Key        string
 	JavaBinary string
 }
 
 func (c CurseForge) Run(env pufferpanel.Environment) error {
 	client := pufferpanel.Http()
-
-	header := http.Header{}
-	header.Add("x-api-key", config.CurseForgeKey.Value())
 
 	var file *File
 	var err error
@@ -128,20 +124,26 @@ func (c CurseForge) getLatestFiles(client *http.Client, projectId uint) ([]File,
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
+	defer pufferpanel.CloseResponse(response)
 
 	if response.StatusCode == 404 {
 		return nil, nil
 	}
 
 	if response.StatusCode != 200 {
-		return nil, errors.New(fmt.Sprintf("invalid status code from CurseForge: %s", response.Status))
+		return nil, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
 	}
 
 	d, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
 
 	var addon AddonResponse
 	err = json.Unmarshal(d, &addon)
+	if err != nil {
+		return nil, err
+	}
 	return addon.Data.LatestFiles, err
 }
 
@@ -155,11 +157,11 @@ func (c CurseForge) getFileById(client *http.Client, projectId, fileId uint) (*F
 	defer response.Body.Close()
 
 	if response.StatusCode == 404 {
-		return nil, errors.New(fmt.Sprintf("file id %d not found", fileId))
+		return nil, fmt.Errorf("file id %d not found", fileId)
 	}
 
 	if response.StatusCode != 200 {
-		return nil, errors.New(fmt.Sprintf("invalid status code from CurseForge: %s", response.Status))
+		return nil, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
 	}
 
 	var res FileResponse
@@ -178,9 +180,8 @@ func (c CurseForge) call(client *http.Client, u string) (*http.Response, error) 
 		URL:    path,
 		Header: http.Header{},
 	}
-	request.Header.Add("x-api-key", c.Key)
+	request.Header.Add("x-api-key", config.CurseForgeKey.Value())
 
 	response, err := client.Do(request)
-
 	return response, err
 }

@@ -521,12 +521,6 @@ func deleteServer(c *gin.Context) {
 		return
 	}
 
-	t, exist = c.Get("user")
-	if !exist {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
 	node, err := ns.Get(server.NodeID)
 	if err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
@@ -537,6 +531,10 @@ func deleteServer(c *gin.Context) {
 	ps := services.Permission{DB: db}
 	users := make([]models.User, 0)
 	perms, err := ps.GetForServer(server.Identifier)
+	if err != nil {
+		response.HandleError(c, err, http.StatusInternalServerError)
+		return
+	}
 	for _, p := range perms {
 		exists := false
 		for _, u := range users {
@@ -553,11 +551,13 @@ func deleteServer(c *gin.Context) {
 
 	err = ss.Delete(server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
+		db.Rollback()
 		return
 	}
 
 	newHeader, err := c.Cookie("puffer_auth")
 	if response.HandleError(c, err, http.StatusInternalServerError) {
+		db.Rollback()
 		return
 	}
 

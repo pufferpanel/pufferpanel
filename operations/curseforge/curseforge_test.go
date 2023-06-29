@@ -25,7 +25,7 @@ func TestCurseForge_Run(t *testing.T) {
 		},*/
 		{
 			name:    "Pixelmon",
-			fields:  CurseForge{ProjectId: 389615, FileId: 4352459, JavaBinary: "java", Key: os.Getenv("CURSEFORGE_KEY")},
+			fields:  CurseForge{ProjectId: 389615, FileId: 4352459, JavaBinary: "java"},
 			wantErr: false,
 		},
 		/*{

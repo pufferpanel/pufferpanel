@@ -51,10 +51,10 @@ func EnsureAccess(source string, prefix string) bool {
 	return strings.HasPrefix(replacement, expected)
 }
 
-func RemoveInvalidSymlinks(files []os.FileInfo, sourceFolder, prefix string) []os.FileInfo {
+func RemoveInvalidSymlinks(files []os.DirEntry, sourceFolder, prefix string) []os.DirEntry {
 	i := 0
 	for _, v := range files {
-		if v.Mode()&os.ModeSymlink != 0 {
+		if v.Type()&os.ModeSymlink != 0 {
 			if !EnsureAccess(sourceFolder+string(os.PathSeparator)+v.Name(), prefix) {
 				continue
 			}
@@ -120,7 +120,7 @@ func findFullPath(source string) (string, error) {
 			}
 		}
 
-		updatePath, err := filepath.Abs(updatePath)
+		updatePath, err = filepath.Abs(updatePath)
 		return updatePath, err
 
 	}

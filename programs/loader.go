@@ -19,7 +19,6 @@ package programs
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/go-co-op/gocron"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -112,6 +111,9 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 
 	delete(rawMap, "Environment")
 	source, err = json.Marshal(rawMap)
+	if err != nil {
+		return nil, err
+	}
 
 	err = json.Unmarshal(source, &data)
 	if err != nil {
@@ -156,8 +158,8 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	}
 
 	data.RunningEnvironment, err = environments.Create(environmentType, config.ServersFolder.Value(), id, data.Environment)
-	if data.RunningEnvironment == nil {
-		return nil, errors.New(fmt.Sprintf("unknown environment [%s]", environmentType))
+	if err != nil {
+		return nil, err
 	}
 	return data, nil
 }

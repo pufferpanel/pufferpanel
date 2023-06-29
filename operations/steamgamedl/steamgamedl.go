@@ -15,7 +15,6 @@ package steamgamedl
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -89,7 +88,7 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 	}
 	exitCode := <-ch
 	if exitCode != 0 {
-		return errors.New(fmt.Sprintf("depotdownloader exited with non-zero code %d", exitCode))
+		return fmt.Errorf("depotdownloader exited with non-zero code %d", exitCode)
 	}
 
 	//download game itself now
@@ -118,7 +117,7 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 	}
 	exitCode = <-ch
 	if exitCode != 0 {
-		return errors.New(fmt.Sprintf("depotdownloader exited with non-zero code %d", exitCode))
+		return fmt.Errorf("depotdownloader exited with non-zero code %d", exitCode)
 	}
 
 	//for each file we download, we need to just... chmod +x the files
@@ -165,7 +164,7 @@ func downloadBinaries(rootBinaryFolder string) error {
 	if !cmd.ProcessState.Success() {
 		out, _ := cmd.CombinedOutput()
 		logging.Debug.Println(string(out))
-		return errors.New(fmt.Sprintf("dotnet-install exited with non-zero code: %d", cmd.ProcessState.ExitCode()))
+		return fmt.Errorf("dotnet-install exited with non-zero code: %d", cmd.ProcessState.ExitCode())
 	}
 
 	_ = os.Remove(filepath.Join(rootBinaryFolder, DotNetScriptName))
@@ -267,7 +266,7 @@ func walkManifest(folder, filename string) error {
 		//we will only work on 0 files, because this mean no other flags were told
 		if parts[3] == "0" {
 			fileToUpdate := parts[4]
-			_ = os.Chmod(filepath.Join(folder, fileToUpdate), 755)
+			_ = os.Chmod(filepath.Join(folder, fileToUpdate), 0755)
 		}
 	}
 

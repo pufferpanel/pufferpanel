@@ -74,6 +74,10 @@ func RefreshToken() bool {
 
 	var responseData TokenResponse
 	err = json.NewDecoder(response.Body).Decode(&responseData)
+	if err != nil {
+		logging.Error.Printf("error talking to auth server: %s", err.Error())
+		return false
+	}
 
 	if responseData.Error != "" {
 		logging.Error.Printf("error talking to auth server: %s", responseData.Error)

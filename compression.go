@@ -17,7 +17,6 @@ import (
 	"archive/tar"
 	"archive/zip"
 	"compress/gzip"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -89,7 +88,7 @@ func ExtractTar(stream io.Reader, directory string) error {
 				return err
 			}
 		default:
-			return errors.New(fmt.Sprintf("uknown type: %s in %s", string([]byte{header.Typeflag}), header.Name))
+			return fmt.Errorf("uknown type: %s in %s", string([]byte{header.Typeflag}), header.Name)
 		}
 	}
 

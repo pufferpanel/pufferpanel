@@ -37,10 +37,9 @@ func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.O
 		return nil, err
 	}
 	fileId, err := cast.ToUintE(op.OperationArgs["fileId"])
-	if err != nil && cast.ToString(op.OperationArgs["fileId"]) != "" {
+	if op.OperationArgs["fileId"] != "" && err != nil {
 		return nil, err
-	} else {
-		//allow no file id as a valid value
+	} else if op.OperationArgs["fileId"] == "" {
 		fileId = 0
 	}
 

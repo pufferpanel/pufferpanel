@@ -264,13 +264,8 @@ func createNodeURL(node *models.Node, path string) (string, error) {
 		return "", err
 	}
 
-	if strings.HasPrefix(path, "/") {
-		path = strings.TrimPrefix(path, "/")
-	}
-
-	if strings.HasSuffix(path, "/") {
-		path = strings.TrimSuffix(path, "/")
-	}
+	path = strings.TrimPrefix(path, "/")
+	path = strings.TrimSuffix(path, "/")
 
 	protocol := "http"
 	if ssl {

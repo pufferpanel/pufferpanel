@@ -36,7 +36,7 @@ func Test_downloadSteamcmd(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			op := SteamGameDl{}
 
-			env := test.CreateEnvironment()
+			env := test.CreateEnvironment("steamdl")
 			if err := op.Run(env); (err != nil) != tt.wantErr {
 				t.Errorf("downloadSteamcmd() error = %v, wantErr %v", err, tt.wantErr)
 			}

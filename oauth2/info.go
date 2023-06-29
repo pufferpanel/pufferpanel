@@ -27,7 +27,12 @@ func GetInfo(token string, hint string) (info TokenInfoResponse, err error) {
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	request.Header.Set("Authorization", "Bearer ")
 
-	res, err := client.Do(request)
+	var res *http.Response
+	res, err = client.Do(request)
+	defer pufferpanel.CloseResponse(res)
+	if err != nil {
+		return
+	}
 
 	err = json.NewDecoder(res.Body).Decode(&info)
 	return

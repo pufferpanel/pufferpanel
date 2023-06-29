@@ -15,7 +15,6 @@ package services
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/assets/email"
@@ -72,17 +71,17 @@ func LoadEmailService() {
 	for templateName, data := range mapping {
 		subjectTemplate, err := template.New(templateName + "-subject").Parse(data.Subject)
 		if err != nil {
-			panic(errors.New(fmt.Sprintf("Error processing email template subject %s: %s", templateName, err.Error())))
+			panic(fmt.Errorf("error processing email template subject %s: %s", templateName, err.Error()))
 		}
 
 		body, err := merged.ReadFile(data.Body)
 		if err != nil {
-			panic(errors.New(fmt.Sprintf("Error processing email template subject %s: %s", templateName, err.Error())))
+			panic(fmt.Errorf("error processing email template subject %s: %s", templateName, err.Error()))
 		}
 
 		renderedTemplate, err := template.New(templateName + "-body").Parse(string(body))
 		if err != nil {
-			panic(errors.New(fmt.Sprintf("Error processing email template body %s: %s", templateName, err.Error())))
+			panic(fmt.Errorf("error processing email template body %s: %s", templateName, err.Error()))
 		}
 
 		globalEmailService.templates[templateName] = &emailTemplate{

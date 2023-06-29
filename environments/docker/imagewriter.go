@@ -43,7 +43,7 @@ func (w *ImageWriter) Write(data []byte) (n int, err error) {
 			return
 		}
 
-		if d == nil || len(d) == 0 {
+		if len(d) == 0 {
 			break
 		}
 

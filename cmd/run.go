@@ -149,8 +149,6 @@ func internalRun(terminate chan bool) {
 			terminate <- true
 		}
 	}()
-
-	return
 }
 
 func panel() {

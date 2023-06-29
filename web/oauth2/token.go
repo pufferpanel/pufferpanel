@@ -151,11 +151,11 @@ func handleTokenRequest(c *gin.Context) {
 			if err != nil {
 				c.JSON(http.StatusBadRequest, &oauth2.TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
-			} else if optNeeded == false && token == "" {
+			} else if !optNeeded && token == "" {
 				//if they do not have opt enabled, but we don't have a token... it's still a bad login
 				c.JSON(http.StatusBadRequest, &oauth2.TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
-			} else if optNeeded == true {
+			} else if optNeeded {
 				//at this point, their login credentials were valid, and we need to shortcut because otp
 				sessionService := &services.Session{DB: db}
 				token, err = sessionService.CreateForUser(user)

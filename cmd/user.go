@@ -195,7 +195,7 @@ func validateUsername(val interface{}) error {
 func validatePassword(val interface{}) error {
 	pw, ok := val.(string)
 	if !ok || len(pw) < 6 {
-		return errors.New("Password must be at least 6 characters")
+		return errors.New("password must be at least 6 characters")
 	}
 	var secondAttempt string
 	confirm := &survey.Password{
@@ -204,7 +204,7 @@ func validatePassword(val interface{}) error {
 	_ = survey.AskOne(confirm, &secondAttempt)
 
 	if secondAttempt != pw {
-		return errors.New("Passwords do not match")
+		return errors.New("password do not match")
 	}
 
 	return nil

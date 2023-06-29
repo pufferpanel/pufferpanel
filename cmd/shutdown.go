@@ -93,7 +93,6 @@ func waitForProcess(process *os.Process, c chan error) {
 				}
 
 				timer.Stop()
-			} else {
 			}
 		}
 	}()

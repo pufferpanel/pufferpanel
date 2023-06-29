@@ -152,7 +152,6 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 							editMode, ok := mapping["edit"].(bool)
 							handleGetFile(conn, server, path, ok && editMode)
 						}
-						break
 					case "delete":
 						{
 							if !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersFilesPut) {
@@ -167,7 +166,6 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 								handleGetFile(conn, server, path2.Dir(path), false)
 							}
 						}
-						break
 					case "create":
 						{
 							if !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersFilesPut) {
@@ -182,7 +180,6 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 								handleGetFile(conn, server, path, false)
 							}
 						}
-						break
 					}
 				}
 			default:

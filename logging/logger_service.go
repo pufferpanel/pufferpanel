@@ -30,7 +30,6 @@ func (e *eventLogWriter) Write(p []byte) (n int, err error) {
 	switch e.Type {
 	case "error":
 		err = elog.Error(1, string(p))
-		break
 	case "info":
 		err = elog.Info(1, string(p))
 	}

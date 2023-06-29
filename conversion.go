@@ -14,14 +14,13 @@
 package pufferpanel
 
 import (
-	"errors"
 	"fmt"
 	"github.com/spf13/cast"
 	"reflect"
 	"time"
 )
 
-//Converts the val parameter to the same type as the target
+// Converts the val parameter to the same type as the target
 func Convert(val interface{}, target interface{}) (interface{}, error) {
 	switch target.(type) {
 	case string:
@@ -161,5 +160,5 @@ func Convert(val interface{}, target interface{}) (interface{}, error) {
 		return cast.ToDurationSliceE(val)
 	}
 
-	return nil, errors.New(fmt.Sprintf("cannot convert %s to %s", reflect.TypeOf(val), reflect.TypeOf(target)))
+	return nil, fmt.Errorf("cannot convert %s to %s", reflect.TypeOf(val), reflect.TypeOf(target))
 }

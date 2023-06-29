@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var ipv6Regex = regexp.MustCompile("(?P<host>\\[[a-f0-9:%]+\\])(:[0-9]+)?")
+var ipv6Regex = regexp.MustCompile(`(?P<host>\\[[a-f0-9:%]+\\])(:[0-9]+)?`)
 
 func GetHostname(requestHost string) string {
 	//ipv6

@@ -50,6 +50,7 @@ func RegisterPost(c *gin.Context) {
 	user := &models.User{Username: request.Username, Email: request.Email}
 	err = user.SetPassword(request.Password)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
 	}
 
 	err = us.Create(user)

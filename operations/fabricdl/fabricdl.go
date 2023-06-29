@@ -32,7 +32,7 @@ func (f *Fabricdl) Run(env pufferpanel.Environment) error {
 		return err
 	}
 	if len(metadata) == 0 {
-		return errors.New("No metadata available from Fabric, unable to download installer")
+		return errors.New("no metadata available from Fabric, unable to download installer")
 	}
 
 	file, err := environments.DownloadViaMaven(metadata[0].Url, env)

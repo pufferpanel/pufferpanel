@@ -49,41 +49,51 @@ func TestToStringArray(t *testing.T) {
 		args args
 		want wants
 	}{
-		/*{
+		{
 			name: "Test null input",
 			args: args{
 				element: nil,
 			},
-			want: []string{},
+			want: wants{
+				result: []string{},
+			},
 		},
 		{
 			name: "Test empty input",
 			args: args{
 				element: make([]string, 0),
 			},
-			want: make([]string, 0),
+			want: wants{
+				result: []string{},
+			},
 		},
 		{
 			name: "Test all valid input",
 			args: args{
 				element: interfaceStringArray,
 			},
-			want: interfaceStringArray,
+			want: wants{
+				result: interfaceStringArray,
+			},
 		},
 		{
 			name: "Test mixed input",
 			args: args{
 				element: interfaceObjectArray,
 			},
-			want: interfaceStringArray,
+			want: wants{
+				result: interfaceStringArray,
+			},
 		},
 		{
 			name: "Test single string input",
 			args: args{
 				element: "test",
 			},
-			want: []string{"test"},
-		},*/
+			want: wants{
+				result: []string{"test"},
+			},
+		},
 		{
 			name: "Test invalid type",
 			args: args{

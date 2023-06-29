@@ -67,10 +67,7 @@ func testDocker() bool {
 	defer cancel()
 
 	_, err = d.Ping(ctx)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }
 
 type Features struct {

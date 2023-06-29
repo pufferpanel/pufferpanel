@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
-	"errors"
 	"flag"
 	"fmt"
 	"github.com/go-git/go-git/v5"
@@ -187,7 +186,7 @@ func main() {
 		panicIf(err)
 
 		if prg.RunningEnvironment.GetLastExitCode() != 0 {
-			panicIf(errors.New(fmt.Sprintf("exit code status %d", prg.RunningEnvironment.GetLastExitCode())))
+			panicIf(fmt.Errorf("exit code status %d", prg.RunningEnvironment.GetLastExitCode()))
 		}
 
 		err = prg.Destroy()

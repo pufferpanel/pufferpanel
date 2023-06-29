@@ -69,12 +69,15 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		return pufferpanel.ErrImageDownloading
 	}
 
-	dockerClient, err := d.getClient()
-	ctx := context.Background()
+	var dockerClient *client.Client
+	dockerClient, err = d.getClient()
+	if err != nil {
+		return err
+	}
 
+	ctx := context.Background()
 	//TODO: This logic may not work anymore, it's complicated to use an existing container with install/uninstall
 	exists, err := d.doesContainerExist(dockerClient, ctx)
-
 	if err != nil {
 		return err
 	}
@@ -454,7 +457,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	hostConfig.PortBindings = bindings
 
 	exposedPorts := make(nat.PortSet)
-	for k, _ := range bindings {
+	for k := range bindings {
 		exposedPorts[k] = struct{}{}
 	}
 	containerConfig.ExposedPorts = exposedPorts

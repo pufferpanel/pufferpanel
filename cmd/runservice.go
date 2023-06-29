@@ -34,14 +34,11 @@ func (m *service) Execute(args []string, r <-chan svc.ChangeRequest, changes cha
 	internalRun(term)
 
 loop:
-	for {
-		select {
-		case c := <-r:
-			switch c.Cmd {
-			case svc.Stop, svc.Shutdown:
-				logging.Info.Printf("Received stop command\n")
-				break loop
-			}
+	for c := range r {
+		switch c.Cmd {
+		case svc.Stop, svc.Shutdown:
+			logging.Info.Printf("Received stop command\n")
+			break loop
 		}
 	}
 	changes <- svc.Status{State: svc.StopPending}

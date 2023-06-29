@@ -28,7 +28,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations"
 	"github.com/spf13/cast"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -218,10 +217,8 @@ func (p *Program) Start() error {
 				//now... we need to wait for a file to exist
 				//once it's there, we read until we die
 				var file *os.File
-				err := os.ErrNotExist
 				for file, err = os.Open(consoleConfig.File); os.IsNotExist(err); {
 				}
-
 				_, _ = io.Copy(p.RunningEnvironment.GetWrapper(), file)
 			}()
 		}
@@ -534,7 +531,7 @@ func (p *Program) GetItem(name string) (*FileData, error) {
 	}
 
 	if info.IsDir() {
-		files, _ := ioutil.ReadDir(targetFile)
+		files, _ := os.ReadDir(targetFile)
 		var fileNames []messages.FileDesc
 		offset := 0
 		if name == "" || name == "." || name == "/" {
@@ -558,8 +555,9 @@ func (p *Program) GetItem(name string) (*FileData, error) {
 			}
 
 			if newFile.File {
-				newFile.Size = file.Size()
-				newFile.Modified = file.ModTime().Unix()
+				infoData, _ := file.Info()
+				newFile.Size = infoData.Size()
+				newFile.Modified = infoData.ModTime().Unix()
 				newFile.Extension = filepath.Ext(file.Name())
 			}
 

@@ -25,7 +25,6 @@ import (
 )
 
 var noLogin = []string{"/auth/", "/error/", "/api/config"}
-var assetFiles = []string{".js", ".css", ".img", ".ico", ".png", ".gif"}
 var overrideRequireLogin = []string{"/auth/reauth", "/auth/logout"}
 
 const WWWAuthenticateHeader = "WWW-Authenticate"

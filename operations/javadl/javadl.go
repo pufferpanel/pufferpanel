@@ -16,6 +16,7 @@ package javadl
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
@@ -23,7 +24,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strconv"
 	"strings"
 	"sync"
 )
@@ -124,7 +124,7 @@ func (op JavaDl) callAdoptiumApi() (File, error) {
 
 	logging.Debug.Println("Calling " + url)
 	response, err := pufferpanel.HttpGet(url)
-	defer response.Body.Close()
+	defer pufferpanel.CloseResponse(response)
 	if err != nil {
 		return File{}, err
 	}
@@ -136,11 +136,11 @@ func (op JavaDl) callAdoptiumApi() (File, error) {
 	}
 
 	if len(data) != 1 {
-		return File{}, errors.New("expected 1 match from adoptium, found " + strconv.Itoa(len(data)))
+		return File{}, fmt.Errorf("expected 1 match from adoptium, found %d", len(data))
 	}
 
 	if len(data[0].Binaries) != 1 {
-		return File{}, errors.New("expected 1 binary from adoptium, found " + strconv.Itoa(len(data[0].Binaries)))
+		return File{}, fmt.Errorf("expected 1 binary from adoptium, found %d", len(data[0].Binaries))
 	}
 	return data[0], nil
 }

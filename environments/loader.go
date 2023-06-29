@@ -18,7 +18,6 @@ package environments
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"path/filepath"
 	"sync"
@@ -30,7 +29,7 @@ func Create(environmentType, folder, id string, environmentSection interface{}) 
 	factory := mapping[environmentType]
 
 	if factory == nil {
-		return nil, errors.New(fmt.Sprintf("undefined environment: %s", environmentType))
+		return nil, fmt.Errorf("undefined environment: %s", environmentType)
 	}
 
 	item := factory.Create(id)
