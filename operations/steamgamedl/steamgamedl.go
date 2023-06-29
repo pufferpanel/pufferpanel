@@ -61,10 +61,15 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 	}
 	args = append(args, c.ExtraArgs...)
 
+	cmd, err := filepath.Abs(filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary))
+	if err != nil {
+		return err
+	}
+
 	ch := make(chan bool, 1)
 	steps := pufferpanel.ExecutionData{
 		//Command:          fmt.Sprintf("%s%c%s", ".", filepath.Separator, "dotnet"),
-		Command:   filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary),
+		Command:   cmd,
 		Arguments: args,
 		Callback: func(exitCode bool) {
 			ch <- exitCode
