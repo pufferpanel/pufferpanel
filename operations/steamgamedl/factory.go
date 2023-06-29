@@ -27,9 +27,10 @@ func (of OperationFactory) Key() string {
 }
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	o := SteamGameDl{
-		AppId:    cast.ToString(op.OperationArgs["appId"]),
-		Username: cast.ToString(op.OperationArgs["username"]),
-		Password: cast.ToString(op.OperationArgs["password"]),
+		AppId:     cast.ToString(op.OperationArgs["appId"]),
+		Username:  cast.ToString(op.OperationArgs["username"]),
+		Password:  cast.ToString(op.OperationArgs["password"]),
+		ExtraArgs: cast.ToStringSlice(op.OperationArgs["extraArgs"]),
 	}
 	return o, nil
 }

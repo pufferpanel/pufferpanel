@@ -32,7 +32,7 @@ func HttpGet(url string) (*http.Response, error) {
 
 func HttpGetTarGz(url, directory string) error {
 	response, err := HttpGet(url)
-	defer response.Body.Close()
+	defer CloseResponse(response)
 	if err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func HttpGetZip(url, directory string) error {
 	defer os.Remove(file.Name())
 
 	response, err := HttpGet(url)
-	defer response.Body.Close()
+	defer CloseResponse(response)
 	if err != nil {
 		return err
 	}
@@ -71,14 +71,14 @@ func HttpGetZip(url, directory string) error {
 
 func HttpDownloadDeb(link, folder string) error {
 	response, err := HttpGet(link)
-	defer response.Body.Close()
+	defer CloseResponse(response)
 	if err != nil {
 		return err
 	}
 
 	buff := bytes.NewBuffer([]byte{})
 	_, err = io.Copy(buff, response.Body)
-	_ = response.Body.Close()
+	CloseResponse(response)
 
 	if err != nil {
 		return err

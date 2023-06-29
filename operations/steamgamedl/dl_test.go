@@ -14,7 +14,7 @@
 package steamgamedl
 
 import (
-	test "github.com/pufferpanel/pufferpanel/v2/testing"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"testing"
 )
 
@@ -32,13 +32,12 @@ func Test_downloadSteamcmd(t *testing.T) {
 		},
 	}
 
+	_ = config.BinariesFolder.Set("C:\\Temp\\pufferpanel\\binaries", false)
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			op := SteamGameDl{}
-
-			env := test.CreateEnvironment()
-			if err := op.Run(env); (err != nil) != tt.wantErr {
-				t.Errorf("downloadSteamcmd() error = %v, wantErr %v", err, tt.wantErr)
+			if err := downloadBinaries(config.BinariesFolder.Value()); (err != nil) != tt.wantErr {
+				t.Errorf("downloadBinaries() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

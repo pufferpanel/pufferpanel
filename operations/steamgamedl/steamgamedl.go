@@ -15,33 +15,27 @@ package steamgamedl
 
 import (
 	"errors"
-	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"io"
 	"os"
-	"path"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 )
 
 var downloader sync.Mutex
 
-const DepotDownloaderLink = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.4.7/depotdownloader-2.4.7.zip"
 const SteamMetadataServerLink = "https://media.steampowered.com/client/"
-const SteamMetadataLinuxLink = SteamMetadataServerLink + "steam_cmd_linux"
-
-//const SteamMetadataWindowsLink = SteamMetadataServerLink + "steam_cmd_win32"
 
 func init() {
 }
 
 type SteamGameDl struct {
-	AppId    string
-	Username string
-	Password string
+	AppId     string
+	Username  string
+	Password  string
+	ExtraArgs []string
 }
 
 func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
@@ -58,18 +52,19 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 		return err
 	}
 
-	var args = []string{filepath.Join(rootBinaryFolder, "depotdownloader", "DepotDownloader.dll"), "-app", c.AppId, "-dir", env.GetRootDirectory()}
+	var args = []string{"-app", c.AppId, "-dir", env.GetRootDirectory()}
 	if c.Username != "" {
 		args = append(args, "-username", c.Username, "-remember-password")
 		if c.Password != "" {
 			args = append(args, "-password", c.Password)
 		}
 	}
+	args = append(args, c.ExtraArgs...)
 
 	ch := make(chan bool, 1)
 	steps := pufferpanel.ExecutionData{
 		//Command:          fmt.Sprintf("%s%c%s", ".", filepath.Separator, "dotnet"),
-		Command:   filepath.Join(rootBinaryFolder, "dotnet-runtime", "dotnet"),
+		Command:   filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary),
 		Arguments: args,
 		Callback: func(exitCode bool) {
 			ch <- exitCode
@@ -85,8 +80,7 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 	}
 
 	//for some steam games, there's a binary we can instant-mark
-	fi, err := os.Stat(filepath.Join(env.GetRootDirectory(), "srcds_run"))
-	if err == nil && !fi.IsDir() {
+	if fi, err := os.Stat(filepath.Join(env.GetRootDirectory(), "srcds_run")); err == nil && !fi.IsDir() {
 		_ = os.Chmod(filepath.Join(env.GetRootDirectory(), "srcds_run"), 0755)
 	}
 
@@ -97,33 +91,19 @@ func downloadBinaries(rootBinaryFolder string) error {
 	downloader.Lock()
 	defer downloader.Unlock()
 
-	fi, err := os.Stat(filepath.Join(rootBinaryFolder, "depotdownloader", "DepotDownloader.dll"))
+	fi, err := os.Stat(filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary))
 	if err == nil && fi.Size() > 0 {
 		return nil
 	}
 
-	err = downloadDotNet(rootBinaryFolder)
-	if err != nil {
-		return err
+	link := DepotDownloaderLink
+	arch := "x64"
+	if runtime.GOOS == "arm64" {
+		arch = "amd64"
 	}
+	link = strings.Replace(link, "${arch}", arch, 1)
 
-	cmd := getDotNetInstallCommand()
-	cmd.Dir = rootBinaryFolder
-
-	err = cmd.Run()
-	if err != nil {
-		return err
-	}
-
-	if !cmd.ProcessState.Success() {
-		out, _ := cmd.CombinedOutput()
-		logging.Debug.Println(string(out))
-		return errors.New(fmt.Sprintf("dotnet-install exited with non-zero code: %d", cmd.ProcessState.ExitCode()))
-	}
-
-	_ = os.Remove(filepath.Join(rootBinaryFolder, DotNetScriptName))
-
-	err = pufferpanel.HttpGetZip(DepotDownloaderLink, filepath.Join(rootBinaryFolder, "depotdownloader"))
+	err = pufferpanel.HttpGetZip(link, filepath.Join(rootBinaryFolder, "depotdownloader"))
 	if err != nil {
 		return err
 	}
@@ -131,50 +111,14 @@ func downloadBinaries(rootBinaryFolder string) error {
 	return nil
 }
 
-func downloadDotNet(targetFolder string) error {
-	target, err := os.Create(path.Join(targetFolder, DotNetScriptName))
-	defer pufferpanel.Close(target)
-	if err != nil {
-		return err
-	}
-
-	response, err := pufferpanel.HttpGet(DotNetScriptDl)
-	defer pufferpanel.CloseResponse(response)
-	if err != nil {
-		return err
-	}
-
-	_, err = io.Copy(target, response.Body)
-	return err
-}
-
 func downloadMetadata(env pufferpanel.Environment) error {
-	if runtime.GOOS != "linux" {
-		env.DisplayToConsole(true, "Node does not support linux, cannot download steam libraries. While this "+
-			"will not stop the installation, the server may not fully work")
-		return nil
-	}
-
-	if runtime.GOARCH != "amd64" {
-		env.DisplayToConsole(true, "Node does not support amd64, cannot download steam libraries. While this "+
-			"will not stop the installation, the server may not fully work")
-		return nil
-	}
-
-	downloadOs := "linux"
-	link := SteamMetadataLinuxLink
-	/*if runtime.GOOS == "windows" {
-		downloadOs = "win32"
-		link = SteamMetadataWindowsLink
-	}*/
-
-	response, err := pufferpanel.HttpGet(link)
+	response, err := pufferpanel.HttpGet(SteamMetadataLink)
 	defer pufferpanel.CloseResponse(response)
 	if err != nil {
 		return err
 	}
 
-	metadataName, err := Parse(downloadOs, response.Body)
+	metadataName, err := Parse(DownloadOs, response.Body)
 	pufferpanel.CloseResponse(response)
 
 	if err != nil {
@@ -191,11 +135,11 @@ func downloadMetadata(env pufferpanel.Environment) error {
 		return err
 	}
 
-	err = os.Rename(filepath.Join(env.GetRootDirectory(), ".steam", "linux32"), filepath.Join(env.GetRootDirectory(), ".steam", "sdk32"))
-	if err != nil {
-		return err
+	for source, target := range RenameFolders {
+		err = os.Rename(filepath.Join(env.GetRootDirectory(), ".steam", source), filepath.Join(env.GetRootDirectory(), ".steam", target))
+		if err != nil {
+			return err
+		}
 	}
-
-	err = os.Rename(filepath.Join(env.GetRootDirectory(), ".steam", "linux64"), filepath.Join(env.GetRootDirectory(), ".steam", "sdk64"))
 	return err
 }
