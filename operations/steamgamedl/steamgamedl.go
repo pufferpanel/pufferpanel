@@ -108,7 +108,8 @@ func downloadBinaries(rootBinaryFolder string) error {
 		return err
 	}
 
-	return nil
+	err = os.Chmod(filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary), 0755)
+	return err
 }
 
 func downloadMetadata(env pufferpanel.Environment) error {
