@@ -52,7 +52,7 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 		return err
 	}
 
-	var args = []string{"-app", c.AppId}
+	var args = []string{"-app", c.AppId, "-dir", "."}
 	if c.Username != "" {
 		args = append(args, "-username", c.Username, "-remember-password")
 		if c.Password != "" {
