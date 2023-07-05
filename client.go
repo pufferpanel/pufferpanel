@@ -78,7 +78,7 @@ func HttpDownloadDeb(link, folder string) error {
 
 	buff := bytes.NewBuffer([]byte{})
 	_, err = io.Copy(buff, response.Body)
-	_ = response.Body.Close()
+	CloseResponse(response)
 
 	if err != nil {
 		return err
