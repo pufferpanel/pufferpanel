@@ -48,10 +48,12 @@ var rootCmd = &cobra.Command{
 	Short: "Game Server Management Panel",
 }
 
+var configFile string
 var workDir string
 
 func init() {
 	rootCmd.PersistentFlags().StringVar(&workDir, "workDir", "", "Set working directory")
+	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", "Location of config")
 
 	cobra.OnInitialize(setWorkDir, loadConfig)
 
@@ -73,7 +75,7 @@ func setWorkDir() {
 }
 
 func loadConfig() {
-	err := config.LoadConfigFile(workDir)
+	err := config.LoadConfigFile(configFile)
 	if err != nil {
 		fmt.Printf("Error loading config, this may impact features:\n%s\n", err.Error())
 	}

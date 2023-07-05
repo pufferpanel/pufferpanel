@@ -279,14 +279,15 @@ jobs:
 
       - name: Set up build folder
         run: |
-          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel 
-          mkdir -p DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
-          mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
+          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel
+          mkdir -p DEBBUILD/var/log/pufferpanel RPMBUILD/var/log/pufferpanel
+          mkdir -p DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+          mkdir -p DEBBUILD/var/lib/pufferpanel/binaries RPMBUILD/var/lib/pufferpanel
+          mkdir -p DEBBUILD/etc/profile.d/
           cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
           cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
           cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
-          
-          mkdir -p RPMBUILD/var/lib/pufferpanel RPMBUILD/var/log/pufferpanel RPMBUILD/var/lib/pufferpanel/binaries
+          cp systemd/profile.d/pufferpanel.sh DEBBUILD/etc/profile.d/pufferpanel.sh
 
       - name: Build Package DEB AMD64
         id: debamd64
@@ -336,6 +337,7 @@ jobs:
             build-artifacts/pufferpanel:/usr/sbin/pufferpanel
             config.linux.json:/etc/pufferpanel/config.json
             systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
+            systemd/profile.d/pufferpanel.sh:/etc/profile.d/pufferpanel.sh
             RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
             RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
           config: |
@@ -420,12 +422,14 @@ jobs:
 
       - name: Set up build folder
         run: |
-          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel 
+          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel
           mkdir -p DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
           mkdir -p DEBBUILD/var/lib/pufferpanel/binaries
+          mkdir -p DEBBUILD/etc/profile.d
           cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
           cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
           cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+          cp systemd/profile.d/pufferpanel.sh DEBBUILD/etc/profile.d/pufferpanel.sh
 
       - name: Build Package DEB ARM64
         id: debarm64

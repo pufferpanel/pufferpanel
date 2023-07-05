@@ -15,8 +15,7 @@ package config
 
 import (
 	"github.com/spf13/viper"
-	"path/filepath"
-	"runtime"
+	"os"
 	"strings"
 )
 
@@ -26,14 +25,16 @@ func init() {
 	viper.AutomaticEnv()
 }
 
-func LoadConfigFile(workDir string) error {
-	if workDir != "" {
-		viper.SetConfigFile(filepath.Join(workDir, "config.json"))
-	} else if runtime.GOOS != "windows" {
-		viper.SetConfigFile(filepath.Join("/", "etc", "pufferpanel", "config.json"))
-	} else {
-		viper.SetConfigFile("config.json")
+func LoadConfigFile(configFile string) error {
+	if configFile == "" {
+		var exists bool
+		configFile, exists = os.LookupEnv("PUFFER_CONFIG")
+		if !exists || configFile == "" {
+			configFile = "config.json"
+		}
 	}
+
+	viper.SetConfigFile(configFile)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
