@@ -29,7 +29,7 @@
   "ErrNoNodes": "Sõlmesid pole saadaval",
   "ErrNoTemplates": "Ühtegi malli pole saadaval",
   "ErrPasswordRequirements": "Salasõna peab olema vähemalt {min} tähemärki",
-  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "Kasutajanimi peab olema vähemalt 5 tähemärki ja sisaldama ainult tähtnumbreid, _, või -",
   "ErrPasswordsNotIdentical": "Salasõnad ei ühti",
   "ErrSessionTimedOut": "Sinu sessioon on aegunud, palun logi uuesti sisse",
   "ErrMissingScope": "Teil puudub õigus selle tegevuse jaoks",
