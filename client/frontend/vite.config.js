@@ -7,7 +7,14 @@ import fs from 'fs'
 
 export default defineConfig({
   build: {
-    chunkSizeWarningLimit: 550
+    chunkSizeWarningLimit: 550,
+    rollupOptions: {
+      output: {
+        entryFileNames: 'js/[name]-[hash].js',
+        chunkFileNames: 'js/[name]-[hash].js',
+        assetFileNames: '[ext]/[name]-[hash][extname]'
+      }
+    }
   },
   resolve: {
     alias: [
