@@ -715,17 +715,22 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   margin-left: unset;
 }
 
-.nodeview, .nodecreate {
+.nodeview, .nodeview .edit, .nodecreate {
   @include cols(12);
   @include row;
-  @include card;
   margin: unset;
-  margin-top: 1.5em;
+  //margin-top: 1.5em;
   grid-gap: 0 1em;
   gap: 0 1em;
 
-  h1, .name, .button, .sftp-port, .private-toggle, .public-host, .private-host, .public-port, .private-port {
+  h1, p, .name, .button, .sftp-port, .private-toggle, .public-host, .private-host, .public-port, .private-port {
     @include cols(12);
+  }
+
+  h2 {
+    @include cols(12);
+    margin-top: 1em;
+    margin-bottom: 0.25em;
   }
 
   .public-host, .private-host {
@@ -735,6 +740,53 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   .public-port, .private-port {
     @include cols(4, md);
   }
+}
+
+.nodeview .features {
+  @include cols(12);
+  @include row;
+  margin: unset;
+  grid-gap: 0 1em;
+  gap: 0 1em;
+
+  .reachable {
+    @include cols(12);
+    @include icon;
+    @include icon-name(play-circle);
+    margin-bottom: 0.75em;
+    &::before {
+      color: var(--primary);
+      margin-right: 0.5em;
+    }
+  }
+
+  .unreachable {
+    @include cols(12);
+    @include icon;
+    @include icon-name(stop-circle);
+    &::before {
+      color: var(--error);
+      margin-right: 0.5em;
+    }
+  }
+
+  .os, .arch, .env, .docker {
+    @include cols(12);
+    @include row;
+    margin: unset;
+    margin-top: 0.5em;
+    span {
+      @include cols(6);
+      @include cols(3, md);
+      &:first-child {
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.nodeview, .nodecreate {
+  @include card;
 }
 
 .servercreate {

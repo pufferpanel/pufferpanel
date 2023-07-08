@@ -30,7 +30,7 @@ export class NodeApi {
   }
 
   async features(id) {
-    const res = await this._api.get(`/api/nodes/${id}/features`)
+    const res = await this._api.get(`/api/nodes/${id}/features`, undefined, undefined, { unhandledErrors: [500] })
     return res.data
   }
 

@@ -30,16 +30,12 @@ function focusList() {
     <h1 v-text="t('nodes.Nodes')" />
     <div v-hotkey="'l'" class="list" @hotkey="focusList()">
       <div v-for="node in nodes" :key="node.name" class="list-item">
-        <router-link v-if="node.id" :ref="setFirstEntry" :to="{ name: 'NodeView', params: { id: node.id } }">
+        <router-link :ref="setFirstEntry" :to="{ name: 'NodeView', params: { id: node.id } }">
           <div class="node">
             <span class="title">{{node.name}}</span>
             <span class="subline">{{node.publicHost + ':' + node.publicPort}}</span>
           </div>
         </router-link>
-        <div v-else class="node disabled">
-          <span class="title">{{node.name}}</span>
-          <span class="subline">{{node.publicHost + ':' + node.publicPort}}</span>
-        </div>
       </div>
       <div v-if="!nodesLoaded" class="list-item">
         <loader small />
