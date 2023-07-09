@@ -56,8 +56,8 @@ func Create(environmentType, folder, id string, environmentSection interface{}) 
 func GetSupportedEnvironments() []string {
 	result := make([]string, len(mapping))
 	i := 0
-	for _, v := range mapping {
-		result[i] = v.Key()
+	for k, _ := range mapping {
+		result[i] = k
 		i++
 	}
 
