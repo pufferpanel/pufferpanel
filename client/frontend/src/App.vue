@@ -181,6 +181,16 @@ function handleConfirm(title, ok, cancel) {
     return
   }
 
+  let body = null
+  if (typeof title === 'object') {
+    if (!title.title) {
+      console.warn('ignoring confirm request, prompt was an object noto containing a title')
+      return
+    }
+    if (title.body) body = title.body
+    title = title.title
+  }
+
   if (!ok.text) ok.text = t('common.Confirm')
   if (!ok.icon) ok.icon = 'apply'
   if (!ok.color) ok.color = 'primary'
@@ -207,6 +217,10 @@ function handleConfirm(title, ok, cancel) {
     cancel
   }
 
+  if (body) {
+    confirm.value.body = body
+  }
+
   confirmOpen.value = true
 }
 </script>
@@ -226,6 +240,7 @@ function handleConfirm(title, ok, cancel) {
       <hotkeys />
     </overlay>
     <overlay v-model="confirmOpen" class="confirm-overlay" :title="confirm.title">
+      <div v-if="confirm.body" class="body" v-text="confirm.body" />
       <div class="actions">
         <btn :color="confirm.cancel.color" @click="confirm.cancel.handle">
           <icon :name="confirm.cancel.icon" />

@@ -1,5 +1,6 @@
 <script setup>
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, inject, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import ServerHeader from '../server/Header.vue'
@@ -46,9 +47,35 @@ const Admin = defineAsyncComponent({
 })
 
 const { t } = useI18n()
+const events = inject('events')
+const route = useRoute()
+const router = useRouter()
 
 const props = defineProps({
   server: { type: Object, required: true }
+})
+
+onMounted(() => {
+  if (route.query.created) {
+    events.emit(
+      'confirm',
+      {
+        title: t('servers.InstallPrompt'),
+        body: t('servers.InstallPromptBody'),
+      },
+      {
+        text: t('servers.Install'),
+        icon: 'install',
+        action: () => {
+          props.server.install()
+        }
+      },
+      {
+        color: 'none'
+      }
+    )
+    router.push({query: {}, hash: route.hash})
+  }
 })
 </script>
 
