@@ -6,8 +6,9 @@ export class ServerApi {
   }
 
   async create(data) {
-    const res = await this._api.post('/api/servers', data)
-    return res.data.id
+    const id = Array.from(crypto.getRandomValues(new Uint8Array(4))).map(b => b.toString(16).padStart(2, '0')).join('')
+    const res = await this._api.put(`/api/servers/${id}`, data)
+    return id
   }
 
   async list(page = 1) {
