@@ -231,7 +231,7 @@ func readTemplateFromDisk(name, path string) (*models.Template, error) {
 		return nil, err
 	}
 
-	defer file.Close()
+	defer pufferpanel.Close(file)
 
 	template := &models.Template{
 		Name: name,

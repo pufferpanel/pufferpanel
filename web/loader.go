@@ -21,6 +21,7 @@ import (
 	_ "github.com/alecthomas/template"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/client/frontend/dist"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
@@ -34,6 +35,7 @@ import (
 	_ "github.com/swaggo/swag"
 	"io/fs"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -63,11 +65,16 @@ func RegisterRoutes(e *gin.Engine) {
 		oauth2.RegisterRoutes(e.Group("/oauth2"))
 		auth.RegisterRoutes(e.Group("/auth"))
 
+		var clientFiles fs.FS = dist.ClientFiles
+		if config.WebRoot.Value() != "" {
+			clientFiles = pufferpanel.NewMergedFS(os.DirFS(""), dist.ClientFiles)
+		}
+
 		css := e.Group("/css")
 		{
 			css.Use(gzip.Gzip(gzip.DefaultCompression))
 			css.Use(setContentType("text/css"))
-			f, err := fs.Sub(dist.ClientFiles, "css")
+			f, err := fs.Sub(clientFiles, "css")
 			if err != nil {
 				panic(err)
 			}
@@ -76,7 +83,7 @@ func RegisterRoutes(e *gin.Engine) {
 		fonts := e.Group("/fonts")
 		{
 			fonts.Use(gzip.Gzip(gzip.DefaultCompression))
-			f, err := fs.Sub(dist.ClientFiles, "fonts")
+			f, err := fs.Sub(clientFiles, "fonts")
 			if err != nil {
 				panic(err)
 			}
@@ -84,7 +91,7 @@ func RegisterRoutes(e *gin.Engine) {
 		}
 		img := e.Group("/img")
 		{
-			f, err := fs.Sub(dist.ClientFiles, "img")
+			f, err := fs.Sub(clientFiles, "img")
 			if err != nil {
 				panic(err)
 			}
@@ -94,7 +101,7 @@ func RegisterRoutes(e *gin.Engine) {
 		{
 			js.Use(gzip.Gzip(gzip.DefaultCompression))
 			js.Use(setContentType("application/javascript"))
-			f, err := fs.Sub(dist.ClientFiles, "js")
+			f, err := fs.Sub(clientFiles, "js")
 			if err != nil {
 				panic(err)
 			}
@@ -102,15 +109,15 @@ func RegisterRoutes(e *gin.Engine) {
 		}
 		theme := e.Group("/theme")
 		{
-			theme.Use(setContentType("application/zip"))
-			f, err := fs.Sub(dist.ClientFiles, "theme")
+			theme.Use(setContentType("application/x-tar"))
+			f, err := fs.Sub(clientFiles, "theme")
 			if err != nil {
 				panic(err)
 			}
 			theme.StaticFS("", http.FS(f))
 		}
-		e.StaticFileFS("/favicon.png", "favicon.png", http.FS(dist.ClientFiles))
-		e.StaticFileFS("/favicon.ico", "favicon.ico", http.FS(dist.ClientFiles))
+		e.StaticFileFS("/favicon.png", "favicon.png", http.FS(clientFiles))
+		e.StaticFileFS("/favicon.ico", "favicon.ico", http.FS(clientFiles))
 		e.NoRoute(handle404)
 	}
 }
@@ -123,15 +130,8 @@ func handle404(c *gin.Context) {
 		}
 	}
 
-	/*if strings.HasSuffix(c.Request.URL.Path, ".tar") {
-		c.Writer.Header().Set("Content-Type", "application/x-tar")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
-	}*/
-
-	//c.FileFromFS("index.html", http.FS(dist.ClientFiles))
-	var fs fs.ReadFileFS = dist.ClientFiles
-	file, err := fs.ReadFile("index.html")
+	clientFiles := pufferpanel.NewMergedFS(os.DirFS(""), dist.ClientFiles)
+	file, err := clientFiles.ReadFile("index.html")
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
