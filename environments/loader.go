@@ -29,6 +29,15 @@ func Create(environmentType, folder, id string, environmentSection interface{}) 
 	factory := mapping[environmentType]
 
 	if factory == nil {
+		switch environmentType {
+		case "standard":
+			fallthrough
+		case "tty":
+			factory = mapping["host"]
+		}
+	}
+
+	if factory == nil {
 		return nil, fmt.Errorf("undefined environment: %s", environmentType)
 	}
 
