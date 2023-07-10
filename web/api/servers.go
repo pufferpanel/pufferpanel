@@ -383,6 +383,12 @@ func createServer(c *gin.Context) {
 		}
 	}
 
+	err = db.Commit().Error
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		c.Abort()
+		return
+	}
+
 	data, _ := json.Marshal(postBody.Server)
 	reader := io.NopCloser(bytes.NewReader(data))
 
@@ -406,10 +412,13 @@ func createServer(c *gin.Context) {
 		c.Status(nodeResponse.StatusCode)
 		_, _ = c.Writer.Write(resData)
 		c.Abort()
-		return
-	}
 
-	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
+		//revert DB, we need to actually now use the non-transactional connection
+		noTransDbCtx, _ := c.Get("noTransactionDb")
+		noTransDb := noTransDbCtx.(*gorm.DB)
+
+		tempSS := &services.Server{DB: noTransDb}
+		_ = tempSS.Delete(server.Identifier)
 		return
 	}
 
@@ -549,30 +558,33 @@ func deleteServer(c *gin.Context) {
 		users = append(users, p.User)
 	}
 
+	_, skipNode := c.GetQuery("skipNode")
+	if !skipNode {
+		newHeader, err := c.Cookie("puffer_auth")
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			db.Rollback()
+			return
+		}
+
+		headers := http.Header{}
+		headers.Add("Authorization", "Bearer "+newHeader)
+
+		nodeRes, err := ns.CallNode(node, "DELETE", "/daemon/server/"+server.Identifier, nil, headers)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			//node didn't permit it, REVERT!
+			db.Rollback()
+			return
+		}
+
+		if nodeRes.StatusCode != http.StatusNoContent {
+			response.HandleError(c, errors.New("invalid status code response: "+nodeRes.Status), http.StatusInternalServerError)
+			return
+		}
+	}
+
 	err = ss.Delete(server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		db.Rollback()
-		return
-	}
-
-	newHeader, err := c.Cookie("puffer_auth")
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		db.Rollback()
-		return
-	}
-
-	headers := http.Header{}
-	headers.Add("Authorization", "Bearer "+newHeader)
-
-	nodeRes, err := ns.CallNode(node, "DELETE", "/daemon/server/"+server.Identifier, nil, headers)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		//node didn't permit it, REVERT!
-		db.Rollback()
-		return
-	}
-
-	if nodeRes.StatusCode != http.StatusNoContent {
-		response.HandleError(c, errors.New("invalid status code response: "+nodeRes.Status), http.StatusInternalServerError)
 		return
 	}
 

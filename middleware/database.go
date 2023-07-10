@@ -62,16 +62,17 @@ func HasTransaction(c *gin.Context) {
 		}
 	}
 
-	db = db.Begin()
+	trans := db.Begin()
 
-	c.Set("db", db)
+	c.Set("db", trans)
+	c.Set("noTransactionDb", db)
 
 	c.Next()
 
 	isBadStatus := c.Writer.Status() >= 400
 	if c.Errors != nil || isBadStatus {
-		db.Rollback()
+		trans.Rollback()
 	} else {
-		db.Commit()
+		trans.Commit()
 	}
 }
