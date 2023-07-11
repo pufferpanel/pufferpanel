@@ -17,7 +17,9 @@
 package operations
 
 import (
+	"github.com/google/cel-go/cel"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/operations/alterfile"
 	"github.com/pufferpanel/pufferpanel/v3/operations/archive"
 	"github.com/pufferpanel/pufferpanel/v3/operations/command"
@@ -52,7 +54,7 @@ func GenerateProcess(directions []interface{}, environment pufferpanel.Environme
 	}
 
 	dataMap["rootDir"] = environment.GetRootDirectory()
-	operationList := make([]pufferpanel.Operation, 0)
+	operationList := make(OperationProcess, 0)
 	for _, mapping := range directions {
 
 		var typeMap pufferpanel.MetadataType
@@ -111,34 +113,79 @@ func GenerateProcess(directions []interface{}, environment pufferpanel.Environme
 			return OperationProcess{}, pufferpanel.ErrFactoryError(typeMap.Type, err)
 		}
 
-		operationList = append(operationList, op)
+		task := &OperationTask{Operation: op}
+
+		var ifMap map[string]interface{}
+		err = pufferpanel.UnmarshalTo(mapping, &ifMap)
+		if err == nil && ifMap["if"] != nil {
+			task.Condition = cast.ToString(ifMap["if"])
+		}
+
+		operationList = append(operationList, task)
 	}
-	return OperationProcess{processInstructions: operationList}, nil
+	return operationList, nil
 }
 
-type OperationProcess struct {
-	processInstructions []pufferpanel.Operation
+type OperationProcess []*OperationTask
+
+type OperationTask struct {
+	Operation pufferpanel.Operation
+	Condition string
 }
 
-func (p *OperationProcess) Run(env pufferpanel.Environment) (err error) {
-	for p.HasNext() {
-		err = p.RunNext(env)
-		if err != nil {
-			break
+func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string]pufferpanel.Variable) error {
+	if len(*p) == 0 {
+		return nil
+	}
+
+	data := map[string]interface{}{
+		"success": true,
+	}
+	celVars := []cel.EnvOption{
+		cel.Variable("success", cel.BoolType),
+	}
+
+	for k, v := range variables {
+		celVars = append(celVars, cel.Variable(k, cel.AnyType))
+		data[k] = v.Value
+	}
+
+	celEnv, err := cel.NewEnv(append(celVars, CreateFunctions(env)...)...)
+	if err != nil {
+		return err
+	}
+
+	for _, v := range *p {
+		shouldRun := data["success"].(bool)
+		if v.Condition != "" {
+			ast, issues := celEnv.Compile(v.Condition)
+			if issues != nil && issues.Err() != nil {
+				return issues.Err()
+			}
+
+			prg, err := celEnv.Program(ast)
+			if err != nil {
+				return err
+			}
+
+			out, _, err := prg.Eval(data)
+			if err != nil {
+				return err
+			}
+			shouldRun = out.Value().(bool)
+		}
+
+		if shouldRun {
+			err = v.Operation.Run(env)
+			if err != nil {
+				logging.Error.Printf("Error running command: %s", err.Error())
+				data["success"] = false
+			} else {
+				data["success"] = true
+			}
 		}
 	}
-	return
-}
-
-func (p *OperationProcess) RunNext(env pufferpanel.Environment) error {
-	var op pufferpanel.Operation
-	op, p.processInstructions = p.processInstructions[0], p.processInstructions[1:]
-	err := op.Run(env)
-	return err
-}
-
-func (p *OperationProcess) HasNext() bool {
-	return len(p.processInstructions) != 0 && p.processInstructions[0] != nil
+	return nil
 }
 
 func loadCoreModules() {

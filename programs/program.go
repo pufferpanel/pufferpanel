@@ -173,7 +173,7 @@ func (p *Program) Start() error {
 		return err
 	}
 
-	err = process.Run(p.RunningEnvironment)
+	err = process.Run(p.RunningEnvironment, p.Variables)
 	if err != nil {
 		p.Log(logging.Error, "Error running pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
@@ -291,7 +291,7 @@ func (p *Program) Destroy() (err error) {
 		return
 	}
 
-	err = process.Run(p.RunningEnvironment)
+	err = process.Run(p.RunningEnvironment, p.Variables)
 	if err != nil {
 		p.Log(logging.Error, "Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n")
@@ -358,7 +358,7 @@ func (p *Program) Install() error {
 			return err
 		}
 
-		err = process.Run(p.RunningEnvironment)
+		err = process.Run(p.RunningEnvironment, p.Variables)
 		if err != nil {
 			p.Log(logging.Error, "Error installing server: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n")
@@ -494,7 +494,7 @@ func (p *Program) afterExit(exitCode int) {
 	p.RunningEnvironment.DisplayToConsole(true, "Running post-execution steps\n")
 	p.Log(logging.Info, "Running post execution steps: %s", p.Id())
 
-	err = processes.Run(p.RunningEnvironment)
+	err = processes.Run(p.RunningEnvironment, p.Variables)
 	if err != nil {
 		p.Log(logging.Error, "Error running post processing for server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n")
@@ -655,7 +655,7 @@ func (p *Program) ExecuteTask(task pufferpanel.Task) (err error) {
 			return
 		}
 
-		err = process.Run(p.RunningEnvironment)
+		err = process.Run(p.RunningEnvironment, p.Variables)
 		if err != nil {
 			p.Log(logging.Error, "Error setting up tasks: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
