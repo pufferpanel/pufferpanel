@@ -451,7 +451,7 @@ func (p *Program) EditData(data map[string]pufferpanel.Variable, overrideUser bo
 		p.Variables[k] = elem
 	}
 
-	err = Save(p.Id())
+	err = p.Save()
 	return
 }
 

@@ -1063,8 +1063,21 @@ func deleteOAuth2Client(c *gin.Context) {
 func editServerData(c *gin.Context) {
 	server := c.MustGet("server").(*models.Server)
 
+	//clone request body, so we can re-set it for the proxy call
+	useHere := &bytes.Buffer{}
+	useThere := &bytes.Buffer{}
+
+	multi := io.MultiWriter(useHere, useThere)
+	_, err := io.CopyN(multi, c.Request.Body, 1024 /* 1KB */ *512 /* .5 MB */)
+	if err != nil && err != io.EOF && response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	c.Request.Body.Close()
+	c.Request.Body = io.NopCloser(useThere)
+
 	postBody := &models.ServerCreation{}
-	err := c.Bind(postBody)
+	err = json.NewDecoder(useHere).Decode(postBody)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
