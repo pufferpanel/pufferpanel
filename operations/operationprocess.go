@@ -139,15 +139,19 @@ func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string
 	}
 
 	data := map[string]interface{}{
-		"success": true,
+		cel_success: true,
+		cel_env:     env.GetBase().Type,
 	}
-	celVars := []cel.EnvOption{
-		cel.Variable("success", cel.BoolType),
-	}
+
+	celVars := append(celGlobalConstants)
 
 	for k, v := range variables {
 		celVars = append(celVars, cel.Variable(k, cel.AnyType))
 		data[k] = v.Value
+	}
+
+	for k, v := range celGlobalConstantValues {
+		data[k] = v
 	}
 
 	celEnv, err := cel.NewEnv(append(celVars, CreateFunctions(env)...)...)
@@ -156,7 +160,7 @@ func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string
 	}
 
 	for _, v := range *p {
-		shouldRun := data["success"].(bool)
+		shouldRun := data[cel_success].(bool)
 		if v.Condition != "" {
 			ast, issues := celEnv.Compile(v.Condition)
 			if issues != nil && issues.Err() != nil {
@@ -179,9 +183,9 @@ func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string
 			err = v.Operation.Run(env)
 			if err != nil {
 				logging.Error.Printf("Error running command: %s", err.Error())
-				data["success"] = false
+				data[cel_success] = false
 			} else {
-				data["success"] = true
+				data[cel_success] = true
 			}
 		}
 	}
