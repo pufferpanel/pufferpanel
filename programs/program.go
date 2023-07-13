@@ -180,7 +180,60 @@ func (p *Program) Start() error {
 		return err
 	}
 
-	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
+	var command string
+
+	if c, ok := p.Execution.Command.(string); ok {
+		command = c
+	} else {
+		//we have a list
+		var possibleCommands []pufferpanel.Command
+		err = pufferpanel.UnmarshalTo(p.Execution.Command, &possibleCommands)
+		if err != nil {
+			return err
+		}
+
+		var defaultCommand pufferpanel.Command
+		var commandToRun pufferpanel.Command
+		for _, v := range possibleCommands {
+			if v.If == "" {
+				defaultCommand = v
+				break
+			}
+		}
+
+		for _, v := range possibleCommands {
+			//now... we see which command to use
+			if v.If == "" {
+				continue
+			}
+			useThis, err := operations.CalculateIf(p.RunningEnvironment, p.Variables, v.If, nil)
+			if err != nil {
+				p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
+				p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
+				return err
+			}
+			if useThis {
+				commandToRun = v
+				break
+			}
+		}
+
+		command = commandToRun.Command
+
+		//if no command, use default
+		if command == "" {
+			command = defaultCommand.Command
+		}
+	}
+
+	if command == "" {
+		err = pufferpanel.ErrNoCommand
+		p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
+		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
+		return err
+	}
+
+	commandLine := pufferpanel.ReplaceTokens(command, data)
 	if p.Execution.WorkingDirectory == "${rootDir}" {
 		p.Execution.WorkingDirectory = ""
 	}
@@ -204,6 +257,7 @@ func (p *Program) Start() error {
 	if err != nil {
 		p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
 		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
+		return err
 	}
 
 	//server started, now kick off our special "hook" for the console

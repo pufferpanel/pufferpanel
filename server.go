@@ -25,15 +25,16 @@ import (
 
 type Server struct {
 	Type
-	Variables      map[string]Variable `json:"data,omitempty"`
-	Display        string              `json:"display,omitempty"`
-	Environment    interface{}         `json:"environment,omitempty"`
-	Installation   []interface{}       `json:"install,omitempty"`
-	Uninstallation []interface{}       `json:"uninstall,omitempty"`
-	Identifier     string              `json:"id,omitempty"`
-	Execution      Execution           `json:"run,omitempty"`
-	Tasks          map[string]Task     `json:"tasks,omitempty"`
-	Requirements   Requirements        `json:"requirements,omitempty"`
+	Variables             map[string]Variable `json:"data,omitempty"`
+	Display               string              `json:"display,omitempty"`
+	Environment           interface{}         `json:"environment,omitempty"`
+	SupportedEnvironments interface{}         `json:"supportedEnvironments,omitempty"`
+	Installation          []interface{}       `json:"install,omitempty"`
+	Uninstallation        []interface{}       `json:"uninstall,omitempty"`
+	Identifier            string              `json:"id,omitempty"`
+	Execution             Execution           `json:"run,omitempty"`
+	Tasks                 map[string]Task     `json:"tasks,omitempty"`
+	Requirements          Requirements        `json:"requirements,omitempty"`
 }
 
 type Task struct {
@@ -59,7 +60,7 @@ type VariableOption struct {
 }
 
 type Execution struct {
-	Command                 string            `json:"command,omitempty"`
+	Command                 interface{}       `json:"command,omitempty"`
 	StopCommand             string            `json:"stop,omitempty"`
 	Disabled                bool              `json:"disabled,omitempty"`
 	AutoStart               bool              `json:"autostart,omitempty"`
@@ -72,6 +73,11 @@ type Execution struct {
 	LegacyRun               string            `json:"program,omitempty"`
 	LegacyArguments         []string          `json:"arguments,omitempty"`
 	WorkingDirectory        string            `json:"workingDirectory,omitempty"`
+}
+
+type Command struct {
+	Command string `json:"command"`
+	If      string `json:"if,omitempty"`
 }
 
 type Type struct {
@@ -94,6 +100,7 @@ func (s *Server) CopyFrom(replacement *Server) {
 	s.Uninstallation = replacement.Uninstallation
 	s.Environment = replacement.Environment
 	s.Requirements = replacement.Requirements
+	s.SupportedEnvironments = replacement.SupportedEnvironments
 }
 
 func (r Requirements) Test(server Server) error {

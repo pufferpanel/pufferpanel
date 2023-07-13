@@ -58,6 +58,7 @@ func Create(environmentType, folder, id string, environmentSection interface{}) 
 	e.WSManager = wsManager
 	e.ConsoleBuffer = envCache
 	e.Wait = &sync.WaitGroup{}
+	e.Wrapper = e.CreateWrapper()
 
 	return item, nil
 }

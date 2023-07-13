@@ -138,9 +138,42 @@ func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string
 		return nil
 	}
 
-	data := map[string]interface{}{
+	extraData := map[string]interface{}{
 		cel_success: true,
-		cel_env:     env.GetBase().Type,
+	}
+
+	var err error
+	for _, v := range *p {
+		shouldRun := extraData[cel_success].(bool)
+		if v.Condition != "" {
+			shouldRun, err = CalculateIf(env, variables, v.Condition, extraData)
+			if err != nil {
+				return err
+			}
+		}
+
+		if shouldRun {
+			err = v.Operation.Run(env)
+			if err != nil {
+				logging.Error.Printf("Error running command: %s", err.Error())
+				extraData[cel_success] = false
+			} else {
+				extraData[cel_success] = true
+			}
+		}
+	}
+	return nil
+}
+
+func CalculateIf(env pufferpanel.Environment, variables map[string]pufferpanel.Variable, condition string, extraData map[string]interface{}) (bool, error) {
+	data := map[string]interface{}{
+		cel_env: env.GetBase().Type,
+	}
+
+	if extraData != nil {
+		for k, v := range extraData {
+			data[k] = v
+		}
 	}
 
 	celVars := append(celGlobalConstants)
@@ -156,40 +189,24 @@ func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string
 
 	celEnv, err := cel.NewEnv(append(celVars, CreateFunctions(env)...)...)
 	if err != nil {
-		return err
+		return false, err
 	}
 
-	for _, v := range *p {
-		shouldRun := data[cel_success].(bool)
-		if v.Condition != "" {
-			ast, issues := celEnv.Compile(v.Condition)
-			if issues != nil && issues.Err() != nil {
-				return issues.Err()
-			}
-
-			prg, err := celEnv.Program(ast)
-			if err != nil {
-				return err
-			}
-
-			out, _, err := prg.Eval(data)
-			if err != nil {
-				return err
-			}
-			shouldRun = out.Value().(bool)
-		}
-
-		if shouldRun {
-			err = v.Operation.Run(env)
-			if err != nil {
-				logging.Error.Printf("Error running command: %s", err.Error())
-				data[cel_success] = false
-			} else {
-				data[cel_success] = true
-			}
-		}
+	ast, issues := celEnv.Compile(condition)
+	if issues != nil && issues.Err() != nil {
+		return false, issues.Err()
 	}
-	return nil
+
+	prg, err := celEnv.Program(ast)
+	if err != nil {
+		return false, err
+	}
+
+	out, _, err := prg.Eval(data)
+	if err != nil {
+		return false, err
+	}
+	return out.Value().(bool), nil
 }
 
 func loadCoreModules() {
