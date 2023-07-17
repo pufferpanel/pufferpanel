@@ -1,10 +1,8 @@
 //go:build !windows && host
 
-package environments
+package servers
 
-import (
-	"github.com/pufferpanel/pufferpanel/v3/environments/tty"
-)
+import "github.com/pufferpanel/pufferpanel/v3/servers/tty"
 
 func init() {
 	mapping["host"] = tty.EnvironmentFactory{}

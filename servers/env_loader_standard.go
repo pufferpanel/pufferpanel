@@ -1,8 +1,8 @@
 //go:build windows && host
 
-package environments
+package servers
 
-import "github.com/pufferpanel/pufferpanel/v3/environments/standard"
+import "github.com/pufferpanel/pufferpanel/v3/servers/standard"
 
 func init() {
 	mapping["host"] = standard.EnvironmentFactory{}

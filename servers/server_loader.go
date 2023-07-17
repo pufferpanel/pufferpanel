@@ -14,7 +14,7 @@
  limitations under the License.
 */
 
-package programs
+package servers
 
 import (
 	"encoding/json"
@@ -22,9 +22,7 @@ import (
 	"github.com/go-co-op/gocron"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/operations"
 	"os"
 	"path/filepath"
 	"strings"
@@ -32,12 +30,8 @@ import (
 )
 
 var (
-	allPrograms = make([]*Program, 0)
+	allServers = make([]*Server, 0)
 )
-
-func Initialize() {
-	operations.LoadOperations()
-}
 
 func LoadFromFolder() {
 	err := os.Mkdir(config.ServersFolder.Value(), 0755)
@@ -48,7 +42,7 @@ func LoadFromFolder() {
 	if err != nil {
 		logging.Error.Fatalf("Error reading from server data folder: %s", err)
 	}
-	var program *Program
+	var program *Server
 	for _, element := range programFiles {
 		if element.IsDir() || !strings.HasSuffix(element.Name(), ".json") {
 			continue
@@ -72,11 +66,11 @@ func LoadFromFolder() {
 			continue
 		}
 		logging.Info.Printf("Loaded server %s", program.Id())
-		allPrograms = append(allPrograms, program)
+		allServers = append(allServers, program)
 	}
 }
 
-func Get(id string) (program *Program, err error) {
+func Get(id string) (program *Server, err error) {
 	program = GetFromCache(id)
 	if program == nil {
 		program, err = Load(id)
@@ -84,11 +78,11 @@ func Get(id string) (program *Program, err error) {
 	return
 }
 
-func GetAll() []*Program {
-	return allPrograms
+func GetAll() []*Server {
+	return allServers
 }
 
-func Load(id string) (program *Program, err error) {
+func Load(id string) (program *Server, err error) {
 	var data []byte
 	data, err = os.ReadFile(filepath.Join(config.ServersFolder.Value(), id+".json"))
 	if len(data) == 0 || err != nil {
@@ -98,7 +92,7 @@ func Load(id string) (program *Program, err error) {
 	return
 }
 
-func LoadFromData(id string, source []byte) (*Program, error) {
+func LoadFromData(id string, source []byte) (*Server, error) {
 	data := CreateProgram()
 
 	//HACK: Because golang thinks environment and Environment in the json are the same, we have to manually clean the
@@ -157,14 +151,14 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 		}
 	}
 
-	data.RunningEnvironment, err = environments.Create(environmentType, config.ServersFolder.Value(), id, data.Environment)
+	data.RunningEnvironment, err = CreateEnvironment(environmentType, config.ServersFolder.Value(), id, data.Environment)
 	if err != nil {
 		return nil, err
 	}
 	return data, nil
 }
 
-func startScheduler(program *Program) error {
+func startScheduler(program *Server) error {
 	s := gocron.NewScheduler(time.UTC)
 	for k, t := range program.Tasks {
 		if t.CronSchedule != "" {
@@ -180,7 +174,7 @@ func startScheduler(program *Program) error {
 	return nil
 }
 
-func executeTask(p *Program, taskId string) (err error) {
+func executeTask(p *Server, taskId string) (err error) {
 	task, ok := p.Tasks[taskId]
 	if !ok {
 		logging.Error.Printf("Execution of task %s on server %s requested, but task not found", taskId, p.Id())
@@ -190,8 +184,8 @@ func executeTask(p *Program, taskId string) (err error) {
 	ops := task.Operations
 	if len(ops) > 0 {
 		p.RunningEnvironment.DisplayToConsole(true, "Running task %s\n", task.Name)
-		var process operations.OperationProcess
-		process, err = operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
+		var process OperationProcess
+		process, err = GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 		if err != nil {
 			logging.Error.Printf("Error setting up tasks: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
@@ -219,7 +213,7 @@ func ExecuteTask(programId string, taskId string) error {
 	return executeTask(program, taskId)
 }
 
-func Create(program *Program) error {
+func Create(program *Server) error {
 	if GetFromCache(program.Id()) != nil {
 		return pufferpanel.ErrServerAlreadyExists
 	}
@@ -259,7 +253,7 @@ func Create(program *Program) error {
 		return err
 	}
 
-	program.RunningEnvironment, err = environments.Create(typeMap.Type, config.ServersFolder.Value(), program.Id(), program.Environment)
+	program.RunningEnvironment, err = CreateEnvironment(typeMap.Type, config.ServersFolder.Value(), program.Id(), program.Environment)
 	if err != nil {
 		return err
 	}
@@ -269,14 +263,14 @@ func Create(program *Program) error {
 		return err
 	}
 
-	allPrograms = append(allPrograms, program)
+	allServers = append(allServers, program)
 	return nil
 }
 
 func Delete(id string) (err error) {
 	var index int
-	var program *Program
-	for i, element := range allPrograms {
+	var program *Server
+	for i, element := range allServers {
 		if element.Id() == id {
 			program = element
 			index = i
@@ -314,12 +308,12 @@ func Delete(id string) (err error) {
 	if err != nil {
 		logging.Error.Printf("Error removing server: %s", err)
 	}
-	allPrograms = append(allPrograms[:index], allPrograms[index+1:]...)
+	allServers = append(allServers[:index], allServers[index+1:]...)
 	return
 }
 
-func GetFromCache(id string) *Program {
-	for _, element := range allPrograms {
+func GetFromCache(id string) *Server {
+	for _, element := range allServers {
 		if element != nil && element.Id() == id {
 			return element
 		}

@@ -14,12 +14,11 @@
  limitations under the License.
 */
 
-package environments
+package pufferpanel
 
 import (
 	"crypto/sha1"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
@@ -29,9 +28,9 @@ import (
 	"strings"
 )
 
-func DownloadFile(url, fileName string, env pufferpanel.Environment) error {
+func DownloadFile(url, fileName string, env Environment) error {
 	target, err := os.Create(filepath.Join(env.GetRootDirectory(), fileName))
-	defer pufferpanel.Close(target)
+	defer Close(target)
 	if err != nil {
 		return err
 	}
@@ -39,8 +38,8 @@ func DownloadFile(url, fileName string, env pufferpanel.Environment) error {
 	logging.Info.Printf("Downloading: %s", url)
 	env.DisplayToConsole(true, "Downloading: "+url+"\n")
 
-	response, err := pufferpanel.HttpGet(url)
-	defer pufferpanel.CloseResponse(response)
+	response, err := HttpGet(url)
+	defer CloseResponse(response)
 	if err != nil {
 		return err
 	}
@@ -57,15 +56,15 @@ func DownloadFileToCache(url, fileName string) error {
 	}
 
 	target, err := os.Create(fileName)
-	defer pufferpanel.Close(target)
+	defer Close(target)
 	if err != nil {
 		return err
 	}
 
 	logging.Info.Printf("Downloading: " + url)
 
-	response, err := pufferpanel.HttpGet(url)
-	defer pufferpanel.CloseResponse(response)
+	response, err := HttpGet(url)
+	defer CloseResponse(response)
 	if err != nil {
 		return err
 	}
@@ -74,7 +73,7 @@ func DownloadFileToCache(url, fileName string) error {
 	return err
 }
 
-func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, error) {
+func DownloadViaMaven(downloadUrl string, env Environment) (string, error) {
 	localPath := filepath.Join(config.CacheFolder.Value(), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
 
 	if os.PathSeparator != '/' {
@@ -89,20 +88,20 @@ func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, 
 
 	useCache := true
 	f, err := os.Open(localPath)
-	defer pufferpanel.Close(f)
+	defer Close(f)
 	//cache was readable, so validate
 	if err == nil {
 		h := sha1.New()
 		if _, err := io.Copy(h, f); err != nil {
 			log.Fatal(err)
 		}
-		pufferpanel.Close(f)
+		Close(f)
 
 		actualHash := fmt.Sprintf("%x", h.Sum(nil))
 
 		logging.Info.Printf("Downloading hash from %s", sha1Url)
-		response, err := pufferpanel.HttpGet(sha1Url)
-		defer pufferpanel.CloseResponse(response)
+		response, err := HttpGet(sha1Url)
+		defer CloseResponse(response)
 		if err != nil {
 			useCache = false
 		} else {

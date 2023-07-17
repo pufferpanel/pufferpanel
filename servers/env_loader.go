@@ -14,7 +14,7 @@
  limitations under the License.
 */
 
-package environments
+package servers
 
 import (
 	"fmt"
@@ -25,7 +25,7 @@ import (
 
 var mapping = make(map[string]pufferpanel.EnvironmentFactory)
 
-func Create(environmentType, folder, id string, environmentSection interface{}) (pufferpanel.Environment, error) {
+func CreateEnvironment(environmentType, folder, id string, environmentSection interface{}) (pufferpanel.Environment, error) {
 	factory := mapping[environmentType]
 
 	if factory == nil {

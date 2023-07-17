@@ -14,11 +14,11 @@
  limitations under the License.
 */
 
-package operations
+package servers
 
 import (
-	"github.com/google/cel-go/cel"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/conditions"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/operations/alterfile"
 	"github.com/pufferpanel/pufferpanel/v3/operations/archive"
@@ -41,7 +41,7 @@ import (
 
 var commandMapping map[string]pufferpanel.OperationFactory
 
-func LoadOperations() {
+func init() {
 	commandMapping = make(map[string]pufferpanel.OperationFactory)
 
 	loadCoreModules()
@@ -117,8 +117,8 @@ func GenerateProcess(directions []interface{}, environment pufferpanel.Environme
 
 		var ifMap map[string]interface{}
 		err = pufferpanel.UnmarshalTo(mapping, &ifMap)
-		if err == nil && ifMap["if"] != nil {
-			task.Condition = cast.ToString(ifMap["if"])
+		if item, exists := ifMap["if"]; err == nil && exists && item != nil {
+			task.Condition = ifMap["if"]
 		}
 
 		operationList = append(operationList, task)
@@ -130,7 +130,7 @@ type OperationProcess []*OperationTask
 
 type OperationTask struct {
 	Operation pufferpanel.Operation
-	Condition string
+	Condition interface{}
 }
 
 func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string]pufferpanel.Variable) error {
@@ -139,14 +139,14 @@ func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string
 	}
 
 	extraData := map[string]interface{}{
-		cel_success: true,
+		conditions.Success: true,
 	}
 
 	var err error
 	for _, v := range *p {
-		shouldRun := extraData[cel_success].(bool)
-		if v.Condition != "" {
-			shouldRun, err = CalculateIf(env, variables, v.Condition, extraData)
+		shouldRun := extraData[conditions.Success].(bool)
+		if v.Condition != nil {
+			shouldRun, err = RunIf(env, variables, v.Condition, extraData)
 			if err != nil {
 				return err
 			}
@@ -156,18 +156,22 @@ func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string
 			err = v.Operation.Run(env)
 			if err != nil {
 				logging.Error.Printf("Error running command: %s", err.Error())
-				extraData[cel_success] = false
+				extraData[conditions.Success] = false
 			} else {
-				extraData[cel_success] = true
+				extraData[conditions.Success] = true
 			}
 		}
 	}
 	return nil
 }
 
-func CalculateIf(env pufferpanel.Environment, variables map[string]pufferpanel.Variable, condition string, extraData map[string]interface{}) (bool, error) {
+func RunIf(env pufferpanel.Environment, variables map[string]pufferpanel.Variable, condition interface{}, extraData map[string]interface{}) (bool, error) {
+	if condition == nil {
+		return true, nil
+	}
+
 	data := map[string]interface{}{
-		cel_env: env.GetBase().Type,
+		conditions.Env: env.GetBase().Type,
 	}
 
 	if extraData != nil {
@@ -176,37 +180,13 @@ func CalculateIf(env pufferpanel.Environment, variables map[string]pufferpanel.V
 		}
 	}
 
-	celVars := append(celGlobalConstants)
-
-	for k, v := range variables {
-		celVars = append(celVars, cel.Variable(k, cel.AnyType))
-		data[k] = v.Value
+	if variables != nil {
+		for k, v := range variables {
+			data[k] = v.Value
+		}
 	}
 
-	for k, v := range celGlobalConstantValues {
-		data[k] = v
-	}
-
-	celEnv, err := cel.NewEnv(append(celVars, CreateFunctions(env)...)...)
-	if err != nil {
-		return false, err
-	}
-
-	ast, issues := celEnv.Compile(condition)
-	if issues != nil && issues.Err() != nil {
-		return false, issues.Err()
-	}
-
-	prg, err := celEnv.Program(ast)
-	if err != nil {
-		return false, err
-	}
-
-	out, _, err := prg.Eval(data)
-	if err != nil {
-		return false, err
-	}
-	return out.Value().(bool), nil
+	return conditions.ResolveIf(condition, data, CreateFunctions(env))
 }
 
 func loadCoreModules() {

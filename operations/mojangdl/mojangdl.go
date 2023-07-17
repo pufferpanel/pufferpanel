@@ -21,7 +21,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
 
@@ -96,7 +95,7 @@ func downloadServerFromJson(url, target string, env pufferpanel.Environment) err
 	logging.Info.Printf("Version jar located, downloading from %s", serverBlock.Url)
 	env.DisplayToConsole(true, fmt.Sprintf("Version jar located, downloading from %s\n", serverBlock.Url))
 
-	return environments.DownloadFile(serverBlock.Url, target, env)
+	return pufferpanel.DownloadFile(serverBlock.Url, target, env)
 }
 
 type LauncherJson struct {

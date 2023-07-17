@@ -1,4 +1,4 @@
-package operations
+package servers
 
 import (
 	"github.com/google/cel-go/cel"
@@ -11,13 +11,8 @@ import (
 	"path/filepath"
 )
 
-var nonEnvWrappedFunction []cel.EnvOption
-
-func init() {
-}
-
 func CreateFunctions(env pufferpanel.Environment) []cel.EnvOption {
-	return append(nonEnvWrappedFunction, []cel.EnvOption{
+	return []cel.EnvOption{
 		cel.Function("file_exists",
 			cel.Overload("file_exists_string_bool",
 				[]*cel.Type{cel.StringType},
@@ -30,7 +25,7 @@ func CreateFunctions(env pufferpanel.Environment) []cel.EnvOption {
 				cel.BoolType,
 				cel.UnaryBinding(cel_in_path(env)),
 			)),
-	}...)
+	}
 }
 
 func cel_file_exists(env pufferpanel.Environment) functions.UnaryOp {

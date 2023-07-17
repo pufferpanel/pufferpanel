@@ -27,8 +27,8 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/programs"
 	"github.com/pufferpanel/pufferpanel/v3/response"
+	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/spf13/cast"
 	"io"
 	"mime"
@@ -120,7 +120,7 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 
 func StartServer(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 
 	_, wait := c.GetQuery("wait")
 
@@ -143,7 +143,7 @@ func StartServer(c *gin.Context) {
 
 func StopServer(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 
 	_, wait := c.GetQuery("wait")
 
@@ -165,7 +165,7 @@ func StopServer(c *gin.Context) {
 
 func KillServer(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 
 	err := server.Kill()
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -183,14 +183,14 @@ func CreateServer(c *gin.Context) {
 		}
 		serverId = id.String()
 	}
-	prg, _ := programs.Get(serverId)
+	prg, _ := servers.Get(serverId)
 
 	if prg != nil {
 		response.HandleError(c, pufferpanel.ErrServerAlreadyExists, http.StatusConflict)
 		return
 	}
 
-	prg = programs.CreateProgram()
+	prg = servers.CreateProgram()
 	err := json.NewDecoder(c.Request.Body).Decode(prg)
 	if err != nil {
 		logging.Error.Printf("Error decoding JSON body: %s", err)
@@ -205,21 +205,21 @@ func CreateServer(c *gin.Context) {
 		return
 	}
 
-	if err := programs.Create(prg); err != nil {
+	if err := servers.Create(prg); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
-		_ = programs.Delete(prg.Id())
+		_ = servers.Delete(prg.Id())
 		return
 	}
 
 	if err := prg.Scheduler.LoadMap(prg.Tasks); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
-		_ = programs.Delete(prg.Id())
+		_ = servers.Delete(prg.Id())
 		return
 	}
 
 	if err := prg.Scheduler.Start(); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
-		_ = programs.Delete(prg.Id())
+		_ = servers.Delete(prg.Id())
 		return
 	}
 
@@ -228,8 +228,8 @@ func CreateServer(c *gin.Context) {
 
 func DeleteServer(c *gin.Context) {
 	item, _ := c.Get("program")
-	prg := item.(*programs.Program)
-	err := programs.Delete(prg.Id())
+	prg := item.(*servers.Server)
+	err := servers.Delete(prg.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -238,7 +238,7 @@ func DeleteServer(c *gin.Context) {
 
 func InstallServer(c *gin.Context) {
 	item, _ := c.Get("program")
-	prg := item.(*programs.Program)
+	prg := item.(*servers.Server)
 
 	_, wait := c.GetQuery("wait")
 
@@ -249,7 +249,7 @@ func InstallServer(c *gin.Context) {
 			c.Status(http.StatusNoContent)
 		}
 	} else {
-		go func(p *programs.Program) {
+		go func(p *servers.Server) {
 			_ = p.Install()
 		}(prg)
 
@@ -259,7 +259,7 @@ func InstallServer(c *gin.Context) {
 
 func EditServerData(c *gin.Context) {
 	item, _ := c.Get("program")
-	prg := item.(*programs.Program)
+	prg := item.(*servers.Server)
 
 	data := &pufferpanel.ServerData{}
 	err := json.NewDecoder(c.Request.Body).Decode(&data)
@@ -276,7 +276,7 @@ func EditServerData(c *gin.Context) {
 
 func CreateServerTask(c *gin.Context) {
 	item, _ := c.Get("program")
-	prg := item.(*programs.Program)
+	prg := item.(*servers.Server)
 
 	var task pufferpanel.Task
 	err := c.ShouldBindJSON(&task)
@@ -292,7 +292,7 @@ func CreateServerTask(c *gin.Context) {
 
 func EditServerTask(c *gin.Context) {
 	item, _ := c.Get("program")
-	prg := item.(*programs.Program)
+	prg := item.(*servers.Server)
 
 	var task pufferpanel.Task
 	err := c.ShouldBindJSON(&task)
@@ -312,7 +312,7 @@ func EditServerTask(c *gin.Context) {
 
 func DeleteServerTask(c *gin.Context) {
 	item, _ := c.Get("program")
-	prg := item.(*programs.Program)
+	prg := item.(*servers.Server)
 
 	taskName := c.Param("taskName")
 
@@ -325,9 +325,9 @@ func DeleteServerTask(c *gin.Context) {
 
 func ReloadServer(c *gin.Context) {
 	item, _ := c.Get("program")
-	prg := item.(*programs.Program)
+	prg := item.(*servers.Server)
 
-	err := programs.Reload(prg.Id())
+	err := servers.Reload(prg.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -336,7 +336,7 @@ func ReloadServer(c *gin.Context) {
 
 func GetServerData(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 
 	data := server.GetData()
 
@@ -355,19 +355,19 @@ func GetServerData(c *gin.Context) {
 
 func GetServerTasks(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 
 	c.JSON(200, &pufferpanel.ServerTasks{Tasks: server.Tasks})
 }
 
 func GetServerAdmin(c *gin.Context) {
-	item, _ := c.MustGet("server").(*programs.Program)
+	item, _ := c.MustGet("server").(*servers.Server)
 
 	c.JSON(200, &pufferpanel.ServerDataAdmin{Server: &item.Server})
 }
 
 func EditServerAdmin(c *gin.Context) {
-	item, _ := c.MustGet("server").(*programs.Program)
+	item, _ := c.MustGet("server").(*servers.Server)
 	server := &item.Server
 
 	replacement := &pufferpanel.Server{}
@@ -383,7 +383,7 @@ func EditServerAdmin(c *gin.Context) {
 	//copy from request
 	server.CopyFrom(replacement)
 
-	err = programs.Save(item.Id())
+	err = servers.Save(item.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		//REVERT!!!!!!!
 		server.CopyFrom(backup)
@@ -399,7 +399,7 @@ func EditServerAdmin(c *gin.Context) {
 
 func GetFile(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 
 	targetPath := c.Param("filename")
 
@@ -440,7 +440,7 @@ func GetFile(c *gin.Context) {
 
 func PutFile(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 
 	targetPath := c.Param("filename")
 
@@ -484,7 +484,7 @@ func PutFile(c *gin.Context) {
 
 func DeleteFile(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 
 	targetPath := c.Param("filename")
 
@@ -497,7 +497,7 @@ func DeleteFile(c *gin.Context) {
 
 func PostConsole(c *gin.Context) {
 	item, _ := c.Get("program")
-	prg := item.(*programs.Program)
+	prg := item.(*servers.Server)
 
 	d, _ := io.ReadAll(c.Request.Body)
 	cmd := string(d)
@@ -510,7 +510,7 @@ func PostConsole(c *gin.Context) {
 
 func GetStats(c *gin.Context) {
 	item, _ := c.Get("program")
-	svr := item.(*programs.Program)
+	svr := item.(*servers.Server)
 
 	results, err := svr.GetEnvironment().GetStats()
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -521,7 +521,7 @@ func GetStats(c *gin.Context) {
 
 func GetLogs(c *gin.Context) {
 	item, _ := c.Get("program")
-	program := item.(*programs.Program)
+	program := item.(*servers.Server)
 
 	time := c.DefaultQuery("time", "0")
 
@@ -545,7 +545,7 @@ func GetLogs(c *gin.Context) {
 
 func GetStatus(c *gin.Context) {
 	item, _ := c.Get("program")
-	program := item.(*programs.Program)
+	program := item.(*servers.Server)
 
 	running, err := program.IsRunning()
 
@@ -557,7 +557,7 @@ func GetStatus(c *gin.Context) {
 
 func Archive(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 	var files []string
 
 	if err := c.BindJSON(&files); response.HandleError(c, err, http.StatusBadRequest) {
@@ -578,7 +578,7 @@ func Archive(c *gin.Context) {
 
 func Extract(c *gin.Context) {
 	item, _ := c.Get("program")
-	server := item.(*programs.Program)
+	server := item.(*servers.Server)
 
 	targetPath := c.Param("filename")
 	destination := c.Query("destination")
@@ -592,7 +592,7 @@ func Extract(c *gin.Context) {
 
 func OpenSocket(c *gin.Context) {
 	item, _ := c.Get("program")
-	program := item.(*programs.Program)
+	program := item.(*servers.Server)
 
 	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
 	if response.HandleError(c, err, http.StatusInternalServerError) {

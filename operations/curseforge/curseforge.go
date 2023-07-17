@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"io"
 	"net/http"
 	"net/url"
@@ -66,7 +65,7 @@ func (c CurseForge) Run(env pufferpanel.Environment) error {
 		}
 	}
 
-	err = environments.DownloadFile(file.DownloadUrl, "download.zip", env)
+	err = pufferpanel.DownloadFile(file.DownloadUrl, "download.zip", env)
 	if err != nil {
 		return err
 	}

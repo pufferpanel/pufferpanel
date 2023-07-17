@@ -21,8 +21,8 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"github.com/pufferpanel/pufferpanel/v3/response"
+	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"net/http"
 	"runtime"
 	"time"
@@ -48,7 +48,7 @@ func getStatusHEAD(c *gin.Context) {
 func getFeatures(c *gin.Context) {
 	features := []string{}
 
-	envs := environments.GetSupportedEnvironments()
+	envs := servers.GetSupportedEnvironments()
 
 	if testDocker() {
 		features = append(features, "docker")

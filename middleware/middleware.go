@@ -21,8 +21,8 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/oauth2"
-	"github.com/pufferpanel/pufferpanel/v3/programs"
 	"github.com/pufferpanel/pufferpanel/v3/response"
+	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"net/http"
 	"runtime/debug"
@@ -151,7 +151,7 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope, needsServer bool
 
 		if needsServer && serverId != "" {
 			if config.DaemonEnabled.Value() {
-				program, err := programs.Get(serverId)
+				program, err := servers.Get(serverId)
 				if response.HandleError(c, err, http.StatusInternalServerError) {
 					return
 				}
@@ -191,7 +191,7 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope, needsServer bool
 		//if we do, validate it's even one we know of
 		serverId := c.Param("id")
 		if needsServer && serverId != "" {
-			program, err := programs.Get(serverId)
+			program, err := servers.Get(serverId)
 			if response.HandleError(c, err, http.StatusInternalServerError) {
 				return
 			}

@@ -20,7 +20,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"path"
 	"strings"
 )
@@ -45,7 +44,7 @@ func (op ForgeDl) Run(env pufferpanel.Environment) error {
 
 	jarDownload := strings.Replace(InstallerUrl, "${version}", op.Version, -1)
 
-	localFile, err := environments.DownloadViaMaven(jarDownload, env)
+	localFile, err := pufferpanel.DownloadViaMaven(jarDownload, env)
 	if err != nil {
 		return err
 	}

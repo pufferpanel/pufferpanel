@@ -1,4 +1,4 @@
-package programs
+package servers
 
 import (
 	"errors"
@@ -11,11 +11,11 @@ type Scheduler struct {
 	scheduler *gocron.Scheduler
 	running   bool
 	jobs      map[string]*gocron.Job
-	program   *Program
+	program   *Server
 }
 
 // NewScheduler Create a new Scheduler
-func NewScheduler(program *Program) Scheduler {
+func NewScheduler(program *Server) Scheduler {
 	s := gocron.NewScheduler(time.UTC)
 	s.SetMaxConcurrentJobs(5, gocron.RescheduleMode)
 	return Scheduler{scheduler: s, running: false, jobs: map[string]*gocron.Job{}, program: program}

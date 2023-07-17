@@ -14,7 +14,7 @@
  limitations under the License.
 */
 
-package programs
+package servers
 
 import (
 	"container/list"
@@ -25,7 +25,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
-	"github.com/pufferpanel/pufferpanel/v3/operations"
 	"github.com/spf13/cast"
 	"io"
 	"log"
@@ -37,7 +36,7 @@ import (
 	"time"
 )
 
-type Program struct {
+type Server struct {
 	pufferpanel.Server
 
 	CrashCounter       int                     `json:"-"`
@@ -59,7 +58,7 @@ func InitService() {
 	go processQueue()
 }
 
-func StartViaService(p *Program) {
+func StartViaService(p *Server) {
 	lock.Lock()
 	defer func() {
 		lock.Unlock()
@@ -95,7 +94,7 @@ func processQueue() {
 		if next == nil {
 			continue
 		}
-		program := next.Value.(*Program)
+		program := next.Value.(*Server)
 		if run, _ := program.IsRunning(); !run {
 			err := program.Start()
 			if err != nil {
@@ -112,7 +111,7 @@ type FileData struct {
 	Name          string
 }
 
-func (p *Program) DataToMap() map[string]interface{} {
+func (p *Server) DataToMap() map[string]interface{} {
 	var result = p.Server.DataToMap()
 	result["rootDir"] = p.RunningEnvironment.GetRootDirectory()
 	result["core:os"] = runtime.GOOS
@@ -121,8 +120,8 @@ func (p *Program) DataToMap() map[string]interface{} {
 	return result
 }
 
-func CreateProgram() *Program {
-	p := &Program{
+func CreateProgram() *Server {
+	p := &Server{
 		Server: pufferpanel.Server{
 			Execution: pufferpanel.Execution{
 				Disabled:                false,
@@ -149,7 +148,7 @@ func CreateProgram() *Program {
 
 // Starts the program.
 // This includes starting the environment if it is not running.
-func (p *Program) Start() error {
+func (p *Server) Start() error {
 	if !p.IsEnabled() {
 		p.Log(logging.Error, "Server %s is not enabled, cannot start", p.Id())
 		return pufferpanel.ErrServerDisabled
@@ -166,7 +165,7 @@ func (p *Program) Start() error {
 
 	data := p.DataToMap()
 
-	process, err := operations.GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, data, p.Execution.EnvironmentVariables)
+	process, err := GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, data, p.Execution.EnvironmentVariables)
 	if err != nil {
 		p.Log(logging.Error, "Error generating pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
@@ -206,7 +205,7 @@ func (p *Program) Start() error {
 			if v.If == "" {
 				continue
 			}
-			useThis, err := operations.CalculateIf(p.RunningEnvironment, p.Variables, v.If, nil)
+			useThis, err := RunIf(p.RunningEnvironment, p.Variables, v.If, nil)
 			if err != nil {
 				p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
 				p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
@@ -283,7 +282,7 @@ func (p *Program) Start() error {
 
 // Stops the program.
 // This will also stop the environment it is ran in.
-func (p *Program) Stop() error {
+func (p *Server) Stop() error {
 	var err error
 	if r, err := p.IsRunning(); !r || err != nil {
 		return err
@@ -306,7 +305,7 @@ func (p *Program) Stop() error {
 
 // Kills the program.
 // This will also stop the environment it is ran in.
-func (p *Program) Kill() (err error) {
+func (p *Server) Kill() (err error) {
 	p.Log(logging.Info, "Killing server %s", p.Id())
 	err = p.RunningEnvironment.Kill()
 	if err != nil {
@@ -320,7 +319,7 @@ func (p *Program) Kill() (err error) {
 
 // Creates any files needed for the program.
 // This includes creating the environment.
-func (p *Program) Create() (err error) {
+func (p *Server) Create() (err error) {
 	p.Log(logging.Info, "Creating server %s", p.Id())
 	p.RunningEnvironment.DisplayToConsole(true, "Allocating server\n")
 	err = p.RunningEnvironment.Create()
@@ -336,9 +335,9 @@ func (p *Program) Create() (err error) {
 
 // Destroys the server.
 // This will delete the server, environment, and any files related to it.
-func (p *Program) Destroy() (err error) {
+func (p *Server) Destroy() (err error) {
 	p.Log(logging.Info, "Destroying server %s", p.Id())
-	process, err := operations.GenerateProcess(p.Uninstallation, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
+	process, err := GenerateProcess(p.Uninstallation, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
 		p.Log(logging.Error, "Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n")
@@ -370,7 +369,7 @@ func (p *Program) Destroy() (err error) {
 	return
 }
 
-func (p *Program) Install() error {
+func (p *Server) Install() error {
 	if !p.IsEnabled() {
 		p.Log(logging.Error, "Server %s is not enabled, cannot install", p.Id())
 		return pufferpanel.ErrServerDisabled
@@ -404,8 +403,8 @@ func (p *Program) Install() error {
 	}
 
 	if len(p.Installation) > 0 {
-		var process operations.OperationProcess
-		process, err = operations.GenerateProcess(p.Installation, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
+		var process OperationProcess
+		process, err = GenerateProcess(p.Installation, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 		if err != nil {
 			p.Log(logging.Error, "Error installing server: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n")
@@ -424,48 +423,48 @@ func (p *Program) Install() error {
 	return nil
 }
 
-func (p *Program) IsRunning() (bool, error) {
+func (p *Server) IsRunning() (bool, error) {
 	return p.RunningEnvironment.IsRunning()
 }
 
-func (p *Program) Execute(command string) (err error) {
+func (p *Server) Execute(command string) (err error) {
 	err = p.RunningEnvironment.ExecuteInMainProcess(command)
 	return
 }
 
-func (p *Program) SetEnabled(isEnabled bool) (err error) {
+func (p *Server) SetEnabled(isEnabled bool) (err error) {
 	p.Execution.Disabled = !isEnabled
 	return
 }
 
-func (p *Program) IsEnabled() (isEnabled bool) {
+func (p *Server) IsEnabled() (isEnabled bool) {
 	return !p.Execution.Disabled
 }
 
-func (p *Program) SetEnvironment(environment pufferpanel.Environment) (err error) {
+func (p *Server) SetEnvironment(environment pufferpanel.Environment) (err error) {
 	p.RunningEnvironment = environment
 	return
 }
 
-func (p *Program) Id() string {
+func (p *Server) Id() string {
 	return p.Identifier
 }
 
-func (p *Program) GetEnvironment() pufferpanel.Environment {
+func (p *Server) GetEnvironment() pufferpanel.Environment {
 	return p.RunningEnvironment
 }
 
-func (p *Program) SetAutoStart(isAutoStart bool) (err error) {
+func (p *Server) SetAutoStart(isAutoStart bool) (err error) {
 	p.Execution.AutoStart = isAutoStart
 	return
 }
 
-func (p *Program) IsAutoStart() (isAutoStart bool) {
+func (p *Server) IsAutoStart() (isAutoStart bool) {
 	isAutoStart = p.Execution.AutoStart
 	return
 }
 
-func (p *Program) Save() (err error) {
+func (p *Server) Save() (err error) {
 	p.Log(logging.Info, "Saving server %s", p.Id())
 
 	file := filepath.Join(config.ServersFolder.Value(), p.Id()+".json")
@@ -486,7 +485,7 @@ func (p *Program) Save() (err error) {
 	return
 }
 
-func (p *Program) EditData(data map[string]pufferpanel.Variable, overrideUser bool) (err error) {
+func (p *Server) EditData(data map[string]pufferpanel.Variable, overrideUser bool) (err error) {
 	for k, v := range data {
 		var elem pufferpanel.Variable
 
@@ -509,11 +508,11 @@ func (p *Program) EditData(data map[string]pufferpanel.Variable, overrideUser bo
 	return
 }
 
-func (p *Program) GetData() map[string]pufferpanel.Variable {
+func (p *Server) GetData() map[string]pufferpanel.Variable {
 	return p.Variables
 }
 
-func (p *Program) GetNetwork() string {
+func (p *Server) GetNetwork() string {
 	data := p.GetData()
 	ip := "0.0.0.0"
 	port := "0"
@@ -529,7 +528,7 @@ func (p *Program) GetNetwork() string {
 	return ip + ":" + port
 }
 
-func (p *Program) afterExit(exitCode int) {
+func (p *Server) afterExit(exitCode int) {
 	graceful := exitCode == 0
 	if graceful {
 		p.CrashCounter = 0
@@ -539,7 +538,7 @@ func (p *Program) afterExit(exitCode int) {
 	mapping["success"] = graceful
 	mapping["exitCode"] = exitCode
 
-	processes, err := operations.GenerateProcess(p.Execution.PostExecution, p.RunningEnvironment, mapping, p.Execution.EnvironmentVariables)
+	processes, err := GenerateProcess(p.Execution.PostExecution, p.RunningEnvironment, mapping, p.Execution.EnvironmentVariables)
 	if err != nil {
 		p.Log(logging.Error, "Error running post processing for server %s: %s", p.Id(), err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n")
@@ -572,7 +571,7 @@ func (p *Program) afterExit(exitCode int) {
 	}
 }
 
-func (p *Program) GetItem(name string) (*FileData, error) {
+func (p *Server) GetItem(name string) (*FileData, error) {
 	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
 	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
 		return nil, pufferpanel.ErrIllegalFileAccess
@@ -628,7 +627,7 @@ func (p *Program) GetItem(name string) (*FileData, error) {
 	}
 }
 
-func (p *Program) CreateFolder(name string) error {
+func (p *Server) CreateFolder(name string) error {
 	folder := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
 
 	if !pufferpanel.EnsureAccess(folder, p.GetEnvironment().GetRootDirectory()) {
@@ -637,7 +636,7 @@ func (p *Program) CreateFolder(name string) error {
 	return os.MkdirAll(folder, 0755)
 }
 
-func (p *Program) OpenFile(name string) (io.WriteCloser, error) {
+func (p *Server) OpenFile(name string) (io.WriteCloser, error) {
 	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
 
 	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
@@ -648,7 +647,7 @@ func (p *Program) OpenFile(name string) (io.WriteCloser, error) {
 	return file, err
 }
 
-func (p *Program) DeleteItem(name string) error {
+func (p *Server) DeleteItem(name string) error {
 	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
 
 	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
@@ -658,7 +657,7 @@ func (p *Program) DeleteItem(name string) error {
 	return os.RemoveAll(targetFile)
 }
 
-func (p *Program) ArchiveItems(files []string, destination string) error {
+func (p *Server) ArchiveItems(files []string, destination string) error {
 	var targets []string
 	for _, name := range files {
 		targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
@@ -680,7 +679,7 @@ func (p *Program) ArchiveItems(files []string, destination string) error {
 	return archiver.Archive(targets, destination)
 }
 
-func (p *Program) Extract(source, destination string) error {
+func (p *Server) Extract(source, destination string) error {
 	sourceFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), source)
 	destinationFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), destination)
 
@@ -696,12 +695,12 @@ func (p *Program) Extract(source, destination string) error {
 	return archiver.Unarchive(sourceFile, destinationFile)
 }
 
-func (p *Program) ExecuteTask(task pufferpanel.Task) (err error) {
+func (p *Server) ExecuteTask(task pufferpanel.Task) (err error) {
 	ops := task.Operations
 	if len(ops) > 0 {
 		p.RunningEnvironment.DisplayToConsole(true, "Running task %s\n", task.Name)
-		var process operations.OperationProcess
-		process, err = operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
+		var process OperationProcess
+		process, err = GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 		if err != nil {
 			p.Log(logging.Error, "Error setting up tasks: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
@@ -721,7 +720,7 @@ func (p *Program) ExecuteTask(task pufferpanel.Task) (err error) {
 	return
 }
 
-func (p *Program) valid() bool {
+func (p *Server) valid() bool {
 	//we need a type at least, this is a safe check
 	if p.Type.Type == "" {
 		return false
@@ -746,7 +745,7 @@ func (p *Program) valid() bool {
 	return true
 }
 
-func (p *Program) Log(l *log.Logger, format string, obj ...interface{}) {
+func (p *Server) Log(l *log.Logger, format string, obj ...interface{}) {
 	msg := fmt.Sprintf("[%s] ", p.Id()) + format
 	l.Printf(msg, obj...)
 }

@@ -11,7 +11,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/operations"
-	"github.com/pufferpanel/pufferpanel/v3/programs"
+	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"log"
 	"os"
 	"path/filepath"
@@ -156,7 +156,7 @@ func main() {
 		buf := bytes.NewReader(template.Template)
 
 		log.Printf("Creating server")
-		prg := programs.CreateProgram()
+		prg := servers.CreateProgram()
 		err = json.NewDecoder(buf).Decode(prg)
 		panicIf(err)
 		prg.Identifier = strings.ReplaceAll(template.Name, "+", "")
@@ -176,7 +176,7 @@ func main() {
 			}
 		}
 
-		err = programs.Create(prg)
+		err = servers.Create(prg)
 		panicIf(err)
 
 		err = prg.Install()
@@ -194,7 +194,7 @@ func main() {
 	}
 }
 
-func runServer(prg *programs.Program) (err error) {
+func runServer(prg *servers.Program) (err error) {
 	err = prg.Start()
 	panicIf(err)
 

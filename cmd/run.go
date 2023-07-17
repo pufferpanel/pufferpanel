@@ -24,7 +24,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/programs"
+	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/pufferpanel/pufferpanel/v3/sftp"
 	"github.com/pufferpanel/pufferpanel/v3/web"
@@ -68,8 +68,8 @@ func executeRun(cmd *cobra.Command, args []string) {
 	sftp.Stop()
 
 	logging.Debug.Printf("stopping servers")
-	programs.ShutdownService()
-	for _, p := range programs.GetAll() {
+	servers.ShutdownService()
+	for _, p := range servers.GetAll() {
 		_ = p.Stop()
 		p.RunningEnvironment.WaitForMainProcessFor(time.Minute) //wait 60 seconds
 	}
@@ -161,8 +161,6 @@ func panel() {
 func daemon() error {
 	sftp.Run()
 
-	programs.Initialize()
-
 	var err error
 
 	if _, err = os.Stat(config.ServersFolder.Value()); os.IsNotExist(err) {
@@ -190,17 +188,17 @@ func daemon() error {
 		_ = os.Setenv("PATH", newPath+":"+fullPath)
 	}
 
-	programs.LoadFromFolder()
+	servers.LoadFromFolder()
 
-	programs.InitService()
+	servers.InitService()
 
-	for _, element := range programs.GetAll() {
+	for _, element := range servers.GetAll() {
 		if element.IsEnabled() {
 			element.GetEnvironment().DisplayToConsole(true, "Daemon has been started\n")
 			if element.IsAutoStart() {
 				logging.Info.Printf("Queued server %s", element.Id())
 				element.GetEnvironment().DisplayToConsole(true, "Server has been queued to start\n")
-				programs.StartViaService(element)
+				servers.StartViaService(element)
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-package programs
+package servers
 
 import (
 	"testing"
