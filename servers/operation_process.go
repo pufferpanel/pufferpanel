@@ -34,6 +34,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/move"
 	"github.com/pufferpanel/pufferpanel/v3/operations/sleep"
+	"github.com/pufferpanel/pufferpanel/v3/operations/spongedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/steamgamedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/writefile"
 	"github.com/spf13/cast"
@@ -133,60 +134,32 @@ type OperationTask struct {
 	Condition interface{}
 }
 
-func (p *OperationProcess) Run(env pufferpanel.Environment, variables map[string]pufferpanel.Variable) error {
+func (p *OperationProcess) Run(server *Server) error {
 	if len(*p) == 0 {
 		return nil
 	}
 
 	extraData := map[string]interface{}{
-		conditions.Success: true,
+		conditions.VariableSuccess: true,
 	}
 
-	var err error
 	for _, v := range *p {
-		shouldRun := extraData[conditions.Success].(bool)
-		if v.Condition != nil {
-			shouldRun, err = RunIf(env, variables, v.Condition, extraData)
-			if err != nil {
-				return err
-			}
+		shouldRun, err := server.RunCondition(v.Condition, extraData)
+		if err != nil {
+			return err
 		}
 
 		if shouldRun {
-			err = v.Operation.Run(env)
+			err = v.Operation.Run(server.RunningEnvironment)
 			if err != nil {
 				logging.Error.Printf("Error running command: %s", err.Error())
-				extraData[conditions.Success] = false
+				extraData[conditions.VariableSuccess] = false
 			} else {
-				extraData[conditions.Success] = true
+				extraData[conditions.VariableSuccess] = true
 			}
 		}
 	}
 	return nil
-}
-
-func RunIf(env pufferpanel.Environment, variables map[string]pufferpanel.Variable, condition interface{}, extraData map[string]interface{}) (bool, error) {
-	if condition == nil {
-		return true, nil
-	}
-
-	data := map[string]interface{}{
-		conditions.Env: env.GetBase().Type,
-	}
-
-	if extraData != nil {
-		for k, v := range extraData {
-			data[k] = v
-		}
-	}
-
-	if variables != nil {
-		for k, v := range variables {
-			data[k] = v.Value
-		}
-	}
-
-	return conditions.ResolveIf(condition, data, CreateFunctions(env))
 }
 
 func loadCoreModules() {
@@ -237,4 +210,7 @@ func loadCoreModules() {
 
 	curseforgeFactory := curseforge.Factory
 	commandMapping[curseforgeFactory.Key()] = curseforgeFactory
+
+	spongedlFactory := spongedl.Factory
+	commandMapping[spongedlFactory.Key()] = spongedlFactory
 }

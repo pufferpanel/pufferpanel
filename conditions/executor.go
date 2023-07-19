@@ -1,23 +1,27 @@
 package conditions
 
 import (
-	"github.com/google/cel-go/cel"
-	"github.com/spf13/cast"
+	"errors"
+	"github.com/pufferpanel/pufferpanel/v3/thirdparty/cel-go/cel"
 	"runtime"
 )
 
 var GlobalConstantValues = map[string]interface{}{
-	Os:   runtime.GOOS,
-	Arch: runtime.GOARCH,
+	VariableOs:   runtime.GOOS,
+	VariableArch: runtime.GOARCH,
 }
 
 func ResolveIf(condition interface{}, data map[string]interface{}, extraCels []cel.EnvOption) (bool, error) {
-	cond, err := cast.ToStringE(condition)
-	if err != nil {
-		return false, err
+	var cond string
+	var ok bool
+	if cond, ok = condition.(string); !ok {
+		return false, errors.New("unknown type for condition")
 	}
 
 	celVars := extraCels
+	if celVars == nil {
+		celVars = make([]cel.EnvOption, 0)
+	}
 
 	inputData := map[string]interface{}{}
 

@@ -193,7 +193,7 @@ func executeTask(p *Server, taskId string) (err error) {
 			return
 		}
 
-		err = process.Run(p.RunningEnvironment, p.Variables)
+		err = process.Run(p)
 		if err != nil {
 			logging.Error.Printf("Error setting up tasks: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")

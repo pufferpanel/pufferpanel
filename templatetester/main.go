@@ -10,7 +10,6 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/operations"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"log"
 	"os"
@@ -85,8 +84,6 @@ func main() {
 		ReferenceName: plumbing.ReferenceName(gitRef),
 	})
 	panicIf(err)
-
-	operations.LoadOperations()
 
 	templateFolders, err := os.ReadDir(templateFolder)
 	panicIf(err)
@@ -194,7 +191,7 @@ func main() {
 	}
 }
 
-func runServer(prg *servers.Program) (err error) {
+func runServer(prg *servers.Server) (err error) {
 	err = prg.Start()
 	panicIf(err)
 

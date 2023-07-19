@@ -5,6 +5,6 @@ package servers
 import "github.com/pufferpanel/pufferpanel/v3/servers/standard"
 
 func init() {
-	mapping["host"] = standard.EnvironmentFactory{}
-	mapping["standard"] = standard.EnvironmentFactory{}
+	envMapping["host"] = standard.EnvironmentFactory{}
+	envMapping["standard"] = standard.EnvironmentFactory{}
 }

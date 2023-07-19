@@ -1,8 +1,9 @@
 package conditions
 
 var (
-	Os      = "os"
-	Arch    = "arch"
-	Success = "success"
-	Env     = "env"
+	VariableOs       = "os"
+	VariableArch     = "arch"
+	VariableSuccess  = "success"
+	VariableEnv      = "env"
+	VariableServerId = "serverId"
 )

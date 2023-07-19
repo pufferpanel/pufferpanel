@@ -23,17 +23,17 @@ import (
 	"sync"
 )
 
-var mapping = make(map[string]pufferpanel.EnvironmentFactory)
+var envMapping = make(map[string]pufferpanel.EnvironmentFactory)
 
 func CreateEnvironment(environmentType, folder, id string, environmentSection interface{}) (pufferpanel.Environment, error) {
-	factory := mapping[environmentType]
+	factory := envMapping[environmentType]
 
 	if factory == nil {
 		switch environmentType {
 		case "standard":
 			fallthrough
 		case "tty":
-			factory = mapping["host"]
+			factory = envMapping["host"]
 		}
 	}
 
@@ -64,9 +64,9 @@ func CreateEnvironment(environmentType, folder, id string, environmentSection in
 }
 
 func GetSupportedEnvironments() []string {
-	result := make([]string, len(mapping))
+	result := make([]string, len(envMapping))
 	i := 0
-	for k, _ := range mapping {
+	for k := range envMapping {
 		result[i] = k
 		i++
 	}

@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/mholt/archiver/v3"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/conditions"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
@@ -172,7 +173,7 @@ func (p *Server) Start() error {
 		return err
 	}
 
-	err = process.Run(p.RunningEnvironment, p.Variables)
+	err = process.Run(p)
 	if err != nil {
 		p.Log(logging.Error, "Error running pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
@@ -205,7 +206,7 @@ func (p *Server) Start() error {
 			if v.If == "" {
 				continue
 			}
-			useThis, err := RunIf(p.RunningEnvironment, p.Variables, v.If, nil)
+			useThis, err := p.RunCondition(v.If, nil)
 			if err != nil {
 				p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
 				p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
@@ -344,7 +345,7 @@ func (p *Server) Destroy() (err error) {
 		return
 	}
 
-	err = process.Run(p.RunningEnvironment, p.Variables)
+	err = process.Run(p)
 	if err != nil {
 		p.Log(logging.Error, "Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n")
@@ -411,7 +412,7 @@ func (p *Server) Install() error {
 			return err
 		}
 
-		err = process.Run(p.RunningEnvironment, p.Variables)
+		err = process.Run(p)
 		if err != nil {
 			p.Log(logging.Error, "Error installing server: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n")
@@ -547,7 +548,7 @@ func (p *Server) afterExit(exitCode int) {
 	p.RunningEnvironment.DisplayToConsole(true, "Running post-execution steps\n")
 	p.Log(logging.Info, "Running post execution steps: %s", p.Id())
 
-	err = processes.Run(p.RunningEnvironment, p.Variables)
+	err = processes.Run(p)
 	if err != nil {
 		p.Log(logging.Error, "Error running post processing for server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n")
@@ -708,7 +709,7 @@ func (p *Server) ExecuteTask(task pufferpanel.Task) (err error) {
 			return
 		}
 
-		err = process.Run(p.RunningEnvironment, p.Variables)
+		err = process.Run(p)
 		if err != nil {
 			p.Log(logging.Error, "Error setting up tasks: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
@@ -748,4 +749,25 @@ func (p *Server) valid() bool {
 func (p *Server) Log(l *log.Logger, format string, obj ...interface{}) {
 	msg := fmt.Sprintf("[%s] ", p.Id()) + format
 	l.Printf(msg, obj...)
+}
+
+func (p *Server) RunCondition(condition interface{}, extraData map[string]interface{}) (bool, error) {
+	data := map[string]interface{}{
+		conditions.VariableEnv:      p.RunningEnvironment.GetBase().Type,
+		conditions.VariableServerId: p.Id(),
+	}
+
+	if extraData != nil {
+		for k, v := range extraData {
+			data[k] = v
+		}
+	}
+
+	if p.Variables != nil {
+		for k, v := range p.Variables {
+			data[k] = v.Value
+		}
+	}
+
+	return conditions.ResolveIf(condition, data, CreateFunctions(p.GetEnvironment()))
 }

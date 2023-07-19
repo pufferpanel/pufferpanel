@@ -22,13 +22,13 @@ func TestCurseForge_Run(t *testing.T) {
 			name: "RLCraft",
 			fields:  CurseForge{ProjectId: 285109, FileId: 0, JavaBinary: "java", Key: os.Getenv("CURSEFORGE_KEY")},
 			wantErr: false,
-		},*/
+		},
 		{
 			name:    "Pixelmon",
 			fields:  CurseForge{ProjectId: 389615, FileId: 4352459, JavaBinary: "java"},
 			wantErr: false,
 		},
-		/*{
+		{
 			name: "Better MC Fabric",
 			fields:  CurseForge{ProjectId: 452013, FileId: 0, JavaBinary: "java", Key: os.Getenv("CURSEFORGE_KEY")},
 			wantErr: false,

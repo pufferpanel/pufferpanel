@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+package google.expr.proto2.test;
+
+option go_package = "github.com/google/cel-go/test/proto2pb";
+
+import "google/protobuf/wrappers.proto";
+import "test/proto2pb/test_all_types.proto";
+
+// Package scoped extensions.
+extend ExampleType {
+  optional ExampleType nested_example = 100;
+  optional int32 int32_ext = 101;
+  optional google.protobuf.Int32Value int32_wrapper_ext = 102;
+}
+
+// Message scoped extensions.
+message ExternalMessageType {
+  extend ExampleType {
+    optional int64 int64_ext = 201;
+  }
+}

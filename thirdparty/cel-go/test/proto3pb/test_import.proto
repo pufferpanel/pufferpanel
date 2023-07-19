@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package google.expr.proto3.test;
+
+option go_package = "github.com/google/cel-go/test/proto3pb";
+
+enum ImportedGlobalEnum {
+    IMPORT_FOO = 0;
+    IMPORT_BAR = 1;
+    IMPORT_BAZ = 2;
+}

@@ -20,7 +20,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"github.com/pufferpanel/pufferpanel/v3/operations/forgedl"
 	"os"
 	"path"
@@ -115,7 +114,7 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 				return err
 			}
 
-			file, err := environments.DownloadViaMaven(url, env)
+			file, err := pufferpanel.DownloadViaMaven(url, env)
 			if err != nil {
 				return err
 			}
@@ -128,7 +127,7 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 		}
 	case "spongevanilla":
 		{
-			file, err := environments.DownloadViaMaven(url, env)
+			file, err := pufferpanel.DownloadViaMaven(url, env)
 			if err != nil {
 				return err
 			}
