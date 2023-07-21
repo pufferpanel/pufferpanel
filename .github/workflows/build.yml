@@ -110,7 +110,7 @@ jobs:
           sudo dpkg -i tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
           tar -zxf libclang_rt.builtins-wasm32-wasi-16.0.tar.gz lib/wasi/libclang_rt.builtins-wasm32.a
           rm tinygo_${{ env.TINYGO_VERSION }}_amd64.deb  libclang_rt.builtins-wasm32-wasi-16.0.tar.gz
-          sudo mv libclang_rt.builtins-wasm32.a /usr/local/lib/tinygo/lib/wasi-libc/sysroot/lib/wasm32-wasi/
+          sudo mv lib/wasi/libclang_rt.builtins-wasm32.a /usr/local/lib/tinygo/lib/wasi-libc/sysroot/lib/wasm32-wasi/
           sudo patch -u /usr/local/lib/tinygo/targets/wasm.json wasm.json.patch
 
       - name: Run WASM
