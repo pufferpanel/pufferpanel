@@ -16,6 +16,7 @@ env:
   SWAG_VERSION: "1.8.10"
   GO_VERSION: "1.19"
   NODE_VERSION: "18"
+  TINYGO_VERSION: "0.28.1"
 
 concurrency:
   group: ${{ github.ref }}
@@ -87,6 +88,34 @@ jobs:
           mkdir -p ~/go/bin
           tar -zxf swag*.tar.gz -C ~/go/bin
           rm -rf swag*.tar.gz
+          
+      - name: Prepare WASM
+        run: |
+          wget https://github.com/tinygo-org/tinygo/releases/download/v${{ env.TINYGO_VERSION }}/tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
+          sudo dpkg -i tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
+          rm tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
+          wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-16/libclang_rt.builtins-wasm32-wasi-16.0.tar.gz
+          tar -zxf libclang_rt.builtins-wasm32-wasi-16.0.tar.gz lib/wasi/libclang_rt.builtins-wasm32.a
+          sudo mv libclang_rt.builtins-wasm32.a /usr/local/lib/tinygo/lib/wasi-libc/sysroot/lib/wasm32-wasi/
+
+      - name: Generate Swagger Docs
+        run: |
+          go mod download
+          ~/go/bin/swag init -o web/swagger -g web/loader.go
+
+      - name: Prepare WASM
+        run: |
+          wget https://github.com/tinygo-org/tinygo/releases/download/v${{ env.TINYGO_VERSION }}/tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
+          wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-16/libclang_rt.builtins-wasm32-wasi-16.0.tar.gz
+          sudo dpkg -i tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
+          tar -zxf libclang_rt.builtins-wasm32-wasi-16.0.tar.gz lib/wasi/libclang_rt.builtins-wasm32.a
+          rm tinygo_${{ env.TINYGO_VERSION }}_amd64.deb  libclang_rt.builtins-wasm32-wasi-16.0.tar.gz
+          sudo mv libclang_rt.builtins-wasm32.a /usr/local/lib/tinygo/lib/wasi-libc/sysroot/lib/wasm32-wasi/
+          sudo patch -u /usr/local/lib/tinygo/targets/wasm.json wasm.json.patch
+
+      - name: Run WASM
+        run: |
+          tinygo build -target=wasm -no-debug -o client/frontend/public/conditions.wasm github.com/pufferpanel/pufferpanel/v3/conditions/wasm
 
       - name: yarn install, build
         run: |
@@ -95,11 +124,6 @@ jobs:
         env:
           CI: true
         working-directory: client
-
-      - name: Generate Swagger Docs
-        run: |
-          go mod download
-          ~/go/bin/swag init -o web/swagger -g web/loader.go
 
       - name: Upload Swagger docs
         uses: actions/upload-artifact@v3
@@ -110,10 +134,18 @@ jobs:
             web/swagger/swagger.yaml
           if-no-files-found: error
 
+      - name: Upload WASM
+        uses: actions/upload-artifact@v3
+        with:
+          name: conditions.wasm
+          path: |
+            client/frontend/public/conditions.wasm
+          if-no-files-found: error
+
       - name: Generate folders and remove excess files
         run: |
           rm -rf .git .github web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
-          zip -r pufferpanel_build_artifact.zip *
+          zip -r pufferpanel_build_artifact.zip *          
 
       - name: Generate job artifact
         uses: actions/upload-artifact@v3
