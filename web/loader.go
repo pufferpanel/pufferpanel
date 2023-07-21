@@ -40,6 +40,7 @@ import (
 )
 
 var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/", "/proxy/"}
+var clientFiles fs.ReadFileFS
 
 // @title PufferPanel API
 // @version 3.0
@@ -65,9 +66,9 @@ func RegisterRoutes(e *gin.Engine) {
 		oauth2.RegisterRoutes(e.Group("/oauth2"))
 		auth.RegisterRoutes(e.Group("/auth"))
 
-		var clientFiles fs.FS = dist.ClientFiles
+		clientFiles = dist.ClientFiles
 		if config.WebRoot.Value() != "" {
-			clientFiles = pufferpanel.NewMergedFS(os.DirFS(""), dist.ClientFiles)
+			clientFiles = pufferpanel.NewMergedFS(os.DirFS(config.WebRoot.Value()), dist.ClientFiles)
 		}
 
 		css := e.Group("/css")
@@ -130,7 +131,6 @@ func handle404(c *gin.Context) {
 		}
 	}
 
-	clientFiles := pufferpanel.NewMergedFS(os.DirFS(""), dist.ClientFiles)
 	file, err := clientFiles.ReadFile("index.html")
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
