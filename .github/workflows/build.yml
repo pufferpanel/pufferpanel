@@ -14,7 +14,7 @@ on:
 
 env:
   SWAG_VERSION: "1.8.10"
-  GO_VERSION: "1.19"
+  GO_VERSION: "1.20"
   NODE_VERSION: "18"
   TINYGO_VERSION: "0.28.1"
 
@@ -88,20 +88,6 @@ jobs:
           mkdir -p ~/go/bin
           tar -zxf swag*.tar.gz -C ~/go/bin
           rm -rf swag*.tar.gz
-          
-      - name: Prepare WASM
-        run: |
-          wget https://github.com/tinygo-org/tinygo/releases/download/v${{ env.TINYGO_VERSION }}/tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
-          sudo dpkg -i tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
-          rm tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
-          wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-16/libclang_rt.builtins-wasm32-wasi-16.0.tar.gz
-          tar -zxf libclang_rt.builtins-wasm32-wasi-16.0.tar.gz lib/wasi/libclang_rt.builtins-wasm32.a
-          sudo mv libclang_rt.builtins-wasm32.a /usr/local/lib/tinygo/lib/wasi-libc/sysroot/lib/wasm32-wasi/
-
-      - name: Generate Swagger Docs
-        run: |
-          go mod download
-          ~/go/bin/swag init -o web/swagger -g web/loader.go
 
       - name: Prepare WASM
         run: |
@@ -113,9 +99,16 @@ jobs:
           sudo mv lib/wasi/libclang_rt.builtins-wasm32.a /usr/local/lib/tinygo/lib/wasi-libc/sysroot/lib/wasm32-wasi/
           sudo patch -u /usr/local/lib/tinygo/targets/wasm.json wasm.json.patch
 
+      - name: Generate Swagger Docs
+        run: |
+          go mod download
+          ~/go/bin/swag init -o web/swagger -g web/loader.go
+
       - name: Run WASM
         run: |
           tinygo build -target=wasm -no-debug -o client/frontend/public/conditions.wasm github.com/pufferpanel/pufferpanel/v3/conditions/wasm
+        env:
+          GOFLAGS: -buildvcs=false
 
       - name: yarn install, build
         run: |

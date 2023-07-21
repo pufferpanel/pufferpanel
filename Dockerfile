@@ -1,8 +1,36 @@
 ###
 # Builder container
 ###
+FROM tinygo/tinygo:0.28.1 AS wasm
+
+ARG tinygoversion=0.28.1
+ENV GOOS=js \
+    GOARCH=wasm
+
+USER root
+
+RUN  apt-get update && \
+     apt-get install wget && \
+     rm -rf /var/lib/apt/lists/* && \
+     wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-16/libclang_rt.builtins-wasm32-wasi-16.0.tar.gz && \
+     tar -zxf libclang_rt.builtins-wasm32-wasi-16.0.tar.gz lib/wasi/libclang_rt.builtins-wasm32.a && \
+     rm libclang_rt.builtins-wasm32-wasi-16.0.tar.gz && \
+     mv lib/wasi/libclang_rt.builtins-wasm32.a /usr/local/tinygo/lib/wasi-libc/sysroot/lib/wasm32-wasi/
+
+WORKDIR /build
+
+COPY wasm.json.docker.patch ./
+RUN patch -ul /usr/local/tinygo/targets/wasm.json wasm.json.docker.patch
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+ENV GOFLAGS="-buildvcs=false"
+COPY . .
+RUN tinygo build -target=wasm -no-debug -o conditions.wasm github.com/pufferpanel/pufferpanel/v3/conditions/wasm
+
 FROM node:18-alpine AS node
-FROM golang:1.19-alpine AS builder
+FROM golang:1.20-alpine AS builder
 
 COPY --from=node /usr/lib /usr/lib
 COPY --from=node /usr/local/share /usr/local/share
@@ -36,6 +64,8 @@ COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY . .
+
+COPY --from=wasm /build/conditions.wasm /build/pufferpanel/client/frontend/public
 
 RUN cd client && \
     yarn install && \
