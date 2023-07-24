@@ -1,11 +1,11 @@
 package servers
 
 import (
+	"github.com/google/cel-go/cel"
+	"github.com/google/cel-go/common/types"
+	"github.com/google/cel-go/common/types/ref"
+	"github.com/google/cel-go/interpreter/functions"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/thirdparty/cel-go/cel"
-	"github.com/pufferpanel/pufferpanel/v3/thirdparty/cel-go/common/types"
-	"github.com/pufferpanel/pufferpanel/v3/thirdparty/cel-go/common/types/ref"
-	"github.com/pufferpanel/pufferpanel/v3/thirdparty/cel-go/interpreter/functions"
 	"os"
 	"os/exec"
 	"path/filepath"

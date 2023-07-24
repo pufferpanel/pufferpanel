@@ -2,7 +2,7 @@ package conditions
 
 import (
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v3/thirdparty/cel-go/cel"
+	"github.com/google/cel-go/cel"
 	"runtime"
 )
 

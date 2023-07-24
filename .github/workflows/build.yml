@@ -89,26 +89,26 @@ jobs:
           tar -zxf swag*.tar.gz -C ~/go/bin
           rm -rf swag*.tar.gz
 
-      - name: Prepare WASM
-        run: |
-          wget https://github.com/tinygo-org/tinygo/releases/download/v${{ env.TINYGO_VERSION }}/tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
-          wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-16/libclang_rt.builtins-wasm32-wasi-16.0.tar.gz
-          sudo dpkg -i tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
-          tar -zxf libclang_rt.builtins-wasm32-wasi-16.0.tar.gz lib/wasi/libclang_rt.builtins-wasm32.a
-          rm tinygo_${{ env.TINYGO_VERSION }}_amd64.deb  libclang_rt.builtins-wasm32-wasi-16.0.tar.gz
-          sudo mv lib/wasi/libclang_rt.builtins-wasm32.a /usr/local/lib/tinygo/lib/wasi-libc/sysroot/lib/wasm32-wasi/
-          sudo patch -ul /usr/local/lib/tinygo/targets/wasm.json wasm.json.patch
+      #- name: Prepare WASM
+      #  run: |
+      #    wget https://github.com/tinygo-org/tinygo/releases/download/v${{ env.TINYGO_VERSION }}/tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
+      #    wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-16/libclang_rt.builtins-wasm32-wasi-16.0.tar.gz
+      #    sudo dpkg -i tinygo_${{ env.TINYGO_VERSION }}_amd64.deb
+      #    tar -zxf libclang_rt.builtins-wasm32-wasi-16.0.tar.gz lib/wasi/libclang_rt.builtins-wasm32.a
+      #    rm tinygo_${{ env.TINYGO_VERSION }}_amd64.deb  libclang_rt.builtins-wasm32-wasi-16.0.tar.gz
+      #    sudo mv lib/wasi/libclang_rt.builtins-wasm32.a /usr/local/lib/tinygo/lib/wasi-libc/sysroot/lib/wasm32-wasi/
+      #    sudo patch -ul /usr/local/lib/tinygo/targets/wasm.json wasm.json.patch
 
       - name: Generate Swagger Docs
         run: |
           go mod download
           ~/go/bin/swag init -o web/swagger -g web/loader.go
 
-      - name: Run WASM
-        run: |
-          tinygo build -target=wasm -no-debug -o client/frontend/public/conditions.wasm github.com/pufferpanel/pufferpanel/v3/conditions/wasm
-        env:
-          GOFLAGS: -buildvcs=false
+      #- name: Run WASM
+      #  run: |
+      #    tinygo build -target=wasm -no-debug -o client/frontend/public/conditions.wasm github.com/pufferpanel/pufferpanel/v3/conditions/wasm
+      #  env:
+      #    GOFLAGS: -buildvcs=false
 
       - name: yarn install, build
         run: |
@@ -127,13 +127,13 @@ jobs:
             web/swagger/swagger.yaml
           if-no-files-found: error
 
-      - name: Upload WASM
-        uses: actions/upload-artifact@v3
-        with:
-          name: conditions.wasm
-          path: |
-            client/frontend/public/conditions.wasm
-          if-no-files-found: error
+      #- name: Upload WASM
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: conditions.wasm
+      #    path: |
+      #      client/frontend/public/conditions.wasm
+      #    if-no-files-found: error
 
       - name: Generate folders and remove excess files
         run: |
