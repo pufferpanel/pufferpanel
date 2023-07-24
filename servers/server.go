@@ -139,6 +139,7 @@ func CreateProgram() *Server {
 			Display:        "Unknown server",
 			Installation:   make([]interface{}, 0),
 			Uninstallation: make([]interface{}, 0),
+			Groups:         make([]pufferpanel.Group, 0),
 		},
 	}
 	p.Scheduler = NewScheduler(p)

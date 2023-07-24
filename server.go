@@ -35,6 +35,7 @@ type Server struct {
 	Execution             Execution           `json:"run,omitempty"`
 	Tasks                 map[string]Task     `json:"tasks,omitempty"`
 	Requirements          Requirements        `json:"requirements,omitempty"`
+	Groups                []Group             `json:"groups"`
 }
 
 type Task struct {
@@ -90,6 +91,13 @@ type Requirements struct {
 	Arch     string   `json:"arch,omitempty"`
 }
 
+type Group struct {
+	Variables   []string `json:"variables"`
+	Display     string   `json:"string"`
+	Description string   `json:"description"`
+	Order       int      `json:"order"`
+}
+
 func (s *Server) CopyFrom(replacement *Server) {
 	s.Variables = replacement.Variables
 	s.Tasks = replacement.Tasks
@@ -101,6 +109,7 @@ func (s *Server) CopyFrom(replacement *Server) {
 	s.Environment = replacement.Environment
 	s.Requirements = replacement.Requirements
 	s.SupportedEnvironments = replacement.SupportedEnvironments
+	s.Groups = replacement.Groups
 }
 
 func (r Requirements) Test(server Server) error {
