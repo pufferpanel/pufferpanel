@@ -15,6 +15,7 @@ package pufferpanel
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2/config"
+	"sync"
 	"time"
 )
 
@@ -35,6 +36,7 @@ type MemoryCache struct {
 	Cache
 	Buffer   []Message
 	Capacity int
+	Lock     sync.Locker
 }
 
 func CreateCache() *MemoryCache {
@@ -45,6 +47,7 @@ func CreateCache() *MemoryCache {
 	return &MemoryCache{
 		Buffer:   make([]Message, 0),
 		Capacity: capacity,
+		Lock:     &sync.Mutex{},
 	}
 }
 
@@ -72,6 +75,8 @@ func (c *MemoryCache) ReadFrom(startTime int64) (msg []string, lastTime int64) {
 }
 
 func (c *MemoryCache) Write(b []byte) (n int, err error) {
+	c.Lock.Lock()
+	defer c.Lock.Unlock()
 	if len(c.Buffer) == c.Capacity {
 		c.Buffer = c.Buffer[1:]
 	}
