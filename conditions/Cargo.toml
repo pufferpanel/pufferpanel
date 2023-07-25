@@ -8,5 +8,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = "0.2"
-rhai = "*"
+rhai = { version = "1.15.0", default-features = false, features = [ "std" ] }
 getrandom = { version = "0.2", features = ["js"] }
+js-sys = "*"
