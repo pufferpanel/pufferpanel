@@ -3,6 +3,7 @@ package conditions
 import (
 	"errors"
 	"github.com/google/cel-go/cel"
+	"github.com/spf13/cast"
 	"runtime"
 )
 
@@ -12,6 +13,13 @@ var GlobalConstantValues = map[string]interface{}{
 }
 
 func ResolveIf(condition interface{}, data map[string]interface{}, extraCels []cel.EnvOption) (bool, error) {
+	if str, ok := condition.(string); condition == nil || (ok && str == "") {
+		if success, exists := data[VariableSuccess]; exists {
+			return cast.ToBoolE(success)
+		}
+		return true, nil
+	}
+
 	var cond string
 	var ok bool
 	if cond, ok = condition.(string); !ok {
