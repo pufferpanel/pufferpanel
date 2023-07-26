@@ -3,9 +3,13 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/client"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -170,11 +174,40 @@ func main() {
 		}
 	}
 
+	var docker *client.Client
+	ctx := context.Background()
+
 	//now... we can create servers from each one of them
 	for _, scenario := range testScenarios {
 		log.Printf("Starting test for %s", scenario.Name)
 
 		template := scenario.Test
+
+		if strings.HasSuffix(template.Name, "-docker") {
+			//kill off any existing docker containers
+			if docker == nil {
+				docker, err = client.NewClientWithOpts(client.FromEnv)
+				panicIf(err)
+				docker.NegotiateAPIVersion(ctx)
+			}
+
+			opts := types.ContainerListOptions{
+				Filters: filters.NewArgs(),
+			}
+
+			opts.All = true
+			opts.Filters.Add("name", template.Name)
+
+			existingContainers, err := docker.ContainerList(ctx, opts)
+			panicIf(err)
+			if len(existingContainers) > 0 {
+				err = docker.ContainerRemove(ctx, template.Name, types.ContainerRemoveOptions{
+					Force: true,
+				})
+				panicIf(err)
+			}
+		}
+
 		buf := bytes.NewReader(template.Template)
 
 		log.Printf("Creating server")
