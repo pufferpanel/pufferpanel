@@ -1,73 +1,39 @@
 ###
 # Builder container
 ###
-FROM node:18-alpine AS node
 FROM ubuntu:20.04 AS builder
 
-COPY --from=node /usr/lib /usr/lib
-COPY --from=node /usr/local/share /usr/local/share
-COPY --from=node /usr/local/lib /usr/local/lib
-COPY --from=node /usr/local/include /usr/local/include
-COPY --from=node /usr/local/bin /usr/local/bin
-COPY --from=node /opt /opt
-
-ARG tags=docker
-ARG version=devel
-ARG sha=devel
-ARG goproxy
-ARG npmproxy
-ARG swagversion=1.8.10
-
-ENV CGOENABLED=1 \
-    YARN_REGISTRY=$npmproxy \
-    GOPROXY=$goproxy
-
+ENV CGOENABLED=1
+ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="$PATH:/usr/local/go/bin"
 
 RUN apt-get update && \
-    apt-get install -y wget build-essential && \
-    mkdir /pufferpanel && \
+    apt-get install -y dirmngr gnupg apt-transport-https ca-certificates software-properties-common curl && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+    apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-focal main' && \
+    dpkg --add-architecture i386 && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get update && \
+    apt-get install -y wget build-essential zip unzip tar git xz-utils nodejs lib32gcc1 libstdc++6 mono-complete&& \
     wget https://go.dev/dl/go1.20.6.linux-amd64.tar.gz && \
     rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz && \
-    go version
+    apt-get clean && \
+    rm -rf /var/cache/apt/archives && \
+    useradd pufferpanel && \
+    mkdir /home/pufferpanel && \
+    chown -R pufferpanel:pufferpanel /home/pufferpanel
 
-WORKDIR /build/pufferpanel
+WORKDIR /home/pufferpanel/build
+USER pufferpanel
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY . .
 
-RUN go build -v -buildvcs=false -tags "$tags" -o /pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester
+RUN go build -v -buildvcs=false -tags "docker host" -o /home/pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester
 
-###
-# Generate final image
-###
+WORKDIR /home/pufferpanel
 
-FROM ubuntu:20.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt update && \
-    apt install -y zip unzip tar git wget curl xz-utils dirmngr gnupg apt-transport-https ca-certificates software-properties-common
-
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-    apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-focal main' && \
-    dpkg --add-architecture i386 && \
-    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-
-RUN apt update && \
-    apt install -y nodejs lib32gcc1 libstdc++6 mono-complete && \
-    apt-get clean
-
-RUN useradd pufferpanel && \
-    mkdir /home/pufferpanel && \
-    chown -R pufferpanel:pufferpanel /home/pufferpanel
-
-
-COPY --from=builder /pufferpanel /pufferpanel
-WORKDIR /pufferpanel
-
-USER pufferpanel
-
-CMD ["/pufferpanel/templatetester"]
+ENTRYPOINT "./templatetester"
+CMD []

@@ -12,7 +12,6 @@ jobs:
     strategy:
       matrix:
         platform: [ "linux/amd64" ]
-    if: "contains(github.event.head_commit.message, '[tester]')"
 
     steps:
       - name: Correct env
@@ -48,3 +47,15 @@ jobs:
             sha: ${{ github.sha }}
             version: ${{ env.VERSION }}
           platforms: ${{ matrix.platform }}
+
+  run-tester:
+    name: Run Tester
+    runs-on: template-tester
+
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
