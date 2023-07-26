@@ -2,13 +2,14 @@ name: Build Tester
 on:
   workflow_dispatch:
 
+env:
+  REPO: pufferpanel/pufferpanel
+  VERSION: templatetester
+
 jobs:
   build-tester:
     name: Build Template Tester
     runs-on: ubuntu-20.04
-    env:
-      REPO: pufferpanel/pufferpanel
-      VERSION: templatetester
     strategy:
       matrix:
         platform: [ "linux/amd64" ]
@@ -59,3 +60,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run image
+        run: |
+          docker pull ghcr.io/${{ env.REPO }}:templatetester
+          docker run -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/${{ env.REPO }}:templatetester
