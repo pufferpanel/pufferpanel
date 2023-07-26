@@ -2,7 +2,7 @@
 # Builder container
 ###
 FROM node:18-alpine AS node
-FROM golang:1.19-alpine AS builder
+FROM ubuntu:20.04 AS builder
 
 COPY --from=node /usr/lib /usr/lib
 COPY --from=node /usr/local/share /usr/local/share
@@ -22,13 +22,14 @@ ENV CGOENABLED=1 \
     YARN_REGISTRY=$npmproxy \
     GOPROXY=$goproxy
 
-RUN go version && \
-    apk add --update --no-cache gcc musl-dev git curl make gcc g++ && \
+ENV PATH="$PATH:/usr/local/go/bin"
+
+RUN apt-get update && \
+    apt-get install -y wget build-essential && \
     mkdir /pufferpanel && \
-    wget https://github.com/swaggo/swag/releases/download/v${swagversion}/swag_${swagversion}_Linux_x86_64.tar.gz && \
-    mkdir -p ~/go/bin && \
-    tar -zxf swag*.tar.gz -C ~/go/bin && \
-    rm -rf swag*.tar.gz
+    wget https://go.dev/dl/go1.20.6.linux-amd64.tar.gz && \
+    rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz && \
+    go version
 
 WORKDIR /build/pufferpanel
 
@@ -37,14 +38,7 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN cd client && \
-    rm -f frontend/src/lang && \
-    ln -s ../../src/lang frontend/src/lang && \
-    yarn install && \
-    yarn build
-
-RUN ~/go/bin/swag init -o web/swagger -g web/loader.go && \
-    go build -v -buildvcs=false -tags "$tags" -o /pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester
+RUN go build -v -buildvcs=false -tags "$tags" -o /pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester
 
 ###
 # Generate final image
@@ -76,5 +70,4 @@ WORKDIR /pufferpanel
 
 USER pufferpanel
 
-ENTRYPOINT ["/pufferpanel/templatetester"]
-CMD ["--gitref=refs/heads/v2.6"]
+CMD ["/pufferpanel/templatetester"]

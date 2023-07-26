@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
@@ -33,7 +34,7 @@ func main() {
 	var gitRef string
 	var skipStr string
 	var requiredStr string
-	flag.StringVar(&gitRef, "gitref", "refs/heads/v2.6", "")
+	flag.StringVar(&gitRef, "gitref", "refs/heads/v3", "")
 	flag.StringVar(&skipStr, "skip", "", "")
 	flag.StringVar(&requiredStr, "required", "", "")
 	flag.Parse()
@@ -85,21 +86,23 @@ func main() {
 	})
 	panicIf(err)
 
-	templateFolders, err := os.ReadDir(templateFolder)
+	var templateFolders []os.DirEntry
+	templateFolders, err = os.ReadDir(templateFolder)
 	panicIf(err)
 
-	templates := make([]*TestTemplate, 0)
+	testScenarios := make([]*TestScenario, 0)
 
 	for _, folder := range templateFolders {
 		if !folder.IsDir() || strings.HasPrefix(folder.Name(), ".") {
 			continue
 		}
 
-		if _, err := os.Stat(filepath.Join(templateFolder, folder.Name(), ".skip")); err == nil {
+		if _, err = os.Stat(filepath.Join(templateFolder, folder.Name(), ".skip")); err == nil {
 			continue
 		}
 
-		files, err := os.ReadDir(filepath.Join(templateFolder, folder.Name()))
+		var files []os.DirEntry
+		files, err = os.ReadDir(filepath.Join(templateFolder, folder.Name()))
 		panicIf(err)
 
 		for _, file := range files {
@@ -132,24 +135,46 @@ func main() {
 				tmp.Template, err = os.ReadFile(filePath)
 				panicIf(err)
 
-				var dataFile os.FileInfo
-				if dataFile, err = os.Stat(filepath.Join(templateFolder, folder.Name(), tmp.Name+".txt")); os.IsNotExist(err) {
-					dataFile, _ = os.Stat(filepath.Join(templateFolder, folder.Name(), "data.txt"))
-				}
-				if dataFile != nil {
-					tmp.Data, err = os.ReadFile(filepath.Join(templateFolder, folder.Name(), dataFile.Name()))
+				_, err = os.Stat(filepath.Join(templateFolder, folder.Name(), "data.txt"))
+				if err == nil {
+					tmp.Variables, err = readDataTxtFile(filepath.Join(templateFolder, folder.Name(), "data.txt"))
+					panicIf(err)
+				} else if !os.IsNotExist(err) {
 					panicIf(err)
 				}
 
-				templates = append(templates, tmp)
+				_, err = os.Stat(filepath.Join(templateFolder, folder.Name(), "data.json"))
+				if err == nil {
+					tests, err := readDataJsonFile(filepath.Join(templateFolder, folder.Name(), "data.json"))
+					for _, v := range tests {
+						testScenarios = append(testScenarios, &TestScenario{
+							Name: v.Name,
+							Test: &TestTemplate{
+								Template:  tmp.Template,
+								Name:      tmp.Name,
+								Variables: v.Variables,
+							},
+						})
+					}
+					panicIf(err)
+				} else if !os.IsNotExist(err) {
+					panicIf(err)
+				} else {
+					//no data json, which means it's a single test
+					testScenarios = append(testScenarios, &TestScenario{
+						Name: tmp.Name,
+						Test: tmp,
+					})
+				}
 			}
 		}
 	}
 
 	//now... we can create servers from each one of them
-	for _, template := range templates {
-		log.Printf("Starting test for %s", template.Name)
+	for _, scenario := range testScenarios {
+		log.Printf("Starting test for %s", scenario.Name)
 
+		template := scenario.Test
 		buf := bytes.NewReader(template.Template)
 
 		log.Printf("Creating server")
@@ -158,18 +183,11 @@ func main() {
 		panicIf(err)
 		prg.Identifier = strings.ReplaceAll(template.Name, "+", "")
 
-		//use data file to fill in extra template data
-		if template.Data != nil {
-			reader := bytes.NewReader(template.Data)
-			scanner := bufio.NewScanner(reader)
-			for scanner.Scan() {
-				line := scanner.Text()
-				parts := strings.Split(line, "=")
-				key := parts[0]
-				value := parts[1]
-				variable := prg.Variables[key]
-				variable.Value = value
-				prg.Variables[key] = variable
+		if template.Variables != nil {
+			for k, v := range template.Variables {
+				variable := prg.Variables[k]
+				variable.Value = v
+				prg.Variables[k] = variable
 			}
 		}
 
@@ -189,6 +207,37 @@ func main() {
 		err = prg.Destroy()
 		panicIf(err)
 	}
+}
+
+func readDataTxtFile(fileName string) (map[string]interface{}, error) {
+	file, err := os.Open(fileName)
+	if err != nil {
+		return nil, err
+	}
+	defer pufferpanel.Close(file)
+
+	result := make(map[string]interface{})
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		parts := strings.Split(line, "=")
+		key := parts[0]
+		value := parts[1]
+		result[key] = value
+	}
+	return result, nil
+}
+
+func readDataJsonFile(fileName string) ([]*TestData, error) {
+	file, err := os.Open(fileName)
+	if err != nil {
+		return nil, err
+	}
+	defer pufferpanel.Close(file)
+
+	result := make([]*TestData, 0)
+	err = json.NewDecoder(file).Decode(&result)
+	return result, err
 }
 
 func runServer(prg *servers.Server) (err error) {
@@ -243,8 +292,18 @@ func match(pattern string, value string) bool {
 	return result
 }
 
+type TestScenario struct {
+	Name string
+	Test *TestTemplate
+}
+
 type TestTemplate struct {
-	Template []byte
-	Name     string
-	Data     []byte
+	Template  []byte
+	Name      string
+	Variables map[string]interface{}
+}
+
+type TestData struct {
+	Name      string
+	Variables map[string]interface{}
 }
