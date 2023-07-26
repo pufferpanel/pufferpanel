@@ -110,6 +110,10 @@ func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
 					continue
 				}
 
+				if v.Name() == "data.json" {
+					continue
+				}
+
 				name := strings.TrimSuffix(v.Name(), ".json")
 				templatePath := filepath.Join(path, folder.Name(), v.Name())
 				template, err := readTemplateFromDisk(name, templatePath)
