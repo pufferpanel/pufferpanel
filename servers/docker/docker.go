@@ -86,19 +86,19 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		return errors.New("docker container already exists")
 	}
 
-	err = d.createContainer(dockerClient, ctx, steps.Command, steps.Arguments, steps.Environment, steps.WorkingDirectory)
+	err = d.createContainer(dockerClient, ctx, steps)
 	if err != nil {
 		return err
 	}
 
-	config := types.ContainerAttachOptions{
+	cfg := types.ContainerAttachOptions{
 		Stdin:  true,
 		Stdout: true,
 		Stderr: true,
 		Stream: true,
 	}
 
-	d.connection, err = dockerClient.ContainerAttach(ctx, d.ContainerId, config)
+	d.connection, err = dockerClient.ContainerAttach(ctx, d.ContainerId, cfg)
 	if err != nil {
 		return err
 	}
@@ -306,7 +306,7 @@ func (d *docker) doesContainerExist(client *client.Client, ctx context.Context) 
 	}
 }
 
-func (d *docker) pullImage(client *client.Client, ctx context.Context, force bool) error {
+func (d *docker) pullImage(client *client.Client, ctx context.Context, imageName string, force bool) error {
 	if d.downloadingImage {
 		return pufferpanel.ErrImageDownloading
 	}
@@ -317,7 +317,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 		All:     true,
 		Filters: filters.NewArgs(),
 	}
-	opts.Filters.Add("reference", d.ImageName)
+	opts.Filters.Add("reference", imageName)
 	images, err := client.ImageList(ctx, opts)
 
 	if err != nil {
@@ -328,7 +328,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 		exists = true
 	}
 
-	d.Log(logging.Debug, "Does image %v exist? %v", d.ImageName, exists)
+	d.Log(logging.Debug, "Does image %v exist? %v", imageName, exists)
 
 	if exists && !force {
 		return nil
@@ -336,7 +336,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 
 	op := types.ImagePullOptions{}
 
-	d.Log(logging.Debug, "Downloading image %v", d.ImageName)
+	d.Log(logging.Debug, "Downloading image %v", imageName)
 	d.DisplayToConsole(true, "Downloading image for container, please wait\n")
 
 	d.downloadingImage = true
@@ -344,7 +344,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 		d.downloadingImage = false
 	}()
 
-	r, err := client.ImagePull(ctx, d.ImageName, op)
+	r, err := client.ImagePull(ctx, imageName, op)
 	defer pufferpanel.Close(r)
 	if err != nil {
 		return err
@@ -357,15 +357,18 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 		return err
 	}
 
-	d.Log(logging.Debug, "Downloaded image %v", d.ImageName)
+	d.Log(logging.Debug, "Downloaded image %v", imageName)
 	d.DisplayToConsole(true, "Downloaded image for container\n")
 	return err
 }
 
-func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd string, args []string, env map[string]string, workDir string) error {
+func (d *docker) createContainer(client *client.Client, ctx context.Context, data pufferpanel.ExecutionData) error {
 	d.Log(logging.Debug, "Creating container")
 	containerRoot := "/pufferpanel"
-	err := d.pullImage(client, ctx, false)
+
+	imageName := pufferpanel.ReplaceTokens(d.ImageName, data.Variables)
+
+	err := d.pullImage(client, ctx, imageName, false)
 
 	if err != nil {
 		return err
@@ -374,10 +377,11 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	//newEnv := os.Environ()
 	newEnv := []string{"HOME=" + containerRoot}
 
-	for k, v := range env {
+	for k, v := range data.Environment {
 		newEnv = append(newEnv, fmt.Sprintf("%s=%s", k, v))
 	}
 
+	workDir := data.WorkingDirectory
 	if workDir == "" {
 		workDir = containerRoot
 	}
@@ -393,8 +397,8 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	}
 
 	cmdSlice := strslice.StrSlice{}
-	cmdSlice = append(cmdSlice, cmd)
-	for _, v := range args {
+	cmdSlice = append(cmdSlice, data.Command)
+	for _, v := range data.Arguments {
 		cmdSlice = append(cmdSlice, v)
 	}
 

@@ -252,6 +252,7 @@ func (p *Server) Start() error {
 		Arguments:        args,
 		Environment:      pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data),
 		WorkingDirectory: workDir,
+		Variables:        p.DataToMap(),
 		Callback:         p.afterExit,
 	})
 

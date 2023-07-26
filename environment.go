@@ -104,6 +104,7 @@ type ExecutionData struct {
 	Arguments        []string
 	Environment      map[string]string
 	WorkingDirectory string
+	Variables        map[string]interface{}
 	Callback         func(exitCode int)
 }
 
