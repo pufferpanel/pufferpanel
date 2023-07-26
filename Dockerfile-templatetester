@@ -24,7 +24,6 @@ RUN apt-get update && \
     chown -R pufferpanel:pufferpanel /home/pufferpanel
 
 WORKDIR /home/pufferpanel/build
-USER pufferpanel
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
