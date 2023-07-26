@@ -445,7 +445,7 @@ func editServer(c *gin.Context) {
 
 	server := c.MustGet("server").(*models.Server)
 
-	postBody := &pufferpanel.Server{}
+	postBody := &models.ServerWithName{}
 	err = c.Bind(postBody)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -464,6 +464,10 @@ func editServer(c *gin.Context) {
 		return
 	}
 	server.IP = cast.ToString(ip)
+
+	if postBody.Name != "" {
+		server.Name = postBody.Name
+	}
 
 	err = ss.Update(server)
 	if response.HandleError(c, err, http.StatusInternalServerError) {

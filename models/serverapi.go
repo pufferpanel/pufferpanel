@@ -39,3 +39,8 @@ type ServerSearchResponse struct {
 	Servers []*ServerView `json:"servers"`
 	*response.Metadata
 }
+
+type ServerWithName struct {
+	pufferpanel.Server
+	Name string `json:"name"`
+}
