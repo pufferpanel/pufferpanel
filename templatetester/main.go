@@ -337,6 +337,6 @@ type TestTemplate struct {
 }
 
 type TestData struct {
-	Name      string
-	Variables map[string]interface{}
+	Name      string                 `json:"name"`
+	Variables map[string]interface{} `json:"variables"`
 }
