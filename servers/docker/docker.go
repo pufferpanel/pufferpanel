@@ -50,6 +50,7 @@ type docker struct {
 	Network     string              `json:"networkName,omitempty"`
 	Ports       []string            `json:"portBindings,omitempty"`
 	Resources   container.Resources `json:"resources,omitempty"`
+	Labels      map[string]string   `json:"labels,omitempty"`
 
 	connection       types.HijackedResponse
 	cli              *client.Client
@@ -404,6 +405,13 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, dat
 
 	d.Log(logging.Debug, "Container command: %s\n", cmdSlice)
 
+	labels := map[string]string{
+		"pufferpanel.server": d.ContainerId,
+	}
+	for k, v := range d.Labels {
+		labels[k] = v
+	}
+
 	containerConfig := &container.Config{
 		AttachStderr:    true,
 		AttachStdin:     true,
@@ -415,9 +423,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, dat
 		WorkingDir:      workDir,
 		Env:             newEnv,
 		Entrypoint:      cmdSlice,
-		Labels: map[string]string{
-			"pufferpanel.server": d.ContainerId,
-		},
+		Labels:          labels,
 	}
 
 	if runtime.GOOS == "linux" {

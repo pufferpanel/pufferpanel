@@ -30,6 +30,7 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 		NetworkMode:     "host",
 		Ports:           make([]string, 0),
 		Binds:           make(map[string]string),
+		Labels:          make(map[string]string),
 	}
 
 	d.ExecutionFunction = d.dockerExecuteAsync
