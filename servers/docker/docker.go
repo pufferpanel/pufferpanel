@@ -447,7 +447,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, dat
 	}
 
 	hostConfig := &container.HostConfig{
-		//AutoRemove:   true,
+		AutoRemove:   true,
 		NetworkMode:  container.NetworkMode(d.NetworkMode),
 		Resources:    d.Resources,
 		Binds:        bindDirs,

@@ -143,6 +143,7 @@ func (p *OperationProcess) Run(server *Server) error {
 		conditions.VariableSuccess: true,
 	}
 
+	var firstError error
 	for _, v := range *p {
 		shouldRun, err := server.RunCondition(v.Condition, extraData)
 		if err != nil {
@@ -153,13 +154,16 @@ func (p *OperationProcess) Run(server *Server) error {
 			err = v.Operation.Run(server.RunningEnvironment)
 			if err != nil {
 				logging.Error.Printf("Error running command: %s", err.Error())
+				if firstError == nil {
+					firstError = err
+				}
 				extraData[conditions.VariableSuccess] = false
 			} else {
 				extraData[conditions.VariableSuccess] = true
 			}
 		}
 	}
-	return nil
+	return firstError
 }
 
 func loadCoreModules() {
