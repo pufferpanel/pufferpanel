@@ -35,14 +35,19 @@ type ServerData struct {
 	Variables map[string]Variable `json:"data"`
 }
 
-type ServerTasks struct {
-	Tasks map[string]Task `json:"tasks"`
-}
-
 type ServerDataAdmin struct {
 	*Server
 }
 
 type DaemonRunning struct {
 	Message string `json:"message"`
+}
+
+type ServerTasks struct {
+	Tasks map[string]ServerTask
+}
+
+type ServerTask struct {
+	IsRunning bool `json:"isRunning"`
+	Task
 }

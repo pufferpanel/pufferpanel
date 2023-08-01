@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-co-op/gocron"
 	"github.com/gofrs/uuid/v5"
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -59,12 +60,14 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST"))
 
 		l.GET("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), GetServerTasks)
-		l.POST("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), CreateServerTask)
+		l.OPTIONS("/:serverId/tasks", response.CreateOptions("GET"))
+
+		l.GET("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), GetServerTask)
 		l.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), EditServerTask)
 		l.DELETE("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), DeleteServerTask)
-		l.OPTIONS("/:serverId/tasks", response.CreateOptions("GET", "POST", "PUT", "DELETE"))
+		l.OPTIONS("/:serverId/tasks/:taskId", response.CreateOptions("GET", "PUT", "DELETE"))
 
-		//l.POST("/:serverId/tasks/:taskId/run", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), RunServerTask)
+		l.POST("/:serverId/tasks/:taskId/run", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), RunServerTask)
 		l.OPTIONS("/:serverId/tasks/:taskId/run", response.CreateOptions("POST"))
 
 		l.POST("/:serverId/reload", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), ReloadServer)
@@ -211,18 +214,6 @@ func CreateServer(c *gin.Context) {
 		return
 	}
 
-	if err := prg.Scheduler.LoadMap(prg.Tasks); err != nil {
-		response.HandleError(c, err, http.StatusInternalServerError)
-		_ = servers.Delete(prg.Id())
-		return
-	}
-
-	if err := prg.Scheduler.Start(); err != nil {
-		response.HandleError(c, err, http.StatusInternalServerError)
-		_ = servers.Delete(prg.Id())
-		return
-	}
-
 	c.JSON(200, &pufferpanel.ServerIdResponse{Id: serverId})
 }
 
@@ -274,36 +265,84 @@ func EditServerData(c *gin.Context) {
 	}
 }
 
-func CreateServerTask(c *gin.Context) {
+func GetServerTasks(c *gin.Context) {
 	item, _ := c.Get("program")
 	prg := item.(*servers.Server)
 
-	var task pufferpanel.Task
-	err := c.ShouldBindJSON(&task)
-	if response.HandleError(c, err, http.StatusBadRequest) {
+	result := pufferpanel.ServerTasks{
+		Tasks: make(map[string]pufferpanel.ServerTask),
+	}
+
+	for k, v := range prg.Scheduler.Tasks {
+		result.Tasks[k] = pufferpanel.ServerTask{
+			Task: pufferpanel.Task{
+				Name:         v.Name,
+				CronSchedule: v.CronSchedule,
+				Description:  v.Description,
+			},
+			IsRunning: prg.Scheduler.IsTaskRunning(k),
+		}
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func GetServerTask(c *gin.Context) {
+	item, _ := c.Get("program")
+	prg := item.(*servers.Server)
+
+	result := pufferpanel.ServerTasks{
+		Tasks: make(map[string]pufferpanel.ServerTask),
+	}
+
+	for k, v := range prg.Scheduler.Tasks {
+		result.Tasks[k] = pufferpanel.ServerTask{
+			Task:      v,
+			IsRunning: prg.Scheduler.IsTaskRunning(k),
+		}
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func RunServerTask(c *gin.Context) {
+	item, _ := c.Get("program")
+	prg := item.(*servers.Server)
+
+	taskId := c.Param("taskId")
+
+	err := prg.Scheduler.RunTask(taskId)
+	if errors.Is(err, gocron.ErrJobNotFoundWithTag) {
+		c.Status(http.StatusNotFound)
 		return
 	}
-	err = prg.Scheduler.Add(task)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
-	} else {
-		c.Status(http.StatusNoContent)
+		return
 	}
+	c.Status(http.StatusNoContent)
 }
 
 func EditServerTask(c *gin.Context) {
 	item, _ := c.Get("program")
 	prg := item.(*servers.Server)
 
+	taskId := c.Param("taskId")
+
 	var task pufferpanel.Task
 	err := c.ShouldBindJSON(&task)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
-	err = prg.Scheduler.Remove(task.Name)
+
+	err = prg.Scheduler.RemoveTask(taskId)
+	if errors.Is(err, gocron.ErrJobNotFoundWithTag) {
+		err = nil
+	}
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
-	err = prg.Scheduler.Add(task)
+
+	err = prg.Scheduler.AddTask(taskId, task)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -314,9 +353,19 @@ func DeleteServerTask(c *gin.Context) {
 	item, _ := c.Get("program")
 	prg := item.(*servers.Server)
 
-	taskName := c.Param("taskName")
+	taskId := c.Param("taskId")
 
-	err := prg.Scheduler.Remove(taskName)
+	var task pufferpanel.Task
+	err := c.ShouldBindJSON(&task)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	err = prg.Scheduler.RemoveTask(taskId)
+	if errors.Is(err, gocron.ErrJobNotFoundWithTag) {
+		c.Status(http.StatusNotFound)
+		return
+	}
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -351,13 +400,6 @@ func GetServerData(c *gin.Context) {
 	}
 
 	c.JSON(200, &pufferpanel.ServerData{Variables: data})
-}
-
-func GetServerTasks(c *gin.Context) {
-	item, _ := c.Get("program")
-	server := item.(*servers.Server)
-
-	c.JSON(200, &pufferpanel.ServerTasks{Tasks: server.Tasks})
 }
 
 func GetServerAdmin(c *gin.Context) {

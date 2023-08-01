@@ -19,14 +19,12 @@ package servers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/go-co-op/gocron"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 var (
@@ -55,16 +53,6 @@ func LoadFromFolder() {
 			continue
 		}
 
-		err = program.Scheduler.LoadMap(program.Tasks)
-		if err != nil {
-			logging.Error.Printf("Error loading server tasks from json (%s): %s", element.Name(), err)
-			continue
-		}
-		err = program.Scheduler.Start()
-		if err != nil {
-			logging.Error.Printf("Error starting server scheduler (%s): %s", element.Name(), err)
-			continue
-		}
 		logging.Info.Printf("Loaded server %s", program.Id())
 		allServers = append(allServers, program)
 	}
@@ -155,62 +143,14 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	data.Scheduler, err = LoadScheduler(data.Id())
+	if data.Scheduler == nil {
+		data.Scheduler = NewDefaultScheduler(data.Id())
+		data.Scheduler.Init()
+	}
+
 	return data, nil
-}
-
-func startScheduler(program *Server) error {
-	s := gocron.NewScheduler(time.UTC)
-	for k, t := range program.Tasks {
-		if t.CronSchedule != "" {
-			_, err := s.Cron(t.CronSchedule).Do(executeTask, program, k)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	s.SetMaxConcurrentJobs(5, gocron.RescheduleMode)
-	s.StartAsync()
-	program.Scheduler.scheduler = s
-	return nil
-}
-
-func executeTask(p *Server, taskId string) (err error) {
-	task, ok := p.Tasks[taskId]
-	if !ok {
-		logging.Error.Printf("Execution of task %s on server %s requested, but task not found", taskId, p.Id())
-		return
-	}
-
-	ops := task.Operations
-	if len(ops) > 0 {
-		p.RunningEnvironment.DisplayToConsole(true, "Running task %s\n", task.Name)
-		var process OperationProcess
-		process, err = GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
-		if err != nil {
-			logging.Error.Printf("Error setting up tasks: %s", err)
-			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
-			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
-			return
-		}
-
-		err = process.Run(p)
-		if err != nil {
-			logging.Error.Printf("Error setting up tasks: %s", err)
-			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
-			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
-			return
-		}
-		p.RunningEnvironment.DisplayToConsole(true, "Task %s finished\n", task.Name)
-	}
-	return
-}
-
-func ExecuteTask(programId string, taskId string) error {
-	program := GetFromCache(programId)
-	if program == nil {
-		return errors.New("no server with given id")
-	}
-	return executeTask(program, taskId)
 }
 
 func Create(program *Server) error {
@@ -230,41 +170,17 @@ func Create(program *Server) error {
 		}
 	}()
 
-	f, err := os.Create(filepath.Join(config.ServersFolder.Value(), program.Id()+".json"))
-	defer pufferpanel.Close(f)
+	err = program.Save()
 	if err != nil {
 		logging.Error.Printf("Error writing server: %s", err)
 		return err
 	}
 
-	encoder := json.NewEncoder(f)
-	encoder.SetEscapeHTML(false)
-	encoder.SetIndent("", "  ")
-	err = encoder.Encode(program)
-
-	if err != nil {
-		logging.Error.Printf("Error writing server: %s", err)
-		return err
+	replacement, err := Load(program.Id())
+	if err == nil {
+		allServers = append(allServers, replacement)
 	}
-
-	var typeMap pufferpanel.Type
-	err = pufferpanel.UnmarshalTo(program.Environment, &typeMap)
-	if err != nil {
-		return err
-	}
-
-	program.RunningEnvironment, err = CreateEnvironment(typeMap.Type, config.ServersFolder.Value(), program.Id(), program.Environment)
-	if err != nil {
-		return err
-	}
-
-	err = program.Create()
-	if err != nil {
-		return err
-	}
-
-	allServers = append(allServers, program)
-	return nil
+	return err
 }
 
 func Delete(id string) (err error) {
@@ -298,7 +214,7 @@ func Delete(id string) (err error) {
 		}
 	}
 
-	_ = program.Scheduler.Stop()
+	program.Scheduler.Stop()
 
 	err = program.Destroy()
 	if err != nil {
@@ -348,22 +264,20 @@ func Reload(id string) (err error) {
 	program.RunningEnvironment = newVersion.RunningEnvironment
 	program.Server = newVersion.Server
 
-	_ = program.Scheduler.Stop()
+	program.Scheduler.Stop()
 	logging.Debug.Println("Rebuilding scheduler")
-	err = newVersion.Scheduler.Rebuild()
+
+	program.Scheduler, err = LoadScheduler(program.Id())
 	if err != nil {
-		logging.Error.Printf("Error reloading server scheduler: %s", err)
 		return err
 	}
-
-	logging.Debug.Println("Loading scheduled tasks")
-	err = newVersion.Scheduler.LoadMap(program.Tasks)
-	if err != nil {
-		return err
+	if program.Scheduler == nil {
+		program.Scheduler = NewDefaultScheduler(program.Id())
+		program.Scheduler.Init()
 	}
 
 	logging.Debug.Println("Starting scheduler")
-	err = newVersion.Scheduler.Start()
+	newVersion.Scheduler.Start()
 	if err != nil {
 		return err
 	}

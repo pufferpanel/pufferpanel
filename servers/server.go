@@ -42,7 +42,7 @@ type Server struct {
 
 	CrashCounter       int                     `json:"-"`
 	RunningEnvironment pufferpanel.Environment `json:"-"`
-	Scheduler          Scheduler               `json:"-"`
+	Scheduler          *Scheduler              `json:"-"`
 	stopChan           chan bool
 	waitForConsole     sync.Locker
 }
@@ -131,24 +131,22 @@ func CreateProgram() *Server {
 				AutoRestartFromGraceful: false,
 				PreExecution:            make([]interface{}, 0),
 				PostExecution:           make([]interface{}, 0),
-				EnvironmentVariables:    make(map[string]string, 0),
+				EnvironmentVariables:    make(map[string]string),
 			},
 			Type:           pufferpanel.Type{Type: "standard"},
-			Variables:      make(map[string]pufferpanel.Variable, 0),
-			Tasks:          make(map[string]pufferpanel.Task, 0),
+			Variables:      make(map[string]pufferpanel.Variable),
 			Display:        "Unknown server",
 			Installation:   make([]interface{}, 0),
 			Uninstallation: make([]interface{}, 0),
 			Groups:         make([]pufferpanel.Group, 0),
 		},
 	}
-	p.Scheduler = NewScheduler(p)
 	p.stopChan = make(chan bool)
 	p.waitForConsole = &sync.Mutex{}
 	return p
 }
 
-// Starts the program.
+// Start Starts the program.
 // This includes starting the environment if it is not running.
 func (p *Server) Start() error {
 	if !p.IsEnabled() {
@@ -283,7 +281,7 @@ func (p *Server) Start() error {
 	return err
 }
 
-// Stops the program.
+// Stop Stops the program.
 // This will also stop the environment it is ran in.
 func (p *Server) Stop() error {
 	var err error
@@ -306,7 +304,7 @@ func (p *Server) Stop() error {
 	return err
 }
 
-// Kills the program.
+// Kill Kills the program.
 // This will also stop the environment it is ran in.
 func (p *Server) Kill() (err error) {
 	p.Log(logging.Info, "Killing server %s", p.Id())
@@ -320,7 +318,7 @@ func (p *Server) Kill() (err error) {
 	return
 }
 
-// Creates any files needed for the program.
+// Create Creates any files needed for the program.
 // This includes creating the environment.
 func (p *Server) Create() (err error) {
 	p.Log(logging.Info, "Creating server %s", p.Id())
@@ -336,10 +334,15 @@ func (p *Server) Create() (err error) {
 	return
 }
 
-// Destroys the server.
+// Destroy Destroys the server.
 // This will delete the server, environment, and any files related to it.
 func (p *Server) Destroy() (err error) {
 	p.Log(logging.Info, "Destroying server %s", p.Id())
+
+	if p.Scheduler != nil {
+		p.Scheduler.Stop()
+	}
+
 	process, err := GenerateProcess(p.Uninstallation, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
 		p.Log(logging.Error, "Error uninstalling server: %s", err)
@@ -359,16 +362,7 @@ func (p *Server) Destroy() (err error) {
 		p.Log(logging.Error, "Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n")
 	}
-	err = p.Scheduler.Rebuild()
-	if err != nil {
-		p.Log(logging.Error, "Error uninstalling server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
-	}
-	err = p.Scheduler.Rebuild()
-	if err != nil {
-		p.Log(logging.Error, "Error uninstalling server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
-	}
+
 	return
 }
 
@@ -696,31 +690,6 @@ func (p *Server) Extract(source, destination string) error {
 	}
 
 	return archiver.Unarchive(sourceFile, destinationFile)
-}
-
-func (p *Server) ExecuteTask(task pufferpanel.Task) (err error) {
-	ops := task.Operations
-	if len(ops) > 0 {
-		p.RunningEnvironment.DisplayToConsole(true, "Running task %s\n", task.Name)
-		var process OperationProcess
-		process, err = GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
-		if err != nil {
-			p.Log(logging.Error, "Error setting up tasks: %s", err)
-			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
-			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
-			return
-		}
-
-		err = process.Run(p)
-		if err != nil {
-			p.Log(logging.Error, "Error setting up tasks: %s", err)
-			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
-			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
-			return
-		}
-		p.RunningEnvironment.DisplayToConsole(true, "Task %s finished\n", task.Name)
-	}
-	return
 }
 
 func (p *Server) valid() bool {

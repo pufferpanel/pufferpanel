@@ -33,15 +33,15 @@ type Server struct {
 	Uninstallation        []interface{}       `json:"uninstall,omitempty"`
 	Identifier            string              `json:"id,omitempty"`
 	Execution             Execution           `json:"run,omitempty"`
-	Tasks                 map[string]Task     `json:"tasks,omitempty"`
 	Requirements          Requirements        `json:"requirements,omitempty"`
-	Groups                []Group             `json:"groups"`
+	Groups                []Group             `json:"groups,omitempty"`
 }
 
 type Task struct {
-	Name         string        `json:"name,omitempty" binding:"required"`
+	Name         string        `json:"name"`
 	CronSchedule string        `json:"cronSchedule,omitempty"`
-	Operations   []interface{} `json:"operations,omitempty" binding:"required"`
+	Operations   []interface{} `json:"operations" binding:"required"`
+	Description  string        `json:"description,omitempty"`
 }
 
 type Variable struct {
@@ -100,7 +100,6 @@ type Group struct {
 
 func (s *Server) CopyFrom(replacement *Server) {
 	s.Variables = replacement.Variables
-	s.Tasks = replacement.Tasks
 	s.Type = replacement.Type
 	s.Execution = replacement.Execution
 	s.Display = replacement.Display
