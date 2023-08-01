@@ -76,6 +76,10 @@ type Execution struct {
 	WorkingDirectory        string            `json:"workingDirectory,omitempty"`
 }
 
+type Name struct {
+	Name string `json:"name"`
+}
+
 type Command struct {
 	Command string `json:"command"`
 	If      string `json:"if,omitempty"`

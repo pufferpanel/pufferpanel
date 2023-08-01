@@ -7,3 +7,5 @@ type ChangeSetting struct {
 type SettingResponse struct {
 	Value interface{} `json:"value"`
 }
+
+type ChangeMultipleSettings map[string]interface{}

@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/response"
@@ -13,7 +14,7 @@ func LogoutPost(c *gin.Context) {
 	ss := services.Session{DB: db}
 
 	cookie, err := c.Cookie("puffer_auth")
-	if err == http.ErrNoCookie {
+	if errors.Is(err, http.ErrNoCookie) {
 		cookie = c.Query("token")
 		if cookie != "" {
 			err = nil

@@ -1,6 +1,7 @@
 package oauth2
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
@@ -18,6 +19,16 @@ func registerInfo(g *gin.RouterGroup) {
 	g.OPTIONS("/introspect", response.CreateOptions("POST"))
 }
 
+// @Summary Get info
+// @Description Get information about an OAuth2 token
+// @Accept x-www-form-urlencoded
+// @Param token formData string true "OAuth2 token"
+// @Param token_type_hint formData string false "Hint for how the token might be used"
+// @Success 200 {object} oauth2.TokenInfoResponse
+// @Failure 400 {object} oauth2.TokenInfoResponse
+// @Failure 401 {object} oauth2.TokenInfoResponse
+// @Failure 500 {object} response.Error
+// @Router /oauth2/introspect [post]
 func handleInfoRequest(c *gin.Context) {
 	header := strings.TrimSpace(c.GetHeader("Authorization"))
 	if header == "" {
@@ -53,7 +64,7 @@ func handleInfoRequest(c *gin.Context) {
 
 	//this token can be one of two types, we need to work out which it is
 	session, err := sessionService.Validate(token)
-	if err == gorm.ErrRecordNotFound {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		infoResponse.Active = false
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return

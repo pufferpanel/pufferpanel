@@ -16,11 +16,11 @@ func registerUserSettings(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT"))
 }
 
-// @Summary Value a user setting
+// @Summary Get a user setting
 // @Description Gets all settings specific to the current user
-// @Produce json
 // @Success 200 {object} models.UserSettingsView
-// @Router /api/userSettings [get]
+// @Failure 500 {object} response.Error
+// @Router /api/usersettings [get]
 func getUserSettings(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	uss := &services.UserSettings{DB: db}
@@ -43,14 +43,12 @@ func getUserSettings(c *gin.Context) {
 
 // @Summary Update a user setting
 // @Description Updates the value of a user setting
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param key path string true "The config key"
 // @Param value body models.ChangeUserSetting true "The new value for the setting"
-// @Router /api/userSettings/{key} [PUT]
+// @Router /api/usersettings/{key} [PUT]
 func setUserSetting(c *gin.Context) {
 	key := c.Param("key")
 	db := middleware.GetDatabase(c)

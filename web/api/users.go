@@ -40,10 +40,8 @@ func registerUsers(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/:id/perms", response.CreateOptions("PUT", "GET"))
 }
 
-// @Summary Value users
+// @Summary Get users
 // @Description Gets users, and allowing for filtering of users. * is a wildcard that can be used for text inputs
-// @Accept json
-// @Produce json
 // @Success 200 {object} models.UserSearchResponse
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -84,8 +82,6 @@ func searchUsers(c *gin.Context) {
 }
 
 // @Summary Create user
-// @Accept json
-// @Produce json
 // @Success 200 {object} models.UserView
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -124,9 +120,7 @@ func createUser(c *gin.Context) {
 	c.JSON(http.StatusOK, resultModel)
 }
 
-// @Summary Value a user
-// @Accept json
-// @Produce json
+// @Summary Get a user
 // @Success 200 {object} models.UserView
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -157,8 +151,6 @@ func getUser(c *gin.Context) {
 }
 
 // @Summary Update user
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -205,8 +197,6 @@ func updateUser(c *gin.Context) {
 }
 
 // @Summary Delete user
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -241,8 +231,6 @@ func deleteUser(c *gin.Context) {
 }
 
 // @Summary Gets user permissions
-// @Accept json
-// @Produce json
 // @Success 200 {object} models.PermissionView
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -279,8 +267,6 @@ func getUserPerms(c *gin.Context) {
 }
 
 // @Summary Sets user permissions
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error

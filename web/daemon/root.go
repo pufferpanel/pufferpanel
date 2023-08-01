@@ -32,15 +32,25 @@ func RegisterDaemonRoutes(e *gin.RouterGroup) {
 	e.GET("", getStatusGET)
 	e.HEAD("", getStatusHEAD)
 	e.Handle("OPTIONS", "", response.CreateOptions("GET", "HEAD"))
+
 	e.GET("features", getFeatures)
+	e.Handle("OPTIONS", "features", response.CreateOptions("GET"))
 
 	RegisterServerRoutes(e)
 }
 
+// @Summary Check daemon status
+// @Description Check to see if the daemon is online or not
+// @Success 200 {object} pufferpanel.DaemonRunning
+// @Router /daemon [get]
 func getStatusGET(c *gin.Context) {
 	c.JSON(http.StatusOK, &pufferpanel.DaemonRunning{Message: "daemon is running"})
 }
 
+// @Summary Check daemon status
+// @Description Check to see if the daemon is online or not
+// @Success 204 {object} response.Empty
+// @Router /daemon [head]
 func getStatusHEAD(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }

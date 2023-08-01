@@ -14,6 +14,7 @@
 package response
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
@@ -48,7 +49,7 @@ func HandleError(c *gin.Context, err error, statusCode int) bool {
 	if err != nil {
 		logging.Error.Printf("%s", err.Error())
 
-		if gorm.ErrRecordNotFound == err {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.AbortWithStatus(404)
 		} else {
 			c.AbortWithStatusJSON(statusCode, &Error{Error: pufferpanel.FromError(err)})

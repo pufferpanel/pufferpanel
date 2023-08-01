@@ -34,6 +34,14 @@ func registerTokens(g *gin.RouterGroup) {
 	g.OPTIONS("/token", response.CreateOptions("POST"))
 }
 
+// @Summary Authenticate
+// @Description Get a OAuth2 token to consume this API
+// @Param request body oauth2TokenRequest true "OAuth2 token request"
+// @Success 200 {object} oauth2.TokenResponse
+// @Failure 400 {object} oauth2.TokenResponse
+// @Failure 401 {object} oauth2.TokenResponse
+// @Failure 500 {object} oauth2.TokenResponse
+// @Router /oauth2/token [post]
 func handleTokenRequest(c *gin.Context) {
 	var request oauth2TokenRequest
 	err := c.MustBindWith(&request, binding.FormPost)

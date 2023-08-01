@@ -42,6 +42,7 @@ import (
 var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/", "/proxy/"}
 var clientFiles fs.ReadFileFS
 
+// RegisterRoutes Registers all routes
 // @title PufferPanel API
 // @version 3.0
 // @description PufferPanel API interface for both the panel and daemon. Endpoints starting with /daemon or /proxy are for nodes.
@@ -49,6 +50,37 @@ var clientFiles fs.ReadFileFS
 // @contact.url https://pufferpanel.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @Accept json
+// @Produce json
+// @securitydefinitions.oauth2.application OAuth2Application
+// @tokenUrl https://example.com/oauth/token
+// @scope.none No scope needed
+// @scope.oauth2.auth Scope to validate another OAuth2 credential
+// @scope.servers.admin Admin access to all servers
+// @scope.servers.view View servers (only gives basic view)
+// @scope.servers.edit Allows full editing of a server
+// @scope.servers.edit.admin Allows admin-level editing of a server
+// @scope.servers.edit.users Allows user-level editing of a server
+// @scope.servers.create Allows creating servers
+// @scope.servers.delete Allows deleting servers
+// @scope.servers.install Allows using the "Install" button for a server
+// @scope.servers.update Allows using the "Update" button for a server
+// @scope.servers.console Allows viewing the console of a server
+// @scope.servers.console.send Allows sending commands to a server's console
+// @scope.servers.stop Allows stopping a server
+// @scope.servers.start Allow starting a server
+// @scope.servers.stats Allows getting stats of a server like CPU and memory usage
+// @scope.servers.sftp Allows connection to a server over SFTP
+// @scope.servers.files.get Allows viewing and downloading files for a server through the File Manager
+// @scope.servers.files.put Allows editing files for a server through the File Manager
+// @scope.nodes.view Allows viewing nodes
+// @scope.nodes.edit Allows editing of node connection information
+// @scope.nodes.deploy Allows getting the config of a node for deployment
+// @scope.templates.view Allows viewing templates
+// @scope.templates.edit Allows editing of templates
+// @scope.users.view Allows viewing all registered users
+// @scope.users.edit Allows editing of all users
+// @scope.panel.settings Allows for viewing and editing of panel settings
 func RegisterRoutes(e *gin.Engine) {
 	e.Use(func(c *gin.Context) {
 		middleware.Recover(c)

@@ -12,15 +12,16 @@ import (
 )
 
 func registerSettings(g *gin.RouterGroup) {
+	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), setSettings)
+	g.Handle("OPTIONS", "", response.CreateOptions("POST"))
+
 	g.Handle("GET", "/:key", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), getSetting)
 	g.Handle("PUT", "/:key", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), setSetting)
-	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), setSettings)
-	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT"))
+	g.Handle("OPTIONS", "/:key", response.CreateOptions("GET", "PUT"))
 }
 
 // @Summary Value a panel setting
 // @Description Gets the value currently being used for the specified config key
-// @Produce json
 // @Success 200 {object} models.SettingResponse
 // @Param key path string true "The config key"
 // @Router /api/settings/{key} [get]
@@ -53,14 +54,12 @@ func getSetting(c *gin.Context) {
 
 // @Summary Update a panel setting
 // @Description Updates the value of a panel setting
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param key path string true "The config key"
 // @Param value body models.ChangeSetting true "The new value for the setting"
-// @Router /api/self [PUT]
+// @Router /api/settings/{key} [put]
 func setSetting(c *gin.Context) {
 	key := c.Param("key")
 
@@ -95,14 +94,21 @@ func setSetting(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Update multiple panel setting
+// @Description Updates multiple panel settings at once
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param data body models.ChangeMultipleSettings true "Config data to apply"
+// @Router /api/settings [post]
 func setSettings(c *gin.Context) {
-	var settings map[string]interface{}
+	var settings *models.ChangeMultipleSettings
 	var err error
 	if err = c.BindJSON(&settings); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	for key, value := range settings {
+	for key, value := range *settings {
 		for _, v := range editableStringEntries {
 			if v.Key() == key {
 				err = v.Set(cast.ToString(value), true)

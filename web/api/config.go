@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+// @Summary Get config
+// @Description Gets the editable config entries for the panel
+// @Success 200 {object} EditableConfig
+// @Router /api/config [get]
+// @Security OAuth2Application[none]
 func panelConfig(c *gin.Context) {
 	var themes []string
 	files, err := os.ReadDir(config.WebRoot.Value() + "/theme")

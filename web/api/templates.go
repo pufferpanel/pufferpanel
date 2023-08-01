@@ -14,6 +14,7 @@
 package api
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -41,6 +42,11 @@ func registerTemplates(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/local/:name", response.CreateOptions("GET", "DELETE", "PUT"))
 }
 
+// @Summary Get all repos
+// @Description Gets all repos that are available to pull template from
+// @Success 200 {object} []models.TemplateRepo
+// @Failure 500 {object} response.Error
+// @Router /api/templates [get]
 func getRepos(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -53,6 +59,12 @@ func getRepos(c *gin.Context) {
 	c.JSON(http.StatusOK, repos)
 }
 
+// @Summary Get all templates from repo
+// @Description Gets all templates from a repository
+// @Param repo path string true "Repo name"
+// @Success 200 {object} []models.Template
+// @Failure 500 {object} response.Error
+// @Router /api/templates/{repo} [get]
 func getsTemplatesForRepo(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -71,22 +83,19 @@ func addRepo(c *gin.Context) {
 func deleteRepo(c *gin.Context) {
 }
 
-// @Summary Value single template
-// @Description Gets a template if registered
-// @Accept json
-// @Produce json
+// @Summary Get template
+// @Description Gets a template from the repo
+// @Param repo path string true "Repo name"
+// @Param template path string true "Template name"
 // @Success 200 {object} models.Template
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Router /api/templates [get]
+// @Router /api/templates/{repo}/{template} [get]
 func getTemplateFromRepo(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	template, err := ts.Get(c.Param("repo"), c.Param("name"))
-	if err != nil && err == gorm.ErrRecordNotFound {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(404)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -97,16 +106,12 @@ func getTemplateFromRepo(c *gin.Context) {
 }
 
 // @Summary Adds or updates a template
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param template body pufferpanel.Server true "Template"
 // @Param name path string true "Template name"
-// @Router /api/templates/{name} [put]
+// @Router /api/templates/local/{name} [put]
 func putTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -119,7 +124,7 @@ func putTemplate(c *gin.Context) {
 	}
 
 	template, err := ts.Get("local", templateName)
-	if err != nil && err == gorm.ErrRecordNotFound {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		template = &models.Template{
 			Name: templateName,
 		}
@@ -138,22 +143,18 @@ func putTemplate(c *gin.Context) {
 
 // @Summary Deletes template
 // @Description Deletes template
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param name path string true "Template"
-// @Router /api/templates/{name} [delete]
+// @Param name path string true "Template name"
+// @Router /api/templates/local/{name} [delete]
 func deleteTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	err := ts.Delete(c.Param("name"))
-	if err != nil && err == gorm.ErrRecordNotFound {
-		c.AbortWithStatus(404)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return

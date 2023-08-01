@@ -46,10 +46,8 @@ func registerSelf(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/oauth2/:clientId", response.CreateOptions("DELETE"))
 }
 
-// @Summary Value your user info
+// @Summary Get your user info
 // @Description Gets the user information of the current user
-// @Accept json
-// @Produce json
 // @Success 200 {object} models.UserView
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -64,8 +62,6 @@ func getSelf(c *gin.Context) {
 
 // @Summary Update your user
 // @Description Update user information for your current user
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -251,9 +247,8 @@ func disableOtp(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// @Summary Gets registered oauth2 clients under this user
-// @Accept json
-// @Produce json
+// @Summary Gets registered OAuth2 clients
+// @Description Gets known OAuth2 clients the logged-in user has registered
 // @Success 200 {object} []models.Client
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -282,8 +277,6 @@ func getPersonalOAuth2Clients(c *gin.Context) {
 }
 
 // @Summary Create an account-level OAuth2 client
-// @Accept json
-// @Produce json
 // @Success 200 {object} models.CreatedClient
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -341,8 +334,6 @@ func createPersonalOAuth2Client(c *gin.Context) {
 }
 
 // @Summary Deletes an account-level OAuth2 client
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error

@@ -46,10 +46,8 @@ func registerNodes(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
 }
 
-// @Summary Value nodes
+// @Summary Get nodes
 // @Description Gets all nodes registered to the panel
-// @Accept json
-// @Produce json
 // @Success 200 {object} models.NodesView "Nodes"
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -70,10 +68,8 @@ func getAllNodes(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-// @Summary Value node
+// @Summary Get node
 // @Description Gets information about a single node
-// @Accept json
-// @Produce json
 // @Success 200 {object} models.NodeView "Nodes"
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -102,8 +98,6 @@ func getNode(c *gin.Context) {
 
 // @Summary Create node
 // @Description Creates a node
-// @Accept json
-// @Produce json
 // @Success 200 {object} models.NodeView "Node created"
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -142,8 +136,6 @@ func createNode(c *gin.Context) {
 
 // @Summary Update node
 // @Description Updates a node with given information
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -186,8 +178,6 @@ func updateNode(c *gin.Context) {
 
 // @Summary Deletes a node
 // @Description Deletes the node
-// @Accept json
-// @Produce json
 // @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -220,8 +210,6 @@ func deleteNode(c *gin.Context) {
 
 // @Summary Gets the data to deploy a node
 // @Description Gets the secret information needed to deploy a node.
-// @Accept json
-// @Produce json
 // @Success 200 {object} models.Deployment
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
@@ -254,8 +242,6 @@ func deployNode(c *gin.Context) {
 
 // @Summary Gets the features a node supports
 // @Description Gets the environments and if docker is supported on a node
-// @Accept json
-// @Produce json
 // @Success 200 {object} daemon.Features
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
