@@ -38,6 +38,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -398,7 +399,9 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, dat
 	}
 
 	cmdSlice := strslice.StrSlice{}
-	cmdSlice = append(cmdSlice, data.Command)
+	if data.Command != "" {
+		cmdSlice = append(cmdSlice, data.Command)
+	}
 	for _, v := range data.Arguments {
 		cmdSlice = append(cmdSlice, v)
 	}
@@ -422,8 +425,11 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, dat
 		Image:           d.ImageName,
 		WorkingDir:      workDir,
 		Env:             newEnv,
-		Entrypoint:      cmdSlice,
 		Labels:          labels,
+	}
+
+	if len(cmdSlice) > 0 {
+		containerConfig.Entrypoint = cmdSlice
 	}
 
 	if runtime.GOOS == "linux" {
@@ -443,7 +449,11 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, dat
 
 	bindDirs := []string{dir + ":" + containerRoot}
 	if binaryFolder != "" {
-		bindDirs = append(bindDirs, binaryFolder+":"+binaryFolder)
+		bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+convertToBind(binaryFolder))
+	}
+
+	for k, v := range d.Binds {
+		bindDirs = append(bindDirs, convertToBind(k)+":"+v)
 	}
 
 	hostConfig := &container.HostConfig{
@@ -452,10 +462,6 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, dat
 		Resources:    d.Resources,
 		Binds:        bindDirs,
 		PortBindings: nat.PortMap{},
-	}
-
-	for k, v := range d.Binds {
-		hostConfig.Binds = append(hostConfig.Binds, k+":"+v)
 	}
 
 	networkConfig := &network.NetworkingConfig{}
@@ -512,4 +518,19 @@ func calculateCPUPercent(v *types.StatsJSON) float64 {
 
 func calculateMemoryPercent(v *types.StatsJSON) float64 {
 	return float64(v.MemoryStats.Usage)
+}
+
+func convertToBind(source string) string {
+	if runtime.GOOS != "windows" {
+		return source
+	}
+	fullPath, err := filepath.Abs(source)
+	if err != nil {
+		panic(err)
+	}
+
+	fullPath = strings.ReplaceAll(fullPath, "\\", "/")
+	fullPath = strings.ReplaceAll(fullPath, ":", "")
+	fullPath = "//" + fullPath
+	return fullPath
 }

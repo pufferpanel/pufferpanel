@@ -225,12 +225,14 @@ func (p *Server) Start() error {
 		}
 	}
 
-	if command == "" {
-		err = pufferpanel.ErrNoCommand
-		p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
-		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
-		return err
-	}
+	/*
+		if command == ""  {
+			err = pufferpanel.ErrNoCommand
+			p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
+			p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
+			return err
+		}
+	*/
 
 	commandLine := pufferpanel.ReplaceTokens(command, data)
 	if p.Execution.WorkingDirectory == "${rootDir}" {
