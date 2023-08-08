@@ -107,6 +107,13 @@ func openConnection() (err error) {
 	if err := migrateModels(); err != nil {
 		return err
 	}
+
+	if dialect == "sqlite3" {
+		err = dbConn.Raw("PRAGMA journal_mode=WAL").Error
+		if err != nil {
+			return err
+		}
+	}
 	return migrate(dbConn)
 }
 

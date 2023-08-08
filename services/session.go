@@ -1,9 +1,13 @@
 package services
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"errors"
 	uuid "github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -17,14 +21,21 @@ func (ss *Session) CreateForUser(user *models.User) (string, error) {
 		return "", err
 	}
 
+	sessionToken := token.String()
+
+	res, err := hashToken(sessionToken)
+	if err != nil {
+		return "", err
+	}
+
 	session := &models.Session{
-		Token:          token.String(),
+		Token:          res,
 		ExpirationTime: time.Now().Add(time.Hour),
 		UserId:         &user.ID,
 	}
 
 	err = ss.DB.Create(session).Error
-	return token.String(), err
+	return sessionToken, err
 }
 
 func (ss *Session) CreateForClient(node *models.Client) (string, error) {
@@ -33,28 +44,36 @@ func (ss *Session) CreateForClient(node *models.Client) (string, error) {
 		return "", err
 	}
 
+	sessionToken := token.String()
+
+	res, err := hashToken(sessionToken)
+	if err != nil {
+		return "", err
+	}
+
 	session := &models.Session{
-		Token:          token.String(),
+		Token:          res,
 		ExpirationTime: time.Now().Add(time.Hour),
 		ClientId:       &node.ID,
 	}
 
 	err = ss.DB.Create(session).Error
-	return token.String(), err
+	return sessionToken, err
 }
 
 func (ss *Session) Validate(token string) (*models.Session, error) {
-	session := &models.Session{Token: token}
-	err := ss.DB.Preload("Client").Preload("User").Preload("Server").Where(session).Find(session).Error
-
-	//validate this session is for a client or user
-	if err == nil && session.ClientId == nil && session.UserId == nil {
-		err = gorm.ErrRecordNotFound
+	hashed, err := hashToken(token)
+	if err != nil {
+		return nil, err
 	}
 
-	if session.ExpirationTime.Before(time.Now()) {
-		return nil, gorm.ErrRecordNotFound
-	}
+	session := &models.Session{Token: hashed}
+	query := ss.DB.Preload("Client").Preload("User").Preload("Server")
+	query = query.Where("expiration_time > ?", time.Now())
+	query = query.Where("user_id IS NOT NULL OR client_id IS NOT NULL")
+	query = query.Where(session)
+
+	err = query.Find(session).Error
 
 	return session, err
 }
@@ -70,6 +89,28 @@ func (ss *Session) ValidateNode(token string) (*models.Node, error) {
 }
 
 func (ss *Session) Expire(token string) error {
-	session := &models.Session{Token: token}
-	return ss.DB.Delete(session).Error
+	hashed, err := hashToken(token)
+	if err != nil {
+		return err
+	}
+
+	session := &models.Session{Token: hashed}
+	err = ss.DB.Delete(session).Error
+	if err == nil || errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil
+	}
+	return err
+}
+
+func hashToken(source string) (result string, err error) {
+	h := sha256.New()
+	_, err = h.Write([]byte(source))
+	if err != nil {
+		return
+	}
+	bs := h.Sum(nil)
+	builder := &strings.Builder{}
+	_, err = hex.NewEncoder(builder).Write(bs)
+	result = builder.String()
+	return
 }
