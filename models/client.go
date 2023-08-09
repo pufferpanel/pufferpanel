@@ -37,12 +37,12 @@ type Client struct {
 
 	Name        string `gorm:"column:name;NOT NULL;size:100;default\"\"" json:"name"`
 	Description string `gorm:"column:description;NOT NULL;size:4000;default:\"\"" json:"description"`
-}
+} //@name Client
 
 type CreatedClient struct {
 	ClientId     string `json:"id"`
 	ClientSecret string `json:"secret"`
-}
+} //@name CreatedClient
 
 func (c *Client) SetClientSecret(secret string) error {
 	res, err := bcrypt.GenerateFromPassword([]byte(secret), bcrypt.DefaultCost)

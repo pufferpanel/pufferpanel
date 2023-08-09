@@ -14,6 +14,7 @@
 package api
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
@@ -251,7 +252,7 @@ func getUserPerms(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && err == gorm.ErrRecordNotFound {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {

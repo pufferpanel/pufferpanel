@@ -26,7 +26,7 @@ type UserView struct {
 	//ONLY SHOW WHEN COPYING
 	Password    string `json:"password,omitempty"`
 	NewPassword string `json:"newPassword,omitempty"`
-}
+} //@name User
 
 func FromUser(model *User) *UserView {
 	return &UserView{

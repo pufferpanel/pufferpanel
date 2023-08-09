@@ -67,7 +67,7 @@ func getSelf(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param user body models.User true "User information"
+// @Param user body models.UserView true "User information"
 // @Router /api/self [PUT]
 func updateSelf(c *gin.Context) {
 	db := middleware.GetDatabase(c)

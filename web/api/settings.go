@@ -22,7 +22,7 @@ func registerSettings(g *gin.RouterGroup) {
 
 // @Summary Value a panel setting
 // @Description Gets the value currently being used for the specified config key
-// @Success 200 {object} models.SettingResponse
+// @Success 200 {object} models.Setting
 // @Param key path string true "The config key"
 // @Router /api/settings/{key} [get]
 func getSetting(c *gin.Context) {
@@ -30,21 +30,21 @@ func getSetting(c *gin.Context) {
 
 	for _, v := range editableStringEntries {
 		if v.Key() == key {
-			c.JSON(http.StatusOK, models.SettingResponse{Value: v.Value()})
+			c.JSON(http.StatusOK, models.Setting{Value: v.Value()})
 			return
 		}
 	}
 
 	for _, v := range editableBoolEntries {
 		if v.Key() == key {
-			c.JSON(http.StatusOK, models.SettingResponse{Value: v.Value()})
+			c.JSON(http.StatusOK, models.Setting{Value: v.Value()})
 			return
 		}
 	}
 
 	for _, v := range editableIntEntries {
 		if v.Key() == key {
-			c.JSON(http.StatusOK, models.SettingResponse{Value: v.Value()})
+			c.JSON(http.StatusOK, models.Setting{Value: v.Value()})
 			return
 		}
 	}
@@ -58,12 +58,12 @@ func getSetting(c *gin.Context) {
 // @Failure 400 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param key path string true "The config key"
-// @Param value body models.ChangeSetting true "The new value for the setting"
+// @Param value body models.Setting true "The new value for the setting"
 // @Router /api/settings/{key} [put]
 func setSetting(c *gin.Context) {
 	key := c.Param("key")
 
-	var model models.ChangeSetting
+	var model models.Setting
 	var err error
 	if err = c.BindJSON(&model); response.HandleError(c, err, http.StatusBadRequest) {
 		return

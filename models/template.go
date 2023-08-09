@@ -27,7 +27,7 @@ type Template struct {
 	RawValue string `gorm:"type:text" json:"-"`
 
 	Readme string `gorm:"type:text" json:"readme,omitempty"`
-}
+} //@name Template
 
 func (t *Template) AfterFind(*gorm.DB) error {
 	err := json.NewDecoder(strings.NewReader(t.RawValue)).Decode(&t.Server)

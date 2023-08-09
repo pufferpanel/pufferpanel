@@ -161,7 +161,7 @@ type Error struct {
 	Code    string                 `json:"code,omitempty"`
 	Meta    map[string]interface{} `json:"metadata,omitempty"`
 	//error
-}
+} //@name Error
 
 func (ge *Error) GetMessage() string {
 	return ReplaceTokens(ge.Message, ge.Meta)

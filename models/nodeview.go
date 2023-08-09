@@ -28,9 +28,9 @@ type NodeView struct {
 	PrivatePort uint16 `json:"privatePort,omitempty"`
 	SFTPPort    uint16 `json:"sftpPort,omitempty"`
 	Local       bool   `json:"isLocal"`
-}
+} //@name Node
 
-type NodesView []*NodeView
+type NodesView []*NodeView //@name Nodes
 
 func FromNode(n *Node) *NodeView {
 	return &NodeView{

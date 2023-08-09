@@ -44,7 +44,7 @@ type PermissionView struct {
 	EditServerAdmin bool `json:"editServerAdmin,omitempty"`
 	DeleteServer    bool `json:"deleteServers,omitempty"`
 	PanelSettings   bool `json:"panelSettings,omitempty"`
-}
+} //@name Permissions
 
 func FromPermission(p *Permissions) *PermissionView {
 	model := &PermissionView{
@@ -86,8 +86,8 @@ func FromPermission(p *Permissions) *PermissionView {
 	return model
 }
 
-//Copies perms from the view to the model
-//This will only copy what it knows about the server
+// CopyTo Copies perms from the view to the model
+// This will only copy what it knows about the server
 func (p *PermissionView) CopyTo(model *Permissions, copyAdminFlags bool) {
 	if model.ServerIdentifier != nil {
 		model.EditServerData = p.EditServerData

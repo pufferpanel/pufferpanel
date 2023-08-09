@@ -197,4 +197,4 @@ type oauth2TokenRequest struct {
 	ClientSecret string `form:"client_secret"`
 	Username     string `form:"username"`
 	Password     string `form:"password"`
-}
+} //@name OAuth2TokenRequest

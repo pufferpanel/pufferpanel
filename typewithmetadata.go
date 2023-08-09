@@ -20,13 +20,13 @@ import (
 	"reflect"
 )
 
-// designed to be overridden
+// MetadataType designed to be overridden
 type MetadataType struct {
 	Type     string                 `json:"type,omitempty"`
 	Metadata map[string]interface{} `json:"-,omitempty"`
-}
+} //@name Metadata
 
-// parses a type with this declaration, storing what it needs into metadata and type
+// UnmarshalJSON parses a type with this declaration, storing what it needs into metadata and type
 func (t *MetadataType) UnmarshalJSON(bs []byte) (err error) {
 	err = json.Unmarshal(bs, &t.Metadata)
 	if err != nil {
@@ -55,7 +55,7 @@ func (t *MetadataType) MarshalJSON() ([]byte, error) {
 	return json.Marshal(newMapping)
 }
 
-// Parses the metadata into the target interface
+// ParseMetadata Parses the metadata into the target interface
 func (t *MetadataType) ParseMetadata(target interface{}) (err error) {
 	data, err := json.Marshal(t)
 	if err != nil {

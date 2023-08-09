@@ -8,4 +8,4 @@ type TemplateRepo struct {
 	Username string `json:"-"`
 	Password string `json:"-"`
 	SSHKey   string `json:"-"`
-}
+} //@name TemplateRepo

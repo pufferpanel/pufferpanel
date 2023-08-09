@@ -43,14 +43,14 @@ type EditableConfig struct {
 	Themes              ThemeConfig    `json:"themes"`
 	Branding            BrandingConfig `json:"branding"`
 	RegistrationEnabled bool           `json:"registrationEnabled"`
-}
+} //@name EditableConfigSettings
 
 type ThemeConfig struct {
 	Active    string   `json:"active"`
 	Settings  string   `json:"settings"`
 	Available []string `json:"available"`
-}
+} //@name ThemeConfig
 
 type BrandingConfig struct {
 	Name string `json:"name"`
-}
+} //@name BrandingConfig

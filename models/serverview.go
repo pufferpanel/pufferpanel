@@ -28,12 +28,12 @@ type ServerView struct {
 	IP         string           `json:"ip,omitempty"`
 	Port       uint16           `json:"port,omitempty"`
 	Type       string           `json:"type"`
-}
+} //@name ServerInfo
 
 type ServerUserView struct {
 	Username string   `json:"username"`
 	Scopes   []string `json:"scopes"`
-}
+} //@name ServerUser
 
 func FromServer(server *Server) *ServerView {
 	model := &ServerView{

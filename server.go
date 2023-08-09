@@ -35,14 +35,14 @@ type Server struct {
 	Execution             Execution           `json:"run,omitempty"`
 	Requirements          Requirements        `json:"requirements,omitempty"`
 	Groups                []Group             `json:"groups,omitempty"`
-}
+} //@name ServerDefinition
 
 type Task struct {
 	Name         string        `json:"name"`
 	CronSchedule string        `json:"cronSchedule,omitempty"`
 	Operations   []interface{} `json:"operations" binding:"required"`
 	Description  string        `json:"description,omitempty"`
-}
+} //@name Task
 
 type Variable struct {
 	Type
@@ -53,12 +53,12 @@ type Variable struct {
 	Value        interface{}      `json:"value,omitempty"`
 	UserEditable bool             `json:"userEdit,omitempty"`
 	Options      []VariableOption `json:"options,omitempty"`
-}
+} //@name Variable
 
 type VariableOption struct {
 	Value   interface{} `json:"value"`
 	Display string      `json:"display"`
-}
+} //@name VariableOption
 
 type Execution struct {
 	Command                 interface{}       `json:"command,omitempty"`
@@ -74,33 +74,33 @@ type Execution struct {
 	LegacyRun               string            `json:"program,omitempty"`
 	LegacyArguments         []string          `json:"arguments,omitempty"`
 	WorkingDirectory        string            `json:"workingDirectory,omitempty"`
-}
+} //@name Execution
 
 type Name struct {
 	Name string `json:"name"`
-}
+} //@name Name
 
 type Command struct {
 	Command string `json:"command"`
 	If      string `json:"if,omitempty"`
-}
+} //@name Command
 
 type Type struct {
 	Type string `json:"type"`
-}
+} //@name Type
 
 type Requirements struct {
 	Binaries []string `json:"binaries,omitempty"`
 	OS       string   `json:"os,omitempty"`
 	Arch     string   `json:"arch,omitempty"`
-}
+} //@name Requirements
 
 type Group struct {
 	Variables   []string `json:"variables"`
 	Display     string   `json:"string"`
 	Description string   `json:"description"`
 	Order       int      `json:"order"`
-}
+} //@name Group
 
 func (s *Server) CopyFrom(replacement *Server) {
 	s.Variables = replacement.Variables

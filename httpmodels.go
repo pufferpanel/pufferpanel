@@ -15,25 +15,25 @@ package pufferpanel
 
 type ServerIdResponse struct {
 	Id string `json:"id"`
-}
+} //@name ServerId
 
 type ServerStats struct {
 	Cpu    float64 `json:"cpu"`
 	Memory float64 `json:"memory"`
-}
+} //@name ServerStats
 
 type ServerLogs struct {
 	Epoch int64  `json:"epoch"`
 	Logs  string `json:"logs"`
-}
+} //@name ServerLogs
 
 type ServerRunning struct {
 	Running bool `json:"running"`
-}
+} //@name ServerRunning
 
 type ServerData struct {
 	Variables map[string]Variable `json:"data"`
-}
+} //@name ServerData
 
 type ServerDataAdmin struct {
 	*Server
@@ -41,13 +41,13 @@ type ServerDataAdmin struct {
 
 type DaemonRunning struct {
 	Message string `json:"message"`
-}
+} //@name DaemonRunning
 
 type ServerTasks struct {
 	Tasks map[string]ServerTask
-}
+} //@name ServerTasks
 
 type ServerTask struct {
 	IsRunning bool `json:"isRunning"`
 	Task
-}
+} //@name ServerTask

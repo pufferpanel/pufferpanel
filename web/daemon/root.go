@@ -85,4 +85,4 @@ type Features struct {
 	Environments []string `json:"environments"`
 	OS           string   `json:"os"`
 	Arch         string   `json:"arch"`
-}
+} //@name Features

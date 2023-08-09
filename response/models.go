@@ -17,18 +17,18 @@ import "github.com/pufferpanel/pufferpanel/v3"
 
 type Error struct {
 	Error *pufferpanel.Error `json:"error"`
-}
+} //@name ErrorResponse
 
 type Metadata struct {
 	Paging *Paging `json:"paging"`
-}
+} //@name Metadata
 
 type Paging struct {
 	Page    uint  `json:"page"`
 	Size    uint  `json:"pageSize"`
 	MaxSize uint  `json:"maxSize"`
 	Total   int64 `json:"total"`
-}
+} //@name Paging
 
 type Empty struct {
-}
+} //@name Empty

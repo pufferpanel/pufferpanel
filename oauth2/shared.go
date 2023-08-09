@@ -120,7 +120,7 @@ type TokenInfoResponse struct {
 	Scope            string `json:"scope,omitempty"`
 	Error            string `json:"error,omitempty"`
 	ErrorDescription string `json:"error_description,omitempty"`
-}
+} //@name OAuth2TokenInfoResponse
 
 type TokenResponse struct {
 	AccessToken      string `json:"access_token,omitempty"`
@@ -129,4 +129,4 @@ type TokenResponse struct {
 	Scope            string `json:"scope"`
 	Error            string `json:"error,omitempty"`
 	ErrorDescription string `json:"error_description,omitempty"`
-}
+} //@name OAuth2TokenResponse

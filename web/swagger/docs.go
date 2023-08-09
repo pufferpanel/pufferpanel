@@ -44,7 +44,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.EditableConfig"
+                            "$ref": "#/definitions/EditableConfigSettings"
                         }
                     }
                 }
@@ -60,32 +60,32 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.NodeView"
+                                "$ref": "#/definitions/Node"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -97,31 +97,31 @@ const docTemplate = `{
                     "200": {
                         "description": "Node created",
                         "schema": {
-                            "$ref": "#/definitions/models.NodeView"
+                            "$ref": "#/definitions/Node"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -144,31 +144,31 @@ const docTemplate = `{
                     "200": {
                         "description": "Nodes",
                         "schema": {
-                            "$ref": "#/definitions/models.NodeView"
+                            "$ref": "#/definitions/Node"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -190,7 +190,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.NodeView"
+                            "$ref": "#/definitions/Node"
                         }
                     }
                 ],
@@ -198,31 +198,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -243,31 +243,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -290,31 +290,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Deployment"
+                            "$ref": "#/definitions/NodeDeploymentConfig"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -337,31 +337,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/daemon.Features"
+                            "$ref": "#/definitions/Features"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -375,31 +375,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserView"
+                            "$ref": "#/definitions/User"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -414,7 +414,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/User"
                         }
                     }
                 ],
@@ -422,31 +422,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -462,32 +462,32 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Client"
+                                "$ref": "#/definitions/Client"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -500,7 +500,7 @@ const docTemplate = `{
                         "name": "client",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/models.Client"
+                            "$ref": "#/definitions/Client"
                         }
                     }
                 ],
@@ -508,31 +508,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CreatedClient"
+                            "$ref": "#/definitions/CreatedClient"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -554,31 +554,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -624,31 +624,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ServerSearchResponse"
+                            "$ref": "#/definitions/ServerSearchResults"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -672,7 +672,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ServerCreation"
+                            "$ref": "#/definitions/CreatedServer"
                         }
                     }
                 ],
@@ -680,31 +680,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CreateServerResponse"
+                            "$ref": "#/definitions/CreatedServerId"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -725,31 +725,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -772,31 +772,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetServerResponse"
+                            "$ref": "#/definitions/GetServer"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -820,7 +820,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pufferpanel.Name"
+                            "$ref": "#/definitions/Name"
                         }
                     }
                 ],
@@ -831,25 +831,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -873,32 +873,32 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Client"
+                                "$ref": "#/definitions/Client"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -918,7 +918,7 @@ const docTemplate = `{
                         "name": "body",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/models.Client"
+                            "$ref": "#/definitions/Client"
                         }
                     }
                 ],
@@ -926,31 +926,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CreatedClient"
+                            "$ref": "#/definitions/CreatedClient"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -979,31 +979,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1027,32 +1027,32 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.PermissionView"
+                                "$ref": "#/definitions/Permissions"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1082,7 +1082,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PermissionView"
+                            "$ref": "#/definitions/Permissions"
                         }
                     }
                 ],
@@ -1090,31 +1090,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1141,31 +1141,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1182,7 +1182,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ChangeMultipleSettings"
+                            "$ref": "#/definitions/ChangeMultipleSettings"
                         }
                     }
                 ],
@@ -1190,19 +1190,19 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1225,7 +1225,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SettingResponse"
+                            "$ref": "#/definitions/Setting"
                         }
                     }
                 }
@@ -1247,7 +1247,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ChangeSetting"
+                            "$ref": "#/definitions/Setting"
                         }
                     }
                 ],
@@ -1255,19 +1255,19 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1283,14 +1283,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.TemplateRepo"
+                                "$ref": "#/definitions/TemplateRepo"
                             }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1306,7 +1306,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pufferpanel.Server"
+                            "$ref": "#/definitions/ServerDefinition"
                         }
                     },
                     {
@@ -1321,19 +1321,19 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1354,19 +1354,19 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1391,14 +1391,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Template"
+                                "$ref": "#/definitions/Template"
                             }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1428,13 +1428,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Template"
+                            "$ref": "#/definitions/Template"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1451,7 +1451,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserSearch"
+                            "$ref": "#/definitions/UserSearch"
                         }
                     }
                 ],
@@ -1459,31 +1459,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserSearchResponse"
+                            "$ref": "#/definitions/UserSearchResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1497,7 +1497,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserView"
+                            "$ref": "#/definitions/User"
                         }
                     }
                 ],
@@ -1505,31 +1505,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserView"
+                            "$ref": "#/definitions/User"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1551,31 +1551,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserView"
+                            "$ref": "#/definitions/User"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1596,7 +1596,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserView"
+                            "$ref": "#/definitions/User"
                         }
                     }
                 ],
@@ -1604,31 +1604,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1648,31 +1648,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1694,31 +1694,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.PermissionView"
+                            "$ref": "#/definitions/Permissions"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1739,7 +1739,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PermissionView"
+                            "$ref": "#/definitions/Permissions"
                         }
                     }
                 ],
@@ -1747,31 +1747,31 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1787,14 +1787,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.UserSettingView"
+                                "$ref": "#/definitions/UserSettings"
                             }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1818,7 +1818,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ChangeUserSetting"
+                            "$ref": "#/definitions/UserSetting"
                         }
                     }
                 ],
@@ -1826,19 +1826,19 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1852,7 +1852,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pufferpanel.DaemonRunning"
+                            "$ref": "#/definitions/DaemonRunning"
                         }
                     }
                 }
@@ -1864,7 +1864,7 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/response.Empty"
+                            "$ref": "#/definitions/Empty"
                         }
                     }
                 }
@@ -1896,25 +1896,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/oauth2.TokenInfoResponse"
+                            "$ref": "#/definitions/OAuth2TokenInfoResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/oauth2.TokenInfoResponse"
+                            "$ref": "#/definitions/OAuth2TokenInfoResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/oauth2.TokenInfoResponse"
+                            "$ref": "#/definitions/OAuth2TokenInfoResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1931,7 +1931,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/oauth2.oauth2TokenRequest"
+                            "$ref": "#/definitions/OAuth2TokenRequest"
                         }
                     }
                 ],
@@ -1939,25 +1939,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/oauth2.TokenResponse"
+                            "$ref": "#/definitions/OAuth2TokenResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/oauth2.TokenResponse"
+                            "$ref": "#/definitions/OAuth2TokenResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/oauth2.TokenResponse"
+                            "$ref": "#/definitions/OAuth2TokenResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/oauth2.TokenResponse"
+                            "$ref": "#/definitions/OAuth2TokenResponse"
                         }
                     }
                 }
@@ -1965,7 +1965,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "api.BrandingConfig": {
+        "BrandingConfig": {
             "type": "object",
             "properties": {
                 "name": {
@@ -1973,38 +1973,196 @@ const docTemplate = `{
                 }
             }
         },
-        "api.EditableConfig": {
+        "ChangeMultipleSettings": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "Client": {
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "CreatedClient": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "secret": {
+                    "type": "string"
+                }
+            }
+        },
+        "CreatedServer": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/Variable"
+                    }
+                },
+                "display": {
+                    "type": "string"
+                },
+                "environment": {},
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Group"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "install": {
+                    "type": "array",
+                    "items": {}
+                },
+                "name": {
+                    "type": "string"
+                },
+                "node": {
+                    "type": "integer"
+                },
+                "requirements": {
+                    "$ref": "#/definitions/Requirements"
+                },
+                "run": {
+                    "$ref": "#/definitions/Execution"
+                },
+                "supportedEnvironments": {},
+                "type": {
+                    "type": "string"
+                },
+                "uninstall": {
+                    "type": "array",
+                    "items": {}
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "CreatedServerId": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "DaemonRunning": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "EditableConfigSettings": {
             "type": "object",
             "properties": {
                 "branding": {
-                    "$ref": "#/definitions/api.BrandingConfig"
+                    "$ref": "#/definitions/BrandingConfig"
                 },
                 "registrationEnabled": {
                     "type": "boolean"
                 },
                 "themes": {
-                    "$ref": "#/definitions/api.ThemeConfig"
+                    "$ref": "#/definitions/ThemeConfig"
                 }
             }
         },
-        "api.ThemeConfig": {
+        "Empty": {
+            "type": "object"
+        },
+        "Error": {
             "type": "object",
             "properties": {
-                "active": {
+                "code": {
                     "type": "string"
                 },
-                "available": {
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/Error"
+                }
+            }
+        },
+        "Execution": {
+            "type": "object",
+            "properties": {
+                "arguments": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
                 },
-                "settings": {
+                "autorecover": {
+                    "type": "boolean"
+                },
+                "autorestart": {
+                    "type": "boolean"
+                },
+                "autostart": {
+                    "type": "boolean"
+                },
+                "command": {},
+                "disabled": {
+                    "type": "boolean"
+                },
+                "environmentVars": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "post": {
+                    "type": "array",
+                    "items": {}
+                },
+                "pre": {
+                    "type": "array",
+                    "items": {}
+                },
+                "program": {
+                    "type": "string"
+                },
+                "stop": {
+                    "type": "string"
+                },
+                "stopCode": {
+                    "type": "integer"
+                },
+                "workingDirectory": {
                     "type": "string"
                 }
             }
         },
-        "daemon.Features": {
+        "Features": {
             "type": "object",
             "properties": {
                 "arch": {
@@ -2027,83 +2185,46 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ChangeMultipleSettings": {
-            "type": "object",
-            "additionalProperties": true
-        },
-        "models.ChangeSetting": {
+        "GetServer": {
             "type": "object",
             "properties": {
-                "value": {}
-            }
-        },
-        "models.ChangeUserSetting": {
-            "type": "object",
-            "properties": {
-                "value": {
-                    "type": "string"
+                "permissions": {
+                    "$ref": "#/definitions/Permissions"
+                },
+                "server": {
+                    "$ref": "#/definitions/ServerInfo"
                 }
             }
         },
-        "models.Client": {
+        "Group": {
             "type": "object",
             "properties": {
-                "client_id": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
+                "order": {
+                    "type": "integer"
+                },
+                "string": {
+                    "type": "string"
+                },
+                "variables": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Name": {
+            "type": "object",
+            "properties": {
                 "name": {
                     "type": "string"
                 }
             }
         },
-        "models.CreateServerResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.CreatedClient": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "secret": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.Deployment": {
-            "type": "object",
-            "properties": {
-                "clientId": {
-                    "type": "string"
-                },
-                "clientSecret": {
-                    "type": "string"
-                },
-                "publicKey": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.GetServerResponse": {
-            "type": "object",
-            "properties": {
-                "permissions": {
-                    "$ref": "#/definitions/models.PermissionView"
-                },
-                "server": {
-                    "$ref": "#/definitions/models.ServerView"
-                }
-            }
-        },
-        "models.NodeView": {
+        "Node": {
             "type": "object",
             "properties": {
                 "id": {
@@ -2132,7 +2253,98 @@ const docTemplate = `{
                 }
             }
         },
-        "models.PermissionView": {
+        "NodeDeploymentConfig": {
+            "type": "object",
+            "properties": {
+                "clientId": {
+                    "type": "string"
+                },
+                "clientSecret": {
+                    "type": "string"
+                },
+                "publicKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "OAuth2TokenInfoResponse": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "error": {
+                    "type": "string"
+                },
+                "error_description": {
+                    "type": "string"
+                },
+                "scope": {
+                    "type": "string"
+                }
+            }
+        },
+        "OAuth2TokenRequest": {
+            "type": "object",
+            "properties": {
+                "clientId": {
+                    "type": "string"
+                },
+                "clientSecret": {
+                    "type": "string"
+                },
+                "grantType": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "OAuth2TokenResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                },
+                "error_description": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "scope": {
+                    "type": "string"
+                },
+                "token_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "Paging": {
+            "type": "object",
+            "properties": {
+                "maxSize": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Permissions": {
             "type": "object",
             "properties": {
                 "admin": {
@@ -2218,13 +2430,30 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ServerCreation": {
+        "Requirements": {
+            "type": "object",
+            "properties": {
+                "arch": {
+                    "type": "string"
+                },
+                "binaries": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "os": {
+                    "type": "string"
+                }
+            }
+        },
+        "ServerDefinition": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "object",
                     "additionalProperties": {
-                        "$ref": "#/definitions/pufferpanel.Variable"
+                        "$ref": "#/definitions/Variable"
                     }
                 },
                 "display": {
@@ -2234,7 +2463,7 @@ const docTemplate = `{
                 "groups": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/pufferpanel.Group"
+                        "$ref": "#/definitions/Group"
                     }
                 },
                 "id": {
@@ -2244,17 +2473,11 @@ const docTemplate = `{
                     "type": "array",
                     "items": {}
                 },
-                "name": {
-                    "type": "string"
-                },
-                "node": {
-                    "type": "integer"
-                },
                 "requirements": {
-                    "$ref": "#/definitions/pufferpanel.Requirements"
+                    "$ref": "#/definitions/Requirements"
                 },
                 "run": {
-                    "$ref": "#/definitions/pufferpanel.Execution"
+                    "$ref": "#/definitions/Execution"
                 },
                 "supportedEnvironments": {},
                 "type": {
@@ -2263,44 +2486,10 @@ const docTemplate = `{
                 "uninstall": {
                     "type": "array",
                     "items": {}
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             }
         },
-        "models.ServerSearchResponse": {
-            "type": "object",
-            "properties": {
-                "paging": {
-                    "$ref": "#/definitions/response.Paging"
-                },
-                "servers": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.ServerView"
-                    }
-                }
-            }
-        },
-        "models.ServerUserView": {
-            "type": "object",
-            "properties": {
-                "scopes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.ServerView": {
+        "ServerInfo": {
             "type": "object",
             "properties": {
                 "data": {},
@@ -2314,7 +2503,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "node": {
-                    "$ref": "#/definitions/models.NodeView"
+                    "$ref": "#/definitions/Node"
                 },
                 "nodeId": {
                     "type": "integer"
@@ -2328,24 +2517,52 @@ const docTemplate = `{
                 "users": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.ServerUserView"
+                        "$ref": "#/definitions/ServerUser"
                     }
                 }
             }
         },
-        "models.SettingResponse": {
+        "ServerSearchResults": {
+            "type": "object",
+            "properties": {
+                "paging": {
+                    "$ref": "#/definitions/Paging"
+                },
+                "servers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ServerInfo"
+                    }
+                }
+            }
+        },
+        "ServerUser": {
+            "type": "object",
+            "properties": {
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "Setting": {
             "type": "object",
             "properties": {
                 "value": {}
             }
         },
-        "models.Template": {
+        "Template": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "object",
                     "additionalProperties": {
-                        "$ref": "#/definitions/pufferpanel.Variable"
+                        "$ref": "#/definitions/Variable"
                     }
                 },
                 "display": {
@@ -2355,7 +2572,7 @@ const docTemplate = `{
                 "groups": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/pufferpanel.Group"
+                        "$ref": "#/definitions/Group"
                     }
                 },
                 "id": {
@@ -2372,10 +2589,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "requirements": {
-                    "$ref": "#/definitions/pufferpanel.Requirements"
+                    "$ref": "#/definitions/Requirements"
                 },
                 "run": {
-                    "$ref": "#/definitions/pufferpanel.Execution"
+                    "$ref": "#/definitions/Execution"
                 },
                 "supportedEnvironments": {},
                 "type": {
@@ -2387,7 +2604,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.TemplateRepo": {
+        "TemplateRepo": {
             "type": "object",
             "properties": {
                 "branch": {
@@ -2401,52 +2618,24 @@ const docTemplate = `{
                 }
             }
         },
-        "models.User": {
-            "type": "object"
-        },
-        "models.UserSearch": {
+        "ThemeConfig": {
             "type": "object",
             "properties": {
-                "email": {
+                "active": {
                     "type": "string"
                 },
-                "page": {
-                    "type": "integer"
-                },
-                "pageLimit": {
-                    "type": "integer"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.UserSearchResponse": {
-            "type": "object",
-            "properties": {
-                "paging": {
-                    "$ref": "#/definitions/response.Paging"
-                },
-                "users": {
+                "available": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.UserView"
+                        "type": "string"
                     }
-                }
-            }
-        },
-        "models.UserSettingView": {
-            "type": "object",
-            "properties": {
-                "key": {
-                    "type": "string"
                 },
-                "value": {
+                "settings": {
                     "type": "string"
                 }
             }
         },
-        "models.UserView": {
+        "User": {
             "type": "object",
             "properties": {
                 "email": {
@@ -2467,227 +2656,57 @@ const docTemplate = `{
                 }
             }
         },
-        "oauth2.TokenInfoResponse": {
+        "UserSearch": {
             "type": "object",
             "properties": {
-                "active": {
-                    "type": "boolean"
-                },
-                "error": {
+                "email": {
                     "type": "string"
                 },
-                "error_description": {
-                    "type": "string"
-                },
-                "scope": {
-                    "type": "string"
-                }
-            }
-        },
-        "oauth2.TokenResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "error": {
-                    "type": "string"
-                },
-                "error_description": {
-                    "type": "string"
-                },
-                "expires_in": {
+                "page": {
                     "type": "integer"
                 },
-                "scope": {
-                    "type": "string"
-                },
-                "token_type": {
-                    "type": "string"
-                }
-            }
-        },
-        "oauth2.oauth2TokenRequest": {
-            "type": "object",
-            "properties": {
-                "clientId": {
-                    "type": "string"
-                },
-                "clientSecret": {
-                    "type": "string"
-                },
-                "grantType": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
+                "pageLimit": {
+                    "type": "integer"
                 },
                 "username": {
                     "type": "string"
                 }
             }
         },
-        "pufferpanel.DaemonRunning": {
+        "UserSearchResponse": {
             "type": "object",
             "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "pufferpanel.Error": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
+                "paging": {
+                    "$ref": "#/definitions/Paging"
                 },
-                "metadata": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "msg": {
-                    "type": "string"
-                }
-            }
-        },
-        "pufferpanel.Execution": {
-            "type": "object",
-            "properties": {
-                "arguments": {
+                "users": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/User"
                     }
-                },
-                "autorecover": {
-                    "type": "boolean"
-                },
-                "autorestart": {
-                    "type": "boolean"
-                },
-                "autostart": {
-                    "type": "boolean"
-                },
-                "command": {},
-                "disabled": {
-                    "type": "boolean"
-                },
-                "environmentVars": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                },
-                "post": {
-                    "type": "array",
-                    "items": {}
-                },
-                "pre": {
-                    "type": "array",
-                    "items": {}
-                },
-                "program": {
-                    "type": "string"
-                },
-                "stop": {
-                    "type": "string"
-                },
-                "stopCode": {
-                    "type": "integer"
-                },
-                "workingDirectory": {
-                    "type": "string"
                 }
             }
         },
-        "pufferpanel.Group": {
+        "UserSetting": {
             "type": "object",
             "properties": {
-                "description": {
+                "value": {
                     "type": "string"
-                },
-                "order": {
-                    "type": "integer"
-                },
-                "string": {
-                    "type": "string"
-                },
-                "variables": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             }
         },
-        "pufferpanel.Name": {
+        "UserSettings": {
             "type": "object",
             "properties": {
-                "name": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
                     "type": "string"
                 }
             }
         },
-        "pufferpanel.Requirements": {
-            "type": "object",
-            "properties": {
-                "arch": {
-                    "type": "string"
-                },
-                "binaries": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "os": {
-                    "type": "string"
-                }
-            }
-        },
-        "pufferpanel.Server": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/pufferpanel.Variable"
-                    }
-                },
-                "display": {
-                    "type": "string"
-                },
-                "environment": {},
-                "groups": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/pufferpanel.Group"
-                    }
-                },
-                "id": {
-                    "type": "string"
-                },
-                "install": {
-                    "type": "array",
-                    "items": {}
-                },
-                "requirements": {
-                    "$ref": "#/definitions/pufferpanel.Requirements"
-                },
-                "run": {
-                    "$ref": "#/definitions/pufferpanel.Execution"
-                },
-                "supportedEnvironments": {},
-                "type": {
-                    "type": "string"
-                },
-                "uninstall": {
-                    "type": "array",
-                    "items": {}
-                }
-            }
-        },
-        "pufferpanel.Variable": {
+        "Variable": {
             "type": "object",
             "properties": {
                 "desc": {
@@ -2702,7 +2721,7 @@ const docTemplate = `{
                 "options": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/pufferpanel.VariableOption"
+                        "$ref": "#/definitions/VariableOption"
                     }
                 },
                 "required": {
@@ -2717,41 +2736,13 @@ const docTemplate = `{
                 "value": {}
             }
         },
-        "pufferpanel.VariableOption": {
+        "VariableOption": {
             "type": "object",
             "properties": {
                 "display": {
                     "type": "string"
                 },
                 "value": {}
-            }
-        },
-        "response.Empty": {
-            "type": "object"
-        },
-        "response.Error": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "$ref": "#/definitions/pufferpanel.Error"
-                }
-            }
-        },
-        "response.Paging": {
-            "type": "object",
-            "properties": {
-                "maxSize": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "pageSize": {
-                    "type": "integer"
-                },
-                "total": {
-                    "type": "integer"
-                }
             }
         }
     },
@@ -2800,7 +2791,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "PufferPanel API",
-	Description:      "### Data format\r\n\r\nThe API works off of the JSON spec. Most of the API expects and returns JSON data. There is no support to change the data format used.\r\n\r\n### Successful calls\r\n\r\nSuccessful calls will be any result which produce a 2xx result. This can include 200 (OK), 202 (Accepted), or 204 (No Content). The API will document which status code is returned. \r\n\r\n### User errors\r\n\r\nClient errors are a result which stems from a bad user request, whether it's a bad URL or bad data. These will be a 400 (Bad Request), 401 (Unauthorized), 403 (Forbidden), or 404 (Not Found). \r\n\r\n`400`: Refer to the HTTP body for why the call failed.\r\n\r\n`401`: Refer to the [Authentication session](#authentication) for information on how to authenticate. \r\n\r\n`403`: Your authorization does not permit accessing this resource. Please check the credentials you are using.\r\n\r\n`404`: The URL you are calling does not exist. Please check the full URL.\r\n\r\n### Server errors\r\n\r\nA 500 may be returned, indicating something went wrong with thr request. This generally indicates something is not as expected, but your request was valid. Please refer to the panel logs and try your request again.\r\n\r\nErrors will be returned in the following JSON structure:\r\n```json\r\n{\r\n  \"msg\": \"A human-legible error message, with optional metadata to fill in the message more, such as 'Hello {foo}' would be 'Hello World'\",\r\n  \"code\": \"ErrMachineGoBrr\",\r\n  \"metadata\": {\r\n    \"foo\": \"World\"\r\n  }\r\n}\r\n```\r\n\r\n### Authentication\r\n\r\nPufferPanel uses the OAuth2 standard to handle both authentication and authorization of resources. To access the API, a user must first register an OAuth2 client within the panel. A client may be registered within a server's settings, which grants the client only to that server, or to the account, which grants the client access as though it was that user.\r\n\r\nTo authenticate, refer to the docs specified in the /oauth2/token on how to request your access token. This follows the OAuth2 spec, which you may read about here: https://oauth.net/2/grant-types/client-credentials/\r\n\r\nOnce you have a token, you pass the following Header to all API calls. `Authorization: Bearer <token>`\r\n\r\nFailure to pass this token when calling the API will result in a 403.",
+	Description:      "### Data format\r\n\r\nThe API works off of the JSON spec. Most of the API expects and returns JSON data. There is no support to change the data format used.\r\n\r\n### Successful calls\r\n\r\nSuccessful calls will be any result which produce a 2xx result. This can include 200 (OK), 202 (Accepted), or 204 (No Content). The API will document which status code is returned. \r\n\r\n### User errors\r\n\r\nClient errors are a result which stems from a bad user request, whether it's a bad URL or bad data. These will be a 400 (Bad Request), 401 (Unauthorized), 403 (Forbidden), or 404 (Not Found). \r\n\r\n`400`: Refer to the HTTP body for why the call failed.\r\n\r\n`401`: Refer to the [Authentication session](#authentication) for information on how to authenticate. \r\n\r\n`403`: Your authorization does not permit accessing this resource. Please check the credentials you are using.\r\n\r\n`404`: The URL you are calling does not exist. Please check the full URL.\r\n\r\n### Server errors\r\n\r\nA 500 may be returned, indicating something went wrong with thr request. This generally indicates something is not as expected, but your request was valid. Please refer to the panel logs and try your request again.\r\n\r\nErrors will be returned in the following JSON structure:\r\n```json\r\n{\r\n  \"msg\": \"A human-legible error message, with optional metadata to fill in the message more, such as 'Hello {foo}' would be 'Hello World'\",\r\n  \"code\": \"ErrMachineGoBrr\",\r\n  \"metadata\": {\r\n    \"foo\": \"World\"\r\n  }\r\n}\r\n```\r\n\r\n### Authentication\r\n\r\nPufferPanel uses the OAuth2 standard to handle both authentication and authorization of resources. To access the API, a user must first register an OAuth2 client within the panel. A client may be registered within a server's settings, which grants the client only to that server, or to the account, which grants the client access as though it was that user.\r\n\r\nTo authenticate, refer to the docs specified in the [/oauth2/token](#/default/post_oauth2_token) endpoint on how to request your access token. This follows the OAuth2 spec, which you may read about here: https://oauth.net/2/grant-types/client-credentials/\r\n\r\nOnce you have a token, you pass the following Header to all API calls. `Authorization: Bearer <token>`\r\n\r\nFailure to pass this token when calling the API will result in a 403.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

@@ -3,7 +3,7 @@ package models
 type UserSettingView struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
-}
+} //@name UserSettings
 
 type UserSettingsView []*UserSettingView
 

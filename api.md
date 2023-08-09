@@ -37,7 +37,7 @@ Errors will be returned in the following JSON structure:
 
 PufferPanel uses the OAuth2 standard to handle both authentication and authorization of resources. To access the API, a user must first register an OAuth2 client within the panel. A client may be registered within a server's settings, which grants the client only to that server, or to the account, which grants the client access as though it was that user.
 
-To authenticate, refer to the docs specified in the /oauth2/token on how to request your access token. This follows the OAuth2 spec, which you may read about here: https://oauth.net/2/grant-types/client-credentials/
+To authenticate, refer to the docs specified in the [/oauth2/token](#/default/post_oauth2_token) endpoint on how to request your access token. This follows the OAuth2 spec, which you may read about here: https://oauth.net/2/grant-types/client-credentials/
 
 Once you have a token, you pass the following Header to all API calls. `Authorization: Bearer <token>`
 

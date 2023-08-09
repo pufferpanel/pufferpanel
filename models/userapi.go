@@ -20,9 +20,9 @@ type UserSearch struct {
 	Email     string `form:"email"`
 	PageLimit uint   `form:"limit"`
 	Page      uint   `form:"page"`
-}
+} //@name UserSearch
 
 type UserSearchResponse struct {
 	Users []*UserView `json:"users"`
 	*response.Metadata
-}
+} //@name UserSearchResponse
