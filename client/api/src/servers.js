@@ -67,12 +67,12 @@ export class ServerApi {
   }
 
   async getDefinition(id) {
-    const res = await this._api.get(`/api/servers/${id}`)
+    const res = await this._api.get(`/api/servers/${id}/definition`)
     return res.data
   }
 
   async updateDefinition(id, data) {
-    await this._api.post(`/api/servers/${id}`, data)
+    await this._api.post(`/api/servers/${id}/definition`, data)
     return true
   }
 

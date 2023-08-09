@@ -82,6 +82,13 @@ func (m *MergedFS) ReadFile(name string) (data []byte, err error) {
 			return
 		}
 		if err == nil {
+			//to get the buffer... we have to make it the right size
+			var fi fs.FileInfo
+			fi, err = primaryFile.Stat()
+			if err != nil {
+				return
+			}
+			data = make([]byte, fi.Size())
 			_, err = primaryFile.Read(data)
 			return
 		}
@@ -101,6 +108,12 @@ func (m *MergedFS) ReadFile(name string) (data []byte, err error) {
 			return
 		}
 		if err == nil {
+			var fi fs.FileInfo
+			fi, err = secondaryFile.Stat()
+			if err != nil {
+				return
+			}
+			data = make([]byte, fi.Size())
 			_, err = secondaryFile.Read(data)
 			return
 		}

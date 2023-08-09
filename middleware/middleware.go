@@ -49,7 +49,7 @@ func Recover(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
 			logging.Error.Printf("Error handling route\n%+v\n%s", err, debug.Stack())
-			c.Abort()
+			c.AbortWithStatus(http.StatusInternalServerError)
 		}
 	}()
 
@@ -201,7 +201,7 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope, needsServer bool
 				return
 			}
 
-			c.Set("server", program)
+			c.Set("program", program)
 		}
 
 		//request from the auth server the information for this user
@@ -239,7 +239,7 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope, needsServer bool
 
 func GetToken(c *gin.Context) string {
 	cookie, err := c.Cookie("puffer_auth")
-	if err == http.ErrNoCookie || cookie == "" {
+	if errors.Is(err, http.ErrNoCookie) || cookie == "" {
 		authHeader := c.Request.Header.Get("Authorization")
 		authHeader = strings.TrimSpace(authHeader)
 

@@ -123,10 +123,13 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 	l.OPTIONS("", response.CreateOptions("POST"))
 }
 
-func StartServer(c *gin.Context) {
+func getServerFromGin(c *gin.Context) *servers.Server {
 	item, _ := c.Get("program")
-	server := item.(*servers.Server)
+	return item.(*servers.Server)
+}
 
+func StartServer(c *gin.Context) {
+	server := getServerFromGin(c)
 	_, wait := c.GetQuery("wait")
 
 	if wait {
@@ -147,8 +150,7 @@ func StartServer(c *gin.Context) {
 }
 
 func StopServer(c *gin.Context) {
-	item, _ := c.Get("program")
-	server := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	_, wait := c.GetQuery("wait")
 
@@ -169,8 +171,7 @@ func StopServer(c *gin.Context) {
 }
 
 func KillServer(c *gin.Context) {
-	item, _ := c.Get("program")
-	server := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	err := server.Kill()
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -220,9 +221,9 @@ func CreateServer(c *gin.Context) {
 }
 
 func DeleteServer(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
-	err := servers.Delete(prg.Id())
+	server := getServerFromGin(c)
+
+	err := servers.Delete(server.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -230,13 +231,12 @@ func DeleteServer(c *gin.Context) {
 }
 
 func InstallServer(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	_, wait := c.GetQuery("wait")
 
 	if wait {
-		err := prg.Install()
+		err := server.Install()
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 		} else {
 			c.Status(http.StatusNoContent)
@@ -244,15 +244,14 @@ func InstallServer(c *gin.Context) {
 	} else {
 		go func(p *servers.Server) {
 			_ = p.Install()
-		}(prg)
+		}(server)
 
 		c.Status(http.StatusAccepted)
 	}
 }
 
 func EditServerData(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	data := &pufferpanel.ServerData{}
 	err := json.NewDecoder(c.Request.Body).Decode(&data)
@@ -260,7 +259,7 @@ func EditServerData(c *gin.Context) {
 		return
 	}
 
-	err = prg.EditData(data.Variables, isAdmin(c))
+	err = server.EditData(data.Variables, isAdmin(c))
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -268,21 +267,20 @@ func EditServerData(c *gin.Context) {
 }
 
 func GetServerTasks(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	result := pufferpanel.ServerTasks{
 		Tasks: make(map[string]pufferpanel.ServerTask),
 	}
 
-	for k, v := range prg.Scheduler.Tasks {
+	for k, v := range server.Scheduler.Tasks {
 		result.Tasks[k] = pufferpanel.ServerTask{
 			Task: pufferpanel.Task{
 				Name:         v.Name,
 				CronSchedule: v.CronSchedule,
 				Description:  v.Description,
 			},
-			IsRunning: prg.Scheduler.IsTaskRunning(k),
+			IsRunning: server.Scheduler.IsTaskRunning(k),
 		}
 	}
 
@@ -290,17 +288,16 @@ func GetServerTasks(c *gin.Context) {
 }
 
 func GetServerTask(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	result := pufferpanel.ServerTasks{
 		Tasks: make(map[string]pufferpanel.ServerTask),
 	}
 
-	for k, v := range prg.Scheduler.Tasks {
+	for k, v := range server.Scheduler.Tasks {
 		result.Tasks[k] = pufferpanel.ServerTask{
 			Task:      v,
-			IsRunning: prg.Scheduler.IsTaskRunning(k),
+			IsRunning: server.Scheduler.IsTaskRunning(k),
 		}
 	}
 
@@ -308,12 +305,11 @@ func GetServerTask(c *gin.Context) {
 }
 
 func RunServerTask(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	taskId := c.Param("taskId")
 
-	err := prg.Scheduler.RunTask(taskId)
+	err := server.Scheduler.RunTask(taskId)
 	if errors.Is(err, gocron.ErrJobNotFoundWithTag) {
 		c.Status(http.StatusNotFound)
 		return
@@ -325,8 +321,7 @@ func RunServerTask(c *gin.Context) {
 }
 
 func EditServerTask(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	taskId := c.Param("taskId")
 
@@ -336,7 +331,7 @@ func EditServerTask(c *gin.Context) {
 		return
 	}
 
-	err = prg.Scheduler.RemoveTask(taskId)
+	err = server.Scheduler.RemoveTask(taskId)
 	if errors.Is(err, gocron.ErrJobNotFoundWithTag) {
 		err = nil
 	}
@@ -344,7 +339,7 @@ func EditServerTask(c *gin.Context) {
 		return
 	}
 
-	err = prg.Scheduler.AddTask(taskId, task)
+	err = server.Scheduler.AddTask(taskId, task)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -352,8 +347,7 @@ func EditServerTask(c *gin.Context) {
 }
 
 func DeleteServerTask(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	taskId := c.Param("taskId")
 
@@ -363,7 +357,7 @@ func DeleteServerTask(c *gin.Context) {
 		return
 	}
 
-	err = prg.Scheduler.RemoveTask(taskId)
+	err = server.Scheduler.RemoveTask(taskId)
 	if errors.Is(err, gocron.ErrJobNotFoundWithTag) {
 		c.Status(http.StatusNotFound)
 		return
@@ -375,10 +369,9 @@ func DeleteServerTask(c *gin.Context) {
 }
 
 func ReloadServer(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
+	server := getServerFromGin(c)
 
-	err := servers.Reload(prg.Id())
+	err := servers.Reload(server.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -386,8 +379,7 @@ func ReloadServer(c *gin.Context) {
 }
 
 func GetServerData(c *gin.Context) {
-	item, _ := c.Get("program")
-	server := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	data := server.GetData()
 
@@ -405,14 +397,14 @@ func GetServerData(c *gin.Context) {
 }
 
 func GetServerAdmin(c *gin.Context) {
-	item, _ := c.MustGet("server").(*servers.Server)
+	server := getServerFromGin(c)
 
-	c.JSON(http.StatusOK, &pufferpanel.ServerDataAdmin{Server: &item.Server})
+	c.JSON(http.StatusOK, &pufferpanel.ServerDataAdmin{Server: &server.Server})
 }
 
 func EditServerAdmin(c *gin.Context) {
-	item, _ := c.MustGet("server").(*servers.Server)
-	server := &item.Server
+	prg := getServerFromGin(c)
+	server := &prg.Server
 
 	replacement := &pufferpanel.Server{}
 	err := c.BindJSON(replacement)
@@ -427,7 +419,7 @@ func EditServerAdmin(c *gin.Context) {
 	//copy from request
 	server.CopyFrom(replacement)
 
-	err = servers.Save(item.Id())
+	err = servers.Save(prg.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		//REVERT!!!!!!!
 		server.CopyFrom(backup)
@@ -442,8 +434,7 @@ func EditServerAdmin(c *gin.Context) {
 }
 
 func GetFile(c *gin.Context) {
-	item, _ := c.Get("program")
-	server := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	targetPath := c.Param("filename")
 
@@ -483,8 +474,7 @@ func GetFile(c *gin.Context) {
 }
 
 func PutFile(c *gin.Context) {
-	item, _ := c.Get("program")
-	server := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	targetPath := c.Param("filename")
 
@@ -527,8 +517,7 @@ func PutFile(c *gin.Context) {
 }
 
 func DeleteFile(c *gin.Context) {
-	item, _ := c.Get("program")
-	server := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	targetPath := c.Param("filename")
 
@@ -540,12 +529,11 @@ func DeleteFile(c *gin.Context) {
 }
 
 func PostConsole(c *gin.Context) {
-	item, _ := c.Get("program")
-	prg := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	d, _ := io.ReadAll(c.Request.Body)
 	cmd := string(d)
-	err := prg.Execute(cmd)
+	err := server.Execute(cmd)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -553,10 +541,9 @@ func PostConsole(c *gin.Context) {
 }
 
 func GetStats(c *gin.Context) {
-	item, _ := c.Get("program")
-	svr := item.(*servers.Server)
+	server := getServerFromGin(c)
 
-	results, err := svr.GetEnvironment().GetStats()
+	results, err := server.GetEnvironment().GetStats()
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.JSON(http.StatusOK, results)
@@ -564,8 +551,7 @@ func GetStats(c *gin.Context) {
 }
 
 func GetLogs(c *gin.Context) {
-	item, _ := c.Get("program")
-	program := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	time := c.DefaultQuery("time", "0")
 
@@ -575,7 +561,7 @@ func GetLogs(c *gin.Context) {
 		return
 	}
 
-	console, epoch := program.GetEnvironment().GetConsoleFrom(castedTime)
+	console, epoch := server.GetEnvironment().GetConsoleFrom(castedTime)
 	msg := ""
 	for _, k := range console {
 		msg += k
@@ -588,10 +574,9 @@ func GetLogs(c *gin.Context) {
 }
 
 func GetStatus(c *gin.Context) {
-	item, _ := c.Get("program")
-	program := item.(*servers.Server)
+	server := getServerFromGin(c)
 
-	running, err := program.IsRunning()
+	running, err := server.IsRunning()
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
@@ -600,8 +585,7 @@ func GetStatus(c *gin.Context) {
 }
 
 func Archive(c *gin.Context) {
-	item, _ := c.Get("program")
-	server := item.(*servers.Server)
+	server := getServerFromGin(c)
 	var files []string
 
 	if err := c.BindJSON(&files); response.HandleError(c, err, http.StatusBadRequest) {
@@ -621,8 +605,7 @@ func Archive(c *gin.Context) {
 }
 
 func Extract(c *gin.Context) {
-	item, _ := c.Get("program")
-	server := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	targetPath := c.Param("filename")
 	destination := c.Query("destination")
@@ -635,8 +618,7 @@ func Extract(c *gin.Context) {
 }
 
 func OpenSocket(c *gin.Context) {
-	item, _ := c.Get("program")
-	program := item.(*servers.Server)
+	server := getServerFromGin(c)
 
 	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -648,9 +630,9 @@ func OpenSocket(c *gin.Context) {
 
 	socket := pufferpanel.Create(conn)
 
-	go listenOnSocket(socket, program, scopes)
+	go listenOnSocket(socket, server, scopes)
 
-	program.GetEnvironment().AddListener(socket)
+	server.GetEnvironment().AddListener(socket)
 }
 
 func isAdmin(c *gin.Context) bool {

@@ -42,6 +42,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeServersView, false), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
+	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getServer)
 	g.Handle("PUT", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
 	g.Handle("DELETE", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
@@ -50,7 +51,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/:serverId/name", response.CreateOptions("PUT"))
 	g.Handle("OPTIONS", "/:serverId/name/:name", response.CreateOptions("PUT"))
 
-	g.Handle("GET", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getServer)
+	g.Handle("GET", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), proxyServerRequest)
 	g.Handle("PUT", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, editServer)
 	g.Handle("OPTIONS", "/:serverId/definition", response.CreateOptions("PUT", "GET"))
 
