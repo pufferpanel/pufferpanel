@@ -51,9 +51,11 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 	{
 		l.PUT("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), CreateServer)
 		l.DELETE("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), DeleteServer)
-		l.GET("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), GetServerAdmin)
-		l.POST("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
 		l.OPTIONS("/:serverId", response.CreateOptions("PUT", "DELETE", "GET"))
+
+		l.GET("/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), GetServerAdmin)
+		l.PUT("/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
+		l.OPTIONS("/:serverId/definition", response.CreateOptions("PUT", "DELETE", "GET"))
 
 		l.GET("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), GetServerData)
 		l.POST("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), EditServerData)

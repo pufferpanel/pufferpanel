@@ -42,12 +42,17 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeServersView, false), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getServer)
 	g.Handle("PUT", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
-	g.Handle("POST", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, editServer)
 	g.Handle("DELETE", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
-	g.Handle("PUT", "/:serverId/name/:name", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, renameServer)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
+
+	g.Handle("PUT", "/:serverId/name/:name", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, renameServer)
+	g.Handle("OPTIONS", "/:serverId/name", response.CreateOptions("PUT"))
+	g.Handle("OPTIONS", "/:serverId/name/:name", response.CreateOptions("PUT"))
+
+	g.Handle("GET", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getServer)
+	g.Handle("PUT", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, editServer)
+	g.Handle("OPTIONS", "/:serverId/definition", response.CreateOptions("PUT", "GET"))
 
 	g.Handle("GET", "/:serverId/user", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
 	g.Handle("OPTIONS", "/:serverId/user", response.CreateOptions("GET"))
@@ -239,7 +244,7 @@ func searchServers(c *gin.Context) {
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param id path string true "Server ID"
-// @Router /api/servers/{id} [get]
+// @Router /api/servers/{id}/definition [get]
 func getServer(c *gin.Context) {
 	t, exist := c.Get("server")
 
@@ -470,7 +475,7 @@ func editServer(c *gin.Context) {
 	data, _ := json.Marshal(postBody)
 	reader := io.NopCloser(bytes.NewReader(data))
 
-	nodeResponse, err := ns.CallNode(&server.Node, "PUT", "/daemon/server/"+postBody.Identifier, reader, c.Request.Header)
+	nodeResponse, err := ns.CallNode(&server.Node, "PUT", "/daemon/server/"+postBody.Identifier+"/definition", reader, c.Request.Header)
 	defer pufferpanel.CloseResponse(nodeResponse)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
