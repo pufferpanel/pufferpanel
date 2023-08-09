@@ -45,15 +45,16 @@ var clientFiles fs.ReadFileFS
 // RegisterRoutes Registers all routes
 // @title PufferPanel API
 // @version 3.0
-// @description PufferPanel API interface for both the panel and daemon. Endpoints starting with /daemon or /proxy are for nodes.
+// @description PufferPanel API interface for both the panel and daemon.
 // @contact.name PufferPanel
 // @contact.url https://pufferpanel.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @Accept json
 // @Produce json
+// @description.markdown
 // @securitydefinitions.oauth2.application OAuth2Application
-// @tokenUrl https://example.com/oauth/token
+// @tokenUrl /oauth2/token
 // @scope.none No scope needed
 // @scope.oauth2.auth Scope to validate another OAuth2 credential
 // @scope.servers.admin Admin access to all servers

@@ -92,7 +92,7 @@ jobs:
       - name: Generate Swagger Docs
         run: |
           go mod download
-          ~/go/bin/swag init -o web/swagger -g web/loader.go
+          ~/go/bin/swag init --md . -o web/swagger -g web/loader.go
 
       - name: yarn install, build
         run: |
