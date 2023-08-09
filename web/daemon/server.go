@@ -216,7 +216,7 @@ func CreateServer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, &pufferpanel.ServerIdResponse{Id: serverId})
+	c.JSON(http.StatusOK, &pufferpanel.ServerIdResponse{Id: serverId})
 }
 
 func DeleteServer(c *gin.Context) {
@@ -401,13 +401,13 @@ func GetServerData(c *gin.Context) {
 		data = replacement
 	}
 
-	c.JSON(200, &pufferpanel.ServerData{Variables: data})
+	c.JSON(http.StatusOK, &pufferpanel.ServerData{Variables: data})
 }
 
 func GetServerAdmin(c *gin.Context) {
 	item, _ := c.MustGet("server").(*servers.Server)
 
-	c.JSON(200, &pufferpanel.ServerDataAdmin{Server: &item.Server})
+	c.JSON(http.StatusOK, &pufferpanel.ServerDataAdmin{Server: &item.Server})
 }
 
 func EditServerAdmin(c *gin.Context) {
@@ -456,7 +456,7 @@ func GetFile(c *gin.Context) {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 		} else if err == pufferpanel.ErrIllegalFileAccess {
 			response.HandleError(c, err, http.StatusBadRequest)
 		} else {
@@ -466,7 +466,7 @@ func GetFile(c *gin.Context) {
 	}
 
 	if data.FileList != nil {
-		c.JSON(200, data.FileList)
+		c.JSON(http.StatusOK, data.FileList)
 	} else if data.Contents != nil {
 		fileName := filepath.Base(data.Name)
 
@@ -489,7 +489,7 @@ func PutFile(c *gin.Context) {
 	targetPath := c.Param("filename")
 
 	if targetPath == "" {
-		c.Status(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
@@ -559,7 +559,7 @@ func GetStats(c *gin.Context) {
 	results, err := svr.GetEnvironment().GetStats()
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
-		c.JSON(200, results)
+		c.JSON(http.StatusOK, results)
 	}
 }
 
@@ -581,7 +581,7 @@ func GetLogs(c *gin.Context) {
 		msg += k
 	}
 
-	c.JSON(200, &pufferpanel.ServerLogs{
+	c.JSON(http.StatusOK, &pufferpanel.ServerLogs{
 		Epoch: epoch,
 		Logs:  msg,
 	})
@@ -595,7 +595,7 @@ func GetStatus(c *gin.Context) {
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
-		c.JSON(200, &pufferpanel.ServerRunning{Running: running})
+		c.JSON(http.StatusOK, &pufferpanel.ServerRunning{Running: running})
 	}
 }
 

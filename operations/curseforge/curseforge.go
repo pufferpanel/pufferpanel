@@ -125,11 +125,11 @@ func (c CurseForge) getLatestFiles(client *http.Client, projectId uint) ([]File,
 	}
 	defer pufferpanel.CloseResponse(response)
 
-	if response.StatusCode == 404 {
+	if response.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}
 
-	if response.StatusCode != 200 {
+	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
 	}
 
@@ -155,11 +155,11 @@ func (c CurseForge) getFileById(client *http.Client, projectId, fileId uint) (*F
 	}
 	defer response.Body.Close()
 
-	if response.StatusCode == 404 {
+	if response.StatusCode == http.StatusNotFound {
 		return nil, fmt.Errorf("file id %d not found", fileId)
 	}
 
-	if response.StatusCode != 200 {
+	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
 	}
 

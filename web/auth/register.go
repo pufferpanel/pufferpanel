@@ -91,7 +91,7 @@ func RegisterPost(c *gin.Context) {
 		}
 	}
 
-	c.JSON(200, &registerResponse{Success: true, Token: token})
+	c.JSON(http.StatusOK, &registerResponse{Success: true, Token: token})
 }
 
 type registerResponse struct {

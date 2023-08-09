@@ -50,7 +50,7 @@ func HandleError(c *gin.Context, err error, statusCode int) bool {
 		logging.Error.Printf("%s", err.Error())
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 		} else {
 			c.AbortWithStatusJSON(statusCode, &Error{Error: pufferpanel.FromError(err)})
 		}

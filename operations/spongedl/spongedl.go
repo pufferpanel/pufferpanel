@@ -21,6 +21,7 @@ import (
 	"errors"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/operations/forgedl"
+	"net/http"
 	"os"
 	"path"
 	"strings"
@@ -162,7 +163,7 @@ func (op SpongeDl) getLatestVersion(env pufferpanel.Environment) (SpongeApiV2Ver
 		return data, err
 	}
 	defer pufferpanel.CloseResponse(response)
-	if response.StatusCode != 200 {
+	if response.StatusCode != http.StatusOK {
 		env.DisplayToConsole(true, "Failed to get the Sponge information from %s: %s", url, response.Status)
 		return data, errors.New(response.Status)
 	}
@@ -181,7 +182,7 @@ func (op SpongeDl) getSpecificVersion(env pufferpanel.Environment, version strin
 		return data, err
 	}
 	defer pufferpanel.CloseResponse(response)
-	if response.StatusCode != 200 {
+	if response.StatusCode != http.StatusOK {
 		env.DisplayToConsole(true, "Failed to get the Sponge information from %s: %s", url, response.Status)
 		return data, errors.New(response.Status)
 	}
