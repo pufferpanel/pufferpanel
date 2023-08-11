@@ -2,7 +2,6 @@
 .github/**
 .azure/*
 .git/**
-*.md
 *.syso
 **/node_modules/**
 
