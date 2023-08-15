@@ -1,7 +1,8 @@
 package models
 
 type TemplateRepo struct {
-	Name     string `gorm:"type:varchar(100);primaryKey" json:"name"`
+	ID       uint   `gorm:"primaryKey" json:"id"`
+	Name     string `gorm:"type:varchar(100);" json:"name"`
 	Url      string `gorm:"type:text" json:"url"`
 	Branch   string `gorm:"type:text" json:"branch"`
 	PAT      string `json:"-"`

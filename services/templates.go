@@ -15,6 +15,8 @@ package services
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -29,8 +31,9 @@ import (
 	"time"
 )
 
-var existingPaths = make(map[string]repoCache, 0)
+var existingPaths = make(map[uint]repoCache)
 var pathLock sync.Mutex
+var localRepoId uint = 0
 
 type Template struct {
 	DB *gorm.DB
@@ -41,19 +44,23 @@ type repoCache struct {
 	Path          string
 }
 
+func (*Template) GetLocalRepoId() uint {
+	return localRepoId
+}
+
 func (t *Template) GetRepos() ([]*models.TemplateRepo, error) {
 	var repos []*models.TemplateRepo
 	err := t.DB.Find(&repos).Error
 
 	//return list from the db, and add local
-	return append(repos, &models.TemplateRepo{Name: "local"}), err
+	return append(repos, &models.TemplateRepo{ID: localRepoId, Name: "local"}), err
 }
 
-func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
+func (t *Template) GetAllFromRepo(repoId uint) ([]*models.Template, error) {
 	var templates []*models.Template
 	var err error
 
-	if repo == "local" {
+	if repoId == localRepoId {
 		err = t.DB.Find(&templates).Error
 		if err != nil {
 			return nil, err
@@ -77,7 +84,7 @@ func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
 		templates = replacement
 	} else {
 		repoDb := &models.TemplateRepo{
-			Name: repo,
+			ID: repoId,
 		}
 
 		err = t.DB.First(repoDb).Error
@@ -138,18 +145,18 @@ func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
 	return templates, err
 }
 
-func (t *Template) Get(repo, name string) (*models.Template, error) {
+func (t *Template) Get(repoId uint, name string) (*models.Template, error) {
 	template := &models.Template{
 		Name: name,
 	}
-	if repo == "local" {
+	if repoId == localRepoId {
 		err := t.DB.First(template).Error
 		if err != nil {
 			return nil, err
 		}
 	} else {
 		repoDb := &models.TemplateRepo{
-			Name: repo,
+			ID: repoId,
 		}
 
 		err := t.DB.First(repoDb).Error
@@ -228,6 +235,23 @@ func (t *Template) Delete(name string) error {
 	return nil
 }
 
+func (t *Template) AddRepo(repo *models.TemplateRepo) error {
+	existing, err := t.GetRepos()
+	if err != nil {
+		return err
+	}
+	for _, v := range existing {
+		if v.Name == repo.Name {
+			return pufferpanel.ErrRepoExists
+		}
+	}
+	return t.DB.Save(repo).Error
+}
+
+func (t *Template) DeleteRepo(id uint) error {
+	return t.DB.Where(&models.TemplateRepo{ID: id}).Error
+}
+
 func readTemplateFromDisk(name, path string) (*models.Template, error) {
 	file, err := os.Open(path)
 
@@ -249,7 +273,7 @@ func validateRepoOnDisk(repo *models.TemplateRepo) (string, error) {
 	pathLock.Lock()
 	defer pathLock.Unlock()
 
-	if cache, exists := existingPaths[repo.Name]; exists {
+	if cache, exists := existingPaths[repo.ID]; exists {
 		if cache.LastRefreshed.Add(time.Minute * 5).After(time.Now()) {
 			return cache.Path, nil
 		}
@@ -271,16 +295,16 @@ func validateRepoOnDisk(repo *models.TemplateRepo) (string, error) {
 			ReferenceName: plumbing.ReferenceName("refs/heads/" + repo.Branch),
 			RemoteName:    "origin"},
 		)
-		if err != nil && err != git.NoErrAlreadyUpToDate {
+		if err != nil && !errors.Is(err, git.NoErrAlreadyUpToDate) {
 			return "", err
 		}
 
-		existingPaths[repo.Name] = repoCache{
+		existingPaths[repo.ID] = repoCache{
 			LastRefreshed: time.Now(),
 			Path:          cache.Path,
 		}
 	} else {
-		path := filepath.Join(config.CacheFolder.Value(), "template-repos", repo.Name)
+		path := filepath.Join(config.CacheFolder.Value(), "template-repos", fmt.Sprintf("%d", repo.ID))
 
 		//if the directory already exists, we may need to nuke it
 		fi, err := os.Stat(path)
@@ -305,11 +329,11 @@ func validateRepoOnDisk(repo *models.TemplateRepo) (string, error) {
 			return "", err
 		}
 
-		existingPaths[repo.Name] = repoCache{
+		existingPaths[repo.ID] = repoCache{
 			LastRefreshed: time.Now(),
 			Path:          path,
 		}
 	}
 
-	return existingPaths[repo.Name].Path, nil
+	return existingPaths[repo.ID].Path, nil
 }
