@@ -12,9 +12,7 @@ vendor/
 client/dist/
 !client/dist/webfiles.go
 client/node_modules/
-web/swagger/swagger.json
-web/swagger/swagger.yaml
-web/swagger/docs.go
+web/swagger/
 .vs/
 www/
 
