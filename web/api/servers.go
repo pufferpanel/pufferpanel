@@ -137,10 +137,6 @@ func registerServers(g *gin.RouterGroup) {
 // @Summary Search servers
 // @Description Gets servers, and allowing for filtering of servers. * is a wildcard that can be used for text inputs
 // @Success 200 {object} models.ServerSearchResponse
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param username query string false "Username to filter on, default is current user if NOT admin"
 // @Param node query uint false "Node ID to filter on"
 // @Param name query string false "Name of server to filter on"
@@ -240,24 +236,10 @@ func searchServers(c *gin.Context) {
 // @Summary Get a server
 // @Description Gets a particular server
 // @Success 200 {object} models.GetServerResponse
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/definition [get]
 func getServer(c *gin.Context) {
-	t, exist := c.Get("server")
-
-	if !exist {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	server, ok := t.(*models.Server)
-	if !ok {
-		c.AbortWithStatus(http.StatusNotFound)
-	}
+	server := getServerFromGin(c)
 
 	_, includePerms := c.GetQuery("perms")
 	var perms *models.PermissionView
@@ -289,10 +271,6 @@ func getServer(c *gin.Context) {
 // @Summary Create server
 // @Description Creates a server
 // @Success 200 {object} models.CreateServerResponse
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param server body models.ServerCreation true "Creation information"
 // @Router /api/servers/{id} [put]
@@ -436,13 +414,19 @@ func createServer(c *gin.Context) {
 	c.JSON(http.StatusOK, &models.CreateServerResponse{Id: serverId})
 }
 
+// @Summary Update server definition
+// @Description Updates a server definition
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param server body models.ServerWithName true "Server definition"
+// @Router /api/servers/{id}/definition [put]
 func editServer(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
 
-	server := c.MustGet("server").(*models.Server)
+	server := getServerFromGin(c)
 
 	postBody := &models.ServerWithName{}
 	err = c.Bind(postBody)
@@ -499,16 +483,12 @@ func editServer(c *gin.Context) {
 	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
 	}
-	c.Status(http.StatusAccepted)
+	c.Status(http.StatusNoContent)
 }
 
 // @Summary Deletes a server
 // @Description Deletes a server from the panel
 // @Success 204 {object} nil
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id} [delete]
 func deleteServer(c *gin.Context) {
@@ -518,18 +498,7 @@ func deleteServer(c *gin.Context) {
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
 
-	t, exist := c.Get("server")
-
-	if !exist {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	server, ok := t.(*models.Server)
-	if !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	server := getServerFromGin(c)
 
 	node, err := ns.Get(server.NodeID)
 	if err != nil {
@@ -609,10 +578,6 @@ func deleteServer(c *gin.Context) {
 
 // @Summary Gets all users for a server
 // @Success 200 {object} []models.PermissionView
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/user [get]
 func getServerUsers(c *gin.Context) {
@@ -620,18 +585,7 @@ func getServerUsers(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ps := &services.Permission{DB: db}
 
-	t, exist := c.Get("server")
-
-	if !exist {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	server, ok := t.(*models.Server)
-	if !ok {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
+	server := getServerFromGin(c)
 
 	perms, err := ps.GetForServer(server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -657,10 +611,6 @@ func getServerUsers(c *gin.Context) {
 
 // @Summary Edits access to a server
 // @Success 204 {object} nil
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param email path string true "Email of user"
 // @Param body body models.PermissionView true "New permissions to apply"
@@ -684,17 +634,7 @@ func editServerUser(c *gin.Context) {
 	}
 	perms.Email = email
 
-	t, exist := c.Get("server")
-	if !exist {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	server, ok := t.(*models.Server)
-	if !ok {
-		response.HandleError(c, pufferpanel.ErrServerNotFound, http.StatusInternalServerError)
-		return
-	}
+	server := getServerFromGin(c)
 
 	var registerToken string
 	var user *models.User
@@ -704,9 +644,9 @@ func editServerUser(c *gin.Context) {
 		user, err = us.Get(username)
 	}
 
-	if err != nil && gorm.ErrRecordNotFound != err && response.HandleError(c, err, http.StatusInternalServerError) {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
-	} else if gorm.ErrRecordNotFound == err {
+	} else if errors.Is(err, gorm.ErrRecordNotFound) {
 		if email == "" {
 			response.HandleError(c, err, http.StatusBadRequest)
 			return
@@ -777,10 +717,6 @@ func editServerUser(c *gin.Context) {
 
 // @Summary Removes access to a server
 // @Success 204 {object} nil
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param email path string true "Email of user"
 // @Router /api/servers/{id}/users/{email} [delete]
@@ -796,18 +732,7 @@ func removeServerUser(c *gin.Context) {
 		return
 	}
 
-	t, exist := c.Get("server")
-
-	if !exist {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	server, ok := t.(*models.Server)
-	if !ok {
-		response.HandleError(c, pufferpanel.ErrServerNotFound, http.StatusInternalServerError)
-		return
-	}
+	server := getServerFromGin(c)
 
 	var user *models.User
 	if email != "" {
@@ -816,10 +741,7 @@ func removeServerUser(c *gin.Context) {
 		user, err = us.Get(username)
 	}
 
-	if err != nil && err == gorm.ErrRecordNotFound {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+	if err != nil && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -852,29 +774,14 @@ func removeServerUser(c *gin.Context) {
 
 // @Summary Rename server
 // @Description Renames a server
-// @Success 200
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Param name body pufferpanel.Name true "New server name"
 // @Router /api/servers/{id}/name [post]
 func renameServer(c *gin.Context) {
 	var err error
 
-	t, exist := c.Get("server")
-	if !exist {
-		logging.Error.Printf("getting server for rename with err `%s`", err)
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	server, ok := t.(*models.Server)
-	if !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	server := getServerFromGin(c)
 
 	var name pufferpanel.Name
 	err = c.ShouldBindJSON(&name)
@@ -882,7 +789,7 @@ func renameServer(c *gin.Context) {
 		return
 	}
 
-	t, exist = c.Get("db")
+	t, exist := c.Get("db")
 	if !exist {
 		logging.Error.Printf("getting server for rename with err `%s`", err)
 		c.AbortWithStatus(http.StatusNotFound)
@@ -904,20 +811,16 @@ func renameServer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, nil)
+	c.Status(http.StatusNoContent)
 }
 
 // @Summary Gets server-level OAuth2 credentials for the logged in user
 // @Success 200 {object} []models.Client
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/oauth2 [get]
 func getOAuth2Clients(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
-	server := c.MustGet("server").(*models.Server)
+	server := getServerFromGin(c)
 
 	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
@@ -932,16 +835,12 @@ func getOAuth2Clients(c *gin.Context) {
 
 // @Summary Creates server-level OAuth2 credentials for the logged in user
 // @Success 200 {object} models.CreatedClient
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param body body models.Client false "Client to create"
 // @Router /api/servers/{id}/oauth2 [post]
 func createOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
-	server := c.MustGet("server").(*models.Server)
+	server := getServerFromGin(c)
 
 	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
@@ -987,16 +886,12 @@ func createOAuth2Client(c *gin.Context) {
 
 // @Summary Deletes server-level OAuth2 credential
 // @Success 204 {object} nil
-// @Failure 400 {object} pufferpanel.ErrorResponse
-// @Failure 403 {object} pufferpanel.ErrorResponse
-// @Failure 404 {object} pufferpanel.ErrorResponse
-// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param clientId path string true "Client ID"
 // @Router /api/servers/{id}/oauth2/{clientId} [delete]
 func deleteOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
-	server := c.MustGet("server").(*models.Server)
+	server := getServerFromGin(c)
 	clientId := c.Param("clientId")
 
 	db := middleware.GetDatabase(c)
@@ -1021,8 +916,14 @@ func deleteOAuth2Client(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Update server data
+// @Description Updates a server's set of variables
+// @Success 202 {object} nil
+// @Param id path string true "Server ID"
+// @Param server body pufferpanel.ServerData true "Server variables"
+// @Router /api/servers/{id}/data [put]
 func editServerData(c *gin.Context) {
-	server := c.MustGet("server").(*models.Server)
+	server := getServerFromGin(c)
 
 	//clone request body, so we can re-set it for the proxy call
 	useHere := &bytes.Buffer{}
@@ -1030,22 +931,17 @@ func editServerData(c *gin.Context) {
 
 	multi := io.MultiWriter(useHere, useThere)
 	_, err := io.CopyN(multi, c.Request.Body, 1024 /* 1KB */ *512 /* .5 MB */)
-	if err != nil && err != io.EOF && response.HandleError(c, err, http.StatusBadRequest) {
+	if err != nil && errors.Is(err, io.EOF) && response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	c.Request.Body.Close()
+	_ = c.Request.Body.Close()
 	c.Request.Body = io.NopCloser(useThere)
 
-	postBody := &models.ServerCreation{}
+	postBody := &pufferpanel.ServerData{}
 	err = json.NewDecoder(useHere).Decode(postBody)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
-	}
-
-	name := postBody.Name
-	if name != "" {
-		server.Name = name
 	}
 
 	port, err := getFromDataOrDefault(postBody.Variables, "port", uint16(0))
@@ -1106,7 +1002,7 @@ func proxyServerRequest(c *gin.Context) {
 	resolvedPath := "/daemon/server/" + strings.TrimPrefix(c.Request.RequestURI, "/api/servers/")
 
 	s, err := ss.Get(serverId)
-	if err != nil && gorm.ErrRecordNotFound != err && response.HandleError(c, err, http.StatusInternalServerError) {
+	if err != nil && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	} else if s == nil || s.Identifier == "" {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -1134,8 +1030,10 @@ func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *mode
 		return
 	}
 
+	defer pufferpanel.CloseResponse(callResponse)
+
 	//Even though apache isn't going to be in place, we can't set certain headers
-	newHeaders := make(map[string]string, 0)
+	newHeaders := make(map[string]string)
 	for k, v := range callResponse.Header {
 		switch k {
 		case "Transfer-Encoding":
@@ -1161,4 +1059,8 @@ func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *mo
 		response.HandleError(c, err, http.StatusInternalServerError)
 	}
 	c.Abort()
+}
+
+func getServerFromGin(c *gin.Context) *models.Server {
+	return c.MustGet("server").(*models.Server)
 }

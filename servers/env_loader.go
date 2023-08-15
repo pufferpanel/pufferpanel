@@ -31,7 +31,7 @@ func CreateEnvironment(environmentType, folder, id string, environmentSection in
 	if factory == nil {
 		switch environmentType {
 		case "standard":
-			fallthrough
+			factory = envMapping["host"]
 		case "tty":
 			factory = envMapping["host"]
 		}
@@ -64,9 +64,15 @@ func CreateEnvironment(environmentType, folder, id string, environmentSection in
 }
 
 func GetSupportedEnvironments() []string {
-	result := make([]string, len(envMapping))
-	i := 0
+	deduper := make(map[string]bool)
+
 	for k := range envMapping {
+		deduper[k] = true
+	}
+
+	result := make([]string, len(deduper))
+	i := 0
+	for k, _ := range deduper {
 		result[i] = k
 		i++
 	}

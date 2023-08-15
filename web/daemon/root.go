@@ -56,7 +56,7 @@ func getStatusHEAD(c *gin.Context) {
 }
 
 func getFeatures(c *gin.Context) {
-	features := []string{}
+	features := make([]string, 0)
 
 	envs := servers.GetSupportedEnvironments()
 

@@ -49,67 +49,67 @@ var wsupgrader = websocket.Upgrader{
 func RegisterServerRoutes(e *gin.RouterGroup) {
 	l := e.Group("/server")
 	{
-		l.PUT("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), CreateServer)
-		l.DELETE("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), DeleteServer)
+		l.PUT("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), createServer)
+		l.DELETE("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), deleteServer)
 		l.OPTIONS("/:serverId", response.CreateOptions("PUT", "DELETE", "GET"))
 
-		l.GET("/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), GetServerAdmin)
-		l.PUT("/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
+		l.GET("/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), getServerAdmin)
+		l.PUT("/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), editServerAdmin)
 		l.OPTIONS("/:serverId/definition", response.CreateOptions("PUT", "DELETE", "GET"))
 
-		l.GET("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), GetServerData)
-		l.POST("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), EditServerData)
+		l.GET("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), getServerData)
+		l.POST("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), editServerData)
 		l.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), GetServerTasks)
+		l.GET("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), getServerTasks)
 		l.OPTIONS("/:serverId/tasks", response.CreateOptions("GET"))
 
-		l.GET("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), GetServerTask)
-		l.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), EditServerTask)
-		l.DELETE("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), DeleteServerTask)
+		l.GET("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), getServerTask)
+		l.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), editServerTask)
+		l.DELETE("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), deleteServerTask)
 		l.OPTIONS("/:serverId/tasks/:taskId", response.CreateOptions("GET", "PUT", "DELETE"))
 
-		l.POST("/:serverId/tasks/:taskId/run", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), RunServerTask)
+		l.POST("/:serverId/tasks/:taskId/run", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), runServerTask)
 		l.OPTIONS("/:serverId/tasks/:taskId/run", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/reload", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), ReloadServer)
+		l.POST("/:serverId/reload", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), reloadServer)
 		l.OPTIONS("/:serverId/reload", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/start", middleware.RequiresPermission(pufferpanel.ScopeServersStart, true), StartServer)
+		l.POST("/:serverId/start", middleware.RequiresPermission(pufferpanel.ScopeServersStart, true), startServer)
 		l.OPTIONS("/:serverId/start", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/stop", middleware.RequiresPermission(pufferpanel.ScopeServersStop, true), StopServer)
+		l.POST("/:serverId/stop", middleware.RequiresPermission(pufferpanel.ScopeServersStop, true), stopServer)
 		l.OPTIONS("/:serverId/stop", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/kill", middleware.RequiresPermission(pufferpanel.ScopeServersStop, true), KillServer)
+		l.POST("/:serverId/kill", middleware.RequiresPermission(pufferpanel.ScopeServersStop, true), killServer)
 		l.OPTIONS("/:serverId/kill", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/install", middleware.RequiresPermission(pufferpanel.ScopeServersInstall, true), InstallServer)
+		l.POST("/:serverId/install", middleware.RequiresPermission(pufferpanel.ScopeServersInstall, true), installServer)
 		l.OPTIONS("/:serverId/install", response.CreateOptions("POST"))
 
-		l.GET("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesGet, true), GetFile)
-		l.PUT("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), PutFile)
-		l.DELETE("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), DeleteFile)
+		l.GET("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesGet, true), getFile)
+		l.PUT("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), putFile)
+		l.DELETE("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), deleteFile)
 		l.POST("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), response.NotImplemented)
 		l.OPTIONS("/:serverId/file/*filename", response.CreateOptions("GET", "PUT", "DELETE", "POST"))
 
-		l.GET("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), GetLogs)
-		l.POST("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServersConsoleSend, true), PostConsole)
+		l.GET("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), getLogs)
+		l.POST("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServersConsoleSend, true), postConsole)
 		l.OPTIONS("/:serverId/console", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServersStat, true), GetStats)
+		l.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServersStat, true), getStats)
 		l.OPTIONS("/:serverId/stats", response.CreateOptions("GET"))
 
-		l.GET("/:serverId/status", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), GetStatus)
+		l.GET("/:serverId/status", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getStatus)
 		l.OPTIONS("/:serverId/status", response.CreateOptions("GET"))
 
-		l.POST("/:serverId/archive/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), Archive)
-		l.GET("/:serverId/extract/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), Extract)
+		l.POST("/:serverId/archive/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), archive)
+		l.GET("/:serverId/extract/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), extract)
 
 		l.GET("/:serverId/socket", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), cors.New(cors.Config{
 			AllowAllOrigins:  true,
 			AllowCredentials: true,
-		}), OpenSocket)
+		}), openSocket)
 
 		l.Handle("CONNECT", "/:serverId/socket", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), func(c *gin.Context) {
 			c.Header("Access-Control-Allow-Origin", "*")
@@ -119,16 +119,21 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 
 	}
 
-	l.POST("", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), CreateServer)
+	l.POST("", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), createServer)
 	l.OPTIONS("", response.CreateOptions("POST"))
 }
 
 func getServerFromGin(c *gin.Context) *servers.Server {
-	item, _ := c.Get("program")
-	return item.(*servers.Server)
+	return c.MustGet("program").(*servers.Server)
 }
 
-func StartServer(c *gin.Context) {
+// @Summary Start server
+// @Description Start server
+// @Success 202 {object} nil
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/start [post]
+func startServer(c *gin.Context) {
 	server := getServerFromGin(c)
 	_, wait := c.GetQuery("wait")
 
@@ -149,7 +154,13 @@ func StartServer(c *gin.Context) {
 	}
 }
 
-func StopServer(c *gin.Context) {
+// @Summary Stop server
+// @Description Stop server
+// @Success 202 {object} nil
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/stop [post]
+func stopServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	_, wait := c.GetQuery("wait")
@@ -166,11 +177,16 @@ func StopServer(c *gin.Context) {
 			c.Status(http.StatusNoContent)
 		}
 	} else {
-		c.Status(204)
+		c.Status(http.StatusAccepted)
 	}
 }
 
-func KillServer(c *gin.Context) {
+// @Summary Kill server
+// @Description Kill server
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/start [post]
+func killServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	err := server.Kill()
@@ -180,7 +196,14 @@ func KillServer(c *gin.Context) {
 	}
 }
 
-func CreateServer(c *gin.Context) {
+// @Summary Create server
+// @Description Create server
+// @Success 200 {object} pufferpanel.ServerIdResponse
+// @Param id path string false "Server ID"
+// @Param server body pufferpanel.Server true "Server definition"
+// @Router /api/servers/{id} [put]
+// @Router /api/servers [post]
+func createServer(c *gin.Context) {
 	serverId := c.Param("serverId")
 	if serverId == "" {
 		id, err := uuid.NewV4()
@@ -220,7 +243,12 @@ func CreateServer(c *gin.Context) {
 	c.JSON(http.StatusOK, &pufferpanel.ServerIdResponse{Id: serverId})
 }
 
-func DeleteServer(c *gin.Context) {
+// @Summary Delete server
+// @Description Delete server
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id} [delete]
+func deleteServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	err := servers.Delete(server.Id())
@@ -230,7 +258,13 @@ func DeleteServer(c *gin.Context) {
 	}
 }
 
-func InstallServer(c *gin.Context) {
+// @Summary Install server
+// @Description Install server
+// @Success 202 {object} nil
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/install [post]
+func installServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	_, wait := c.GetQuery("wait")
@@ -250,7 +284,8 @@ func InstallServer(c *gin.Context) {
 	}
 }
 
-func EditServerData(c *gin.Context) {
+// Not documented in swagger as overridden on frontend
+func editServerData(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	data := &pufferpanel.ServerData{}
@@ -266,7 +301,12 @@ func EditServerData(c *gin.Context) {
 	}
 }
 
-func GetServerTasks(c *gin.Context) {
+// @Summary Get server tasks
+// @Description Get server tasks
+// @Success 200 {object} pufferpanel.ServerTasks
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/tasks [get]
+func getServerTasks(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	result := pufferpanel.ServerTasks{
@@ -287,24 +327,38 @@ func GetServerTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func GetServerTask(c *gin.Context) {
+// @Summary Get server task
+// @Description Get server task by id
+// @Success 200 {object} pufferpanel.ServerTask
+// @Param id path string true "Server ID"
+// @Param taskId path string true "Task ID"
+// @Router /api/servers/{id}/tasks/{taskId} [get]
+func getServerTask(c *gin.Context) {
 	server := getServerFromGin(c)
 
-	result := pufferpanel.ServerTasks{
-		Tasks: make(map[string]pufferpanel.ServerTask),
-	}
+	var result *pufferpanel.ServerTask
 
 	for k, v := range server.Scheduler.Tasks {
-		result.Tasks[k] = pufferpanel.ServerTask{
+		result = &pufferpanel.ServerTask{
 			Task:      v,
 			IsRunning: server.Scheduler.IsTaskRunning(k),
 		}
 	}
 
-	c.JSON(http.StatusOK, result)
+	if result != nil {
+		c.JSON(http.StatusOK, result)
+	} else {
+		c.Status(http.StatusNotFound)
+	}
 }
 
-func RunServerTask(c *gin.Context) {
+// @Summary Run server task
+// @Description Run a specific task
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param taskId path string true "Task ID"
+// @Router /api/servers/{id}/tasks/{taskId}/run [post]
+func runServerTask(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	taskId := c.Param("taskId")
@@ -320,7 +374,14 @@ func RunServerTask(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func EditServerTask(c *gin.Context) {
+// @Summary Edit server task
+// @Description Edit server task by id
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param taskId path string true "Task ID"
+// @Param task body pufferpanel.Task true "Task definition"
+// @Router /api/servers/{id}/tasks/{taskId} [put]
+func editServerTask(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	taskId := c.Param("taskId")
@@ -346,7 +407,13 @@ func EditServerTask(c *gin.Context) {
 	}
 }
 
-func DeleteServerTask(c *gin.Context) {
+// @Summary Delete server task
+// @Description Delete server task by id
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param taskId path string true "Task ID"
+// @Router /api/servers/{id}/tasks/{taskId} [delete]
+func deleteServerTask(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	taskId := c.Param("taskId")
@@ -368,7 +435,12 @@ func DeleteServerTask(c *gin.Context) {
 	}
 }
 
-func ReloadServer(c *gin.Context) {
+// @Summary Reload server
+// @Description Reload server
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/reload [post]
+func reloadServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	err := servers.Reload(server.Id())
@@ -378,7 +450,12 @@ func ReloadServer(c *gin.Context) {
 	}
 }
 
-func GetServerData(c *gin.Context) {
+// @Summary Get server data
+// @Description Get server variables
+// @Success 200 {object} pufferpanel.ServerData
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/data [get]
+func getServerData(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	data := server.GetData()
@@ -396,13 +473,24 @@ func GetServerData(c *gin.Context) {
 	c.JSON(http.StatusOK, &pufferpanel.ServerData{Variables: data})
 }
 
-func GetServerAdmin(c *gin.Context) {
+// @Summary Get server definition
+// @Description Get server definition
+// @Success 200 {object} pufferpanel.Server
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/definition [get]
+func getServerAdmin(c *gin.Context) {
 	server := getServerFromGin(c)
 
-	c.JSON(http.StatusOK, &pufferpanel.ServerDataAdmin{Server: &server.Server})
+	c.JSON(http.StatusOK, &server.Server)
 }
 
-func EditServerAdmin(c *gin.Context) {
+// @Summary Edit server definition
+// @Description Updates the server with a new definition
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param server body pufferpanel.Server true "New definition"
+// @Router /api/servers/{id}/definition [post]
+func editServerAdmin(c *gin.Context) {
 	prg := getServerFromGin(c)
 	server := &prg.Server
 
@@ -433,7 +521,7 @@ func EditServerAdmin(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func GetFile(c *gin.Context) {
+func getFile(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	targetPath := c.Param("filename")
@@ -473,7 +561,7 @@ func GetFile(c *gin.Context) {
 	}
 }
 
-func PutFile(c *gin.Context) {
+func putFile(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	targetPath := c.Param("filename")
@@ -516,7 +604,7 @@ func PutFile(c *gin.Context) {
 	}
 }
 
-func DeleteFile(c *gin.Context) {
+func deleteFile(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	targetPath := c.Param("filename")
@@ -528,7 +616,7 @@ func DeleteFile(c *gin.Context) {
 	}
 }
 
-func PostConsole(c *gin.Context) {
+func postConsole(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	d, _ := io.ReadAll(c.Request.Body)
@@ -540,7 +628,7 @@ func PostConsole(c *gin.Context) {
 	}
 }
 
-func GetStats(c *gin.Context) {
+func getStats(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	results, err := server.GetEnvironment().GetStats()
@@ -550,7 +638,7 @@ func GetStats(c *gin.Context) {
 	}
 }
 
-func GetLogs(c *gin.Context) {
+func getLogs(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	time := c.DefaultQuery("time", "0")
@@ -573,7 +661,7 @@ func GetLogs(c *gin.Context) {
 	})
 }
 
-func GetStatus(c *gin.Context) {
+func getStatus(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	running, err := server.IsRunning()
@@ -584,7 +672,7 @@ func GetStatus(c *gin.Context) {
 	}
 }
 
-func Archive(c *gin.Context) {
+func archive(c *gin.Context) {
 	server := getServerFromGin(c)
 	var files []string
 
@@ -604,7 +692,7 @@ func Archive(c *gin.Context) {
 	}
 }
 
-func Extract(c *gin.Context) {
+func extract(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	targetPath := c.Param("filename")
@@ -617,7 +705,7 @@ func Extract(c *gin.Context) {
 	}
 }
 
-func OpenSocket(c *gin.Context) {
+func openSocket(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
