@@ -137,10 +137,10 @@ func registerServers(g *gin.RouterGroup) {
 // @Summary Search servers
 // @Description Gets servers, and allowing for filtering of servers. * is a wildcard that can be used for text inputs
 // @Success 200 {object} models.ServerSearchResponse
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param username query string false "Username to filter on, default is current user if NOT admin"
 // @Param node query uint false "Node ID to filter on"
 // @Param name query string false "Name of server to filter on"
@@ -199,7 +199,7 @@ func searchServers(c *gin.Context) {
 	if !isAdmin && username != "" && user.Username != username {
 		c.JSON(http.StatusOK, &models.ServerSearchResponse{
 			Servers: []*models.ServerView{},
-			Metadata: &response.Metadata{Paging: &response.Paging{
+			Metadata: &pufferpanel.Metadata{Paging: &pufferpanel.Paging{
 				Page:    1,
 				Size:    0,
 				MaxSize: MaxPageSize,
@@ -228,7 +228,7 @@ func searchServers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, &models.ServerSearchResponse{
 		Servers: models.RemoveServerPrivateInfoFromAll(data),
-		Metadata: &response.Metadata{Paging: &response.Paging{
+		Metadata: &pufferpanel.Metadata{Paging: &pufferpanel.Paging{
 			Page:    uint(page),
 			Size:    uint(pageSize),
 			MaxSize: MaxPageSize,
@@ -240,10 +240,10 @@ func searchServers(c *gin.Context) {
 // @Summary Get a server
 // @Description Gets a particular server
 // @Success 200 {object} models.GetServerResponse
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/definition [get]
 func getServer(c *gin.Context) {
@@ -289,10 +289,10 @@ func getServer(c *gin.Context) {
 // @Summary Create server
 // @Description Creates a server
 // @Success 200 {object} models.CreateServerResponse
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param server body models.ServerCreation true "Creation information"
 // @Router /api/servers/{id} [put]
@@ -504,11 +504,11 @@ func editServer(c *gin.Context) {
 
 // @Summary Deletes a server
 // @Description Deletes a server from the panel
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id} [delete]
 func deleteServer(c *gin.Context) {
@@ -609,10 +609,10 @@ func deleteServer(c *gin.Context) {
 
 // @Summary Gets all users for a server
 // @Success 200 {object} []models.PermissionView
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/user [get]
 func getServerUsers(c *gin.Context) {
@@ -656,11 +656,11 @@ func getServerUsers(c *gin.Context) {
 }
 
 // @Summary Edits access to a server
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param email path string true "Email of user"
 // @Param body body models.PermissionView true "New permissions to apply"
@@ -776,11 +776,11 @@ func editServerUser(c *gin.Context) {
 }
 
 // @Summary Removes access to a server
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param email path string true "Email of user"
 // @Router /api/servers/{id}/users/{email} [delete]
@@ -853,10 +853,10 @@ func removeServerUser(c *gin.Context) {
 // @Summary Rename server
 // @Description Renames a server
 // @Success 200
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param name body pufferpanel.Name true "New server name"
 // @Router /api/servers/{id}/name [post]
@@ -909,10 +909,10 @@ func renameServer(c *gin.Context) {
 
 // @Summary Gets server-level OAuth2 credentials for the logged in user
 // @Success 200 {object} []models.Client
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/oauth2 [get]
 func getOAuth2Clients(c *gin.Context) {
@@ -932,10 +932,10 @@ func getOAuth2Clients(c *gin.Context) {
 
 // @Summary Creates server-level OAuth2 credentials for the logged in user
 // @Success 200 {object} models.CreatedClient
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param body body models.Client false "Client to create"
 // @Router /api/servers/{id}/oauth2 [post]
@@ -986,11 +986,11 @@ func createOAuth2Client(c *gin.Context) {
 }
 
 // @Summary Deletes server-level OAuth2 credential
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Server ID"
 // @Param clientId path string true "Client ID"
 // @Router /api/servers/{id}/oauth2/{clientId} [delete]

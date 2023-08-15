@@ -46,11 +46,11 @@ type EditableConfig struct {
 } //@name EditableConfigSettings
 
 type ThemeConfig struct {
-	Active    string   `json:"active"`
-	Settings  string   `json:"settings"`
-	Available []string `json:"available"`
+	Active    string   `json:"active" example:"default"`
+	Settings  string   `json:"settings" example:"{}"`
+	Available []string `json:"available" example:"alternativeTheme"`
 } //@name ThemeConfig
 
 type BrandingConfig struct {
-	Name string `json:"name"`
+	Name string `json:"name" example:"PufferPanel"`
 } //@name BrandingConfig

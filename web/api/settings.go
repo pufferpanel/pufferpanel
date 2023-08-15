@@ -25,6 +25,7 @@ func registerSettings(g *gin.RouterGroup) {
 // @Success 200 {object} models.Setting
 // @Param key path string true "The config key"
 // @Router /api/settings/{key} [get]
+// @Security OAuth2Application[none]
 func getSetting(c *gin.Context) {
 	key := c.Param("key")
 
@@ -54,9 +55,9 @@ func getSetting(c *gin.Context) {
 
 // @Summary Update a panel setting
 // @Description Updates the value of a panel setting
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param key path string true "The config key"
 // @Param value body models.Setting true "The new value for the setting"
 // @Router /api/settings/{key} [put]
@@ -96,9 +97,9 @@ func setSetting(c *gin.Context) {
 
 // @Summary Update multiple panel setting
 // @Description Updates multiple panel settings at once
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param data body models.ChangeMultipleSettings true "Config data to apply"
 // @Router /api/settings [post]
 func setSettings(c *gin.Context) {

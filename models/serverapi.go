@@ -15,7 +15,6 @@ package models
 
 import (
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/response"
 )
 
 type ServerCreation struct {
@@ -37,7 +36,7 @@ type CreateServerResponse struct {
 
 type ServerSearchResponse struct {
 	Servers []*ServerView `json:"servers"`
-	*response.Metadata
+	*pufferpanel.Metadata
 } //@name ServerSearchResults
 
 type ServerWithName struct {

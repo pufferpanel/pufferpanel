@@ -25,36 +25,40 @@ func registerInfo(g *gin.RouterGroup) {
 // @Param token formData string true "OAuth2 token"
 // @Param token_type_hint formData string false "Hint for how the token might be used"
 // @Success 200 {object} oauth2.TokenInfoResponse
-// @Failure 400 {object} oauth2.TokenInfoResponse
-// @Failure 401 {object} oauth2.TokenInfoResponse
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} oauth2.ErrorResponse
+// @Failure 401 {object} oauth2.ErrorResponse
+// @Failure 500 {object} oauth2.ErrorResponse
 // @Router /oauth2/introspect [post]
+// @Security OAuth2Application[none]
 func handleInfoRequest(c *gin.Context) {
 	header := strings.TrimSpace(c.GetHeader("Authorization"))
 	if header == "" {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.Header("WWW-Authenticate", "Bearer")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, &oauth2.ErrorResponse{Error: "invalid_request"})
 		return
 	}
 
 	parts := strings.SplitN(header, " ", 2)
 	if len(parts) != 2 || parts[0] != "Bearer" {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.Header("WWW-Authenticate", "Bearer")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, &oauth2.ErrorResponse{Error: "invalid_request"})
 		return
 	}
 
 	db := middleware.GetDatabase(c)
-	nodeCreds := parts[1]
+	nodeAuthToken := parts[1]
 
 	sessionService := &services.Session{DB: db}
-	node, err := sessionService.ValidateNode(nodeCreds)
+	node, err := sessionService.ValidateNode(nodeAuthToken)
 	if err != nil || node.ID == 0 {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.Header("WWW-Authenticate", "Bearer")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, &oauth2.ErrorResponse{Error: "invalid_request"})
 		return
 	}
 
 	token := c.DefaultPostForm("token", "")
 	if err != nil || token == "" {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request"})
 		return
 	}
 
@@ -66,7 +70,8 @@ func handleInfoRequest(c *gin.Context) {
 	session, err := sessionService.Validate(token)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		infoResponse.Active = false
-	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else if err != nil {
+		panic(err) //trigger standard recover
 		return
 	} else {
 		ps := &services.Permission{DB: db}
@@ -78,13 +83,15 @@ func handleInfoRequest(c *gin.Context) {
 		if serverId == "" {
 			if session.ClientId != nil {
 				t, err := ps.GetForClient(*session.ClientId)
-				if response.HandleError(c, err, http.StatusInternalServerError) {
+				if err != nil {
+					panic(err) //trigger standard recover
 					return
 				}
 				perms = append(perms, t...)
 			} else if session.UserId != nil {
 				t, err := ps.GetForUser(*session.UserId)
-				if response.HandleError(c, err, http.StatusInternalServerError) {
+				if err != nil {
+					panic(err) //trigger standard recover
 					return
 				}
 				perms = append(perms, t...)
@@ -92,13 +99,15 @@ func handleInfoRequest(c *gin.Context) {
 		} else {
 			if session.ClientId != nil {
 				t, err := ps.GetForClientAndServer(*session.ClientId, &serverId)
-				if response.HandleError(c, err, http.StatusInternalServerError) {
+				if err != nil {
+					panic(err) //trigger standard recover
 					return
 				}
 				perms = append(perms, t)
 			} else if session.UserId != nil {
 				t, err := ps.GetForUserAndServer(*session.UserId, &serverId)
-				if response.HandleError(c, err, http.StatusInternalServerError) {
+				if err != nil {
+					panic(err) //trigger standard recover
 					return
 				}
 				perms = append(perms, t)

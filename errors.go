@@ -197,7 +197,8 @@ func FromError(err error) *Error {
 		return nil
 	}
 
-	if e, ok := err.(*Error); ok {
+	var e *Error
+	if errors.As(err, &e) {
 		return e
 	}
 	return CreateError(err.Error(), "ErrGeneric")

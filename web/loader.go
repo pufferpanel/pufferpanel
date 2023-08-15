@@ -87,7 +87,7 @@ func RegisterRoutes(e *gin.Engine) {
 		middleware.Recover(c)
 	})
 
-	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.DefaultModelsExpandDepth(0), ginSwagger.DeepLinking(false)))
 
 	if config.DaemonEnabled.Value() {
 		daemon.RegisterDaemonRoutes(e.Group("/daemon"))

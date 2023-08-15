@@ -14,7 +14,6 @@
 package api
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
@@ -22,7 +21,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/spf13/cast"
-	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -44,12 +42,13 @@ func registerUsers(g *gin.RouterGroup) {
 // @Summary Get users
 // @Description Gets users, and allowing for filtering of users. * is a wildcard that can be used for text inputs
 // @Success 200 {object} models.UserSearchResponse
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param body body models.UserSearch true "Filters to search on"
 // @Router /api/users [get]
+// @Security OAuth2Application[none]
 func searchUsers(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -73,7 +72,7 @@ func searchUsers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, &models.UserSearchResponse{
 		Users: models.FromUsers(results),
-		Metadata: &response.Metadata{Paging: &response.Paging{
+		Metadata: &pufferpanel.Metadata{Paging: &pufferpanel.Paging{
 			Page:    search.Page,
 			Size:    search.PageLimit,
 			MaxSize: MaxPageSize,
@@ -84,12 +83,13 @@ func searchUsers(c *gin.Context) {
 
 // @Summary Create user
 // @Success 200 {object} models.UserView
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param body body models.UserView true "New user information"
 // @Router /api/users [post]
+// @Security OAuth2Application[none]
 func createUser(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -123,12 +123,13 @@ func createUser(c *gin.Context) {
 
 // @Summary Get a user
 // @Success 200 {object} models.UserView
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path uint true "User ID"
 // @Router /api/users/{id} [get]
+// @Security OAuth2Application[none]
 func getUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -141,10 +142,7 @@ func getUser(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && err == gorm.ErrRecordNotFound {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -152,14 +150,15 @@ func getUser(c *gin.Context) {
 }
 
 // @Summary Update user
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path uint true "User ID"
 // @Param body body models.UserView true "New user information"
 // @Router /api/users/{id} [post]
+// @Security OAuth2Application[none]
 func updateUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -181,10 +180,7 @@ func updateUser(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && err == gorm.ErrRecordNotFound {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -198,13 +194,14 @@ func updateUser(c *gin.Context) {
 }
 
 // @Summary Delete user
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path uint true "User ID"
 // @Router /api/users/{id} [delete]
+// @Security OAuth2Application[none]
 func deleteUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -217,10 +214,7 @@ func deleteUser(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && err == gorm.ErrRecordNotFound {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -233,12 +227,13 @@ func deleteUser(c *gin.Context) {
 
 // @Summary Gets user permissions
 // @Success 200 {object} models.PermissionView
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path uint true "User ID"
 // @Router /api/users/{id}/perms [get]
+// @Security OAuth2Application[none]
 func getUserPerms(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -252,10 +247,7 @@ func getUserPerms(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -268,14 +260,15 @@ func getUserPerms(c *gin.Context) {
 }
 
 // @Summary Sets user permissions
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path uint true "User ID"
 // @Param body body models.PermissionView true "New permissions"
 // @Router /api/users/{id}/perms [put]
+// @Security OAuth2Application[none]
 func setUserPerms(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -295,10 +288,7 @@ func setUserPerms(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && err == gorm.ErrRecordNotFound {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 

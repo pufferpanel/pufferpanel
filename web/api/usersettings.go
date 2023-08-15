@@ -19,8 +19,9 @@ func registerUserSettings(g *gin.RouterGroup) {
 // @Summary Get a user setting
 // @Description Gets all settings specific to the current user
 // @Success 200 {object} models.UserSettingsView
-// @Failure 500 {object} response.Error
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/usersettings [get]
+// @Security OAuth2Application[none]
 func getUserSettings(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	uss := &services.UserSettings{DB: db}
@@ -43,12 +44,13 @@ func getUserSettings(c *gin.Context) {
 
 // @Summary Update a user setting
 // @Description Updates the value of a user setting
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param key path string true "The config key"
 // @Param value body models.ChangeUserSetting true "The new value for the setting"
 // @Router /api/usersettings/{key} [PUT]
+// @Security OAuth2Application[none]
 func setUserSetting(c *gin.Context) {
 	key := c.Param("key")
 	db := middleware.GetDatabase(c)

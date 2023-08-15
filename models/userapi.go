@@ -13,7 +13,9 @@
 
 package models
 
-import "github.com/pufferpanel/pufferpanel/v3/response"
+import (
+	"github.com/pufferpanel/pufferpanel/v3"
+)
 
 type UserSearch struct {
 	Username  string `form:"username"`
@@ -24,5 +26,5 @@ type UserSearch struct {
 
 type UserSearchResponse struct {
 	Users []*UserView `json:"users"`
-	*response.Metadata
+	*pufferpanel.Metadata
 } //@name UserSearchResponse

@@ -49,7 +49,7 @@ func getStatusGET(c *gin.Context) {
 
 // @Summary Check daemon status
 // @Description Check to see if the daemon is online or not
-// @Success 204 {object} response.Empty
+// @Success 204 {object} nil
 // @Router /daemon [head]
 func getStatusHEAD(c *gin.Context) {
 	c.Status(http.StatusNoContent)

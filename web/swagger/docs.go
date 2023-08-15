@@ -196,10 +196,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -241,10 +238,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -420,10 +414,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -552,10 +543,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -723,10 +711,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -977,10 +962,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1088,10 +1070,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1139,10 +1118,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1188,10 +1164,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1253,10 +1226,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1319,10 +1289,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1352,10 +1319,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "404": {
                         "description": "Not Found",
@@ -1602,10 +1566,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1646,10 +1607,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1745,10 +1703,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1824,10 +1779,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1862,10 +1814,7 @@ const docTemplate = `{
                 "summary": "Check daemon status",
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     }
                 }
             }
@@ -1902,19 +1851,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenInfoResponse"
+                            "$ref": "#/definitions/OAuthErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenInfoResponse"
+                            "$ref": "#/definitions/OAuthErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/ErrorResponse"
+                            "$ref": "#/definitions/OAuthErrorResponse"
                         }
                     }
                 }
@@ -1945,19 +1894,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenResponse"
+                            "$ref": "#/definitions/OAuthErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenResponse"
+                            "$ref": "#/definitions/OAuthErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenResponse"
+                            "$ref": "#/definitions/OAuthErrorResponse"
                         }
                     }
                 }
@@ -1969,7 +1918,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "PufferPanel"
                 }
             }
         },
@@ -2085,9 +2035,6 @@ const docTemplate = `{
                     "$ref": "#/definitions/ThemeConfig"
                 }
             }
-        },
-        "Empty": {
-            "type": "object"
         },
         "Error": {
             "type": "object",
@@ -2323,6 +2270,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "token_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "OAuthErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "error_description": {
                     "type": "string"
                 }
             }
@@ -2622,16 +2580,21 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "active": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "default"
                 },
                 "available": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "alternativeTheme"
+                    ]
                 },
                 "settings": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "{}"
                 }
             }
         },

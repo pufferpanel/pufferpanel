@@ -51,3 +51,18 @@ type ServerTask struct {
 	IsRunning bool `json:"isRunning"`
 	Task
 } //@name ServerTask
+
+type ErrorResponse struct {
+	Error *Error `json:"error"`
+} //@name ErrorResponse
+
+type Metadata struct {
+	Paging *Paging `json:"paging"`
+} //@name Metadata
+
+type Paging struct {
+	Page    uint  `json:"page"`
+	Size    uint  `json:"pageSize"`
+	MaxSize uint  `json:"maxSize"`
+	Total   int64 `json:"total"`
+} //@name Paging

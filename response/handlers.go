@@ -52,7 +52,7 @@ func HandleError(c *gin.Context, err error, statusCode int) bool {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.AbortWithStatus(http.StatusNotFound)
 		} else {
-			c.AbortWithStatusJSON(statusCode, &Error{Error: pufferpanel.FromError(err)})
+			c.AbortWithStatusJSON(statusCode, &pufferpanel.ErrorResponse{Error: pufferpanel.FromError(err)})
 		}
 
 		return true

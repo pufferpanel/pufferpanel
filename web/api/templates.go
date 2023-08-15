@@ -45,7 +45,7 @@ func registerTemplates(g *gin.RouterGroup) {
 // @Summary Get all repos
 // @Description Gets all repos that are available to pull template from
 // @Success 200 {object} []models.TemplateRepo
-// @Failure 500 {object} response.Error
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/templates [get]
 func getRepos(c *gin.Context) {
 	db := middleware.GetDatabase(c)
@@ -63,8 +63,9 @@ func getRepos(c *gin.Context) {
 // @Description Gets all templates from a repository
 // @Param repo path string true "Repo name"
 // @Success 200 {object} []models.Template
-// @Failure 500 {object} response.Error
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/templates/{repo} [get]
+// @Security OAuth2Application[none]
 func getsTemplatesForRepo(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -78,9 +79,13 @@ func getsTemplatesForRepo(c *gin.Context) {
 }
 
 func addRepo(c *gin.Context) {
+	//TODO: Implement
+	response.NotImplemented(c)
 }
 
 func deleteRepo(c *gin.Context) {
+	//TODO: Implement
+	response.NotImplemented(c)
 }
 
 // @Summary Get template
@@ -88,8 +93,9 @@ func deleteRepo(c *gin.Context) {
 // @Param repo path string true "Repo name"
 // @Param template path string true "Template name"
 // @Success 200 {object} models.Template
-// @Failure 500 {object} response.Error
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/templates/{repo}/{template} [get]
+// @Security OAuth2Application[none]
 func getTemplateFromRepo(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -106,12 +112,13 @@ func getTemplateFromRepo(c *gin.Context) {
 }
 
 // @Summary Adds or updates a template
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param template body pufferpanel.Server true "Template"
 // @Param name path string true "Template name"
 // @Router /api/templates/local/{name} [put]
+// @Security OAuth2Application[none]
 func putTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -143,11 +150,12 @@ func putTemplate(c *gin.Context) {
 
 // @Summary Deletes template
 // @Description Deletes template
-// @Success 204 {object} response.Empty
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
+// @Success 204 {object} nil
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param name path string true "Template name"
 // @Router /api/templates/local/{name} [delete]
+// @Security OAuth2Application[none]
 func deleteTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}

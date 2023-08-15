@@ -116,17 +116,20 @@ func createRequest(data url.Values) (request *http.Request) {
 }
 
 type TokenInfoResponse struct {
-	Active           bool   `json:"active"`
-	Scope            string `json:"scope,omitempty"`
-	Error            string `json:"error,omitempty"`
-	ErrorDescription string `json:"error_description,omitempty"`
+	Active bool   `json:"active"`
+	Scope  string `json:"scope,omitempty"`
+	ErrorResponse
 } //@name OAuth2TokenInfoResponse
 
 type TokenResponse struct {
-	AccessToken      string `json:"access_token,omitempty"`
-	TokenType        string `json:"token_type,omitempty"`
-	ExpiresIn        int64  `json:"expires_in,omitempty"`
-	Scope            string `json:"scope"`
+	AccessToken string `json:"access_token,omitempty"`
+	TokenType   string `json:"token_type,omitempty"`
+	ExpiresIn   int64  `json:"expires_in,omitempty"`
+	Scope       string `json:"scope"`
+	ErrorResponse
+} //@name OAuth2TokenResponse
+
+type ErrorResponse struct {
 	Error            string `json:"error,omitempty"`
 	ErrorDescription string `json:"error_description,omitempty"`
-} //@name OAuth2TokenResponse
+} //@name OAuthErrorResponse
