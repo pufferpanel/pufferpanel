@@ -315,6 +315,11 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, imageName
 
 	exists := false
 
+	parts := strings.SplitN(imageName, ":", 2)
+	if len(parts) != 2 {
+		imageName = imageName + ":latest"
+	}
+
 	opts := types.ImageListOptions{
 		All:     true,
 		Filters: filters.NewArgs(),
@@ -326,8 +331,16 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, imageName
 		return err
 	}
 
-	if len(images) >= 1 {
-		exists = true
+	for _, v := range images {
+		for _, z := range v.RepoTags {
+			if z == imageName {
+				exists = true
+				break
+			}
+		}
+		if exists {
+			break
+		}
 	}
 
 	d.Log(logging.Debug, "Does image %v exist? %v", imageName, exists)

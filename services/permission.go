@@ -14,6 +14,7 @@
 package services
 
 import (
+	"errors"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -56,7 +57,7 @@ func (ps *Permission) GetForUserAndServer(userId uint, serverId *string) (*model
 
 	err := ps.DB.Preload(clause.Associations).Where(permissions).First(permissions).Error
 
-	if err != nil && err == gorm.ErrRecordNotFound {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return permissions, nil
 	}
 

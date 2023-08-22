@@ -72,7 +72,7 @@ export class ServerApi {
   }
 
   async updateDefinition(id, data) {
-    await this._api.post(`/api/servers/${id}/definition`, data)
+    await this._api.put(`/api/servers/${id}/definition`, data)
     return true
   }
 

@@ -129,15 +129,15 @@ func CreateProgram() *Server {
 				AutoStart:               false,
 				AutoRestartFromCrash:    false,
 				AutoRestartFromGraceful: false,
-				PreExecution:            make([]interface{}, 0),
-				PostExecution:           make([]interface{}, 0),
+				PreExecution:            make([]pufferpanel.MetadataType, 0),
+				PostExecution:           make([]pufferpanel.MetadataType, 0),
 				EnvironmentVariables:    make(map[string]string),
 			},
 			Type:           pufferpanel.Type{Type: "standard"},
 			Variables:      make(map[string]pufferpanel.Variable),
 			Display:        "Unknown server",
-			Installation:   make([]interface{}, 0),
-			Uninstallation: make([]interface{}, 0),
+			Installation:   make([]pufferpanel.MetadataType, 0),
+			Uninstallation: make([]pufferpanel.MetadataType, 0),
 			Groups:         make([]pufferpanel.Group, 0),
 		},
 	}
@@ -700,19 +700,7 @@ func (p *Server) valid() bool {
 		return false
 	}
 
-	//check the env object, if it's even checkable
-	env, casted := p.Environment.(map[string]interface{})
-	if !casted || len(env) == 0 {
-		return false
-	}
-
-	v, exists := env["type"]
-	if !exists {
-		return false
-	}
-
-	str, ok := v.(string)
-	if !ok || str == "" {
+	if p.Environment.Type == "" {
 		return false
 	}
 

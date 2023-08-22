@@ -4,7 +4,6 @@ import (
 	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/models"
-	"github.com/spf13/cast"
 	"gorm.io/gorm"
 )
 
@@ -71,14 +70,13 @@ func migrate(dbConn *gorm.DB) error {
 				}
 
 				for _, v := range templates {
-					rawMap := make(map[string]interface{})
+					var rawMap pufferpanel.MetadataType
 					err = pufferpanel.UnmarshalTo(v.Environment, &rawMap)
 					if err != nil {
 						return err
 					}
-					declaredEnv := cast.ToString(rawMap["type"])
-					if declaredEnv == "tty" || declaredEnv == "standard" {
-						rawMap["type"] = "host"
+					if rawMap.Type == "tty" || rawMap.Type == "standard" {
+						rawMap.Type = "host"
 						v.Environment = rawMap
 						err = db.Save(&v).Error
 						if err != nil {

@@ -104,34 +104,10 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 
 	data.Identifier = id
 
-	if data.Execution.LegacyRun != "" {
-		data.Execution.Command = strings.TrimSpace(data.Execution.LegacyRun + " " + strings.Join(data.Execution.LegacyArguments, " "))
-		data.Execution.LegacyRun = ""
-		data.Execution.LegacyArguments = nil
-		err = data.Save()
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	var typeMap pufferpanel.Type
-	err = pufferpanel.UnmarshalTo(data.Environment, &typeMap)
-	if err != nil {
-		return nil, err
-	}
-
-	environmentType := typeMap.Type
+	environmentType := data.Environment.Type
 
 	if environmentType == "standard" || environmentType == "tty" {
-		environmentType = "host"
-
-		tracker := make(map[string]interface{})
-		err = pufferpanel.UnmarshalTo(data.Environment, &tracker)
-		if err != nil {
-			return nil, err
-		}
-		tracker["type"] = "host"
-		data.Environment = tracker
+		data.Environment.Type = "host"
 
 		err = data.Save()
 		if err != nil {

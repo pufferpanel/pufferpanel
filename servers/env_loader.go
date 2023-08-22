@@ -25,7 +25,7 @@ import (
 
 var envMapping = make(map[string]pufferpanel.EnvironmentFactory)
 
-func CreateEnvironment(environmentType, folder, id string, environmentSection interface{}) (pufferpanel.Environment, error) {
+func CreateEnvironment(environmentType, folder, id string, environmentSection pufferpanel.MetadataType) (pufferpanel.Environment, error) {
 	factory := envMapping[environmentType]
 
 	if factory == nil {
@@ -42,7 +42,7 @@ func CreateEnvironment(environmentType, folder, id string, environmentSection in
 	}
 
 	item := factory.Create(id)
-	err := pufferpanel.UnmarshalTo(environmentSection, item)
+	err := pufferpanel.UnmarshalTo(environmentSection.Metadata, item)
 	if err != nil {
 		return nil, err
 	}

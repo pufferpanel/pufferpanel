@@ -48,7 +48,7 @@ func init() {
 	loadCoreModules()
 }
 
-func GenerateProcess(directions []interface{}, environment pufferpanel.Environment, dataMapping map[string]interface{}, env map[string]string) (OperationProcess, error) {
+func GenerateProcess(directions []pufferpanel.MetadataType, environment pufferpanel.Environment, dataMapping map[string]interface{}, env map[string]string) (OperationProcess, error) {
 	dataMap := make(map[string]interface{})
 	for k, v := range dataMapping {
 		dataMap[k] = v
@@ -57,22 +57,15 @@ func GenerateProcess(directions []interface{}, environment pufferpanel.Environme
 	dataMap["rootDir"] = environment.GetRootDirectory()
 	operationList := make(OperationProcess, 0)
 	for _, mapping := range directions {
-
-		var typeMap pufferpanel.MetadataType
-		err := pufferpanel.UnmarshalTo(mapping, &typeMap)
-		if err != nil {
-			return OperationProcess{}, err
-		}
-
-		factory := commandMapping[typeMap.Type]
+		factory := commandMapping[mapping.Type]
 		if factory == nil {
 			return OperationProcess{}, pufferpanel.ErrMissingFactory
 		}
 
-		mapCopy := make(map[string]interface{}, 0)
+		mapCopy := make(map[string]interface{})
 
 		//replace tokens
-		for k, v := range typeMap.Metadata {
+		for k, v := range mapping.Metadata {
 			switch r := v.(type) {
 			case string:
 				{
@@ -111,7 +104,7 @@ func GenerateProcess(directions []interface{}, environment pufferpanel.Environme
 
 		op, err := factory.Create(opCreate)
 		if err != nil {
-			return OperationProcess{}, pufferpanel.ErrFactoryError(typeMap.Type, err)
+			return OperationProcess{}, pufferpanel.ErrFactoryError(mapping.Type, err)
 		}
 
 		task := &OperationTask{Operation: op}
