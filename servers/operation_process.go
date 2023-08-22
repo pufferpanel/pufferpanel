@@ -25,6 +25,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/command"
 	"github.com/pufferpanel/pufferpanel/v3/operations/console"
 	"github.com/pufferpanel/pufferpanel/v3/operations/curseforge"
+	"github.com/pufferpanel/pufferpanel/v3/operations/dockerpull"
 	"github.com/pufferpanel/pufferpanel/v3/operations/download"
 	"github.com/pufferpanel/pufferpanel/v3/operations/extract"
 	"github.com/pufferpanel/pufferpanel/v3/operations/fabricdl"
@@ -210,4 +211,8 @@ func loadCoreModules() {
 
 	spongedlFactory := spongedl.Factory
 	commandMapping[spongedlFactory.Key()] = spongedlFactory
+
+	dockerpullFactory := dockerpull.Factory
+	commandMapping[dockerpullFactory.Key()] = dockerpullFactory
+
 }

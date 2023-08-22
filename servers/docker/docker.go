@@ -42,7 +42,7 @@ import (
 	"time"
 )
 
-type docker struct {
+type Docker struct {
 	*pufferpanel.BaseEnvironment
 	ContainerId string              `json:"-"`
 	ImageName   string              `json:"image"`
@@ -58,7 +58,7 @@ type docker struct {
 	downloadingImage bool
 }
 
-func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
+func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	running, err := d.IsRunning()
 	if err != nil {
 		return err
@@ -88,7 +88,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		return errors.New("docker container already exists")
 	}
 
-	err = d.createContainer(dockerClient, ctx, steps)
+	err = d.createContainer(ctx, steps)
 	if err != nil {
 		return err
 	}
@@ -149,7 +149,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	return err
 }
 
-func (d *docker) ExecuteInMainProcess(cmd string) (err error) {
+func (d *Docker) ExecuteInMainProcess(cmd string) (err error) {
 	running, err := d.IsRunning()
 	if err != nil {
 		return
@@ -163,7 +163,7 @@ func (d *docker) ExecuteInMainProcess(cmd string) (err error) {
 	return
 }
 
-func (d *docker) Kill() (err error) {
+func (d *Docker) Kill() (err error) {
 	running, err := d.IsRunning()
 	if err != nil {
 		return err
@@ -181,25 +181,11 @@ func (d *docker) Kill() (err error) {
 	return
 }
 
-func (d *docker) Create() error {
-	/*go func() {
-		c, err := d.getClient()
-		if err != nil {
-			logging.Error.Printf("Error getting docker client: %s\n", err.Error())
-			d.DisplayToConsole(true, "Error downloading image")
-			return
-		}
-		err = d.pullImage(c, context.Background(), false)
-		if err != nil {
-			logging.Error.Printf("Error downloading image: %s\n", err.Error())
-			d.DisplayToConsole(true, "Error downloading image")
-			return
-		}
-	}()*/
+func (d *Docker) Create() error {
 	return os.Mkdir(d.RootDirectory, 0755)
 }
 
-func (d *docker) IsRunning() (bool, error) {
+func (d *Docker) IsRunning() (bool, error) {
 	dockerClient, err := d.getClient()
 	if err != nil {
 		return false, err
@@ -219,7 +205,7 @@ func (d *docker) IsRunning() (bool, error) {
 	return stats.State.Running, nil
 }
 
-func (d *docker) GetStats() (*pufferpanel.ServerStats, error) {
+func (d *Docker) GetStats() (*pufferpanel.ServerStats, error) {
 	running, err := d.IsRunning()
 	if err != nil {
 		return nil, err
@@ -258,11 +244,11 @@ func (d *docker) GetStats() (*pufferpanel.ServerStats, error) {
 	}, nil
 }
 
-func (d *docker) WaitForMainProcess() error {
+func (d *Docker) WaitForMainProcess() error {
 	return d.WaitForMainProcessFor(0)
 }
 
-func (d *docker) WaitForMainProcessFor(timeout time.Duration) (err error) {
+func (d *Docker) WaitForMainProcessFor(timeout time.Duration) (err error) {
 	running, err := d.IsRunning()
 	if err != nil {
 		return
@@ -281,7 +267,7 @@ func (d *docker) WaitForMainProcessFor(timeout time.Duration) (err error) {
 	return
 }
 
-func (d *docker) getClient() (*client.Client, error) {
+func (d *Docker) getClient() (*client.Client, error) {
 	var err error = nil
 	if d.cli == nil {
 		d.cli, err = client.NewClientWithOpts(client.FromEnv)
@@ -291,7 +277,7 @@ func (d *docker) getClient() (*client.Client, error) {
 	return d.cli, err
 }
 
-func (d *docker) doesContainerExist(client *client.Client, ctx context.Context) (bool, error) {
+func (d *Docker) doesContainerExist(client *client.Client, ctx context.Context) (bool, error) {
 	opts := types.ContainerListOptions{
 		Filters: filters.NewArgs(),
 	}
@@ -308,45 +294,47 @@ func (d *docker) doesContainerExist(client *client.Client, ctx context.Context) 
 	}
 }
 
-func (d *docker) pullImage(client *client.Client, ctx context.Context, imageName string, force bool) error {
+func (d *Docker) PullImage(ctx context.Context, imageName string, force bool) error {
 	if d.downloadingImage {
 		return pufferpanel.ErrImageDownloading
 	}
 
-	exists := false
+	if !force {
+		exists := false
 
-	parts := strings.SplitN(imageName, ":", 2)
-	if len(parts) != 2 {
-		imageName = imageName + ":latest"
-	}
+		parts := strings.SplitN(imageName, ":", 2)
+		if len(parts) != 2 {
+			imageName = imageName + ":latest"
+		}
 
-	opts := types.ImageListOptions{
-		All:     true,
-		Filters: filters.NewArgs(),
-	}
-	opts.Filters.Add("reference", imageName)
-	images, err := client.ImageList(ctx, opts)
+		opts := types.ImageListOptions{
+			All:     true,
+			Filters: filters.NewArgs(),
+		}
+		opts.Filters.Add("reference", imageName)
+		images, err := d.cli.ImageList(ctx, opts)
 
-	if err != nil {
-		return err
-	}
+		if err != nil {
+			return err
+		}
 
-	for _, v := range images {
-		for _, z := range v.RepoTags {
-			if z == imageName {
-				exists = true
+		for _, v := range images {
+			for _, z := range v.RepoTags {
+				if z == imageName {
+					exists = true
+					break
+				}
+			}
+			if exists {
 				break
 			}
 		}
+
+		d.Log(logging.Debug, "Does image %v exist? %v", imageName, exists)
+
 		if exists {
-			break
+			return nil
 		}
-	}
-
-	d.Log(logging.Debug, "Does image %v exist? %v", imageName, exists)
-
-	if exists && !force {
-		return nil
 	}
 
 	op := types.ImagePullOptions{}
@@ -359,7 +347,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, imageName
 		d.downloadingImage = false
 	}()
 
-	r, err := client.ImagePull(ctx, imageName, op)
+	r, err := d.cli.ImagePull(ctx, imageName, op)
 	defer pufferpanel.Close(r)
 	if err != nil {
 		return err
@@ -377,13 +365,13 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, imageName
 	return err
 }
 
-func (d *docker) createContainer(client *client.Client, ctx context.Context, data pufferpanel.ExecutionData) error {
+func (d *Docker) createContainer(ctx context.Context, data pufferpanel.ExecutionData) error {
 	d.Log(logging.Debug, "Creating container")
 	containerRoot := "/pufferpanel"
 
 	imageName := pufferpanel.ReplaceTokens(d.ImageName, data.Variables)
 
-	err := d.pullImage(client, ctx, imageName, false)
+	err := d.PullImage(ctx, imageName, false)
 
 	if err != nil {
 		return err
@@ -492,11 +480,11 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, dat
 	containerConfig.ExposedPorts = exposedPorts
 
 	//for now, default to linux across the board. This resolves problems that Windows has when you use it and docker
-	_, err = client.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, &v1.Platform{OS: "linux"}, d.ContainerId)
+	_, err = d.cli.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, &v1.Platform{OS: "linux"}, d.ContainerId)
 	return err
 }
 
-func (d *docker) SendCode(code int) error {
+func (d *Docker) SendCode(code int) error {
 	running, err := d.IsRunning()
 
 	if err != nil || !running {

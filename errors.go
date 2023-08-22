@@ -59,6 +59,7 @@ var ErrDockerNotSupported = CreateError("docker not supported", "ErrDockerNotSup
 var ErrServerRunning = CreateError("server running", "ErrServerRunning")
 var ErrNoCommand = CreateError("command could not be determined", "ErrNoCommand")
 var ErrRepoExists = CreateError("repo already exists with given name", "ErrRepoExists")
+var ErrEnvironmentNotSupported = CreateError("environment not supported", "ErrEnvironmentNotSupported")
 
 func CreateErrMissingScope(scope Scope) *Error {
 	return CreateError(ErrMissingScope.Message, ErrMissingScope.Code).Metadata(map[string]interface{}{"scope": scope})

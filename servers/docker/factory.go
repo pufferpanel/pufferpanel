@@ -23,7 +23,7 @@ type EnvironmentFactory struct {
 }
 
 func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
-	d := &docker{
+	d := &Docker{
 		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: ef.Key(), ServerId: id},
 		ContainerId:     id,
 		ImageName:       "pufferpanel/generic",
