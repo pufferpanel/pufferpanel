@@ -1,13 +1,19 @@
 package logging
 
-import "io"
+import (
+	"io"
+	"sync"
+)
 
 type Rotator struct {
 	io.WriteCloser
 	backer io.WriteCloser
+	lock   sync.RWMutex //exists so we can rotate without loss of data
 }
 
 func (r *Rotator) Write(p []byte) (n int, err error) {
+	r.lock.RLock()
+	defer r.lock.RUnlock()
 	if r == nil || r.backer == nil {
 		return len(p), nil
 	}
@@ -22,6 +28,8 @@ func (r *Rotator) Close() error {
 }
 
 func (r *Rotator) Rotate(newBackend io.WriteCloser) {
+	r.lock.Lock()
+	defer r.lock.Unlock()
 	oldBacker := r.backer
 	r.backer = newBackend
 	_ = oldBacker.Close()
