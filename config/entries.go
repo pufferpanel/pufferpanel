@@ -5,19 +5,15 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Global options
 var LogsFolder = asString("logs", "logs")
 var WebHost = asString("web.host", "0.0.0.0:8080")
 
-// Panel options
 var PanelEnabled = asBool("panel.enable", true)
-var DatabaseSessionLength = asInt("panel.database.session", 60)
 var DatabaseDialect = asString("panel.database.dialect", "sqlite3")
 var DatabaseUrl = asString("panel.database.url", "")
 var DatabaseLoggingEnabled = asBool("panel.database.log", false)
 var WebRoot = asString("panel.web.files", "www")
 
-// var EmailTemplateJson = asString("panel.email.templates", "email/emails.json")
 var EmailTemplateFolder = asString("panel.email.templateFolder", "")
 var EmailProvider = asString("panel.email.provider", "")
 var EmailFrom = asString("panel.email.from", "")
@@ -33,7 +29,6 @@ var MasterUrl = asString("panel.settings.masterUrl", "http://localhost:8080")
 var SessionKey = asString("panel.sessionKey", "")
 var RegistrationEnabled = asBool("panel.registrationEnabled", true)
 
-// Daemon options
 var DaemonEnabled = asBool("daemon.enable", true)
 var ConsoleBuffer = asInt("daemon.console.buffer", 50)
 var ConsoleForward = asBool("daemon.console.forward", false)

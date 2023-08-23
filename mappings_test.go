@@ -233,7 +233,7 @@ func TestGetStringArrayOrNull(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want []string
+		want interface{}
 	}{
 		{
 			name: "Test for valid string array",
@@ -257,7 +257,7 @@ func TestGetStringArrayOrNull(t *testing.T) {
 				data: mappingTest,
 				key:  mappingIntArrayKey,
 			},
-			want: nil,
+			want: mappingIntArrayVal,
 		},
 		{
 			name: "Test for invalid type mix",

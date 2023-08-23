@@ -16,6 +16,7 @@ package response
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"gorm.io/gorm"
@@ -32,7 +33,7 @@ func CreateOptions(options ...string) gin.HandlerFunc {
 
 	copy(replacement, options)
 
-	replacement[len(options)] = "OPTIONS"
+	replacement[len(options)] = http.MethodOptions
 	res := strings.Join(replacement, ",")
 
 	return func(c *gin.Context) {
@@ -40,7 +41,7 @@ func CreateOptions(options ...string) gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Methods", res)
 		c.Header("Access-Control-Allow-Headers", "authorization, origin, content-type, accept")
 		c.Header("Allow", res)
-		c.Header("Content-Type", "application/json")
+		c.Header("Content-Type", binding.MIMEJSON)
 		c.AbortWithStatus(http.StatusOK)
 	}
 }

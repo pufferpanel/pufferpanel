@@ -21,7 +21,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"pault.ag/go/debian/deb"
 	"strings"
 )
 
@@ -102,17 +101,6 @@ func ExtractTarGz(gzipStream io.Reader, directory string) error {
 	}
 	defer uncompressedStream.Close()
 	return ExtractTar(uncompressedStream, directory)
-}
-
-func ExtractDeb(stream io.ReaderAt, directory string) error {
-	file, err := deb.Load(stream, directory)
-	if err != nil {
-		return err
-	}
-
-	defer file.Close()
-
-	return ExtractTar(file.Data, directory)
 }
 
 func ExtractZip(name, directory string) error {

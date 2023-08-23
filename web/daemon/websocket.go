@@ -59,7 +59,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 			case "replay":
 				{
 					console, _ := server.GetEnvironment().GetConsole()
-					_ = pufferpanel.Write(conn, messages.Console{Logs: console})
+					_ = conn.WriteMessage(messages.Console{Logs: console})
 				}
 			case "stat":
 				{
@@ -73,7 +73,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 							msg.Cpu = results.Cpu
 							msg.Memory = results.Memory
 						}
-						_ = pufferpanel.Write(conn, msg)
+						_ = conn.WriteMessage(msg)
 					}
 				}
 			case "status":
@@ -83,7 +83,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 						running = false
 					}
 					msg := messages.Status{Running: running}
-					_ = pufferpanel.Write(conn, msg)
+					_ = conn.WriteMessage(msg)
 				}
 			case "start":
 				{
@@ -118,7 +118,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 				}
 			case "ping":
 				{
-					_ = pufferpanel.Write(conn, messages.Pong{})
+					_ = conn.WriteMessage(messages.Pong{})
 				}
 			case "console":
 				{
@@ -160,7 +160,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 
 							err := server.DeleteItem(path)
 							if err != nil {
-								_ = pufferpanel.Write(conn, messages.FileList{Error: err.Error()})
+								_ = conn.WriteMessage(messages.FileList{Error: err.Error()})
 							} else {
 								//now get the root
 								handleGetFile(conn, server, path2.Dir(path), false)
@@ -175,7 +175,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 							err := server.CreateFolder(path)
 
 							if err != nil {
-								_ = pufferpanel.Write(conn, messages.FileList{Error: err.Error()})
+								_ = conn.WriteMessage(messages.FileList{Error: err.Error()})
 							} else {
 								handleGetFile(conn, server, path, false)
 							}
@@ -194,22 +194,22 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 func handleGetFile(conn *pufferpanel.Socket, server *servers.Server, path string, editMode bool) {
 	data, err := server.GetItem(path)
 	if err != nil {
-		_ = pufferpanel.Write(conn, messages.FileList{Error: err.Error()})
+		_ = conn.WriteMessage(messages.FileList{Error: err.Error()})
 		return
 	}
 
 	defer pufferpanel.Close(data.Contents)
 
 	if data.FileList != nil {
-		_ = pufferpanel.Write(conn, messages.FileList{FileList: data.FileList, CurrentPath: path})
+		_ = conn.WriteMessage(messages.FileList{FileList: data.FileList, CurrentPath: path})
 	} else if data.Contents != nil {
 		//if the file is small enough, we'll send it over the websocket
 		if editMode && data.ContentLength < int64(config.WebSocketFileLimit.Value()) {
 			var buf bytes.Buffer
 			_, _ = io.Copy(&buf, data.Contents)
-			_ = pufferpanel.Write(conn, messages.FileList{Contents: buf.Bytes(), Filename: data.Name})
+			_ = conn.WriteMessage(messages.FileList{Contents: buf.Bytes(), Filename: data.Name})
 		} else {
-			_ = pufferpanel.Write(conn, messages.FileList{Url: path, Filename: data.Name})
+			_ = conn.WriteMessage(messages.FileList{Url: path, Filename: data.Name})
 		}
 	}
 }

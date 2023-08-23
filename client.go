@@ -14,7 +14,6 @@
 package pufferpanel
 
 import (
-	"bytes"
 	"io"
 	"net/http"
 	"os"
@@ -67,25 +66,4 @@ func HttpGetZip(url, directory string) error {
 	}
 
 	return ExtractZip(file.Name(), directory)
-}
-
-func HttpDownloadDeb(link, folder string) error {
-	response, err := HttpGet(link)
-	defer CloseResponse(response)
-	if err != nil {
-		return err
-	}
-
-	buff := bytes.NewBuffer([]byte{})
-	_, err = io.Copy(buff, response.Body)
-	CloseResponse(response)
-
-	if err != nil {
-		return err
-	}
-
-	reader := bytes.NewReader(buff.Bytes())
-
-	err = ExtractDeb(reader, folder)
-	return err
 }

@@ -14,6 +14,7 @@
 package middleware
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/models"
@@ -56,7 +57,7 @@ func AuthMiddleware(c *gin.Context) {
 	var user models.User
 
 	cookie, err := c.Cookie("puffer_auth")
-	if err == http.ErrNoCookie || cookie == "" {
+	if errors.Is(err, http.ErrNoCookie) || cookie == "" {
 		// reset err so we don't trip the final error
 		// check despite successful auth from header
 		err = nil
@@ -91,7 +92,7 @@ func AuthMiddleware(c *gin.Context) {
 		session := parts[1]
 		sess, err := ss.Validate(session)
 
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
@@ -111,7 +112,7 @@ func AuthMiddleware(c *gin.Context) {
 		//pull user from the session
 		sess, err := ss.Validate(cookie)
 
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return

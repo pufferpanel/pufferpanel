@@ -18,15 +18,6 @@ import (
 	"encoding/base64"
 )
 
-func ContainsString(arr []string, value string) bool {
-	for _, v := range arr {
-		if v == value {
-			return true
-		}
-	}
-	return false
-}
-
 func ContainsScope(arr []Scope, value Scope) bool {
 	for _, v := range arr {
 		if v == value || v == ScopeServersAdmin {

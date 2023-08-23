@@ -19,6 +19,9 @@ import (
 )
 
 func ToString(v interface{}) string {
+	if stringer, ok := v.(fmt.Stringer); ok {
+		return stringer.String()
+	}
 	return fmt.Sprintf("%v", v)
 }
 

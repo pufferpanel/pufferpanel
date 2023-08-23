@@ -1,5 +1,5 @@
 /*
- Copyright 2016 Padduck, LLC
+ Copyright 2023 PufferPanel
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -18,29 +18,26 @@ package pufferpanel
 
 import (
 	"encoding/json"
+	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
+	"io"
 	"sync"
 )
 
 type Tracker struct {
-	sockets []*connection
+	sockets []*Socket
 	locker  sync.Mutex
 }
 
-type connection struct {
-	socket *Socket
-	lock   sync.Mutex
-}
-
 func CreateTracker() *Tracker {
-	return &Tracker{sockets: make([]*connection, 0)}
+	return &Tracker{sockets: make([]*Socket, 0)}
 }
 
 func (ws *Tracker) Register(conn *Socket) {
 	ws.locker.Lock()
 	defer ws.locker.Unlock()
-	ws.sockets = append(ws.sockets, &connection{socket: conn})
+	ws.sockets = append(ws.sockets, conn)
 }
 
 func (ws *Tracker) WriteMessage(msg messages.Message) error {
@@ -52,12 +49,10 @@ func (ws *Tracker) WriteMessage(msg messages.Message) error {
 	defer ws.locker.Unlock()
 
 	for i := 0; i < len(ws.sockets); i++ {
-		go func(conn *connection, data []byte) {
-			conn.lock.Lock()
-			defer conn.lock.Unlock()
-			err := conn.socket.WriteMessage(data)
+		go func(conn *Socket, data []byte) {
+			_, err := conn.Write(data)
 			if err != nil {
-				logging.Info.Printf("websocket encountered error, dropping (%s)", err.Error())
+				logging.Debug.Printf("websocket encountered error, dropping (%s)", err.Error())
 				ws.locker.Lock()
 				defer ws.locker.Unlock()
 				for i, k := range ws.sockets {
@@ -82,4 +77,41 @@ func (ws *Tracker) Write(source []byte) (n int, e error) {
 	e = ws.WriteMessage(packet)
 	n = len(source)
 	return
+}
+
+func Create(ws *websocket.Conn) *Socket {
+	return &Socket{conn: ws}
+}
+
+type Socket struct {
+	conn   *websocket.Conn
+	locker sync.Mutex
+	io.WriteCloser
+}
+
+func (s *Socket) WriteMessage(msg messages.Message) error {
+	return s.WriteJSON(messages.Transmission{Type: msg.Key(), Message: msg})
+}
+
+func (s *Socket) Write(data []byte) (int, error) {
+	s.locker.Lock()
+	defer s.locker.Unlock()
+	return len(data), s.conn.WriteMessage(websocket.TextMessage, data)
+}
+
+func (s *Socket) WriteJSON(data interface{}) error {
+	d, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	_, err = s.Write(d)
+	return err
+}
+
+func (s *Socket) Close() error {
+	return s.conn.Close()
+}
+
+func (s *Socket) ReadMessage() (messageType int, p []byte, err error) {
+	return s.conn.ReadMessage()
 }

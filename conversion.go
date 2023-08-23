@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-// Converts the val parameter to the same type as the target
+// Convert Converts the val parameter to the same type as the target
 func Convert(val interface{}, target interface{}) (interface{}, error) {
 	switch target.(type) {
 	case string:

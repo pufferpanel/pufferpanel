@@ -27,10 +27,6 @@ func Close(closer io.Closer) {
 	if closer != nil {
 		_ = closer.Close()
 	}
-
-	/*if closer != nil && !(reflect.ValueOf(closer).Kind() != reflect.Ptr && reflect.ValueOf(closer).IsNil()) {
-		_ = closer.Close()
-	}*/
 }
 
 func CloseResponse(response *http.Response) {

@@ -63,7 +63,7 @@ func RequiresPermission(perm pufferpanel.Scope, needsServer bool) gin.HandlerFun
 }
 
 func requiresPermission(c *gin.Context, perm pufferpanel.Scope, needsServer bool) {
-	//fail-safe in the event something pukes, we don't end up accidently giving rights to something they should not
+	//fail-safe in the event something pukes, we don't end up accidentally giving rights to something they should not
 	actuallyFinished := false
 	defer func() {
 		if !actuallyFinished && !c.IsAborted() {

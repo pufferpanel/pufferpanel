@@ -21,6 +21,7 @@ import (
 	_ "github.com/alecthomas/template"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/client/frontend/dist"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -169,7 +170,7 @@ func handle404(c *gin.Context) {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	c.Data(http.StatusOK, "text/html", file)
+	c.Data(http.StatusOK, binding.MIMEHTML, file)
 }
 
 func webManifest(c *gin.Context) {

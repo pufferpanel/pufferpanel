@@ -27,15 +27,17 @@ type MetadataType struct {
 } //@name Metadata
 
 // UnmarshalJSON parses a type with this declaration, storing what it needs into metadata and type
-func (t *MetadataType) UnmarshalJSON(bs []byte) (err error) {
-	err = json.Unmarshal(bs, &t.Metadata)
+func (t *MetadataType) UnmarshalJSON(bs []byte) error {
+	err := json.Unmarshal(bs, &t.Metadata)
 	if err != nil {
-		return
+		return err
 	}
+
 	a := t.Metadata["type"]
 	if a == nil {
 		return errors.New("no type defined")
 	}
+
 	var ok bool
 	t.Type, ok = a.(string)
 	if !ok {
@@ -43,7 +45,7 @@ func (t *MetadataType) UnmarshalJSON(bs []byte) (err error) {
 	}
 
 	delete(t.Metadata, "type")
-	return
+	return nil
 }
 
 func (t *MetadataType) MarshalJSON() ([]byte, error) {
@@ -56,12 +58,11 @@ func (t *MetadataType) MarshalJSON() ([]byte, error) {
 }
 
 // ParseMetadata Parses the metadata into the target interface
-func (t *MetadataType) ParseMetadata(target interface{}) (err error) {
+func (t *MetadataType) ParseMetadata(target interface{}) error {
 	data, err := json.Marshal(t)
 	if err != nil {
-		return
+		return err
 	}
 
-	err = json.Unmarshal(data, &target)
-	return
+	return json.Unmarshal(data, &target)
 }
