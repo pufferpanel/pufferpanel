@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import makeI18n from '@/plugins/i18n'
 import api, {apiClient} from '@/plugins/api'
 import clickOutside from '@/plugins/clickOutside'
+import conditions from '@/plugins/conditions'
 import configPlugin from '@/plugins/config'
 import events from '@/plugins/events'
 import hotkeys from '@/plugins/hotkeys'
@@ -16,6 +17,8 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js', { scope: '/' })
 }
 
+window.pufferpanel = {}
+
 async function mountApp(config) {
   createApp(App)
     .use(api)
@@ -23,6 +26,7 @@ async function mountApp(config) {
     .use(configPlugin(config))
     .use(userSettings(apiClient))
     .use(clickOutside)
+    .use(conditions)
     .use(await makeI18n())
     .use(theme(config))
     .use(toast)
