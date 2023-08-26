@@ -12,11 +12,11 @@ import (
 )
 
 func registerSettings(g *gin.RouterGroup) {
-	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), setSettings)
+	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeSettingsEdit, false), setSettings)
 	g.Handle("OPTIONS", "", response.CreateOptions("POST"))
 
-	g.Handle("GET", "/:key", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), getSetting)
-	g.Handle("PUT", "/:key", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), setSetting)
+	g.Handle("GET", "/:key", middleware.RequiresPermission(pufferpanel.ScopeSettingsEdit, false), getSetting)
+	g.Handle("PUT", "/:key", middleware.RequiresPermission(pufferpanel.ScopeSettingsEdit, false), setSetting)
 	g.Handle("OPTIONS", "/:key", response.CreateOptions("GET", "PUT"))
 }
 

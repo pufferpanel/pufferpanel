@@ -39,94 +39,94 @@ import (
 )
 
 func registerServers(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeServersView, false), searchServers)
+	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeServerList, false), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getServer)
-	g.Handle("PUT", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
-	g.Handle("DELETE", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
+	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerUserView, true), getServer)
+	g.Handle("PUT", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerCreate, false), middleware.HasTransaction, createServer)
+	g.Handle("DELETE", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerDelete, true), middleware.HasTransaction, deleteServer)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
-	g.Handle("PUT", "/:serverId/name/:name", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, renameServer)
+	g.Handle("PUT", "/:serverId/name/:name", middleware.RequiresPermission(pufferpanel.ScopeServerEditName, true), middleware.HasTransaction, renameServer)
 	g.Handle("OPTIONS", "/:serverId/name", response.CreateOptions("PUT"))
 	g.Handle("OPTIONS", "/:serverId/name/:name", response.CreateOptions("PUT"))
 
-	g.Handle("GET", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), proxyServerRequest)
-	g.Handle("PUT", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, editServer)
+	g.Handle("GET", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServerViewAdmin, true), proxyServerRequest)
+	g.Handle("PUT", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServerEditAdmin, true), middleware.HasTransaction, editServer)
 	g.Handle("OPTIONS", "/:serverId/definition", response.CreateOptions("PUT", "GET"))
 
-	g.Handle("GET", "/:serverId/user", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
+	g.Handle("GET", "/:serverId/user", middleware.RequiresPermission(pufferpanel.ScopeServerUserView, true), getServerUsers)
 	g.Handle("OPTIONS", "/:serverId/user", response.CreateOptions("GET"))
 
-	g.Handle("GET", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
-	g.Handle("PUT", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, editServerUser)
-	g.Handle("DELETE", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, removeServerUser)
+	g.Handle("GET", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServerUserView, true), getServerUsers)
+	g.Handle("PUT", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServerUserEdit, true), middleware.HasTransaction, editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServerUserDelete, true), middleware.HasTransaction, removeServerUser)
 	g.Handle("OPTIONS", "/:serverId/user/:email", response.CreateOptions("GET", "PUT", "DELETE"))
 
-	g.Handle("GET", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getOAuth2Clients)
-	g.Handle("POST", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), createOAuth2Client)
+	g.Handle("GET", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServerClientView, true), getOAuth2Clients)
+	g.Handle("POST", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServerClientEdit, true), createOAuth2Client)
 	g.Handle("OPTIONS", "/:serverId/oauth2", response.CreateOptions("GET", "POST"))
 
-	g.Handle("DELETE", "/:serverId/oauth2/:clientId", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), deleteOAuth2Client)
+	g.Handle("DELETE", "/:serverId/oauth2/:clientId", middleware.RequiresPermission(pufferpanel.ScopeServerClientDelete, true), deleteOAuth2Client)
 	g.Handle("OPTIONS", "/:serverId/oauth2/:clientId", response.CreateOptions("DELETE"))
 
-	g.GET("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), proxyServerRequest)
-	g.POST("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), editServerData)
+	g.GET("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServerViewData, true), proxyServerRequest)
+	g.POST("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServerEditData, true), editServerData)
 	g.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST"))
 
-	g.GET("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), proxyServerRequest)
-	g.POST("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), proxyServerRequest)
-	g.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), proxyServerRequest)
-	g.DELETE("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), proxyServerRequest)
+	g.GET("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServerTaskView, true), proxyServerRequest)
+	g.POST("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServerTaskCreate, true), proxyServerRequest)
+	g.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServerTaskCreate, true), proxyServerRequest)
+	g.DELETE("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServerTaskDelete, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/tasks", response.CreateOptions("GET", "POST", "PUT", "DELETE"))
 
 	//g.POST("/:serverId/tasks/:taskId/run", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), RunServerTask)
 	//g.OPTIONS("/:serverId/tasks/:taskId/run", response.CreateOptions("POST"))
 
-	g.POST("/:serverId/reload", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), proxyServerRequest)
+	g.POST("/:serverId/reload", middleware.RequiresPermission(pufferpanel.ScopeServerReload, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/reload", response.CreateOptions("POST"))
 
-	g.POST("/:serverId/start", middleware.RequiresPermission(pufferpanel.ScopeServersStart, true), proxyServerRequest)
+	g.POST("/:serverId/start", middleware.RequiresPermission(pufferpanel.ScopeServerStart, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/start", response.CreateOptions("POST"))
 
-	g.POST("/:serverId/stop", middleware.RequiresPermission(pufferpanel.ScopeServersStop, true), proxyServerRequest)
+	g.POST("/:serverId/stop", middleware.RequiresPermission(pufferpanel.ScopeServerStop, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/stop", response.CreateOptions("POST"))
 
-	g.POST("/:serverId/kill", middleware.RequiresPermission(pufferpanel.ScopeServersStop, true), proxyServerRequest)
+	g.POST("/:serverId/kill", middleware.RequiresPermission(pufferpanel.ScopeServerKill, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/kill", response.CreateOptions("POST"))
 
-	g.POST("/:serverId/install", middleware.RequiresPermission(pufferpanel.ScopeServersInstall, true), proxyServerRequest)
+	g.POST("/:serverId/install", middleware.RequiresPermission(pufferpanel.ScopeServerInstall, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/install", response.CreateOptions("POST"))
 
-	g.GET("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesGet, true), proxyServerRequest)
-	g.PUT("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), proxyServerRequest)
-	g.DELETE("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), proxyServerRequest)
-	g.POST("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), proxyServerRequest)
+	g.GET("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileGet, true), proxyServerRequest)
+	g.PUT("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), proxyServerRequest)
+	g.DELETE("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), proxyServerRequest)
+	g.POST("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/file/*filename", response.CreateOptions("GET", "PUT", "DELETE", "POST"))
 
-	g.GET("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), proxyServerRequest)
-	g.POST("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServersConsoleSend, true), proxyServerRequest)
+	g.GET("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServerLogs, true), proxyServerRequest)
+	g.POST("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServerSendCommand, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/console", response.CreateOptions("GET", "POST"))
 
-	g.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServersStat, true), proxyServerRequest)
+	g.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServerStat, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/stats", response.CreateOptions("GET"))
 
-	g.GET("/:serverId/status", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), proxyServerRequest)
+	g.GET("/:serverId/status", middleware.RequiresPermission(pufferpanel.ScopeServerStatus, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/status", response.CreateOptions("GET"))
 
-	g.POST("/:serverId/archive/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), proxyServerRequest)
+	g.POST("/:serverId/archive/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/archive/*filename", response.CreateOptions("POST"))
 
-	g.POST("/:serverId/extract/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), proxyServerRequest)
+	g.POST("/:serverId/extract/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), proxyServerRequest)
 	g.OPTIONS("/:serverId/extract/*filename", response.CreateOptions("POST"))
 
 	p := g.Group("/:serverId/socket")
 	{
-		p.GET("", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), cors.New(cors.Config{
+		p.GET("", middleware.RequiresPermission(pufferpanel.ScopeServerLogs, true), cors.New(cors.Config{
 			AllowAllOrigins:  true,
 			AllowCredentials: true,
 		}), proxyServerRequest)
-		p.Handle("CONNECT", "", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), func(c *gin.Context) {
+		p.Handle("CONNECT", "", middleware.RequiresPermission(pufferpanel.ScopeServerLogs, true), func(c *gin.Context) {
 			c.Header("Access-Control-Allow-Origin", "*")
 			c.Header("Access-Control-Allow-Credentials", "false")
 		})
@@ -143,6 +143,7 @@ func registerServers(g *gin.RouterGroup) {
 // @Param limit query uint false "Max number of results to return"
 // @Param page query uint false "What page to get back for many results"
 // @Router /api/servers [get]
+// @Security OAuth2Application[servers.view]
 func searchServers(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -186,9 +187,8 @@ func searchServers(c *gin.Context) {
 
 	isAdmin := false
 	for _, p := range perms {
-		if p.Admin {
+		if pufferpanel.ContainsScope(p.Scopes, pufferpanel.ScopeAdmin) {
 			isAdmin = true
-			break
 		}
 	}
 
@@ -238,6 +238,7 @@ func searchServers(c *gin.Context) {
 // @Success 200 {object} models.GetServerResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/definition [get]
+// @Security OAuth2Application[servers.view]
 func getServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -274,6 +275,7 @@ func getServer(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param server body models.ServerCreation true "Creation information"
 // @Router /api/servers/{id} [put]
+// @Security OAuth2Application[servers.create]
 func createServer(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -352,7 +354,38 @@ func createServer(c *gin.Context) {
 			return
 		}
 
-		perm.SetDefaults()
+		perm.Scopes = []pufferpanel.Scope{
+			pufferpanel.ScopeServerList,
+			pufferpanel.ScopeServerViewData,
+			pufferpanel.ScopeServerEditData,
+			pufferpanel.ScopeServerEditFlags,
+			pufferpanel.ScopeServerEditName,
+			pufferpanel.ScopeServerViewData,
+			pufferpanel.ScopeServerClientView,
+			pufferpanel.ScopeServerClientEdit,
+			pufferpanel.ScopeServerClientAdd,
+			pufferpanel.ScopeServerClientDelete,
+			pufferpanel.ScopeServerUserView,
+			pufferpanel.ScopeServerUserCreate,
+			pufferpanel.ScopeServerUserEdit,
+			pufferpanel.ScopeServerUserDelete,
+			pufferpanel.ScopeServerTaskView,
+			pufferpanel.ScopeServerTaskRun,
+			pufferpanel.ScopeServerTaskCreate,
+			pufferpanel.ScopeServerTaskDelete,
+			pufferpanel.ScopeServerReload,
+			pufferpanel.ScopeServerStart,
+			pufferpanel.ScopeServerStop,
+			pufferpanel.ScopeServerKill,
+			pufferpanel.ScopeServerInstall,
+			pufferpanel.ScopeServerFileGet,
+			pufferpanel.ScopeServerFileEdit,
+			pufferpanel.ScopeServerSftp,
+			pufferpanel.ScopeServerLogs,
+			pufferpanel.ScopeServerSendCommand,
+			pufferpanel.ScopeServerStat,
+			pufferpanel.ScopeServerStatus,
+		}
 
 		err = ps.UpdatePermissions(perm)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -491,6 +524,7 @@ func editServer(c *gin.Context) {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id} [delete]
+// @Security OAuth2Application[servers.delete]
 func deleteServer(c *gin.Context) {
 	var err error
 
@@ -580,6 +614,7 @@ func deleteServer(c *gin.Context) {
 // @Success 200 {object} []models.PermissionView
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/user [get]
+// @Security OAuth2Application[servers.edit.users]
 func getServerUsers(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -644,6 +679,12 @@ func editServerUser(c *gin.Context) {
 		user, err = us.Get(username)
 	}
 
+	currentUser := c.MustGet("user").(*models.User)
+	currentPerms, err := ps.GetForUserAndServer(currentUser.ID, &server.Identifier)
+	if err != nil && response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	} else if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -686,8 +727,9 @@ func editServerUser(c *gin.Context) {
 	if existing.ID == 0 {
 		firstTimeAccess = true
 	}
-	perms.CopyTo(existing, false)
-	existing.ViewServer = true
+
+	allowedScopes := pufferpanel.Union(perms.Scopes, currentPerms.Scopes)
+	existing.Scopes = append(allowedScopes, pufferpanel.ScopeServerList) //this is done blindly, as backend will clean it
 	err = ps.UpdatePermissions(existing)
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {

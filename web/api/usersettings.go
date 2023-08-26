@@ -11,8 +11,8 @@ import (
 )
 
 func registerUserSettings(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeNone, false), getUserSettings)
-	g.Handle("PUT", "/:key", middleware.RequiresPermission(pufferpanel.ScopeNone, false), setUserSetting)
+	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeSelfSettingsView, false), getUserSettings)
+	g.Handle("PUT", "/:key", middleware.RequiresPermission(pufferpanel.ScopeSelfSettingsEdit, false), setUserSetting)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT"))
 }
 

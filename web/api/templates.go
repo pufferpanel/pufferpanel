@@ -34,7 +34,7 @@ func registerTemplates(g *gin.RouterGroup) {
 
 	g.Handle("GET", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView, false), getsTemplatesForRepo)
 	g.Handle("DELETE", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit, false), deleteRepo)
-	g.Handle("OPTIONS", "/:repo", response.CreateOptions("GET", "DELETE"))
+	g.Handle("OPTIONS", "/:repo", response.CreateOptions("GET", "PUT", "DELETE"))
 
 	g.Handle("GET", "/:repo/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView, false), getTemplateFromRepo)
 	g.Handle("DELETE", "/local/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit, false), deleteTemplate)
