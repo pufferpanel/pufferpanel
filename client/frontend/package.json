@@ -22,6 +22,7 @@
     "marked": "^4.0.8",
     "nanoevents": "^7.0.1",
     "pufferpanel": "0.0.0",
+    "pufferpanel-conditions": "^1.0.7",
     "vue": "^3.2.16",
     "vue-i18n": "^9.2.0-beta.17",
     "vue-router": "4",

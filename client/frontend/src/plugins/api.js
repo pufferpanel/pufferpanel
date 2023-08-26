@@ -9,6 +9,6 @@ export default {
   install: (app) => {
     app.config.globalProperties.$api = apiClient
     app.provide('api', apiClient)
-    window.pufferpanel = { api: apiClient }
+    window.pufferpanel.api = apiClient
   }
 }

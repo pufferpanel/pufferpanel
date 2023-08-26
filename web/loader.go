@@ -142,6 +142,16 @@ func RegisterRoutes(e *gin.Engine) {
 			}
 			js.StaticFS("", http.FS(f))
 		}
+		wasm := e.Group("/wasm")
+		{
+			wasm.Use(gzip.Gzip(gzip.DefaultCompression))
+			wasm.Use(setContentType("application/wasm"))
+			f, err := fs.Sub(clientFiles, "wasm")
+			if err != nil {
+				panic(err)
+			}
+			wasm.StaticFS("", http.FS(f))
+		}
 		theme := e.Group("/theme")
 		{
 			theme.Use(setContentType("application/x-tar"))
