@@ -33,7 +33,6 @@ import (
 
 var existingPaths = make(map[uint]repoCache)
 var pathLock sync.Mutex
-var localRepoId uint = 0
 
 type Template struct {
 	DB *gorm.DB
@@ -44,8 +43,14 @@ type repoCache struct {
 	Path          string
 }
 
+var localRepo = &models.TemplateRepo{
+	ID:      0,
+	Name:    "Local",
+	IsLocal: true,
+}
+
 func (*Template) GetLocalRepoId() uint {
-	return localRepoId
+	return localRepo.ID
 }
 
 func (t *Template) GetRepos() ([]*models.TemplateRepo, error) {
@@ -53,14 +58,14 @@ func (t *Template) GetRepos() ([]*models.TemplateRepo, error) {
 	err := t.DB.Find(&repos).Error
 
 	//return list from the db, and add local
-	return append(repos, &models.TemplateRepo{ID: localRepoId, Name: "local"}), err
+	return append(repos, localRepo), err
 }
 
 func (t *Template) GetAllFromRepo(repoId uint) ([]*models.Template, error) {
 	var templates []*models.Template
 	var err error
 
-	if repoId == localRepoId {
+	if repoId == localRepo.ID {
 		err = t.DB.Find(&templates).Error
 		if err != nil {
 			return nil, err
@@ -149,7 +154,7 @@ func (t *Template) Get(repoId uint, name string) (*models.Template, error) {
 	template := &models.Template{
 		Name: name,
 	}
-	if repoId == localRepoId {
+	if repoId == localRepo.ID {
 		err := t.DB.First(template).Error
 		if err != nil {
 			return nil, err
