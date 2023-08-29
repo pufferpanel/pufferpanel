@@ -13,140 +13,104 @@
 
 package pufferpanel
 
-type Scope string
-
-const (
-	ScopeAdmin            = Scope("admin")
-	ScopeLogin            = Scope("login")        //can you log in
-	ScopeOAuth2Auth       = Scope("oauth2.auth")  //can you validate user credentials over OAuth2
-	ScopeNodesView        = Scope("nodes.view")   //can you globally view nodes
-	ScopeNodesCreate      = Scope("nodes.create") //can you create nodes
-	ScopeNodesEdit        = Scope("nodes.edit")   //can you edit an existing node
-	ScopeNodesDelete      = Scope("nodes.delete") //can you delete a node
-	ScopeNodesDeploy      = Scope("nodes.deploy") //can you deploy the node (this has secret info, which is why it's special)
-	ScopeSelfEdit         = Scope("self.edit")    //can you manage your own account
-	ScopeSelfClients      = Scope("self.clients") //can the user create and manage OAuth2 clients for their own account
-	ScopeSelfSettingsView = Scope("self.settings.view")
-	ScopeSelfSettingsEdit = Scope("self.settings.edit")
-
-	ScopeServerList         = Scope("servers.list")
-	ScopeServerAdmin        = Scope("server.admin")
-	ScopeServerCreate       = Scope("server.create")
-	ScopeServerDelete       = Scope("server.delete")
-	ScopeServerEditAdmin    = Scope("server.edit.admin")
-	ScopeServerEditData     = Scope("server.edit.data")
-	ScopeServerEditFlags    = Scope("server.edit.flags")
-	ScopeServerEditName     = Scope("server.edit.name")
-	ScopeServerViewAdmin    = Scope("server.view.admin")
-	ScopeServerViewData     = Scope("server.view.data")
-	ScopeServerClientView   = Scope("server.client.view")
-	ScopeServerClientEdit   = Scope("server.client.edit")
-	ScopeServerClientAdd    = Scope("server.client.add")
-	ScopeServerClientDelete = Scope("server.client.delete")
-	ScopeServerUserView     = Scope("server.users.view")
-	ScopeServerUserCreate   = Scope("server.users.add")
-	ScopeServerUserEdit     = Scope("server.users.edit")
-	ScopeServerUserDelete   = Scope("server.users.delete")
-	ScopeServerTaskView     = Scope("server.tasks.view")
-	ScopeServerTaskRun      = Scope("server.tasks.run")
-	ScopeServerTaskCreate   = Scope("server.tasks.create")
-	ScopeServerTaskDelete   = Scope("server.tasks.delete")
-	ScopeServerReload       = Scope("server.reload")
-	ScopeServerStart        = Scope("server.start")
-	ScopeServerStop         = Scope("server.stop")
-	ScopeServerKill         = Scope("server.kill")
-	ScopeServerInstall      = Scope("server.install")
-	ScopeServerFileGet      = Scope("server.files.get")
-	ScopeServerFileEdit     = Scope("server.files.edit")
-	ScopeServerSftp         = Scope("server.sftp")
-	ScopeServerLogs         = Scope("server.logs")
-	ScopeServerSendCommand  = Scope("server.console.send")
-	ScopeServerStat         = Scope("server.stat")
-	ScopeServerStatus       = Scope("server.status")
-
-	ScopeSettingsEdit        = Scope("settings.edit")
-	ScopeTemplatesView       = Scope("templates.view")
-	ScopeTemplatesEdit       = Scope("templates.local.edit")
-	ScopeTemplatesRepoView   = Scope("templates.repo.view")
-	ScopeTemplatesRepoAdd    = Scope("templates.repo.add")
-	ScopeTemplatesRepoDelete = Scope("templates.repo.remove")
-
-	ScopeUserInfoSearch = Scope("users.info.search")
-	ScopeUserInfoView   = Scope("users.info.view")
-	ScopeUserInfoEdit   = Scope("users.info.edit")
-	ScopeUserPermsView  = Scope("users.perms.view")
-	ScopeUserPermsEdit  = Scope("users.perms.edit")
-
-	ScopePanel = Scope("panel")
-)
-
-func AllKnownScopes() []Scope {
-	return []Scope{
-		ScopeLogin,
-		ScopeOAuth2Auth,
-		ScopeNodesView,
-		ScopeNodesCreate,
-		ScopeNodesEdit,
-		ScopeNodesDelete,
-		ScopeNodesDeploy,
-		ScopeSelfEdit,
-		ScopeSelfClients,
-		ScopeSelfSettingsView,
-		ScopeSelfSettingsEdit,
-		ScopeServerList,
-		ScopeServerAdmin,
-		ScopeServerCreate,
-		ScopeServerDelete,
-		ScopeServerEditAdmin,
-		ScopeServerEditData,
-		ScopeServerEditFlags,
-		ScopeServerEditName,
-		ScopeServerViewAdmin,
-		ScopeServerViewData,
-		ScopeServerClientView,
-		ScopeServerClientEdit,
-		ScopeServerClientAdd,
-		ScopeServerClientDelete,
-		ScopeServerUserView,
-		ScopeServerUserCreate,
-		ScopeServerUserEdit,
-		ScopeServerUserDelete,
-		ScopeServerTaskView,
-		ScopeServerTaskRun,
-		ScopeServerTaskCreate,
-		ScopeServerTaskDelete,
-		ScopeServerReload,
-		ScopeServerStart,
-		ScopeServerStop,
-		ScopeServerKill,
-		ScopeServerInstall,
-		ScopeServerFileGet,
-		ScopeServerFileEdit,
-		ScopeServerSftp,
-		ScopeServerLogs,
-		ScopeServerSendCommand,
-		ScopeServerStat,
-		ScopeServerStatus,
-		ScopeSettingsEdit,
-		ScopeTemplatesView,
-		ScopeTemplatesEdit,
-		ScopeTemplatesRepoView,
-		ScopeTemplatesRepoAdd,
-		ScopeTemplatesRepoDelete,
-		ScopeUserInfoSearch,
-		ScopeUserInfoView,
-		ScopeUserInfoEdit,
-		ScopeUserPermsView,
-		ScopeUserPermsEdit,
-	}
+type Scope struct {
+	Value     string
+	ForServer bool
 }
 
+var (
+	ScopeAdmin            = registerNonServerScope("admin")
+	ScopeLogin            = registerNonServerScope("login")        //can you log in
+	ScopeOAuth2Auth       = registerNonServerScope("oauth2.auth")  //can you validate user credentials over OAuth2
+	ScopeNodesView        = registerNonServerScope("nodes.view")   //can you globally view nodes
+	ScopeNodesCreate      = registerNonServerScope("nodes.create") //can you create nodes
+	ScopeNodesEdit        = registerNonServerScope("nodes.edit")   //can you edit an existing node
+	ScopeNodesDelete      = registerNonServerScope("nodes.delete") //can you delete a node
+	ScopeNodesDeploy      = registerNonServerScope("nodes.deploy") //can you deploy the node (this has secret info, which is why it's special)
+	ScopeSelfEdit         = registerNonServerScope("self.edit")    //can you manage your own account
+	ScopeSelfClients      = registerNonServerScope("self.clients") //can the user create and manage OAuth2 clients for their own account
+	ScopeSelfSettingsView = registerNonServerScope("self.settings.view")
+	ScopeSelfSettingsEdit = registerNonServerScope("self.settings.edit")
+
+	ScopeServerList         = registerNonServerScope("servers.list")
+	ScopeServerAdmin        = registerNonServerScope("server.admin")
+	ScopeServerCreate       = registerServerScope("server.create")
+	ScopeServerDelete       = registerServerScope("server.delete")
+	ScopeServerEditAdmin    = registerServerScope("server.edit.admin")
+	ScopeServerEditData     = registerServerScope("server.edit.data")
+	ScopeServerEditFlags    = registerServerScope("server.edit.flags")
+	ScopeServerEditName     = registerServerScope("server.edit.name")
+	ScopeServerViewAdmin    = registerServerScope("server.view.admin")
+	ScopeServerViewData     = registerServerScope("server.view.data")
+	ScopeServerClientView   = registerServerScope("server.client.view")
+	ScopeServerClientEdit   = registerServerScope("server.client.edit")
+	ScopeServerClientAdd    = registerServerScope("server.client.add")
+	ScopeServerClientDelete = registerServerScope("server.client.delete")
+	ScopeServerUserView     = registerServerScope("server.users.view")
+	ScopeServerUserCreate   = registerServerScope("server.users.add")
+	ScopeServerUserEdit     = registerServerScope("server.users.edit")
+	ScopeServerUserDelete   = registerServerScope("server.users.delete")
+	ScopeServerTaskView     = registerServerScope("server.tasks.view")
+	ScopeServerTaskRun      = registerServerScope("server.tasks.run")
+	ScopeServerTaskCreate   = registerServerScope("server.tasks.create")
+	ScopeServerTaskDelete   = registerServerScope("server.tasks.delete")
+	ScopeServerReload       = registerServerScope("server.reload")
+	ScopeServerStart        = registerServerScope("server.start")
+	ScopeServerStop         = registerServerScope("server.stop")
+	ScopeServerKill         = registerServerScope("server.kill")
+	ScopeServerInstall      = registerServerScope("server.install")
+	ScopeServerFileGet      = registerServerScope("server.files.get")
+	ScopeServerFileEdit     = registerServerScope("server.files.edit")
+	ScopeServerSftp         = registerServerScope("server.sftp")
+	ScopeServerLogs         = registerServerScope("server.logs")
+	ScopeServerSendCommand  = registerServerScope("server.console.send")
+	ScopeServerStat         = registerServerScope("server.stat")
+	ScopeServerStatus       = registerServerScope("server.status")
+
+	ScopeSettingsEdit        = registerNonServerScope("settings.edit")
+	ScopeTemplatesView       = registerNonServerScope("templates.view")
+	ScopeTemplatesEdit       = registerNonServerScope("templates.local.edit")
+	ScopeTemplatesRepoView   = registerNonServerScope("templates.repo.view")
+	ScopeTemplatesRepoAdd    = registerNonServerScope("templates.repo.add")
+	ScopeTemplatesRepoDelete = registerNonServerScope("templates.repo.remove")
+
+	ScopeUserInfoSearch = registerNonServerScope("users.info.search")
+	ScopeUserInfoView   = registerNonServerScope("users.info.view")
+	ScopeUserInfoEdit   = registerNonServerScope("users.info.edit")
+	ScopeUserPermsView  = registerNonServerScope("users.perms.view")
+	ScopeUserPermsEdit  = registerNonServerScope("users.perms.edit")
+
+	ScopePanel = registerNonServerScope("panel")
+)
+
 func (s Scope) String() string {
-	return string(s)
+	return s.Value
 }
 
 func (s Scope) Matches(string string) bool {
 	return string == s.String()
+}
+
+var allScopes []Scope
+
+func registerScope(s Scope) Scope {
+	allScopes = append(allScopes, s)
+	return s
+}
+func registerNonServerScope(s string) Scope {
+	return registerScope(Scope{Value: s})
+}
+func registerServerScope(s string) Scope {
+	return registerScope(Scope{Value: s, ForServer: true})
+}
+
+func GetScope(str string) Scope {
+	for _, v := range allScopes {
+		if v.Matches(str) {
+			return v
+		}
+	}
+	return Scope{Value: str}
 }
 
 func ContainsScope(arr []Scope, value Scope) bool {
@@ -159,7 +123,7 @@ func ContainsServerScope(arr []Scope, value Scope) bool {
 
 func AddScope(source []Scope, addition Scope) []Scope {
 	for _, v := range source {
-		if v == addition {
+		if v.Matches(addition.String()) {
 			return source
 		}
 	}
@@ -169,7 +133,7 @@ func AddScope(source []Scope, addition Scope) []Scope {
 func RemoveScope(source []Scope, removal Scope) []Scope {
 	replacement := make([]Scope, 0)
 	for _, v := range source {
-		if v != removal {
+		if !v.Matches(removal.String()) {
 			replacement = append(replacement, v)
 		}
 	}
@@ -179,7 +143,7 @@ func RemoveScope(source []Scope, removal Scope) []Scope {
 func containsScope(arr []Scope, desired ...Scope) bool {
 	for _, v := range arr {
 		for _, z := range desired {
-			if v == z {
+			if v.Matches(z.String()) {
 				return true
 			}
 		}

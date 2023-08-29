@@ -54,7 +54,7 @@ func (p *Permissions) AfterFind(*gorm.DB) error {
 	p.Scopes = make([]pufferpanel.Scope, 0)
 	for _, v := range strings.Split(p.RawScopes, ",") {
 		//we can just simply blindly assign it, because the checks we do are just making these strings anyways...
-		p.Scopes = append(p.Scopes, pufferpanel.Scope(v))
+		p.Scopes = append(p.Scopes, pufferpanel.GetScope(v))
 	}
 
 	return nil

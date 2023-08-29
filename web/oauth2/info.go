@@ -66,6 +66,19 @@ func handleInfoRequest(c *gin.Context) {
 
 	infoResponse := &oauth2.TokenInfoResponse{}
 
+	if serverId == "panel" {
+		//we are a token token, or at least, we should be
+		ps := &services.PanelService{}
+		if ps.IsValid(token) {
+			infoResponse.Active = true
+			infoResponse.Scope = "panel"
+		} else {
+			infoResponse.Active = false
+		}
+		c.JSON(http.StatusOK, infoResponse)
+		return
+	}
+
 	//this token can be one of two types, we need to work out which it is
 	session, err := sessionService.Validate(token)
 	if errors.Is(err, gorm.ErrRecordNotFound) {

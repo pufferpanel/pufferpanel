@@ -17,9 +17,12 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/oauth2"
 	"github.com/pufferpanel/pufferpanel/v3/response"
+	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"net/http"
 	"runtime/debug"
@@ -53,13 +56,54 @@ func Recover(c *gin.Context) {
 	c.Next()
 }
 
-func RequiresPermission(perm pufferpanel.Scope, serverScope bool) gin.HandlerFunc {
+func IsPanelCaller(c *gin.Context) {
+	actuallyFinished := false
+	defer func() {
+		if !actuallyFinished && !c.IsAborted() {
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+	}()
+	if !config.DaemonEnabled.Value() {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	token := GetToken(c)
+	if token == "" {
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	//if we are the panel, we can... self-check
+	if config.PanelEnabled.Value() {
+		ps := &services.PanelService{}
+		if !ps.IsValid(token) {
+			c.AbortWithStatus(http.StatusForbidden)
+			return
+		}
+	} else {
+		//we need to ask the panel
+		info, err := oauth2.GetInfo(token, "panel")
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+		if !pufferpanel.ScopePanel.Matches(info.Scope) {
+			c.AbortWithStatus(http.StatusForbidden)
+			return
+		}
+	}
+
+	actuallyFinished = true
+}
+
+func RequiresPermission(perm pufferpanel.Scope) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		requiresPermission(c, perm, serverScope)
+		requiresPermission(c, perm)
 	}
 }
 
-func requiresPermission(c *gin.Context, perm pufferpanel.Scope, serverScope bool) {
+func requiresPermission(c *gin.Context, perm pufferpanel.Scope) {
 	//fail-safe in the event something pukes, we don't end up accidentally giving rights to something they should not
 	actuallyFinished := false
 	defer func() {
@@ -81,7 +125,7 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope, serverScope bool
 
 	//we now have a user and they are allowed to access something, let's confirm they have server access
 	serverId := c.Param("serverId")
-	if serverScope && serverId == "" {
+	if perm.ForServer && serverId == "" {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -130,7 +174,7 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope, serverScope bool
 	allowed := false
 	scopes := make([]pufferpanel.Scope, 0)
 	for _, p := range perms {
-		if pufferpanel.ContainsScope(p.Scopes, perm) || pufferpanel.ContainsScope(p.Scopes, pufferpanel.ScopeServerAdmin) || pufferpanel.ContainsScope(p.Scopes, pufferpanel.ScopeAdmin) {
+		if pufferpanel.ContainsScope(p.Scopes, perm) || (perm.ForServer && pufferpanel.ContainsServerScope(p.Scopes, perm)) {
 			allowed = true
 		}
 	}
@@ -138,22 +182,6 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope, serverScope bool
 	if !allowed {
 		c.AbortWithStatus(http.StatusForbidden)
 		return
-	}
-
-	if serverScope && serverId != "" {
-		ss := &services.Server{DB: db}
-		server, err := ss.Get(serverId)
-		if response.HandleError(c, err, http.StatusInternalServerError) {
-			return
-		}
-
-		if server == nil {
-			//if the server is still null.... how was the client authorized? either way.... 403 it
-			c.AbortWithStatus(http.StatusForbidden)
-			return
-		}
-
-		c.Set("server", server)
 	}
 
 	c.Set("scopes", scopes)
@@ -179,4 +207,38 @@ func GetToken(c *gin.Context) string {
 	}
 
 	return cookie
+}
+
+func ResolveServerPanel(c *gin.Context) {
+	serverId := c.Param("serverId")
+	if serverId == "" {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	db := GetDatabase(c)
+	ss := &services.Server{DB: db}
+	server, err := ss.Get(serverId)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	} else if server == nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	c.Set("server", server)
+}
+
+func ResolveServerNode(c *gin.Context) {
+	serverId := c.Param("serverId")
+	if serverId == "" {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	server := servers.GetFromCache(serverId)
+	if server == nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	c.Set("program", server)
 }

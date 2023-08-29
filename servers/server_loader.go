@@ -58,14 +58,6 @@ func LoadFromFolder() {
 	}
 }
 
-func Get(id string) (program *Server, err error) {
-	program = GetFromCache(id)
-	if program == nil {
-		program, err = Load(id)
-	}
-	return
-}
-
 func GetAll() []*Server {
 	return allServers
 }

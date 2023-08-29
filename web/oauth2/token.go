@@ -97,7 +97,7 @@ func handleTokenRequest(c *gin.Context) {
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
 				AccessToken: token,
 				TokenType:   "Bearer",
-				Scope:       string(pufferpanel.ScopeOAuth2Auth),
+				Scope:       pufferpanel.ScopeOAuth2Auth.Value,
 				ExpiresIn:   expiresIn,
 			})
 			return
@@ -177,8 +177,9 @@ func handleTokenRequest(c *gin.Context) {
 			mappedScopes := make([]string, 0)
 
 			for _, p := range perms.Scopes {
-				mappedScopes = append(mappedScopes, server.Identifier+":"+string(p))
+				mappedScopes = append(mappedScopes, server.Identifier+":"+p.Value)
 			}
+
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
 				AccessToken: token,
 				TokenType:   "Bearer",

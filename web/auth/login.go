@@ -57,6 +57,11 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
+	if !pufferpanel.ContainsScope(perms.Scopes, pufferpanel.ScopeLogin) {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
 	data := &LoginResponse{}
 	//data.Session = session
 	data.Scopes = perms.Scopes

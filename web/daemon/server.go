@@ -49,69 +49,69 @@ var wsupgrader = websocket.Upgrader{
 func RegisterServerRoutes(e *gin.RouterGroup) {
 	l := e.Group("/server")
 	{
-		l.PUT("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerCreate, false), createServer)
-		l.DELETE("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerDelete, true), deleteServer)
+		l.PUT("/:serverId", middleware.IsPanelCaller, createServer)
+		l.DELETE("/:serverId", middleware.IsPanelCaller, middleware.ResolveServerNode, deleteServer)
 		l.OPTIONS("/:serverId", response.CreateOptions("PUT", "DELETE", "GET"))
 
-		l.GET("/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServerViewAdmin, true), getServerAdmin)
-		l.PUT("/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServerEditAdmin, true), editServerAdmin)
+		l.GET("/:serverId/definition", middleware.IsPanelCaller, middleware.ResolveServerNode, getServerAdmin)
+		l.PUT("/:serverId/definition", middleware.IsPanelCaller, middleware.ResolveServerNode, editServerAdmin)
 		l.OPTIONS("/:serverId/definition", response.CreateOptions("PUT", "DELETE", "GET"))
 
-		l.GET("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServerViewData, true), getServerData)
-		l.POST("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServerEditData, true), editServerData)
+		l.GET("/:serverId/data", middleware.IsPanelCaller, middleware.ResolveServerNode, getServerData)
+		l.POST("/:serverId/data", middleware.IsPanelCaller, middleware.ResolveServerNode, editServerData)
 		l.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServerTaskView, true), getServerTasks)
+		l.GET("/:serverId/tasks", middleware.IsPanelCaller, middleware.ResolveServerNode, getServerTasks)
 		l.OPTIONS("/:serverId/tasks", response.CreateOptions("GET"))
 
-		l.GET("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServerTaskView, true), getServerTask)
-		l.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServerTaskCreate, true), editServerTask)
-		l.DELETE("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServerTaskDelete, true), deleteServerTask)
+		l.GET("/:serverId/tasks/:taskId", middleware.IsPanelCaller, middleware.ResolveServerNode, getServerTask)
+		l.PUT("/:serverId/tasks/:taskId", middleware.IsPanelCaller, middleware.ResolveServerNode, editServerTask)
+		l.DELETE("/:serverId/tasks/:taskId", middleware.IsPanelCaller, middleware.ResolveServerNode, deleteServerTask)
 		l.OPTIONS("/:serverId/tasks/:taskId", response.CreateOptions("GET", "PUT", "DELETE"))
 
-		l.POST("/:serverId/tasks/:taskId/run", middleware.RequiresPermission(pufferpanel.ScopeServerTaskRun, true), runServerTask)
+		l.POST("/:serverId/tasks/:taskId/run", middleware.IsPanelCaller, middleware.ResolveServerNode, runServerTask)
 		l.OPTIONS("/:serverId/tasks/:taskId/run", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/reload", middleware.RequiresPermission(pufferpanel.ScopeServerReload, true), reloadServer)
+		l.POST("/:serverId/reload", middleware.IsPanelCaller, middleware.ResolveServerNode, reloadServer)
 		l.OPTIONS("/:serverId/reload", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/start", middleware.RequiresPermission(pufferpanel.ScopeServerStart, true), startServer)
+		l.POST("/:serverId/start", middleware.IsPanelCaller, middleware.ResolveServerNode, startServer)
 		l.OPTIONS("/:serverId/start", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/stop", middleware.RequiresPermission(pufferpanel.ScopeServerStop, true), stopServer)
+		l.POST("/:serverId/stop", middleware.IsPanelCaller, middleware.ResolveServerNode, stopServer)
 		l.OPTIONS("/:serverId/stop", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/kill", middleware.RequiresPermission(pufferpanel.ScopeServerKill, true), killServer)
+		l.POST("/:serverId/kill", middleware.IsPanelCaller, middleware.ResolveServerNode, killServer)
 		l.OPTIONS("/:serverId/kill", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/install", middleware.RequiresPermission(pufferpanel.ScopeServerInstall, true), installServer)
+		l.POST("/:serverId/install", middleware.IsPanelCaller, middleware.ResolveServerNode, installServer)
 		l.OPTIONS("/:serverId/install", response.CreateOptions("POST"))
 
-		l.GET("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileGet, true), getFile)
-		l.PUT("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), putFile)
-		l.DELETE("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), deleteFile)
-		l.POST("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), response.NotImplemented)
+		l.GET("/:serverId/file/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, getFile)
+		l.PUT("/:serverId/file/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, putFile)
+		l.DELETE("/:serverId/file/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, deleteFile)
+		l.POST("/:serverId/file/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, response.NotImplemented)
 		l.OPTIONS("/:serverId/file/*filename", response.CreateOptions("GET", "PUT", "DELETE", "POST"))
 
-		l.GET("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServerLogs, true), getLogs)
-		l.POST("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServerSendCommand, true), postConsole)
+		l.GET("/:serverId/console", middleware.IsPanelCaller, middleware.ResolveServerNode, getLogs)
+		l.POST("/:serverId/console", middleware.IsPanelCaller, middleware.ResolveServerNode, postConsole)
 		l.OPTIONS("/:serverId/console", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServerStat, true), getStats)
+		l.GET("/:serverId/stats", middleware.IsPanelCaller, middleware.ResolveServerNode, getStats)
 		l.OPTIONS("/:serverId/stats", response.CreateOptions("GET"))
 
-		l.GET("/:serverId/status", middleware.RequiresPermission(pufferpanel.ScopeServerStatus, true), getStatus)
+		l.GET("/:serverId/status", middleware.IsPanelCaller, middleware.ResolveServerNode, getStatus)
 		l.OPTIONS("/:serverId/status", response.CreateOptions("GET"))
 
-		l.POST("/:serverId/archive/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), archive)
-		l.GET("/:serverId/extract/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit, true), extract)
+		l.POST("/:serverId/archive/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, archive)
+		l.GET("/:serverId/extract/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, extract)
 
-		l.GET("/:serverId/socket", middleware.RequiresPermission(pufferpanel.ScopeServerList, true), cors.New(cors.Config{
+		l.GET("/:serverId/socket", middleware.IsPanelCaller, middleware.ResolveServerNode, cors.New(cors.Config{
 			AllowAllOrigins:  true,
 			AllowCredentials: true,
 		}), openSocket)
 
-		l.Handle("CONNECT", "/:serverId/socket", middleware.RequiresPermission(pufferpanel.ScopeServerList, true), func(c *gin.Context) {
+		l.Handle("CONNECT", "/:serverId/socket", middleware.IsPanelCaller, middleware.ResolveServerNode, func(c *gin.Context) {
 			c.Header("Access-Control-Allow-Origin", "*")
 			c.Header("Access-Control-Allow-Credentials", "false")
 		})
@@ -119,7 +119,7 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 
 	}
 
-	l.POST("", middleware.RequiresPermission(pufferpanel.ScopeServerCreate, false), createServer)
+	l.POST("", middleware.IsPanelCaller, createServer)
 	l.OPTIONS("", response.CreateOptions("POST"))
 }
 
@@ -212,7 +212,7 @@ func createServer(c *gin.Context) {
 		}
 		serverId = id.String()
 	}
-	prg, _ := servers.Get(serverId)
+	prg := servers.GetFromCache(serverId)
 
 	if prg != nil {
 		response.HandleError(c, pufferpanel.ErrServerAlreadyExists, http.StatusConflict)

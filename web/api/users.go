@@ -25,17 +25,17 @@ import (
 )
 
 func registerUsers(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeUserInfoSearch, false), searchUsers)
-	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeUserInfoEdit, false), createUser)
+	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeUserInfoSearch), searchUsers)
+	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeUserInfoEdit), createUser)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "POST"))
 
-	g.Handle("GET", "/:id", middleware.RequiresPermission(pufferpanel.ScopeUserInfoView, false), getUser)
-	g.Handle("POST", "/:id", middleware.RequiresPermission(pufferpanel.ScopeUserInfoEdit, false), updateUser)
-	g.Handle("DELETE", "/:id", middleware.RequiresPermission(pufferpanel.ScopeUserInfoEdit, false), deleteUser)
+	g.Handle("GET", "/:id", middleware.RequiresPermission(pufferpanel.ScopeUserInfoView), getUser)
+	g.Handle("POST", "/:id", middleware.RequiresPermission(pufferpanel.ScopeUserInfoEdit), updateUser)
+	g.Handle("DELETE", "/:id", middleware.RequiresPermission(pufferpanel.ScopeUserInfoEdit), deleteUser)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/perms", middleware.RequiresPermission(pufferpanel.ScopeUserPermsView, false), getUserPerms)
-	g.Handle("PUT", "/:id/perms", middleware.RequiresPermission(pufferpanel.ScopeUserPermsEdit, false), setUserPerms)
+	g.Handle("GET", "/:id/perms", middleware.RequiresPermission(pufferpanel.ScopeUserPermsView), getUserPerms)
+	g.Handle("PUT", "/:id/perms", middleware.RequiresPermission(pufferpanel.ScopeUserPermsEdit), setUserPerms)
 	g.Handle("OPTIONS", "/:id/perms", response.CreateOptions("PUT", "GET"))
 }
 
