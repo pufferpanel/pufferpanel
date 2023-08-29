@@ -42,7 +42,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeServerList), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerUserView), middleware.ResolveServerPanel, getServer)
+	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerList), middleware.ResolveServerPanel, getServer)
 	g.Handle("PUT", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerCreate), middleware.ResolveServerNode, middleware.HasTransaction, createServer)
 	g.Handle("DELETE", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerDelete), middleware.ResolveServerPanel, middleware.HasTransaction, deleteServer)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
