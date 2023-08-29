@@ -62,16 +62,6 @@ func AuthMiddleware(c *gin.Context) {
 		// check despite successful auth from header
 		err = nil
 
-		//determine if it's an asset, otherwise, we can redirect if it's a GET
-		//dev only requirement?
-		/*if c.Request.Method == "GET" && strings.Count(c.Request.URL.Path, "/") == 1 {
-			for _, v := range assetFiles {
-				if strings.HasSuffix(c.Request.URL.Path, v) {
-					return
-				}
-			}
-		}*/
-
 		//check for token Auth header
 		authHeader := c.Request.Header.Get("Authorization")
 		authHeader = strings.TrimSpace(authHeader)

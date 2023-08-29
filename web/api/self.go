@@ -26,23 +26,23 @@ import (
 )
 
 func registerSelf(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeNone, false), getSelf)
-	g.Handle("PUT", "", middleware.RequiresPermission(pufferpanel.ScopeNone, false), updateSelf)
+	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeLogin), getSelf)
+	g.Handle("PUT", "", middleware.RequiresPermission(pufferpanel.ScopeSelfEdit), updateSelf)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT"))
 
-	g.Handle("GET", "/otp", middleware.RequiresPermission(pufferpanel.ScopeNone, false), getOtpStatus)
-	g.Handle("POST", "/otp", middleware.RequiresPermission(pufferpanel.ScopeNone, false), startOtpEnroll)
-	g.Handle("PUT", "/otp", middleware.RequiresPermission(pufferpanel.ScopeNone, false), validateOtpEnroll)
+	g.Handle("GET", "/otp", middleware.RequiresPermission(pufferpanel.ScopeSelfEdit), getOtpStatus)
+	g.Handle("POST", "/otp", middleware.RequiresPermission(pufferpanel.ScopeSelfEdit), startOtpEnroll)
+	g.Handle("PUT", "/otp", middleware.RequiresPermission(pufferpanel.ScopeSelfEdit), validateOtpEnroll)
 	g.Handle("OPTIONS", "/otp", response.CreateOptions("GET", "POST", "PUT"))
 
-	g.Handle("DELETE", "/otp/:token", middleware.RequiresPermission(pufferpanel.ScopeNone, false), disableOtp)
+	g.Handle("DELETE", "/otp/:token", middleware.RequiresPermission(pufferpanel.ScopeSelfEdit), disableOtp)
 	g.Handle("OPTIONS", "/otp/:token", response.CreateOptions("DELETE"))
 
-	g.Handle("GET", "/oauth2", middleware.RequiresPermission(pufferpanel.ScopeNone, false), getPersonalOAuth2Clients)
-	g.Handle("POST", "/oauth2", middleware.RequiresPermission(pufferpanel.ScopeNone, false), createPersonalOAuth2Client)
+	g.Handle("GET", "/oauth2", middleware.RequiresPermission(pufferpanel.ScopeSelfClients), getPersonalOAuth2Clients)
+	g.Handle("POST", "/oauth2", middleware.RequiresPermission(pufferpanel.ScopeSelfClients), createPersonalOAuth2Client)
 	g.Handle("OPTIONS", "/oauth2", response.CreateOptions("GET", "POST"))
 
-	g.Handle("DELETE", "/oauth2/:clientId", middleware.RequiresPermission(pufferpanel.ScopeNone, false), deletePersonalOAuth2Client)
+	g.Handle("DELETE", "/oauth2/:clientId", middleware.RequiresPermission(pufferpanel.ScopeSelfClients), deletePersonalOAuth2Client)
 	g.Handle("OPTIONS", "/oauth2/:clientId", response.CreateOptions("DELETE"))
 }
 

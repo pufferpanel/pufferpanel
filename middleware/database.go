@@ -14,6 +14,8 @@
 package middleware
 
 import (
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/database"
@@ -62,17 +64,19 @@ func HasTransaction(c *gin.Context) {
 		}
 	}
 
-	trans := db.Begin()
-
-	c.Set("db", trans)
 	c.Set("noTransactionDb", db)
 
-	c.Next()
+	_ = db.Transaction(func(trans *gorm.DB) error {
+		c.Set("db", trans)
 
-	isBadStatus := c.Writer.Status() >= 400
-	if c.Errors != nil || isBadStatus {
-		trans.Rollback()
-	} else {
-		trans.Commit()
-	}
+		c.Next()
+
+		if c.Errors != nil {
+			logging.Error.Printf("Error: %s", c.Errors)
+			return errors.New("error in transaction")
+		} else if c.Writer.Status() >= 400 {
+			return fmt.Errorf("bad status code %d", c.Writer.Status())
+		}
+		return nil
+	})
 }

@@ -66,6 +66,19 @@ func handleInfoRequest(c *gin.Context) {
 
 	infoResponse := &oauth2.TokenInfoResponse{}
 
+	if serverId == "panel" {
+		//we are a token token, or at least, we should be
+		ps := &services.PanelService{}
+		if ps.IsValid(token) {
+			infoResponse.Active = true
+			infoResponse.Scope = "panel"
+		} else {
+			infoResponse.Active = false
+		}
+		c.JSON(http.StatusOK, infoResponse)
+		return
+	}
+
 	//this token can be one of two types, we need to work out which it is
 	session, err := sessionService.Validate(token)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -117,7 +130,7 @@ func handleInfoRequest(c *gin.Context) {
 		var scopes []string
 
 		for _, v := range perms {
-			for _, d := range v.ToScopes() {
+			for _, d := range v.Scopes {
 				//limit scopes we return to just the node that this server tracks
 				//this helps avoid giant lists for this node
 				if v.ServerIdentifier != nil && v.Server.NodeID == node.ID {

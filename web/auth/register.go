@@ -15,6 +15,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
@@ -64,7 +65,8 @@ func RegisterPost(c *gin.Context) {
 		return
 	}
 
-	perms.ViewServer = true
+	//perms.ViewServer = true
+	perms.Scopes = []pufferpanel.Scope{pufferpanel.ScopeLogin, pufferpanel.ScopeServerList}
 
 	err = ps.UpdatePermissions(perms)
 	if response.HandleError(c, err, http.StatusInternalServerError) {

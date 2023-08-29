@@ -484,7 +484,7 @@ func (p *Server) Save() (err error) {
 	return
 }
 
-func (p *Server) EditData(data map[string]pufferpanel.Variable, overrideUser bool) (err error) {
+func (p *Server) EditData(data map[string]pufferpanel.Variable) (err error) {
 	for k, v := range data {
 		var elem pufferpanel.Variable
 
@@ -494,7 +494,7 @@ func (p *Server) EditData(data map[string]pufferpanel.Variable, overrideUser boo
 			//copy from provided
 			elem = v
 		}
-		if !elem.UserEditable && !overrideUser {
+		if !elem.UserEditable {
 			continue
 		}
 

@@ -30,19 +30,19 @@ import (
 )
 
 func registerNodes(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeNodesView, false), getAllNodes)
-	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeNodesEdit, false), createNode)
+	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeNodesView), getAllNodes)
+	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeNodesCreate), createNode)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "POST"))
 
-	g.Handle("GET", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesView, false), getNode)
-	g.Handle("PUT", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesEdit, false), updateNode)
-	g.Handle("DELETE", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesEdit, false), deleteNode)
+	g.Handle("GET", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesView), getNode)
+	g.Handle("PUT", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesEdit), updateNode)
+	g.Handle("DELETE", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesDelete), deleteNode)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("PUT", "GET", "DELETE"))
 
-	g.Handle("GET", "/:id/features", middleware.RequiresPermission(pufferpanel.ScopeNodesView, false), getFeatures)
+	g.Handle("GET", "/:id/features", middleware.RequiresPermission(pufferpanel.ScopeNodesView), getFeatures)
 	g.Handle("OPTIONS", "/:id/features", response.CreateOptions("GET"))
 
-	g.Handle("GET", "/:id/deployment", middleware.RequiresPermission(pufferpanel.ScopeNodesDeploy, false), deployNode)
+	g.Handle("GET", "/:id/deployment", middleware.RequiresPermission(pufferpanel.ScopeNodesDeploy), deployNode)
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
 }
 
@@ -54,7 +54,7 @@ func registerNodes(g *gin.RouterGroup) {
 // @Failure 404 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/nodes [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[nodes.view]
 func getAllNodes(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -78,7 +78,7 @@ func getAllNodes(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Node Id"
 // @Router /api/nodes/{id} [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[nodes.view]
 func getNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -106,7 +106,7 @@ func getNode(c *gin.Context) {
 // @Failure 404 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/nodes [post]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[nodes.edit]
 func createNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -147,7 +147,7 @@ func createNode(c *gin.Context) {
 // @Param id path string true "Node Id"
 // @Param node body models.NodeView true "Node information"
 // @Router /api/nodes/{id} [put]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[nodes.edit]
 func updateNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -189,7 +189,7 @@ func updateNode(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Node Id"
 // @Router /api/nodes/{id} [delete]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[nodes.edit]
 func deleteNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -222,7 +222,7 @@ func deleteNode(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Node Id"
 // @Router /api/nodes/{id}/deployment [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[nodes.deploy]
 func deployNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -255,7 +255,7 @@ func deployNode(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Node Id"
 // @Router /api/nodes/{id}/features [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[nodes.view]
 func getFeatures(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)

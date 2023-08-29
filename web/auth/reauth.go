@@ -41,7 +41,7 @@ func Reauth(c *gin.Context) {
 	}
 
 	data := &LoginResponse{}
-	data.Scopes = perms.ToScopes()
+	data.Scopes = perms.Scopes
 
 	secure := false
 	if c.Request.TLS != nil {

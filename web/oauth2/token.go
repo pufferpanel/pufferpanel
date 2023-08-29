@@ -85,7 +85,7 @@ func handleTokenRequest(c *gin.Context) {
 					c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 					return
 				}
-				client.Scopes = perms.ToScopes()
+				client.Scopes = perms.Scopes
 			}
 
 			token, err := session.CreateForClient(client)
@@ -97,7 +97,7 @@ func handleTokenRequest(c *gin.Context) {
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
 				AccessToken: token,
 				TokenType:   "Bearer",
-				Scope:       string(pufferpanel.ScopeOAuth2Auth),
+				Scope:       pufferpanel.ScopeOAuth2Auth.Value,
 				ExpiresIn:   expiresIn,
 			})
 			return
@@ -149,7 +149,7 @@ func handleTokenRequest(c *gin.Context) {
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 				return
 			}
-			if perms.ID == 0 || !perms.SFTPServer {
+			if perms.ID == 0 || !pufferpanel.ContainsScope(perms.Scopes, pufferpanel.ScopeServerSftp) {
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
 			}
@@ -176,9 +176,10 @@ func handleTokenRequest(c *gin.Context) {
 
 			mappedScopes := make([]string, 0)
 
-			for _, p := range perms.ToScopes() {
-				mappedScopes = append(mappedScopes, server.Identifier+":"+string(p))
+			for _, p := range perms.Scopes {
+				mappedScopes = append(mappedScopes, server.Identifier+":"+p.Value)
 			}
+
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
 				AccessToken: token,
 				TokenType:   "Bearer",

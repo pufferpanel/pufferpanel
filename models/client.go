@@ -74,7 +74,7 @@ func (c *Client) BeforeSave(*gorm.DB) (err error) {
 	scopes := make([]string, 0)
 
 	for _, s := range c.Scopes {
-		scopes = append(scopes, string(s))
+		scopes = append(scopes, s.Value)
 	}
 	c.RawScopes = strings.Join(scopes, " ")
 
@@ -91,7 +91,7 @@ func (c *Client) AfterFind(*gorm.DB) (err error) {
 	c.Scopes = make([]pufferpanel.Scope, len(split))
 
 	for i, v := range split {
-		c.Scopes[i] = pufferpanel.Scope(v)
+		c.Scopes[i] = pufferpanel.GetScope(v)
 	}
 
 	return

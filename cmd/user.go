@@ -149,8 +149,8 @@ func addUser(cmd *cobra.Command, args []string) {
 			fmt.Printf("Failed to get permissions: %s\n", err.Error())
 			return err
 		}
-		perms.Admin = answers.Admin
-		perms.ViewServer = true
+
+		perms.Scopes = pufferpanel.AddScope(pufferpanel.AddScope(perms.Scopes, pufferpanel.ScopeAdmin), pufferpanel.ScopeServerList)
 
 		err = ps.UpdatePermissions(perms)
 		if err != nil {
@@ -310,7 +310,12 @@ func editUser(cmd *cobra.Command, args []string) {
 				return
 			}
 
-			perms.Admin = prompt
+			//perms.Admin = prompt
+			if prompt {
+				perms.Scopes = pufferpanel.AddScope(perms.Scopes, pufferpanel.ScopeAdmin)
+			} else {
+				perms.Scopes = pufferpanel.RemoveScope(perms.Scopes, pufferpanel.ScopeAdmin)
+			}
 
 			err = ps.UpdatePermissions(perms)
 			if err != nil {

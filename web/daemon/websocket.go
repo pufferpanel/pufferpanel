@@ -58,12 +58,14 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 			switch strings.ToLower(message) {
 			case "replay":
 				{
-					console, _ := server.GetEnvironment().GetConsole()
-					_ = conn.WriteMessage(messages.Console{Logs: console})
+					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerLogs) {
+						console, _ := server.GetEnvironment().GetConsole()
+						_ = conn.WriteMessage(messages.Console{Logs: console})
+					}
 				}
 			case "stat":
 				{
-					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersStat) {
+					if pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerStat) {
 						results, err := server.GetEnvironment().GetStats()
 						msg := messages.Stat{}
 						if err != nil {
@@ -78,41 +80,43 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 				}
 			case "status":
 				{
-					running, err := server.IsRunning()
-					if err != nil {
-						running = false
+					if pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerStatus) {
+						running, err := server.IsRunning()
+						if err != nil {
+							running = false
+						}
+						msg := messages.Status{Running: running}
+						_ = conn.WriteMessage(msg)
 					}
-					msg := messages.Status{Running: running}
-					_ = conn.WriteMessage(msg)
 				}
 			case "start":
 				{
-					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersStart) {
+					if pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerStart) {
 						_ = server.Start()
 					}
 					break
 				}
 			case "stop":
 				{
-					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersStop) {
+					if pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerStop) {
 						_ = server.Stop()
 					}
 				}
 			case "install":
 				{
-					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersInstall) {
+					if pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerInstall) {
 						_ = server.Install()
 					}
 				}
 			case "kill":
 				{
-					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersStop) {
+					if pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerKill) {
 						_ = server.Kill()
 					}
 				}
 			case "reload":
 				{
-					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersEditAdmin) {
+					if pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerReload) {
 						_ = servers.Reload(server.Id())
 					}
 				}
@@ -122,7 +126,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 				}
 			case "console":
 				{
-					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersConsoleSend) {
+					if pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerSendCommand) {
 						cmd, ok := mapping["command"].(string)
 						if ok {
 							if run, _ := server.IsRunning(); run {
@@ -145,7 +149,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 					switch strings.ToLower(action) {
 					case "get":
 						{
-							if !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersFilesGet) {
+							if !pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerFileGet) {
 								break
 							}
 
@@ -154,7 +158,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 						}
 					case "delete":
 						{
-							if !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersFilesPut) {
+							if !pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerFileEdit) {
 								break
 							}
 
@@ -168,7 +172,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []p
 						}
 					case "create":
 						{
-							if !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersFilesPut) {
+							if !pufferpanel.ContainsServerScope(scopes, pufferpanel.ScopeServerFileEdit) {
 								break
 							}
 

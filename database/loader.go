@@ -55,7 +55,7 @@ func openConnection() (err error) {
 		case "mysql":
 			connString = "pufferpanel:pufferpanel@/pufferpanel"
 		case "sqlite3":
-			connString = "file:pufferpanel.db?cache=shared"
+			connString = "file:pufferpanel.db"
 		}
 	}
 
@@ -63,6 +63,7 @@ func openConnection() (err error) {
 		connString = addConnectionSetting(connString, "charset=utf8")
 		connString = addConnectionSetting(connString, "parseTime=true")
 	} else if dialect == "sqlite3" {
+		connString = addConnectionSetting(connString, "cache=shared")
 		connString = addConnectionSetting(connString, "_loc=auto")
 		connString = addConnectionSetting(connString, "_foreign_keys=1")
 	}
@@ -94,7 +95,7 @@ func openConnection() (err error) {
 		gormConfig.Logger = gormConfig.Logger.LogMode(logger.Info)
 	}
 
-	// Sqlite doesn't implement constraints see  https://github.com/go-gorm/gorm/wiki/GORM-V2-Release-Note-Draft#all-new-migratolease-Note-Draft#all-new-migrator
+	// Sqlite doesn't implement constraints see https://gorm.io/docs/migration.html#Auto-Migration
 	gormConfig.DisableForeignKeyConstraintWhenMigrating = dialect == "sqlite3"
 
 	dbConn, err = gorm.Open(dialector, &gormConfig)
@@ -159,10 +160,10 @@ func addConnectionSetting(connString, setting string) string {
 		return connString
 	}
 
-	if !strings.Contains(connString, "?") {
-		connString += "?"
-	} else {
+	if strings.Contains(connString, "?") {
 		connString += "&"
+	} else {
+		connString += "?"
 	}
 	connString += setting
 

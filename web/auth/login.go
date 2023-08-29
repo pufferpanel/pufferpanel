@@ -57,9 +57,14 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
+	if !pufferpanel.ContainsScope(perms.Scopes, pufferpanel.ScopeLogin) {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
 	data := &LoginResponse{}
 	//data.Session = session
-	data.Scopes = perms.ToScopes()
+	data.Scopes = perms.Scopes
 
 	secure := false
 	if c.Request.TLS != nil {
@@ -114,7 +119,7 @@ func OtpPost(c *gin.Context) {
 
 	data := &LoginResponse{}
 	//data.Session = session
-	data.Scopes = perms.ToScopes()
+	data.Scopes = perms.Scopes
 
 	secure := false
 	if c.Request.TLS != nil {
