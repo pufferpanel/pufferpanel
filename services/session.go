@@ -95,7 +95,7 @@ func (ss *Session) Expire(token string) error {
 	}
 
 	session := &models.Session{Token: hashed}
-	err = ss.DB.Delete(session).Error
+	err = ss.DB.Where(session).Delete(session).Error
 	if err == nil || errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	}

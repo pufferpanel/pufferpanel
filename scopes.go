@@ -13,6 +13,8 @@
 
 package pufferpanel
 
+import "encoding/json"
+
 type Scope struct {
 	Value     string
 	ForServer bool
@@ -33,7 +35,7 @@ var (
 	ScopeSelfSettingsEdit = registerNonServerScope("self.settings.edit")
 
 	ScopeServerList         = registerNonServerScope("servers.list")
-	ScopeServerAdmin        = registerNonServerScope("server.admin")
+	ScopeServerAdmin        = registerServerScope("server.admin")
 	ScopeServerCreate       = registerServerScope("server.create")
 	ScopeServerDelete       = registerServerScope("server.delete")
 	ScopeServerEditAdmin    = registerServerScope("server.edit.admin")
@@ -89,6 +91,10 @@ func (s Scope) String() string {
 
 func (s Scope) Matches(string string) bool {
 	return string == s.String()
+}
+
+func (s Scope) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Value)
 }
 
 var allScopes []Scope
