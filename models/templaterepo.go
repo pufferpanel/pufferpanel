@@ -9,4 +9,5 @@ type TemplateRepo struct {
 	Username string `json:"-"`
 	Password string `json:"-"`
 	SSHKey   string `json:"-"`
+	IsLocal  bool   `gorm:"-" json:"isLocal"`
 } //@name TemplateRepo
