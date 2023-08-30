@@ -85,49 +85,61 @@ var (
 	ScopePanel = registerNonServerScope("panel")
 )
 
-func (s Scope) String() string {
+func (s *Scope) String() string {
 	return s.Value
 }
 
-func (s Scope) Matches(string string) bool {
+func (s *Scope) Matches(string string) bool {
 	return string == s.String()
 }
 
-func (s Scope) MarshalJSON() ([]byte, error) {
+func (s *Scope) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Value)
 }
 
-var allScopes []Scope
+func (s *Scope) UnmarshalJSON(data []byte) error {
+	var str string
+	err := json.Unmarshal(data, &str)
+	if err != nil {
+		return err
+	}
+	existing := GetScope(str)
+	s.Value = existing.Value
+	s.ForServer = existing.ForServer
+	return nil
+}
 
-func registerScope(s Scope) Scope {
+var allScopes []*Scope
+
+func registerScope(s *Scope) *Scope {
 	allScopes = append(allScopes, s)
 	return s
 }
-func registerNonServerScope(s string) Scope {
-	return registerScope(Scope{Value: s})
+func registerNonServerScope(s string) *Scope {
+	return registerScope(&Scope{Value: s})
 }
-func registerServerScope(s string) Scope {
-	return registerScope(Scope{Value: s, ForServer: true})
+func registerServerScope(s string) *Scope {
+	return registerScope(&Scope{Value: s, ForServer: true})
 }
 
-func GetScope(str string) Scope {
+func GetScope(str string) *Scope {
 	for _, v := range allScopes {
 		if v.Matches(str) {
 			return v
 		}
 	}
-	return Scope{Value: str}
+	return &Scope{Value: str}
 }
 
-func ContainsScope(arr []Scope, value Scope) bool {
+func ContainsScope(arr []*Scope, value *Scope) bool {
 	return containsScope(arr, value, ScopeAdmin)
 }
 
-func ContainsServerScope(arr []Scope, value Scope) bool {
+func ContainsServerScope(arr []*Scope, value *Scope) bool {
 	return containsScope(arr, value, ScopeServerAdmin, ScopeAdmin)
 }
 
-func AddScope(source []Scope, addition Scope) []Scope {
+func AddScope(source []*Scope, addition *Scope) []*Scope {
 	for _, v := range source {
 		if v.Matches(addition.String()) {
 			return source
@@ -136,8 +148,8 @@ func AddScope(source []Scope, addition Scope) []Scope {
 	return append(source, addition)
 }
 
-func RemoveScope(source []Scope, removal Scope) []Scope {
-	replacement := make([]Scope, 0)
+func RemoveScope(source []*Scope, removal *Scope) []*Scope {
+	replacement := make([]*Scope, 0)
 	for _, v := range source {
 		if !v.Matches(removal.String()) {
 			replacement = append(replacement, v)
@@ -146,7 +158,7 @@ func RemoveScope(source []Scope, removal Scope) []Scope {
 	return replacement
 }
 
-func containsScope(arr []Scope, desired ...Scope) bool {
+func containsScope(arr []*Scope, desired ...*Scope) bool {
 	for _, v := range arr {
 		for _, z := range desired {
 			if v.Matches(z.String()) {

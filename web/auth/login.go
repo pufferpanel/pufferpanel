@@ -46,7 +46,7 @@ func LoginPost(c *gin.Context) {
 		userSession.Set("user", user.Email)
 		userSession.Set("time", time.Now().Unix())
 		_ = userSession.Save()
-		c.JSON(http.StatusOK, &LoginOtpResponse{
+		c.JSON(http.StatusOK, &LoginResponse{
 			OtpNeeded: true,
 		})
 		return
@@ -62,10 +62,6 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
-	data := &LoginResponse{}
-	//data.Session = session
-	data.Scopes = perms.Scopes
-
 	secure := false
 	if c.Request.TLS != nil {
 		secure = true
@@ -76,7 +72,7 @@ func LoginPost(c *gin.Context) {
 	c.SetCookie("puffer_auth", session, maxAge, "/", "", secure, true)
 	c.SetCookie("puffer_auth_expires", "", maxAge, "/", "", secure, false)
 
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, &LoginResponse{Scopes: perms.Scopes})
 }
 
 func OtpPost(c *gin.Context) {
@@ -139,12 +135,9 @@ type LoginRequestData struct {
 	Password string `json:"password"`
 }
 
-type LoginOtpResponse struct {
-	OtpNeeded bool `json:"otpNeeded"`
-}
-
 type LoginResponse struct {
-	Scopes []pufferpanel.Scope `json:"scopes,omitempty"`
+	Scopes    []*pufferpanel.Scope `json:"scopes,omitempty"`
+	OtpNeeded bool                 `json:"otpNeeded,omitempty"`
 }
 
 type OtpRequestData struct {

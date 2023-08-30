@@ -354,7 +354,7 @@ func createServer(c *gin.Context) {
 			return
 		}
 
-		perm.Scopes = []pufferpanel.Scope{
+		perm.Scopes = []*pufferpanel.Scope{
 			pufferpanel.ScopeServerList,
 			pufferpanel.ScopeServerViewData,
 			pufferpanel.ScopeServerEditData,

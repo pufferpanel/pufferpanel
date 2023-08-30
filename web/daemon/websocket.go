@@ -29,7 +29,7 @@ import (
 	"strings"
 )
 
-func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []pufferpanel.Scope) {
+func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []*pufferpanel.Scope) {
 	defer func() {
 		if err := recover(); err != nil {
 			logging.Error.Printf("Error with websocket connection for server %s: %s\n%s", server.Id(), err, debug.Stack())

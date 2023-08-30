@@ -97,13 +97,13 @@ func IsPanelCaller(c *gin.Context) {
 	actuallyFinished = true
 }
 
-func RequiresPermission(perm pufferpanel.Scope) gin.HandlerFunc {
+func RequiresPermission(perm *pufferpanel.Scope) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		requiresPermission(c, perm)
 	}
 }
 
-func requiresPermission(c *gin.Context, perm pufferpanel.Scope) {
+func requiresPermission(c *gin.Context, perm *pufferpanel.Scope) {
 	//fail-safe in the event something pukes, we don't end up accidentally giving rights to something they should not
 	actuallyFinished := false
 	defer func() {
@@ -172,7 +172,7 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope) {
 	}
 
 	allowed := false
-	scopes := make([]pufferpanel.Scope, 0)
+	scopes := make([]*pufferpanel.Scope, 0)
 	for _, p := range perms {
 		if pufferpanel.ContainsScope(p.Scopes, perm) || (perm.ForServer && pufferpanel.ContainsServerScope(p.Scopes, perm)) {
 			allowed = true

@@ -66,7 +66,7 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	//perms.ViewServer = true
-	perms.Scopes = []pufferpanel.Scope{pufferpanel.ScopeLogin, pufferpanel.ScopeServerList}
+	perms.Scopes = []*pufferpanel.Scope{pufferpanel.ScopeLogin, pufferpanel.ScopeServerList}
 
 	err = ps.UpdatePermissions(perms)
 	if response.HandleError(c, err, http.StatusInternalServerError) {

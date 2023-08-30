@@ -33,8 +33,8 @@ type Permissions struct {
 	ServerIdentifier *string `json:"-"`
 	Server           Server  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
-	RawScopes string              `gorm:"column:scopes;NOT NULL" json:"-" validate:"required"`
-	Scopes    []pufferpanel.Scope `gorm:"-" json:"-"`
+	RawScopes string               `gorm:"column:scopes;NOT NULL" json:"-" validate:"required"`
+	Scopes    []*pufferpanel.Scope `gorm:"-" json:"-"`
 }
 
 func (p *Permissions) BeforeSave(*gorm.DB) error {
@@ -51,7 +51,7 @@ func (p *Permissions) BeforeSave(*gorm.DB) error {
 }
 
 func (p *Permissions) AfterFind(*gorm.DB) error {
-	p.Scopes = make([]pufferpanel.Scope, 0)
+	p.Scopes = make([]*pufferpanel.Scope, 0)
 	for _, v := range strings.Split(p.RawScopes, ",") {
 		//we can just simply blindly assign it, because the checks we do are just making these strings anyways...
 		p.Scopes = append(p.Scopes, pufferpanel.GetScope(v))

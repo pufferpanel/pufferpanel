@@ -298,7 +298,7 @@ func setUserPerms(c *gin.Context) {
 	}
 
 	//get the current user's scopes
-	scopes := c.MustGet("scopes").([]pufferpanel.Scope)
+	scopes := c.MustGet("scopes").([]*pufferpanel.Scope)
 
 	//only allow scopes that the user has
 	allowedScopes := pufferpanel.Union(viewModel.Scopes, scopes)

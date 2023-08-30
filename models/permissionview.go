@@ -20,7 +20,7 @@ type PermissionView struct {
 	Email            string `json:"email,omitempty"`
 	ServerIdentifier string `json:"serverIdentifier,omitempty"`
 
-	Scopes []pufferpanel.Scope `json:"scopes"`
+	Scopes []*pufferpanel.Scope `json:"scopes"`
 } //@name Permissions
 
 func FromPermission(p *Permissions) *PermissionView {

@@ -712,7 +712,7 @@ func openSocket(c *gin.Context) {
 	}
 
 	internalMap, _ := c.Get("scopes")
-	scopes := internalMap.([]pufferpanel.Scope)
+	scopes := internalMap.([]*pufferpanel.Scope)
 
 	socket := pufferpanel.Create(conn)
 
