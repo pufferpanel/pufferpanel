@@ -12,15 +12,15 @@ import (
 func TestLogin(t *testing.T) {
 	t.Run("GoodLoginButNoScope", func(t *testing.T) {
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
-			Email:    "noscope@cage.com",
-			Password: "dontletmein",
+			Email:    loginNoLoginUser.Email,
+			Password: loginNoLoginUserPassword,
 		}, false)
 		assert.Equal(t, http.StatusForbidden, response.Code)
 	})
-	t.Run("GoodLoginWithScope", func(t *testing.T) {
+	t.Run("GoodLoginWithLoginScope", func(t *testing.T) {
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
-			Email:    "test@example.com",
-			Password: "testing123",
+			Email:    loginNoServerViewUser.Email,
+			Password: loginNoServerViewUserPassword,
 		}, false)
 		if !assert.Equal(t, http.StatusOK, response.Code) {
 			return
@@ -31,6 +31,21 @@ func TestLogin(t *testing.T) {
 			return
 		}
 		assert.Equal(t, []*pufferpanel.Scope{pufferpanel.ScopeLogin}, res.Scopes)
+	})
+	t.Run("GoodLoginWithAdminScope", func(t *testing.T) {
+		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
+			Email:    loginAdminUser.Email,
+			Password: loginAdminUserPassword,
+		}, false)
+		if !assert.Equal(t, http.StatusOK, response.Code) {
+			return
+		}
+		res := &auth.LoginResponse{}
+		err := json.NewDecoder(response.Body).Decode(res)
+		if !assert.NoError(t, err) {
+			return
+		}
+		assert.Equal(t, []*pufferpanel.Scope{pufferpanel.ScopeAdmin}, res.Scopes)
 	})
 	t.Run("NoDataLogin", func(t *testing.T) {
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
