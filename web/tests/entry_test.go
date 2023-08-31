@@ -16,13 +16,14 @@ import (
 )
 
 func TestMain(m *testing.M) {
-
+	_ = os.Remove("testing.db")
 	var exitCode = 1
 
 	config.DatabaseDialect.Set("sqlite3", false)
 	config.DatabaseUrl.Set("file:testing.db", false)
 	config.DaemonEnabled.Set(true, false)
 	config.PanelEnabled.Set(true, false)
+	config.DatabaseLoggingEnabled.Set(true, false)
 
 	//open db connection
 	db, err := database.GetConnection()
@@ -43,21 +44,17 @@ func TestMain(m *testing.M) {
 		fmt.Printf("Error preparing users: %s", err.Error())
 	}
 
-	os.Remove("testing.db")
+	_ = os.Remove("testing.db")
 	os.Exit(exitCode)
 }
 
-func CallAPI(method, url string, body interface{}, isAuthenticatedRequest bool) *httptest.ResponseRecorder {
+func CallAPI(method, url string, body interface{}, token string) *httptest.ResponseRecorder {
 	requestBody, _ := json.Marshal(body)
 	request, _ := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
-	if isAuthenticatedRequest {
-		request.Header.Add("Authorization", "Bearer "+token())
+	if token != "" {
+		request.Header.Add("Authorization", "Bearer "+token)
 	}
 	writer := httptest.NewRecorder()
 	pufferpanel.Engine.ServeHTTP(writer, request)
 	return writer
-}
-
-func token() string {
-	return ""
 }

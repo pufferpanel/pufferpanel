@@ -3,6 +3,7 @@ package tests
 import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/services"
 	"gorm.io/gorm"
 )
 
@@ -99,4 +100,9 @@ func initLoginAdminUser(db *gorm.DB) error {
 
 func initLoginNoAdminWithServersUser(db *gorm.DB) error {
 	return db.Create(loginNoAdminWithServersUser).Error
+}
+
+func createSession(db *gorm.DB, user *models.User) (string, error) {
+	ss := &services.Session{DB: db}
+	return ss.CreateForUser(user)
 }

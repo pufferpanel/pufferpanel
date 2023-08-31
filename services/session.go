@@ -23,7 +23,7 @@ func (ss *Session) CreateForUser(user *models.User) (string, error) {
 
 	sessionToken := token.String()
 
-	res, err := hashToken(sessionToken)
+	res, err := HashToken(sessionToken)
 	if err != nil {
 		return "", err
 	}
@@ -46,7 +46,7 @@ func (ss *Session) CreateForClient(node *models.Client) (string, error) {
 
 	sessionToken := token.String()
 
-	res, err := hashToken(sessionToken)
+	res, err := HashToken(sessionToken)
 	if err != nil {
 		return "", err
 	}
@@ -62,7 +62,7 @@ func (ss *Session) CreateForClient(node *models.Client) (string, error) {
 }
 
 func (ss *Session) Validate(token string) (*models.Session, error) {
-	hashed, err := hashToken(token)
+	hashed, err := HashToken(token)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (ss *Session) ValidateNode(token string) (*models.Node, error) {
 }
 
 func (ss *Session) Expire(token string) error {
-	hashed, err := hashToken(token)
+	hashed, err := HashToken(token)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func (ss *Session) Expire(token string) error {
 	return err
 }
 
-func hashToken(source string) (result string, err error) {
+func HashToken(source string) (result string, err error) {
 	h := sha256.New()
 	_, err = h.Write([]byte(source))
 	if err != nil {
