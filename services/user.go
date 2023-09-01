@@ -16,6 +16,7 @@ package services
 import (
 	"bytes"
 	"encoding/base64"
+	"errors"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -58,18 +59,18 @@ func (us *User) GetById(id uint) (*models.User, error) {
 	return model, nil
 }
 
-func (us *User) Login(email string, password string) (user *models.User, sessionToken string, otpNeeded bool, err error) {
+func (us *User) ValidateLogin(email string, password string) (user *models.User, otpNeeded bool, err error) {
 	user = &models.User{
 		Email: email,
 	}
 
 	err = us.DB.Where(user).First(user).Error
 
-	if err != nil && gorm.ErrRecordNotFound != err {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return
 	}
 
-	if user.ID == 0 || gorm.ErrRecordNotFound == err {
+	if user.ID == 0 || errors.Is(err, gorm.ErrRecordNotFound) {
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
@@ -83,24 +84,21 @@ func (us *User) Login(email string, password string) (user *models.User, session
 		otpNeeded = true
 		return
 	}
-
-	ss := &Session{DB: us.DB}
-	sessionToken, err = ss.CreateForUser(user)
 	return
 }
 
-func (us *User) LoginOtp(email string, token string) (user *models.User, sessionToken string, err error) {
+func (us *User) ValidOtp(email string, token string) (user *models.User, err error) {
 	user = &models.User{
 		Email: email,
 	}
 
 	err = us.DB.Where(user).First(user).Error
 
-	if err != nil && gorm.ErrRecordNotFound != err {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return
 	}
 
-	if user.ID == 0 || gorm.ErrRecordNotFound == err {
+	if user.ID == 0 || errors.Is(err, gorm.ErrRecordNotFound) {
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
@@ -109,9 +107,6 @@ func (us *User) LoginOtp(email string, token string) (user *models.User, session
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
-
-	ss := &Session{DB: us.DB}
-	sessionToken, err = ss.CreateForUser(user)
 	return
 }
 

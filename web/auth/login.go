@@ -18,6 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
+	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"net/http"
@@ -27,7 +28,6 @@ import (
 func LoginPost(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
-	ps := &services.Permission{DB: db}
 
 	request := &LoginRequestData{}
 
@@ -36,7 +36,7 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
-	user, session, otpNeeded, err := us.Login(request.Email, request.Password)
+	user, otpNeeded, err := us.ValidateLogin(request.Email, request.Password)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
@@ -52,33 +52,12 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
-	perms, err := ps.GetForUserAndServer(user.ID, nil)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	if !pufferpanel.ContainsScope(perms.Scopes, pufferpanel.ScopeLogin) {
-		c.AbortWithStatus(http.StatusForbidden)
-		return
-	}
-
-	secure := false
-	if c.Request.TLS != nil {
-		secure = true
-	}
-
-	maxAge := int(time.Hour / time.Second)
-
-	c.SetCookie("puffer_auth", session, maxAge, "/", "", secure, true)
-	c.SetCookie("puffer_auth_expires", "", maxAge, "/", "", secure, false)
-
-	c.JSON(http.StatusOK, &LoginResponse{Scopes: perms.Scopes})
+	createSession(c, user)
 }
 
 func OtpPost(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
-	ps := &services.Permission{DB: db}
 
 	request := &OtpRequestData{}
 
@@ -103,18 +82,35 @@ func OtpPost(c *gin.Context) {
 		return
 	}
 
-	user, session, err := us.LoginOtp(email, request.Token)
+	user, err := us.ValidOtp(email, request.Token)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
+
+	createSession(c, user)
+}
+
+func createSession(c *gin.Context, user *models.User) {
+	db := middleware.GetDatabase(c)
+	ps := &services.Permission{DB: db}
+	ss := &services.Session{DB: db}
 
 	perms, err := ps.GetForUserAndServer(user.ID, nil)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
+	if !pufferpanel.ContainsScope(perms.Scopes, pufferpanel.ScopeLogin) {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	session, err := ss.CreateForUser(user)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
 	data := &LoginResponse{}
-	//data.Session = session
 	data.Scopes = perms.Scopes
 
 	secure := false

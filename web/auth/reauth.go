@@ -15,43 +15,12 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
-	"github.com/pufferpanel/pufferpanel/v3/response"
-	"github.com/pufferpanel/pufferpanel/v3/services"
-	"net/http"
-	"time"
 )
 
 func Reauth(c *gin.Context) {
-	db := middleware.GetDatabase(c)
-	ps := &services.Permission{DB: db}
-	ss := &services.Session{DB: db}
-
 	user, _ := c.MustGet("user").(*models.User)
 
-	perms, err := ps.GetForUserAndServer(user.ID, nil)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
+	createSession(c, user)
 
-	session, err := ss.CreateForUser(user)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	data := &LoginResponse{}
-	data.Scopes = perms.Scopes
-
-	secure := false
-	if c.Request.TLS != nil {
-		secure = true
-	}
-
-	maxAge := int(time.Hour / time.Second)
-
-	c.SetCookie("puffer_auth", session, maxAge, "/", "", secure, true)
-	c.SetCookie("puffer_auth_expires", "", maxAge, "/", "", secure, false)
-
-	c.JSON(http.StatusOK, data)
 }

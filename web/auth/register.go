@@ -73,32 +73,12 @@ func RegisterPost(c *gin.Context) {
 		return
 	}
 
-	//TODO: Have this be an optional flag
-	token := ""
-	if true {
-		err = services.GetEmailService().SendEmail(user.Email, "accountCreation", nil, true)
-		if err != nil {
-			logging.Error.Printf("Error sending email: %s", err.Error())
-		}
-
-		_, token, _, err = us.Login(user.Email, request.Password)
-		if err != nil {
-			logging.Error.Printf("Error trying to auto-login after register: %s", err.Error())
-		}
-	} else {
-		//TODO: Send an email to tell them to validate email
-		_ = services.GetEmailService().SendEmail(user.Email, "accountCreation", nil, true)
-		if err != nil {
-			logging.Error.Printf("Error sending email: %s", err.Error())
-		}
+	err = services.GetEmailService().SendEmail(user.Email, "accountCreation", nil, true)
+	if err != nil {
+		logging.Error.Printf("Error sending email: %s", err.Error())
 	}
 
-	c.JSON(http.StatusOK, &registerResponse{Success: true, Token: token})
-}
-
-type registerResponse struct {
-	Success bool   `json:"success"`
-	Token   string `json:"token,omitempty"`
+	createSession(c, user)
 }
 
 type registerRequestData struct {
