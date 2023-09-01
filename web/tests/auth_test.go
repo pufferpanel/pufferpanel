@@ -12,6 +12,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestLogin(t *testing.T) {
@@ -70,13 +71,14 @@ func TestLogin(t *testing.T) {
 			return
 		}
 		//ensure we sent back correct headers
-		cookies := response.Header().Values("Set-Cookie")
+		tmpRes := http.Response{Header: response.Header()}
+		cookies := tmpRes.Cookies()
 		if !assert.NotEmpty(t, cookies) {
 			return
 		}
 		valid := false
 		for _, v := range cookies {
-			if strings.HasPrefix(v, "puffer_auth") {
+			if v.Name == "puffer_auth" {
 				valid = true
 			}
 		}
@@ -220,7 +222,6 @@ func TestLogout(t *testing.T) {
 		pufferpanel.Engine.ServeHTTP(writer, request)
 		assert.Equal(t, http.StatusNoContent, writer.Code)
 
-		//check to make sure session is gone
 		mo := &models.Session{
 			Token: hashed,
 		}
@@ -234,5 +235,107 @@ func TestLogout(t *testing.T) {
 }
 
 func TestReauth(t *testing.T) {
+	t.Run("ReauthNoSession", func(t *testing.T) {
+		request, _ := http.NewRequest("POST", "/auth/reauth", nil)
+		writer := httptest.NewRecorder()
+		pufferpanel.Engine.ServeHTTP(writer, request)
+		assert.Equal(t, http.StatusUnauthorized, writer.Code)
+	})
+	t.Run("ReauthWithValidSession", func(t *testing.T) {
+		db, err := database.GetConnection()
+		if !assert.NoError(t, err) {
+			return
+		}
+		session, err := createSession(db, loginAdminUser)
+		if !assert.NoError(t, err) {
+			return
+		}
 
+		request, _ := http.NewRequest("POST", "/auth/reauth", nil)
+		request.AddCookie(&http.Cookie{
+			Name:  "puffer_auth",
+			Value: session,
+		})
+		writer := httptest.NewRecorder()
+		pufferpanel.Engine.ServeHTTP(writer, request)
+		if !assert.Equal(t, http.StatusOK, writer.Code) {
+			return
+		}
+
+		response := &auth.LoginResponse{}
+		err = json.NewDecoder(writer.Body).Decode(response)
+		if !assert.NoError(t, err) {
+			return
+		}
+		if !assert.NotEmpty(t, response.Scopes) {
+			return
+		}
+
+		//ensure we sent back correct headers
+		var cookie string
+		res := http.Response{Header: writer.Header()}
+		cookies := res.Cookies()
+		if !assert.NotEmpty(t, cookies) {
+			return
+		}
+		for _, v := range cookies {
+			if v.Name == "puffer_auth" {
+				cookie = v.Value
+			}
+		}
+		assert.NotEmpty(t, cookie, "No puffer_auth cookie found")
+
+		hashed, err := services.HashToken(cookie)
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		mo := &models.Session{
+			Token: hashed,
+		}
+		var count int64
+		err = db.Model(mo).Where(mo).Count(&count).Error
+		if !assert.NoError(t, err) {
+			return
+		}
+		assert.Equal(t, int64(1), count)
+
+	})
+	t.Run("ReauthWithExpiredSession", func(t *testing.T) {
+		db, err := database.GetConnection()
+		if !assert.NoError(t, err) {
+			return
+		}
+		session, err := createSession(db, loginAdminUser)
+		if !assert.NoError(t, err) {
+			return
+		}
+		hashed, err := services.HashToken(session)
+		if !assert.NoError(t, err) {
+			return
+		}
+		err = db.Model(&models.Session{}).Where(&models.Session{Token: hashed}).Updates(&models.Session{ExpirationTime: time.Now().Add(time.Hour * -24)}).Error
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		request, _ := http.NewRequest("POST", "/auth/reauth", nil)
+		request.AddCookie(&http.Cookie{
+			Name:  "puffer_auth",
+			Value: session,
+		})
+		writer := httptest.NewRecorder()
+		pufferpanel.Engine.ServeHTTP(writer, request)
+		assert.Equal(t, http.StatusForbidden, writer.Code)
+	})
+	t.Run("ReauthWithInvalidSession", func(t *testing.T) {
+		request, _ := http.NewRequest("POST", "/auth/reauth", nil)
+		request.AddCookie(&http.Cookie{
+			Name:  "puffer_auth",
+			Value: "invalidsession",
+		})
+		writer := httptest.NewRecorder()
+		pufferpanel.Engine.ServeHTTP(writer, request)
+		assert.Equal(t, http.StatusForbidden, writer.Code)
+	})
 }
