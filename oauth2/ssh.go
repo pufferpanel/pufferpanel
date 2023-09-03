@@ -85,7 +85,7 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 		serverId := t[0]
 		scope := t[1]
 
-		if pufferpanel.ScopeServerSftp.Matches(scope) {
+		if pufferpanel.ScopeServerSftp.Is(scope) {
 			sshPerms.Extensions = make(map[string]string)
 			sshPerms.Extensions["server_id"] = serverId
 			return sshPerms, nil

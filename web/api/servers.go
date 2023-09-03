@@ -728,8 +728,10 @@ func editServerUser(c *gin.Context) {
 		firstTimeAccess = true
 	}
 
-	allowedScopes := pufferpanel.Union(perms.Scopes, currentPerms.Scopes)
-	existing.Scopes = append(allowedScopes, pufferpanel.ScopeServerList) //this is done blindly, as backend will clean it
+	//update perms to match this "setup", but not stomp over what the user can't change
+	replacement := pufferpanel.UpdateScopesWhereGranted(existing.Scopes, perms.Scopes, currentPerms.Scopes)
+
+	existing.Scopes = replacement
 	err = ps.UpdatePermissions(existing)
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {

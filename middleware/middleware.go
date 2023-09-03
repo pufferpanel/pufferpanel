@@ -88,7 +88,7 @@ func IsPanelCaller(c *gin.Context) {
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
-		if !pufferpanel.ScopePanel.Matches(info.Scope) {
+		if !pufferpanel.ScopePanel.Is(info.Scope) {
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
@@ -174,7 +174,7 @@ func requiresPermission(c *gin.Context, perm *pufferpanel.Scope) {
 	allowed := false
 	scopes := make([]*pufferpanel.Scope, 0)
 	for _, p := range perms {
-		if pufferpanel.ContainsScope(p.Scopes, perm) || (perm.ForServer && pufferpanel.ContainsServerScope(p.Scopes, perm)) {
+		if pufferpanel.ContainsScope(p.Scopes, perm) {
 			allowed = true
 		}
 	}

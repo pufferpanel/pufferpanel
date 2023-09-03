@@ -89,8 +89,15 @@ func (s *Scope) String() string {
 	return s.Value
 }
 
-func (s *Scope) Matches(string string) bool {
-	return string == s.String()
+func (s *Scope) Is(t any) bool {
+	switch z := t.(type) {
+	case string:
+		return s.Value == z
+	case *Scope:
+		return s.Value == z.Value
+	default:
+		return false
+	}
 }
 
 func (s *Scope) MarshalJSON() ([]byte, error) {
@@ -124,7 +131,7 @@ func registerServerScope(s string) *Scope {
 
 func GetScope(str string) *Scope {
 	for _, v := range allScopes {
-		if v.Matches(str) {
+		if v.Is(str) {
 			return v
 		}
 	}
@@ -132,16 +139,28 @@ func GetScope(str string) *Scope {
 }
 
 func ContainsScope(arr []*Scope, value *Scope) bool {
-	return containsScope(arr, value, ScopeAdmin)
-}
+	desired := []*Scope{value}
+	if !value.Is(ScopeAdmin.Value) {
+		desired = append(desired, ScopeAdmin)
+	}
+	if value.ForServer && !value.Is(ScopeServerAdmin.Value) {
+		desired = append(desired, ScopeServerAdmin)
+	}
 
-func ContainsServerScope(arr []*Scope, value *Scope) bool {
-	return containsScope(arr, value, ScopeServerAdmin, ScopeAdmin)
+	for _, v := range arr {
+		for _, z := range desired {
+			if v.Is(z) {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 func AddScope(source []*Scope, addition *Scope) []*Scope {
 	for _, v := range source {
-		if v.Matches(addition.String()) {
+		if v.Is(addition) {
 			return source
 		}
 	}
@@ -151,21 +170,41 @@ func AddScope(source []*Scope, addition *Scope) []*Scope {
 func RemoveScope(source []*Scope, removal *Scope) []*Scope {
 	replacement := make([]*Scope, 0)
 	for _, v := range source {
-		if !v.Matches(removal.String()) {
+		if !v.Is(removal) {
 			replacement = append(replacement, v)
 		}
 	}
 	return replacement
 }
 
-func containsScope(arr []*Scope, desired ...*Scope) bool {
-	for _, v := range arr {
-		for _, z := range desired {
-			if v.Matches(z.String()) {
-				return true
+func UpdateScopesWhereGranted(source, desired, changer []*Scope) []*Scope {
+	replacement := make([]*Scope, 0)
+	for _, v := range source {
+		//does our user have permission to this scope
+		//if so, we need to set this to match the view model
+		if ContainsScope(changer, v) {
+			if ContainsScope(desired, v) {
+				replacement = append(replacement, v)
 			}
+		} else {
+			//otherwise, our current user can't change this value, so re-copy
+			replacement = append(replacement, v)
 		}
 	}
-
-	return false
+	for _, v := range desired {
+		if !ContainsScope(changer, v) {
+			continue
+		}
+		needsAdding := true
+		for _, z := range replacement {
+			if v.Is(z) {
+				needsAdding = false
+				break
+			}
+		}
+		if needsAdding {
+			replacement = append(replacement, v)
+		}
+	}
+	return replacement
 }

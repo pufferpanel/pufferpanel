@@ -303,7 +303,10 @@ func setUserPerms(c *gin.Context) {
 	//only allow scopes that the user has
 	allowedScopes := pufferpanel.Union(viewModel.Scopes, scopes)
 
-	perms.Scopes = allowedScopes
+	//update perms to match this "setup", but not stomp over what the user can't change
+	replacement := pufferpanel.UpdateScopesWhereGranted(perms.Scopes, allowedScopes, scopes)
+
+	perms.Scopes = replacement
 
 	err = ps.UpdatePermissions(perms)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
