@@ -37,7 +37,7 @@ func TestCurseForge_Run(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := tt.fields
-			env := test.CreateEnvironment(tt.name)
+			env := test.CreateEnvironment()
 			err := os.RemoveAll(env.GetRootDirectory())
 			if err != nil && !errors.Is(err, os.ErrNotExist) {
 				t.Error(err)
