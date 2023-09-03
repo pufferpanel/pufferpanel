@@ -283,7 +283,7 @@ func validateRepoOnDisk(repo *models.TemplateRepo) (string, error) {
 			return cache.Path, nil
 		}
 
-		logging.Debug.Printf("Updating local git repo for %s: %s", repo, cache)
+		logging.Debug.Printf("Updating local git repo for %s: %s", repo.Name, cache)
 
 		r, err := git.PlainOpen(cache.Path)
 		if err != nil {
@@ -324,7 +324,7 @@ func validateRepoOnDisk(repo *models.TemplateRepo) (string, error) {
 			return "", err
 		}
 
-		logging.Debug.Printf("Checking out repo %s: %s", repo, path)
+		logging.Debug.Printf("Checking out repo %s: %s", repo.Name, path)
 		_, err = git.PlainClone(path, false, &git.CloneOptions{
 			URL:           repo.Url,
 			SingleBranch:  true,

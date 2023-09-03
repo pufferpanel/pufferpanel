@@ -10,7 +10,7 @@ env:
 concurrency:
   group: pr-${{ github.ref }}
   cancel-in-progress: true
-  
+
 jobs:
   build:
     name: Validate Builds
@@ -20,95 +20,95 @@ jobs:
     timeout-minutes: 5
     
     steps:
-    - name: Set up Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: ^${{ env.GO_VERSION }}
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^${{ env.GO_VERSION }}
 
-    - name: Restore yarn cache
-      uses: actions/cache@v2
-      with:
-        path: ~/.yarn
-        key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-${{ hashFiles('client/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v3
 
-    - name: Restore yarn cache
-      uses: actions/cache@v3
-      with:
-        path: |
-          client/node_modules
-          client/api/node_modules
-          client/frontend/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('client/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+      - name: Restore yarn cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.yarn
+          key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-${{ hashFiles('client/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}
 
-    - name: Restore Go Modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-${{ env.GO_VERSION }}-
+      - name: Restore yarn cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            client/node_modules
+            client/api/node_modules
+            client/frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('client/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-    - name: Restore Go BIN
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/go/bin
-        key: ${{ runner.os }}-swag-${{ env.SWAG_VERSION }}
-        restore-keys: |
-          ${{ runner.os }}-swag-
-          
-    - name: Download Go Binaries
-      run: |
-        wget https://github.com/swaggo/swag/releases/download/v${{ env.SWAG_VERSION }}/swag_${{ env.SWAG_VERSION }}_Linux_x86_64.tar.gz
-        mkdir -p ~/go/bin
-        tar -zxf swag*.tar.gz -C ~/go/bin
-        rm -rf swag*.tar.gz
-        
-    - name: Prepare supporting stuff
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gcc-mingw-w64
-        
-    - name: yarn install, build
-      run: |
-        yarn install
-        yarn build
-      env:
-        CI: true
-      working-directory: client
-        
-    - name: Generate Swagger Docs
-      run: |
-        ~/go/bin/swag init -o web/swagger -g web/loader.go
-        
-    - name: Build Linux
-      run: |
-        go build -o pufferpanel -buildvcs=false -v github.com/pufferpanel/pufferpanel/v3/cmd
-        go test -v ./...
-      env:
-        GOOS: linux
-        GOARCH: amd64
-        
-    - name: Build Windows
-      run: |
-        go build -o pufferpanel.exe -buildvcs=false -v github.com/pufferpanel/pufferpanel/v3/cmd
-      env:
-        GOOS: windows
-        GOARCH: amd64
-        CC: x86_64-w64-mingw32-gcc
-        CXX: x86_64-w64-mingw32-g++
-        CGO_ENABLED: 1
+      - name: Restore Go Modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ env.GO_VERSION }}-
+
+      - name: Restore Go BIN
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/go/bin
+          key: ${{ runner.os }}-swag-${{ env.SWAG_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-swag-
+
+      - name: Download Go Binaries
+        run: |
+          wget https://github.com/swaggo/swag/releases/download/v${{ env.SWAG_VERSION }}/swag_${{ env.SWAG_VERSION }}_Linux_x86_64.tar.gz
+          mkdir -p ~/go/bin
+          tar -zxf swag*.tar.gz -C ~/go/bin
+          rm -rf swag*.tar.gz
+
+      - name: Prepare supporting stuff
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mingw-w64
+
+      - name: yarn install, build
+        run: |
+          yarn install
+          yarn build
+        env:
+          CI: true
+        working-directory: client
+
+      - name: Generate Swagger Docs
+        run: |
+          ~/go/bin/swag init -o web/swagger -g web/loader.go
+
+      - name: Build Linux
+        run: |
+          go build -o pufferpanel -buildvcs=false -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go test -v ./...
+        env:
+          GOOS: linux
+          GOARCH: amd64
+
+      - name: Build Windows
+        run: |
+          go build -o pufferpanel.exe -buildvcs=false -v github.com/pufferpanel/pufferpanel/v3/cmd
+        env:
+          GOOS: windows
+          GOARCH: amd64
+          CC: x86_64-w64-mingw32-gcc
+          CXX: x86_64-w64-mingw32-g++
+          CGO_ENABLED: 1

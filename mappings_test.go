@@ -14,6 +14,7 @@
 package pufferpanel
 
 import (
+	"github.com/spf13/cast"
 	"reflect"
 	"testing"
 )
@@ -257,7 +258,7 @@ func TestGetStringArrayOrNull(t *testing.T) {
 				data: mappingTest,
 				key:  mappingIntArrayKey,
 			},
-			want: mappingIntArrayVal,
+			want: cast.ToStringSlice(mappingIntArrayVal),
 		},
 		{
 			name: "Test for invalid type mix",
@@ -270,7 +271,8 @@ func TestGetStringArrayOrNull(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetStringArrayOrNull(tt.args.data, tt.args.key); !reflect.DeepEqual(got, tt.want) {
+			got := GetStringArrayOrNull(tt.args.data, tt.args.key)
+			if !(got == nil && tt.want == nil) && !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetStringArrayOrNull() = %v, want %v", got, tt.want)
 			}
 		})

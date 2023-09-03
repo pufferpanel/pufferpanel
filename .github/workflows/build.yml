@@ -274,6 +274,7 @@ jobs:
       - name: Build Linux
         run: |
           go build -o build-artifacts/pufferpanel -tags "docker host" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go test -v ./...
         env:
           GOOS: linux
           GOARCH: amd64

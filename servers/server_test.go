@@ -1,6 +1,9 @@
 package servers
 
 import (
+	"encoding/json"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -23,9 +26,12 @@ func TestProgram_valid(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p, err := LoadFromData("test", []byte(tt.data))
-			if err != nil {
-				t.Errorf("Failed loading test json: %s", err.Error())
+			p := &Server{
+				Server: pufferpanel.Server{},
+			}
+			err := json.Unmarshal([]byte(tt.data), &p.Server)
+			if !assert.NoError(t, err) {
+				return
 			}
 
 			if got := p.valid(); got != tt.want {
