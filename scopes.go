@@ -35,8 +35,8 @@ var (
 	ScopeSelfSettingsEdit = registerNonServerScope("self.settings.edit")
 
 	ScopeServerList         = registerNonServerScope("servers.list")
+	ScopeServerCreate       = registerNonServerScope("server.create")
 	ScopeServerAdmin        = registerServerScope("server.admin")
-	ScopeServerCreate       = registerServerScope("server.create")
 	ScopeServerDelete       = registerServerScope("server.delete")
 	ScopeServerEditAdmin    = registerServerScope("server.edit.admin")
 	ScopeServerEditData     = registerServerScope("server.edit.data")
