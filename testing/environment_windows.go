@@ -13,7 +13,7 @@
  limitations under the License.
 */
 
-package test
+package testing
 
 import (
 	"fmt"

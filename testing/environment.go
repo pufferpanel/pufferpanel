@@ -1,5 +1,4 @@
 //go:build !windows
-// +build !windows
 
 /*
  Copyright 2020 Padduck, LLC
@@ -14,11 +13,12 @@
   limitations under the License.
 */
 
-package test
+package testing
 
 import (
 	"fmt"
 	"github.com/creack/pty"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
@@ -189,7 +189,7 @@ func (t *Environment) SendCode(code int) error {
 	return t.mainProcess.Process.Signal(syscall.Signal(code))
 }
 
-func (t *Environment) handleClose(callback func(exitCode bool)) {
+func (t *Environment) handleClose(callback func(exitCode int)) {
 	err := t.mainProcess.Wait()
 
 	var code int
@@ -206,7 +206,7 @@ func (t *Environment) handleClose(callback func(exitCode bool)) {
 	t.Wait.Done()
 
 	if callback != nil {
-		callback(code == 0)
+		callback(code)
 	}
 }
 
