@@ -14,6 +14,7 @@
 package config
 
 import (
+	"errors"
 	"github.com/spf13/viper"
 	"os"
 	"strings"
@@ -37,11 +38,12 @@ func LoadConfigFile(configFile string) error {
 	viper.SetConfigFile(configFile)
 
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-		} else {
+		if !errors.As(err, &configFileNotFoundError) {
 			return err
 		}
 	}
 
 	return nil
 }
+
+var configFileNotFoundError viper.ConfigFileNotFoundError

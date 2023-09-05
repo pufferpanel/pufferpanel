@@ -19,6 +19,9 @@ import (
 )
 
 func ToString(v interface{}) string {
+	if t, ok := v.(string); ok {
+		return t
+	}
 	if stringer, ok := v.(fmt.Stringer); ok {
 		return stringer.String()
 	}

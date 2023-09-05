@@ -59,10 +59,5 @@ func (t *MetadataType) MarshalJSON() ([]byte, error) {
 
 // ParseMetadata Parses the metadata into the target interface
 func (t *MetadataType) ParseMetadata(target interface{}) error {
-	data, err := json.Marshal(t)
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal(data, &target)
+	return UnmarshalTo(t, target)
 }
