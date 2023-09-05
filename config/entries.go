@@ -77,11 +77,11 @@ func (se StringEntry) Value() string {
 }
 
 func (se DataFolder) Value() string {
-	if filepath.IsAbs(se.Value()) {
+	if filepath.IsAbs(cast.ToString(se.get())) {
 		return se.Value()
 	}
 
-	return filepath.Join(DataRootFolder.Value(), se.Value())
+	return filepath.Join(DataRootFolder.Value(), cast.ToString(se.get()))
 }
 
 func (se BoolEntry) Value() bool {
