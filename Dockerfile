@@ -2,25 +2,21 @@
 # Builder container
 ###
 FROM node:18-alpine AS node
-FROM golang:1.20-alpine AS builder
 
-COPY --from=node /usr/lib /usr/lib
-COPY --from=node /usr/local/share /usr/local/share
-COPY --from=node /usr/local/lib /usr/local/lib
-COPY --from=node /usr/local/include /usr/local/include
-COPY --from=node /usr/local/bin /usr/local/bin
-COPY --from=node /opt /opt
+WORKDIR /build
+COPY client .
+
+RUN yarn install && \
+    yarn build
+
+FROM golang:1.21-alpine AS builder
 
 ARG tags=docker
 ARG version=devel
 ARG sha=devel
-ARG goproxy
-ARG npmproxy
 ARG swagversion=1.8.10
 
-ENV CGOENABLED=1 \
-    YARN_REGISTRY=$npmproxy \
-    GOPROXY=$goproxy
+ENV CGOENABLED=1
 
 RUN go version && \
     apk add --update --no-cache gcc musl-dev git curl make gcc g++ && \
@@ -37,12 +33,11 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN cd client && \
-    yarn install && \
-    yarn build
+RUN ~/go/bin/swag init --md . -o web/swagger -g web/loader.go
 
-RUN ~/go/bin/swag init --md . -o web/swagger -g web/loader.go && \
-    go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd && \
+COPY --from=node /build/frontend/dist /build/pufferpanel/client/frontend/dist
+
+RUN go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd && \
     go test ./...
 
 ###
@@ -50,25 +45,24 @@ RUN ~/go/bin/swag init --md . -o web/swagger -g web/loader.go && \
 ###
 
 FROM alpine
-COPY --from=builder /pufferpanel /pufferpanel
 
 EXPOSE 8080 5657
 RUN mkdir -p /etc/pufferpanel && \
-    mkdir -p /var/lib/pufferpanel
+    mkdir -p /var/lib/pufferpanel && \
+    mkdir -p /var/log/pufferpanel && \
+    addgroup --system -g 1000 pufferpanel && \
+    adduser -D -H --home /var/lib/pufferpanel --ingroup pufferpanel -u 1000 pufferpanel && \
+    chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/lib/pufferpanel /var/log/pufferpanel
 
-ENV PUFFER_LOGS=/etc/pufferpanel/logs \
-    PUFFER_PANEL_TOKEN_PUBLIC=/etc/pufferpanel/public.pem \
-    PUFFER_PANEL_TOKEN_PRIVATE=/etc/pufferpanel/private.pem \
-    PUFFER_PANEL_DATABASE_DIALECT=sqlite3 \
-    PUFFER_PANEL_DATABASE_URL="file:/etc/pufferpanel/pufferpanel.db?cache=shared" \
-    PUFFER_DAEMON_SFTP_KEY=/etc/pufferpanel/sftp.key \
-    PUFFER_DAEMON_DATA_CACHE=/var/lib/pufferpanel/cache \
-    PUFFER_DAEMON_DATA_SERVERS=/var/lib/pufferpanel/servers \
-    PUFFER_DAEMON_DATA_MODULES=/var/lib/pufferpanel/modules \
-    PUFFER_DAEMON_DATA_BINARIES=/var/lib/pufferpanel/binaries \
-    GIN_MODE=release
+ENV GIN_MODE=release \
+    PUFFER_CONFIG=/etc/pufferpanel/config.json
 
-WORKDIR /pufferpanel
+WORKDIR /var/lib/pufferpanel
 
-ENTRYPOINT ["/pufferpanel/pufferpanel"]
+COPY --from=builder --chown=pufferpanel:pufferpanel /pufferpanel /pufferpanel/bin
+COPY --from=builder --chown=pufferpanel:pufferpanel /build/pufferpanel/config.linux.json /etc/pufferpanel/config.json
+
+USER pufferpanel
+
+ENTRYPOINT ["/pufferpanel/bin/pufferpanel"]
 CMD ["run"]
