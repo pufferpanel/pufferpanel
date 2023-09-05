@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"path/filepath"
 )
 
 var LogsFolder = asString("logs", "logs")
@@ -37,12 +38,13 @@ var SftpKey = asString("daemon.sftp.key", "sftp.key")
 var AuthUrl = asString("daemon.auth.url", "http://localhost:8080")
 var ClientId = asString("daemon.auth.clientId", "")
 var ClientSecret = asString("daemon.auth.clientSecret", "")
-var CacheFolder = asString("daemon.data.cache", "cache")
-var ServersFolder = asString("daemon.data.servers", "servers")
-var BinariesFolder = asString("daemon.data.binaries", "binaries")
+var CacheFolder = asDataFolder("daemon.data.cache", "cache")
+var ServersFolder = asDataFolder("daemon.data.servers", "servers")
+var BinariesFolder = asDataFolder("daemon.data.binaries", "binaries")
 var CrashLimit = asInt("daemon.data.crashLimit", 3)
 var WebSocketFileLimit = asInt64("daemon.data.maxWSDownloadSize", 1024*1024*20)
 var CurseForgeKey = asString("daemon.curseforge.key", _hiddenCurseforgeKey)
+var DataRootFolder = asString("daemon.data.root", "")
 
 var _hiddenCurseforgeKey = ""
 
@@ -62,6 +64,9 @@ type IntEntry struct {
 type Int64Entry struct {
 	entry[int64]
 }
+type DataFolder struct {
+	StringEntry
+}
 
 type ValueType interface {
 	int | int64 | bool | string
@@ -69,6 +74,14 @@ type ValueType interface {
 
 func (se StringEntry) Value() string {
 	return cast.ToString(se.get())
+}
+
+func (se DataFolder) Value() string {
+	if filepath.IsAbs(se.Value()) {
+		return se.Value()
+	}
+
+	return filepath.Join(DataRootFolder.Value(), se.Value())
 }
 
 func (se BoolEntry) Value() bool {
@@ -94,6 +107,9 @@ func (se entry[T]) Set(value T, save bool) error {
 	return nil
 }
 
+func asDataFolder(key string, def string) DataFolder {
+	return DataFolder{StringEntry{entry: as[string](key, def)}}
+}
 func asString(key string, def string) StringEntry {
 	return StringEntry{entry: as[string](key, def)}
 }
