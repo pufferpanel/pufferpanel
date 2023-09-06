@@ -106,7 +106,7 @@ func getNode(c *gin.Context) {
 // @Failure 404 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/nodes [post]
-// @Security OAuth2Application[nodes.edit]
+// @Security OAuth2Application[nodes.create]
 func createNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -189,7 +189,7 @@ func updateNode(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Node Id"
 // @Router /api/nodes/{id} [delete]
-// @Security OAuth2Application[nodes.edit]
+// @Security OAuth2Application[nodes.delete]
 func deleteNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)

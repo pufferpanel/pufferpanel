@@ -54,7 +54,7 @@ func registerSelf(g *gin.RouterGroup) {
 // @Failure 404 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/self [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[login]
 func getSelf(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 
@@ -70,7 +70,7 @@ func getSelf(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param user body models.UserView true "User information"
 // @Router /api/self [PUT]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[self.edit]
 func updateSelf(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -257,7 +257,7 @@ func disableOtp(c *gin.Context) {
 // @Failure 404 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/self/oauth2 [GET]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[self.clients]
 func getPersonalOAuth2Clients(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 
@@ -287,7 +287,7 @@ func getPersonalOAuth2Clients(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param client body models.Client false "Information for the client to create"
 // @Router /api/self/oauth2 [POST]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[self.clients]
 func createPersonalOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 
@@ -345,7 +345,7 @@ func createPersonalOAuth2Client(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path string true "Information for the client to create"
 // @Router /api/self/oauth2/{id} [DELETE]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[self.clients]
 func deletePersonalOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	clientId := c.Param("clientId")

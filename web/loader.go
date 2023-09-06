@@ -61,6 +61,8 @@ var clientFiles fs.ReadFileFS
 // @scope.login Allows logging into the panel
 // @scope.oauth2.auth Scope to validate another OAuth2 credential
 // @scope.nodes.view Allows viewing nodes
+// @scope.nodes.create Allows creating nodes
+// @scope.nodes.delete Allows for deleting nodes
 // @scope.nodes.edit Allows editing of node connection information
 // @scope.nodes.deploy Allows getting the config of a node for deployment
 // @scope.self.edit Allows editing of personal account
@@ -78,22 +80,23 @@ var clientFiles fs.ReadFileFS
 // @scope.server.view.flags Allows viewing a server's flags
 // @scope.server.clients.view Allows viewing OAuth2 clients associated to a server
 // @scope.server.clients.edit Allows editing OAuth2 clients associated to a server
-// @scope.server.clients.add Allows adding a new OAuth2 client to a server
+// @scope.server.clients.create Allows adding a new OAuth2 client to a server
 // @scope.server.clients.delete Allows deleting OAuth2 clients associated to a server
 // @scope.server.users.view Allows viewing users associated to a server
 // @scope.server.users.edit Allows editing user permissions to a server
-// @scope.server.users.add Allows adding a new user to a server
+// @scope.server.users.create Allows adding a new user to a server
 // @scope.server.users.delete Allows removing users from to a server
 // @scope.server.tasks.view Allows viewing tasks associated to a server
 // @scope.server.tasks.edit Allows editing tasks associated to a server
 // @scope.server.tasks.add Allows adding a new tasks to a server
 // @scope.server.tasks.delete Allows deleting tasks from to a server
+// @scope.server.tasks.run Allows for running tasks on a server
 // @scope.server.reload Allows reloading of a server's definition from disk
 // @scope.server.start Allow starting a server
 // @scope.server.stop Allows stopping a server
 // @scope.server.kill Allows killing a server
 // @scope.server.install Allows using the "Install" button for a server
-// @scope.server.files.get Allows viewing and downloading files for a server through the File Manager
+// @scope.server.files.view Allows viewing and downloading files for a server through the File Manager
 // @scope.server.files.edit Allows editing files for a server through the File Manager
 // @scope.server.sftp Allows connection to a server over SFTP
 // @scope.server.console Allows viewing the console of a server
@@ -103,10 +106,13 @@ var clientFiles fs.ReadFileFS
 // @scope.panel.settings.edit Allows for viewing and editing of panel settings
 // @scope.templates.view Allows viewing templates
 // @scope.templates.local.edit Allows editing of templates in the local repo
-// @scope.templates.repo.add Allows adding a new template repo
+// @scope.templates.repo.create Allows adding a new template repo
 // @scope.templates.repo.delete Allows deleting of a template repo
-// @scope.users.view Allows viewing all registered users
-// @scope.users.edit Allows editing of all users
+// @scope.users.info.search Allows for searching for users
+// @scope.users.info.view Allows for viewing a user's info
+// @scope.users.info.edit Allows for editing a user's info
+// @scope.users.perms.view Allows for viewing a user's global permissions
+// @scope.users.perms.edit Allows for editing a user's global permissions
 func RegisterRoutes(e *gin.Engine) {
 	e.Use(func(c *gin.Context) {
 		middleware.Recover(c)
@@ -126,7 +132,7 @@ func RegisterRoutes(e *gin.Engine) {
 
 		clientFiles = dist.ClientFiles
 		if config.WebRoot.Value() != "" {
-			clientFiles = pufferpanel.NewMergedFS(os.DirFS(config.WebRoot.Value()), dist.ClientFiles)
+			clientFiles = pufferpanel.NewMergedFS(os.DirFS(config.WebRoot.Value()), clientFiles)
 		}
 
 		css := e.Group("/css")

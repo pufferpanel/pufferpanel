@@ -29,7 +29,7 @@ import (
 
 func registerTemplates(g *gin.RouterGroup) {
 	g.Handle("GET", "/", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView), getRepos)
-	g.Handle("POST", "/", middleware.RequiresPermission(pufferpanel.ScopeTemplatesRepoAdd), addRepo)
+	g.Handle("POST", "/", middleware.RequiresPermission(pufferpanel.ScopeTemplatesRepoCreate), addRepo)
 	g.Handle("OPTIONS", "/", response.CreateOptions("GET", "POST"))
 
 	g.Handle("GET", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView), getsTemplatesForRepo)
@@ -49,6 +49,7 @@ func registerTemplates(g *gin.RouterGroup) {
 // @Failure 400 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/templates [get]
+// @Security OAuth2Application[templates.view]
 func getRepos(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -68,7 +69,7 @@ func getRepos(c *gin.Context) {
 // @Failure 400 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/templates/{repo} [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[templates.view]
 func getsTemplatesForRepo(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -93,6 +94,7 @@ func getsTemplatesForRepo(c *gin.Context) {
 // @Failure 400 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/templates [post]
+// @Security OAuth2Application[templates.repo.create]
 func addRepo(c *gin.Context) {
 	var repo *models.TemplateRepo
 	err := c.BindJSON(repo)
@@ -124,6 +126,7 @@ func addRepo(c *gin.Context) {
 // @Failure 400 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/templates/{repo} [delete]
+// @Security OAuth2Application[templates.repo.delete]
 func deleteRepo(c *gin.Context) {
 	repoId, err := cast.ToUintE(c.Param("repoId"))
 	if response.HandleError(c, err, http.StatusBadRequest) {
@@ -147,7 +150,7 @@ func deleteRepo(c *gin.Context) {
 // @Success 200 {object} models.Template
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/templates/{repo}/{template} [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[templates.view]
 func getTemplateFromRepo(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -175,7 +178,7 @@ func getTemplateFromRepo(c *gin.Context) {
 // @Param template body pufferpanel.Server true "Template"
 // @Param name path string true "Template name"
 // @Router /api/templates/local/{name} [put]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[templates.local.edit]
 func putTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -212,7 +215,7 @@ func putTemplate(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param name path string true "Template name"
 // @Router /api/templates/local/{name} [delete]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[templates.repo.delete]
 func deleteTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}

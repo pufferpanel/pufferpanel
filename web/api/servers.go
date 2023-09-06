@@ -98,7 +98,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.POST("/:serverId/install", middleware.RequiresPermission(pufferpanel.ScopeServerInstall), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/install", response.CreateOptions("POST"))
 
-	g.GET("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileGet), middleware.ResolveServerPanel, proxyServerRequest)
+	g.GET("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileView), middleware.ResolveServerPanel, proxyServerRequest)
 	g.PUT("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit), middleware.ResolveServerPanel, proxyServerRequest)
 	g.DELETE("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit), middleware.ResolveServerPanel, proxyServerRequest)
 	g.POST("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit), middleware.ResolveServerPanel, proxyServerRequest)
@@ -143,7 +143,7 @@ func registerServers(g *gin.RouterGroup) {
 // @Param limit query uint false "Max number of results to return"
 // @Param page query uint false "What page to get back for many results"
 // @Router /api/servers [get]
-// @Security OAuth2Application[servers.view]
+// @Security OAuth2Application[server.view]
 func searchServers(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -238,7 +238,7 @@ func searchServers(c *gin.Context) {
 // @Success 200 {object} models.GetServerResponse
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id} [get]
-// @Security OAuth2Application[servers.view]
+// @Security OAuth2Application[server.view]
 func getServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -275,7 +275,7 @@ func getServer(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param server body models.ServerCreation true "Creation information"
 // @Router /api/servers/{id} [put]
-// @Security OAuth2Application[servers.create]
+// @Security OAuth2Application[server.create]
 func createServer(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -363,7 +363,7 @@ func createServer(c *gin.Context) {
 			pufferpanel.ScopeServerViewData,
 			pufferpanel.ScopeServerClientView,
 			pufferpanel.ScopeServerClientEdit,
-			pufferpanel.ScopeServerClientAdd,
+			pufferpanel.ScopeServerClientCreate,
 			pufferpanel.ScopeServerClientDelete,
 			pufferpanel.ScopeServerUserView,
 			pufferpanel.ScopeServerUserCreate,
@@ -378,7 +378,7 @@ func createServer(c *gin.Context) {
 			pufferpanel.ScopeServerStop,
 			pufferpanel.ScopeServerKill,
 			pufferpanel.ScopeServerInstall,
-			pufferpanel.ScopeServerFileGet,
+			pufferpanel.ScopeServerFileView,
 			pufferpanel.ScopeServerFileEdit,
 			pufferpanel.ScopeServerSftp,
 			pufferpanel.ScopeServerConsole,
@@ -453,6 +453,7 @@ func createServer(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param server body models.ServerWithName true "Server definition"
 // @Router /api/servers/{id}/definition [put]
+// @Security OAuth2Application[server.edit.definition]
 func editServer(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -524,7 +525,7 @@ func editServer(c *gin.Context) {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id} [delete]
-// @Security OAuth2Application[servers.delete]
+// @Security OAuth2Application[server.delete]
 func deleteServer(c *gin.Context) {
 	var err error
 
@@ -614,7 +615,7 @@ func deleteServer(c *gin.Context) {
 // @Success 200 {object} []models.PermissionView
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/user [get]
-// @Security OAuth2Application[servers.edit.users]
+// @Security OAuth2Application[server.users.view]
 func getServerUsers(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -650,6 +651,7 @@ func getServerUsers(c *gin.Context) {
 // @Param email path string true "Email of user"
 // @Param body body models.PermissionView true "New permissions to apply"
 // @Router /api/servers/{id}/users/{email} [put]
+// @Security OAuth2Application[server.users.edit]
 func editServerUser(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -764,6 +766,7 @@ func editServerUser(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param email path string true "Email of user"
 // @Router /api/servers/{id}/users/{email} [delete]
+// @Security OAuth2Application[server.users.delete]
 func removeServerUser(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -822,6 +825,7 @@ func removeServerUser(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param name body pufferpanel.Name true "New server name"
 // @Router /api/servers/{id}/name [post]
+// @Security OAuth2Application[server.edit.name]
 func renameServer(c *gin.Context) {
 	var err error
 
@@ -862,6 +866,7 @@ func renameServer(c *gin.Context) {
 // @Success 200 {object} []models.Client
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/oauth2 [get]
+// @Security OAuth2Application[server.clients.view]
 func getOAuth2Clients(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	server := getServerFromGin(c)
@@ -882,6 +887,7 @@ func getOAuth2Clients(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param body body models.Client false "Client to create"
 // @Router /api/servers/{id}/oauth2 [post]
+// @Security OAuth2Application[server.clients.create]
 func createOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	server := getServerFromGin(c)
@@ -933,6 +939,7 @@ func createOAuth2Client(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param clientId path string true "Client ID"
 // @Router /api/servers/{id}/oauth2/{clientId} [delete]
+// @Security OAuth2Application[server.clients.delete]
 func deleteOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	server := getServerFromGin(c)
@@ -966,6 +973,7 @@ func deleteOAuth2Client(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param server body pufferpanel.ServerData true "Server variables"
 // @Router /api/servers/{id}/data [put]
+// @Security OAuth2Application[server.edit.data]
 func editServerData(c *gin.Context) {
 	server := getServerFromGin(c)
 

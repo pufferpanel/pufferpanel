@@ -29,7 +29,7 @@ func registerInfo(g *gin.RouterGroup) {
 // @Failure 401 {object} oauth2.ErrorResponse
 // @Failure 500 {object} oauth2.ErrorResponse
 // @Router /oauth2/introspect [post]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[oauth2.auth]
 func handleInfoRequest(c *gin.Context) {
 	header := strings.TrimSpace(c.GetHeader("Authorization"))
 	if header == "" {

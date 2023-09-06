@@ -133,6 +133,7 @@ func getServerFromGin(c *gin.Context) *servers.Server {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/start [post]
+// @Security OAuth2Application[server.start]
 func startServer(c *gin.Context) {
 	server := getServerFromGin(c)
 	_, wait := c.GetQuery("wait")
@@ -160,6 +161,7 @@ func startServer(c *gin.Context) {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/stop [post]
+// @Security OAuth2Application[server.stop]
 func stopServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -185,7 +187,8 @@ func stopServer(c *gin.Context) {
 // @Description Kill server
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
-// @Router /api/servers/{id}/start [post]
+// @Router /api/servers/{id}/kill [post]
+// @Security OAuth2Application[server.kill]
 func killServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -196,13 +199,7 @@ func killServer(c *gin.Context) {
 	}
 }
 
-// @Summary Create server
-// @Description Create server
-// @Success 200 {object} pufferpanel.ServerIdResponse
-// @Param id path string false "Server ID"
-// @Param server body pufferpanel.Server true "Server definition"
-// @Router /api/servers/{id} [put]
-// @Router /api/servers [post]
+// Already declared in panel routing
 func createServer(c *gin.Context) {
 	serverId := c.Param("serverId")
 	if serverId == "" {
@@ -243,11 +240,7 @@ func createServer(c *gin.Context) {
 	c.JSON(http.StatusOK, &pufferpanel.ServerIdResponse{Id: serverId})
 }
 
-// @Summary Delete server
-// @Description Delete server
-// @Success 204 {object} nil
-// @Param id path string true "Server ID"
-// @Router /api/servers/{id} [delete]
+// Already declared in panel routing
 func deleteServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -264,6 +257,7 @@ func deleteServer(c *gin.Context) {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/install [post]
+// @Security OAuth2Application[server.install]
 func installServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -306,6 +300,7 @@ func editServerData(c *gin.Context) {
 // @Success 200 {object} pufferpanel.ServerTasks
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/tasks [get]
+// @Security OAuth2Application[server.tasks.view]
 func getServerTasks(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -333,6 +328,7 @@ func getServerTasks(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param taskId path string true "Task ID"
 // @Router /api/servers/{id}/tasks/{taskId} [get]
+// @Security OAuth2Application[server.tasks.view]
 func getServerTask(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -358,6 +354,7 @@ func getServerTask(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param taskId path string true "Task ID"
 // @Router /api/servers/{id}/tasks/{taskId}/run [post]
+// @Security OAuth2Application[server.tasks.run]
 func runServerTask(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -381,6 +378,7 @@ func runServerTask(c *gin.Context) {
 // @Param taskId path string true "Task ID"
 // @Param task body pufferpanel.Task true "Task definition"
 // @Router /api/servers/{id}/tasks/{taskId} [put]
+// @Security OAuth2Application[server.tasks.edit]
 func editServerTask(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -413,6 +411,7 @@ func editServerTask(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param taskId path string true "Task ID"
 // @Router /api/servers/{id}/tasks/{taskId} [delete]
+// @Security OAuth2Application[server.tasks.delete]
 func deleteServerTask(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -440,6 +439,7 @@ func deleteServerTask(c *gin.Context) {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/reload [post]
+// @Security OAuth2Application[server.reload]
 func reloadServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -455,6 +455,7 @@ func reloadServer(c *gin.Context) {
 // @Success 200 {object} pufferpanel.ServerData
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/data [get]
+// @Security OAuth2Application[server.view.data]
 func getServerData(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -476,6 +477,7 @@ func getServerData(c *gin.Context) {
 // @Success 200 {object} pufferpanel.Server
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/definition [get]
+// @Security OAuth2Application[server.view.definition]
 func getServerAdmin(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -488,6 +490,7 @@ func getServerAdmin(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param server body pufferpanel.Server true "New definition"
 // @Router /api/servers/{id}/definition [post]
+// @Security OAuth2Application[server.edit.definition]
 func editServerAdmin(c *gin.Context) {
 	prg := getServerFromGin(c)
 	server := &prg.Server

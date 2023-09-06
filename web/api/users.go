@@ -48,7 +48,7 @@ func registerUsers(g *gin.RouterGroup) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param body body models.UserSearch true "Filters to search on"
 // @Router /api/users [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[users.info.search]
 func searchUsers(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -89,7 +89,7 @@ func searchUsers(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param body body models.UserView true "New user information"
 // @Router /api/users [post]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[users.info.edit]
 func createUser(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -129,7 +129,7 @@ func createUser(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path uint true "User ID"
 // @Router /api/users/{id} [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[users.info.view]
 func getUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -158,7 +158,7 @@ func getUser(c *gin.Context) {
 // @Param id path uint true "User ID"
 // @Param body body models.UserView true "New user information"
 // @Router /api/users/{id} [post]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[users.info.edit]
 func updateUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -201,7 +201,7 @@ func updateUser(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path uint true "User ID"
 // @Router /api/users/{id} [delete]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[users.info.edit]
 func deleteUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -233,7 +233,7 @@ func deleteUser(c *gin.Context) {
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Param id path uint true "User ID"
 // @Router /api/users/{id}/perms [get]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[users.perms.view]
 func getUserPerms(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -268,7 +268,7 @@ func getUserPerms(c *gin.Context) {
 // @Param id path uint true "User ID"
 // @Param body body models.PermissionView true "New permissions"
 // @Router /api/users/{id}/perms [put]
-// @Security OAuth2Application[none]
+// @Security OAuth2Application[users.perms.edit]
 func setUserPerms(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}

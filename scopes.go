@@ -18,7 +18,7 @@ import "encoding/json"
 type Scope struct {
 	Value     string
 	ForServer bool
-}
+} // @name Scopes
 
 var (
 	ScopeAdmin       = registerNonServerScope("admin")
@@ -46,22 +46,23 @@ var (
 
 	ScopeServerClientView   = registerServerScope("server.clients.view")
 	ScopeServerClientEdit   = registerServerScope("server.clients.edit")
-	ScopeServerClientAdd    = registerServerScope("server.clients.add")
+	ScopeServerClientCreate = registerServerScope("server.clients.create")
 	ScopeServerClientDelete = registerServerScope("server.clients.delete")
 	ScopeServerUserView     = registerServerScope("server.users.view")
-	ScopeServerUserCreate   = registerServerScope("server.users.add")
+	ScopeServerUserCreate   = registerServerScope("server.users.create")
 	ScopeServerUserEdit     = registerServerScope("server.users.edit")
 	ScopeServerUserDelete   = registerServerScope("server.users.delete")
 	ScopeServerTaskView     = registerServerScope("server.tasks.view")
 	ScopeServerTaskRun      = registerServerScope("server.tasks.run")
 	ScopeServerTaskCreate   = registerServerScope("server.tasks.create")
 	ScopeServerTaskDelete   = registerServerScope("server.tasks.delete")
+	ScopeServerTaskEdit     = registerServerScope("server.tasks.edit")
 	ScopeServerReload       = registerServerScope("server.reload")
 	ScopeServerStart        = registerServerScope("server.start")
 	ScopeServerStop         = registerServerScope("server.stop")
 	ScopeServerKill         = registerServerScope("server.kill")
 	ScopeServerInstall      = registerServerScope("server.install")
-	ScopeServerFileGet      = registerServerScope("server.files.get")
+	ScopeServerFileView     = registerServerScope("server.files.view")
 	ScopeServerFileEdit     = registerServerScope("server.files.edit")
 	ScopeServerSftp         = registerServerScope("server.sftp")
 	ScopeServerConsole      = registerServerScope("server.console")
@@ -72,8 +73,8 @@ var (
 	ScopeSettingsEdit        = registerNonServerScope("settings.edit")
 	ScopeTemplatesView       = registerNonServerScope("templates.view")
 	ScopeTemplatesLocalEdit  = registerNonServerScope("templates.local.edit")
-	ScopeTemplatesRepoAdd    = registerNonServerScope("templates.repo.add")
-	ScopeTemplatesRepoDelete = registerNonServerScope("templates.repo.remove")
+	ScopeTemplatesRepoCreate = registerNonServerScope("templates.repo.create")
+	ScopeTemplatesRepoDelete = registerNonServerScope("templates.repo.delete")
 
 	ScopeUserInfoSearch = registerNonServerScope("users.info.search")
 	ScopeUserInfoView   = registerNonServerScope("users.info.view")
