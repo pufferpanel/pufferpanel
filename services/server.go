@@ -48,7 +48,7 @@ func (ss *Server) Search(searchCriteria ServerSearch) (records []*models.Server,
 	}
 
 	if searchCriteria.Username != "" {
-		query = query.Joins("JOIN permissions p ON servers.identifier = p.server_identifier AND p.view_server = '1'")
+		query = query.Joins("JOIN permissions p ON servers.identifier = p.server_identifier")
 		query = query.Joins("JOIN users ON p.user_id = users.id")
 		query = query.Where("users.username = ?", searchCriteria.Username)
 	}

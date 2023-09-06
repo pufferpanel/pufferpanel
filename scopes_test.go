@@ -38,37 +38,37 @@ func TestUpdateScopesWhereGranted(t *testing.T) {
 			name: "Add one",
 			args: args{
 				source:  []*Scope{},
-				desired: []*Scope{ScopeServerList},
-				changer: []*Scope{ScopeServerList},
+				desired: []*Scope{ScopeServerView},
+				changer: []*Scope{ScopeServerView},
 			},
-			want: []*Scope{ScopeServerList},
+			want: []*Scope{ScopeServerView},
 		},
 		{
 			name: "Remove one",
 			args: args{
-				source:  []*Scope{ScopeServerList, ScopeServerStart},
-				desired: []*Scope{ScopeServerList},
-				changer: []*Scope{ScopeServerList, ScopeServerStart},
+				source:  []*Scope{ScopeServerView, ScopeServerStart},
+				desired: []*Scope{ScopeServerView},
+				changer: []*Scope{ScopeServerView, ScopeServerStart},
 			},
-			want: []*Scope{ScopeServerList},
+			want: []*Scope{ScopeServerView},
 		},
 		{
 			name: "Add but don't have perms",
 			args: args{
-				source:  []*Scope{ScopeServerList, ScopeServerSftp},
+				source:  []*Scope{ScopeServerView, ScopeServerSftp},
 				desired: []*Scope{ScopeServerAdmin},
 				changer: []*Scope{ScopeServerReload},
 			},
-			want: []*Scope{ScopeServerList, ScopeServerSftp},
+			want: []*Scope{ScopeServerView, ScopeServerSftp},
 		},
 		{
 			name: "Add and source has others",
 			args: args{
-				source:  []*Scope{ScopeServerList, ScopeServerSftp},
-				desired: []*Scope{ScopeServerLogs},
-				changer: []*Scope{ScopeServerLogs},
+				source:  []*Scope{ScopeServerView, ScopeServerSftp},
+				desired: []*Scope{ScopeServerConsole},
+				changer: []*Scope{ScopeServerConsole},
 			},
-			want: []*Scope{ScopeServerList, ScopeServerSftp, ScopeServerLogs},
+			want: []*Scope{ScopeServerView, ScopeServerSftp, ScopeServerConsole},
 		},
 	}
 	for _, tt := range tests {

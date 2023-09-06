@@ -42,6 +42,11 @@ func (p *Permissions) BeforeSave(*gorm.DB) error {
 		p.ServerIdentifier = nil
 	}
 
+	if p.ServerIdentifier != nil {
+		//ensure they have the view, because we're saving them back in
+		p.Scopes = pufferpanel.AddScope(p.Scopes, pufferpanel.ScopeServerView)
+	}
+
 	tmp := make([]string, len(p.Scopes))
 	for k, v := range p.Scopes {
 		tmp[k] = v.String()
