@@ -149,7 +149,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []*
 					switch strings.ToLower(action) {
 					case "get":
 						{
-							if !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerFileGet) {
+							if !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerFileView) {
 								break
 							}
 

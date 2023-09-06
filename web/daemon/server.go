@@ -97,6 +97,10 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.POST("/:serverId/console", middleware.IsPanelCaller, middleware.ResolveServerNode, postConsole)
 		l.OPTIONS("/:serverId/console", response.CreateOptions("GET", "POST"))
 
+		l.GET("/:serverId/flags", middleware.IsPanelCaller, middleware.ResolveServerNode, getFlags)
+		l.POST("/:serverId/flags", middleware.IsPanelCaller, middleware.ResolveServerNode, setFlags)
+		l.OPTIONS("/:serverId/flags", response.CreateOptions("GET", "POST"))
+
 		l.GET("/:serverId/stats", middleware.IsPanelCaller, middleware.ResolveServerNode, getStats)
 		l.OPTIONS("/:serverId/stats", response.CreateOptions("GET"))
 
@@ -704,6 +708,40 @@ func extract(c *gin.Context) {
 	} else {
 		c.Status(http.StatusNoContent)
 	}
+}
+
+func getFlags(c *gin.Context) {
+	server := getServerFromGin(c)
+
+	c.JSON(http.StatusOK, &pufferpanel.ServerFlags{
+		AutoStart:             &server.Execution.AutoStart,
+		AutoRestartOnCrash:    &server.Execution.AutoRestartFromCrash,
+		AutoRestartOnGraceful: &server.Execution.AutoRestartFromGraceful,
+	})
+}
+
+func setFlags(c *gin.Context) {
+	server := getServerFromGin(c)
+
+	var req pufferpanel.ServerFlags
+	err := c.BindJSON(&req)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+	if req.AutoRestartOnCrash != nil {
+		server.Execution.AutoRestartFromCrash = *req.AutoRestartOnCrash
+	}
+	if req.AutoRestartOnGraceful != nil {
+		server.Execution.AutoRestartFromGraceful = *req.AutoRestartOnGraceful
+	}
+	if req.AutoStart != nil {
+		server.Execution.AutoStart = *req.AutoStart
+	}
+	err = server.Save()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+	c.Status(http.StatusNoContent)
 }
 
 func openSocket(c *gin.Context) {

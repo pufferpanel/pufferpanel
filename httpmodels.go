@@ -66,3 +66,9 @@ type Paging struct {
 	MaxSize uint  `json:"maxSize"`
 	Total   int64 `json:"total"`
 } //@name Paging
+
+type ServerFlags struct {
+	AutoStart             *bool `json:"autoStart,omitempty"`
+	AutoRestartOnCrash    *bool `json:"autoRestartOnCrash,omitempty"`
+	AutoRestartOnGraceful *bool `json:"autoRestartOnGraceful,omitempty"`
+} //@name ServerFlags
