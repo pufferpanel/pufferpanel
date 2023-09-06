@@ -58,14 +58,14 @@ func listenOnSocket(conn *pufferpanel.Socket, server *servers.Server, scopes []*
 			switch strings.ToLower(message) {
 			case "replay":
 				{
-					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerLogs) {
+					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerConsole) {
 						console, _ := server.GetEnvironment().GetConsole()
 						_ = conn.WriteMessage(messages.Console{Logs: console})
 					}
 				}
 			case "stat":
 				{
-					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerStat) {
+					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerStats) {
 						results, err := server.GetEnvironment().GetStats()
 						msg := messages.Stat{}
 						if err != nil {

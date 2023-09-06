@@ -57,32 +57,56 @@ var clientFiles fs.ReadFileFS
 // @securitydefinitions.oauth2.application OAuth2Application
 // @tokenUrl /oauth2/token
 // @scope.none No scope needed
+// @scope.admin Administrator, full rights to all actions
+// @scope.login Allows logging into the panel
 // @scope.oauth2.auth Scope to validate another OAuth2 credential
-// @scope.servers.admin Admin access to all servers
-// @scope.servers.view View servers (only gives basic view)
-// @scope.servers.edit Allows full editing of a server
-// @scope.servers.edit.admin Allows admin-level editing of a server
-// @scope.servers.edit.users Allows user-level editing of a server
-// @scope.servers.create Allows creating servers
-// @scope.servers.delete Allows deleting servers
-// @scope.servers.install Allows using the "Install" button for a server
-// @scope.servers.update Allows using the "Update" button for a server
-// @scope.servers.console Allows viewing the console of a server
-// @scope.servers.console.send Allows sending commands to a server's console
-// @scope.servers.stop Allows stopping a server
-// @scope.servers.start Allow starting a server
-// @scope.servers.stats Allows getting stats of a server like CPU and memory usage
-// @scope.servers.sftp Allows connection to a server over SFTP
-// @scope.servers.files.get Allows viewing and downloading files for a server through the File Manager
-// @scope.servers.files.put Allows editing files for a server through the File Manager
 // @scope.nodes.view Allows viewing nodes
 // @scope.nodes.edit Allows editing of node connection information
 // @scope.nodes.deploy Allows getting the config of a node for deployment
+// @scope.self.edit Allows editing of personal account
+// @scope.self.clients Allows creating OAuth2 clients under the account
+// @scope.server.admin Admin access to a server (full permissions)
+// @scope.server.view Allows viewing a server
+// @scope.server.create Allows creating servers
+// @scope.server.delete Allows deleting servers
+// @scope.server.edit.definition Allows editing a server's definition
+// @scope.server.edit.data Allows editing the values of variables
+// @scope.server.edit.flags Allows changing flags on the server
+// @scope.server.edit.name Allows editing of a server name
+// @scope.server.view.definition Allows viewing a server's definition
+// @scope.server.view.data Allows viewing a server's variables
+// @scope.server.view.flags Allows viewing a server's flags
+// @scope.server.clients.view Allows viewing OAuth2 clients associated to a server
+// @scope.server.clients.edit Allows editing OAuth2 clients associated to a server
+// @scope.server.clients.add Allows adding a new OAuth2 client to a server
+// @scope.server.clients.delete Allows deleting OAuth2 clients associated to a server
+// @scope.server.users.view Allows viewing users associated to a server
+// @scope.server.users.edit Allows editing user permissions to a server
+// @scope.server.users.add Allows adding a new user to a server
+// @scope.server.users.delete Allows removing users from to a server
+// @scope.server.tasks.view Allows viewing tasks associated to a server
+// @scope.server.tasks.edit Allows editing tasks associated to a server
+// @scope.server.tasks.add Allows adding a new tasks to a server
+// @scope.server.tasks.delete Allows deleting tasks from to a server
+// @scope.server.reload Allows reloading of a server's definition from disk
+// @scope.server.start Allow starting a server
+// @scope.server.stop Allows stopping a server
+// @scope.server.kill Allows killing a server
+// @scope.server.install Allows using the "Install" button for a server
+// @scope.server.files.get Allows viewing and downloading files for a server through the File Manager
+// @scope.server.files.edit Allows editing files for a server through the File Manager
+// @scope.server.sftp Allows connection to a server over SFTP
+// @scope.server.console Allows viewing the console of a server
+// @scope.server.console.send Allows sending commands to a server's console
+// @scope.server.stats Allows getting stats of a server like CPU and memory usage
+// @scope.server.status Allows getting the status of a server
+// @scope.panel.settings.edit Allows for viewing and editing of panel settings
 // @scope.templates.view Allows viewing templates
-// @scope.templates.edit Allows editing of templates
+// @scope.templates.local.edit Allows editing of templates in the local repo
+// @scope.templates.repo.add Allows adding a new template repo
+// @scope.templates.repo.delete Allows deleting of a template repo
 // @scope.users.view Allows viewing all registered users
 // @scope.users.edit Allows editing of all users
-// @scope.panel.settings Allows for viewing and editing of panel settings
 func RegisterRoutes(e *gin.Engine) {
 	e.Use(func(c *gin.Context) {
 		middleware.Recover(c)

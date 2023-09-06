@@ -21,33 +21,33 @@ type Scope struct {
 }
 
 var (
-	ScopeAdmin            = registerNonServerScope("admin")
-	ScopeLogin            = registerNonServerScope("login")        //can you log in
-	ScopeOAuth2Auth       = registerNonServerScope("oauth2.auth")  //can you validate user credentials over OAuth2
-	ScopeNodesView        = registerNonServerScope("nodes.view")   //can you globally view nodes
-	ScopeNodesCreate      = registerNonServerScope("nodes.create") //can you create nodes
-	ScopeNodesEdit        = registerNonServerScope("nodes.edit")   //can you edit an existing node
-	ScopeNodesDelete      = registerNonServerScope("nodes.delete") //can you delete a node
-	ScopeNodesDeploy      = registerNonServerScope("nodes.deploy") //can you deploy the node (this has secret info, which is why it's special)
-	ScopeSelfEdit         = registerNonServerScope("self.edit")    //can you manage your own account
-	ScopeSelfClients      = registerNonServerScope("self.clients") //can the user create and manage OAuth2 clients for their own account
-	ScopeSelfSettingsView = registerNonServerScope("self.settings.view")
-	ScopeSelfSettingsEdit = registerNonServerScope("self.settings.edit")
+	ScopeAdmin       = registerNonServerScope("admin")
+	ScopeLogin       = registerNonServerScope("login")        //can you log in
+	ScopeOAuth2Auth  = registerNonServerScope("oauth2.auth")  //can you validate user credentials over OAuth2
+	ScopeNodesView   = registerNonServerScope("nodes.view")   //can you globally view nodes
+	ScopeNodesCreate = registerNonServerScope("nodes.create") //can you create nodes
+	ScopeNodesEdit   = registerNonServerScope("nodes.edit")   //can you edit an existing node
+	ScopeNodesDelete = registerNonServerScope("nodes.delete") //can you delete a node
+	ScopeNodesDeploy = registerNonServerScope("nodes.deploy") //can you deploy the node (this has secret info, which is why it's special)
+	ScopeSelfEdit    = registerNonServerScope("self.edit")    //can you manage your own account
+	ScopeSelfClients = registerNonServerScope("self.clients") //can the user create and manage OAuth2 clients for their own account
 
-	ScopeServerList         = registerNonServerScope("servers.list")
-	ScopeServerCreate       = registerNonServerScope("server.create")
-	ScopeServerAdmin        = registerServerScope("server.admin")
-	ScopeServerDelete       = registerServerScope("server.delete")
-	ScopeServerEditAdmin    = registerServerScope("server.edit.admin")
-	ScopeServerEditData     = registerServerScope("server.edit.data")
-	ScopeServerEditFlags    = registerServerScope("server.edit.flags")
-	ScopeServerEditName     = registerServerScope("server.edit.name")
-	ScopeServerViewAdmin    = registerServerScope("server.view.admin")
-	ScopeServerViewData     = registerServerScope("server.view.data")
-	ScopeServerClientView   = registerServerScope("server.client.view")
-	ScopeServerClientEdit   = registerServerScope("server.client.edit")
-	ScopeServerClientAdd    = registerServerScope("server.client.add")
-	ScopeServerClientDelete = registerServerScope("server.client.delete")
+	ScopeServerCreate         = registerNonServerScope("server.create")
+	ScopeServerView           = registerServerScope("server.view")
+	ScopeServerAdmin          = registerServerScope("server.admin")
+	ScopeServerDelete         = registerServerScope("server.delete")
+	ScopeServerEditDefinition = registerServerScope("server.edit.definition")
+	ScopeServerEditData       = registerServerScope("server.edit.data")
+	ScopeServerEditFlags      = registerServerScope("server.edit.flags")
+	ScopeServerEditName       = registerServerScope("server.edit.name")
+	ScopeServerViewDefinition = registerServerScope("server.view.definition")
+	ScopeServerViewData       = registerServerScope("server.view.data")
+	ScopeServerViewFlags      = registerServerScope("server.view.flags")
+
+	ScopeServerClientView   = registerServerScope("server.clients.view")
+	ScopeServerClientEdit   = registerServerScope("server.clients.edit")
+	ScopeServerClientAdd    = registerServerScope("server.clients.add")
+	ScopeServerClientDelete = registerServerScope("server.clients.delete")
 	ScopeServerUserView     = registerServerScope("server.users.view")
 	ScopeServerUserCreate   = registerServerScope("server.users.add")
 	ScopeServerUserEdit     = registerServerScope("server.users.edit")
@@ -64,15 +64,14 @@ var (
 	ScopeServerFileGet      = registerServerScope("server.files.get")
 	ScopeServerFileEdit     = registerServerScope("server.files.edit")
 	ScopeServerSftp         = registerServerScope("server.sftp")
-	ScopeServerLogs         = registerServerScope("server.logs")
+	ScopeServerConsole      = registerServerScope("server.console")
 	ScopeServerSendCommand  = registerServerScope("server.console.send")
-	ScopeServerStat         = registerServerScope("server.stat")
+	ScopeServerStats        = registerServerScope("server.stats")
 	ScopeServerStatus       = registerServerScope("server.status")
 
 	ScopeSettingsEdit        = registerNonServerScope("settings.edit")
 	ScopeTemplatesView       = registerNonServerScope("templates.view")
-	ScopeTemplatesEdit       = registerNonServerScope("templates.local.edit")
-	ScopeTemplatesRepoView   = registerNonServerScope("templates.repo.view")
+	ScopeTemplatesLocalEdit  = registerNonServerScope("templates.local.edit")
 	ScopeTemplatesRepoAdd    = registerNonServerScope("templates.repo.add")
 	ScopeTemplatesRepoDelete = registerNonServerScope("templates.repo.remove")
 

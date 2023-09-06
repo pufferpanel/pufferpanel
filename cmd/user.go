@@ -150,7 +150,9 @@ func addUser(cmd *cobra.Command, args []string) {
 			return err
 		}
 
-		perms.Scopes = pufferpanel.AddScope(pufferpanel.AddScope(perms.Scopes, pufferpanel.ScopeAdmin), pufferpanel.ScopeServerList)
+		if answers.Admin {
+			perms.Scopes = pufferpanel.AddScope(perms.Scopes, pufferpanel.ScopeAdmin)
+		}
 
 		err = ps.UpdatePermissions(perms)
 		if err != nil {

@@ -39,10 +39,10 @@ import (
 )
 
 func registerServers(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeServerList), searchServers)
+	g.Handle("GET", "", searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerList), middleware.ResolveServerPanel, getServer)
+	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerView), middleware.ResolveServerPanel, getServer)
 	g.Handle("PUT", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerCreate), middleware.ResolveServerNode, middleware.HasTransaction, createServer)
 	g.Handle("DELETE", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServerDelete), middleware.ResolveServerPanel, middleware.HasTransaction, deleteServer)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
@@ -51,8 +51,8 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/:serverId/name", response.CreateOptions("PUT"))
 	g.Handle("OPTIONS", "/:serverId/name/:name", response.CreateOptions("PUT"))
 
-	g.Handle("GET", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServerViewAdmin), middleware.ResolveServerPanel, proxyServerRequest)
-	g.Handle("PUT", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServerEditAdmin), middleware.ResolveServerPanel, middleware.HasTransaction, editServer)
+	g.Handle("GET", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServerViewDefinition), middleware.ResolveServerPanel, proxyServerRequest)
+	g.Handle("PUT", "/:serverId/definition", middleware.RequiresPermission(pufferpanel.ScopeServerEditDefinition), middleware.ResolveServerPanel, middleware.HasTransaction, editServer)
 	g.Handle("OPTIONS", "/:serverId/definition", response.CreateOptions("PUT", "GET"))
 
 	g.Handle("GET", "/:serverId/user", middleware.RequiresPermission(pufferpanel.ScopeServerUserView), middleware.ResolveServerPanel, getServerUsers)
@@ -104,11 +104,11 @@ func registerServers(g *gin.RouterGroup) {
 	g.POST("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/file/*filename", response.CreateOptions("GET", "PUT", "DELETE", "POST"))
 
-	g.GET("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServerLogs), middleware.ResolveServerPanel, proxyServerRequest)
+	g.GET("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServerConsole), middleware.ResolveServerPanel, proxyServerRequest)
 	g.POST("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServerSendCommand), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/console", response.CreateOptions("GET", "POST"))
 
-	g.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServerStat), middleware.ResolveServerPanel, proxyServerRequest)
+	g.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServerStats), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/stats", response.CreateOptions("GET"))
 
 	g.GET("/:serverId/status", middleware.RequiresPermission(pufferpanel.ScopeServerStatus), middleware.ResolveServerPanel, proxyServerRequest)
@@ -122,11 +122,11 @@ func registerServers(g *gin.RouterGroup) {
 
 	p := g.Group("/:serverId/socket")
 	{
-		p.GET("", middleware.RequiresPermission(pufferpanel.ScopeServerLogs), cors.New(cors.Config{
+		p.GET("", middleware.RequiresPermission(pufferpanel.ScopeServerView), cors.New(cors.Config{
 			AllowAllOrigins:  true,
 			AllowCredentials: true,
 		}), middleware.ResolveServerPanel, proxyServerRequest)
-		p.Handle("CONNECT", "", middleware.RequiresPermission(pufferpanel.ScopeServerLogs), func(c *gin.Context) {
+		p.Handle("CONNECT", "", middleware.RequiresPermission(pufferpanel.ScopeServerView), func(c *gin.Context) {
 			c.Header("Access-Control-Allow-Origin", "*")
 			c.Header("Access-Control-Allow-Credentials", "false")
 		})
@@ -237,7 +237,7 @@ func searchServers(c *gin.Context) {
 // @Description Gets a particular server
 // @Success 200 {object} models.GetServerResponse
 // @Param id path string true "Server ID"
-// @Router /api/servers/{id}/definition [get]
+// @Router /api/servers/{id} [get]
 // @Security OAuth2Application[servers.view]
 func getServer(c *gin.Context) {
 	server := getServerFromGin(c)
@@ -355,7 +355,7 @@ func createServer(c *gin.Context) {
 		}
 
 		perm.Scopes = []*pufferpanel.Scope{
-			pufferpanel.ScopeServerList,
+			pufferpanel.ScopeServerView,
 			pufferpanel.ScopeServerViewData,
 			pufferpanel.ScopeServerEditData,
 			pufferpanel.ScopeServerEditFlags,
@@ -381,9 +381,9 @@ func createServer(c *gin.Context) {
 			pufferpanel.ScopeServerFileGet,
 			pufferpanel.ScopeServerFileEdit,
 			pufferpanel.ScopeServerSftp,
-			pufferpanel.ScopeServerLogs,
+			pufferpanel.ScopeServerConsole,
 			pufferpanel.ScopeServerSendCommand,
-			pufferpanel.ScopeServerStat,
+			pufferpanel.ScopeServerStats,
 			pufferpanel.ScopeServerStatus,
 		}
 

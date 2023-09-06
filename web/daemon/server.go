@@ -718,7 +718,7 @@ func openSocket(c *gin.Context) {
 
 	go listenOnSocket(socket, server, scopes)
 
-	if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerLogs) {
+	if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerConsole) {
 		server.GetEnvironment().AddListener(socket)
 	}
 }

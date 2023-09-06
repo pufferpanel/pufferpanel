@@ -29,16 +29,16 @@ import (
 
 func registerTemplates(g *gin.RouterGroup) {
 	g.Handle("GET", "/", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView), getRepos)
-	g.Handle("POST", "/", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit), addRepo)
+	g.Handle("POST", "/", middleware.RequiresPermission(pufferpanel.ScopeTemplatesRepoAdd), addRepo)
 	g.Handle("OPTIONS", "/", response.CreateOptions("GET", "POST"))
 
 	g.Handle("GET", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView), getsTemplatesForRepo)
-	g.Handle("DELETE", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit), deleteRepo)
+	g.Handle("DELETE", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesRepoDelete), deleteRepo)
 	g.Handle("OPTIONS", "/:repo", response.CreateOptions("GET", "PUT", "DELETE"))
 
 	g.Handle("GET", "/:repo/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView), getTemplateFromRepo)
-	g.Handle("DELETE", "/0/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit), deleteTemplate)
-	g.Handle("PUT", "/0/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit), putTemplate)
+	g.Handle("DELETE", "/0/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesLocalEdit), deleteTemplate)
+	g.Handle("PUT", "/0/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesLocalEdit), putTemplate)
 	g.Handle("OPTIONS", "/:repo/:name", response.CreateOptions("GET"))
 	g.Handle("OPTIONS", "/0/:name", response.CreateOptions("GET", "DELETE", "PUT"))
 }
