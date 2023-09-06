@@ -718,10 +718,8 @@ func (p *Server) RunCondition(condition interface{}, extraData map[string]interf
 		conditions.VariableServerId: p.Id(),
 	}
 
-	if extraData != nil {
-		for k, v := range extraData {
-			data[k] = v
-		}
+	for k, v := range extraData {
+		data[k] = v
 	}
 
 	if p.Variables != nil {

@@ -33,11 +33,9 @@ func ResolveIf(condition interface{}, data map[string]interface{}, extraCels []c
 
 	inputData := map[string]interface{}{}
 
-	if data != nil {
-		for k, v := range data {
-			celVars = append(celVars, cel.Variable(k, cel.AnyType))
-			inputData[k] = v
-		}
+	for k, v := range data {
+		celVars = append(celVars, cel.Variable(k, cel.AnyType))
+		inputData[k] = v
 	}
 
 	for k, v := range GlobalConstantValues {

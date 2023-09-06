@@ -72,7 +72,7 @@ func GetSupportedEnvironments() []string {
 
 	result := make([]string, len(deduper))
 	i := 0
-	for k, _ := range deduper {
+	for k := range deduper {
 		result[i] = k
 		i++
 	}

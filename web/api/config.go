@@ -17,7 +17,7 @@ func panelConfig(c *gin.Context) {
 	var themes []string
 	files, err := os.ReadDir(config.WebRoot.Value() + "/theme")
 	if err != nil {
-		themes = append(themes, "PufferPanel")
+		themes = []string{"PufferPanel"}
 	} else {
 		for _, f := range files {
 			if !f.IsDir() && strings.HasSuffix(f.Name(), ".tar") {

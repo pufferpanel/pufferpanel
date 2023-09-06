@@ -112,7 +112,7 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 		return nil, err
 	}
 
-	data.Scheduler, err = LoadScheduler(data.Id())
+	data.Scheduler, _ = LoadScheduler(data.Id())
 	if data.Scheduler == nil {
 		data.Scheduler = NewDefaultScheduler(data.Id())
 		data.Scheduler.Init()

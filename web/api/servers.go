@@ -671,18 +671,18 @@ func editServerUser(c *gin.Context) {
 
 	server := getServerFromGin(c)
 
+	currentUser := c.MustGet("user").(*models.User)
+	currentPerms, err := ps.GetForUserAndServer(currentUser.ID, &server.Identifier)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
 	var registerToken string
 	var user *models.User
 	if email != "" {
 		user, err = us.GetByEmail(email)
 	} else {
 		user, err = us.Get(username)
-	}
-
-	currentUser := c.MustGet("user").(*models.User)
-	currentPerms, err := ps.GetForUserAndServer(currentUser.ID, &server.Identifier)
-	if err != nil && response.HandleError(c, err, http.StatusInternalServerError) {
-		return
 	}
 
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && response.HandleError(c, err, http.StatusInternalServerError) {

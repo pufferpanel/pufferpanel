@@ -38,9 +38,14 @@ type Environment struct {
 	stdInWriter io.Writer
 }
 
-func CreateEnvironment() *Environment {
+func CreateEnvironment(prefix string) *Environment {
+	rootDir := "/var/lib/pufferpanel/testing"
+	if prefix != "" {
+		rootDir = filepath.Join(rootDir, prefix)
+	}
+
 	t := &Environment{
-		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "tty"},
+		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "tty", RootDirectory: rootDir},
 	}
 	t.BaseEnvironment.ExecutionFunction = t.ttyExecuteAsync
 	t.BaseEnvironment.WaitFunction = t.WaitForMainProcess
@@ -220,8 +225,4 @@ func (*Environment) DisplayToConsole(prefix bool, msg string, data ...interface{
 	} else {
 		logging.Info.Printf(msg, data...)
 	}
-}
-
-func (*Environment) GetRootDirectory() string {
-	return "/var/lib/pufferpanel/testing"
 }

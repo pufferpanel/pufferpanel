@@ -45,11 +45,9 @@ func init() {
 		//cycle our tokens every minute, this reduces attack vectors and replay attacks
 		//while we could generate them per-request, this makes it easier
 		ticker := time.NewTicker(time.Minute * 1)
-		select {
-		case <-ticker.C:
-			{
-				_psIssueNewToken()
-			}
+		for {
+			<-ticker.C
+			_psIssueNewToken()
 		}
 	}()
 }
