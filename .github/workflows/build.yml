@@ -13,8 +13,8 @@ on:
       - '.github/workflows/tester.yml'
 
 env:
-  SWAG_VERSION: "1.8.10"
-  GO_VERSION: "1.20"
+  SWAG_VERSION: "1.16.2"
+  GO_VERSION: "1.21"
   NODE_VERSION: "18"
   TINYGO_VERSION: "0.28.1"
 

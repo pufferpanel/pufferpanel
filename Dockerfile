@@ -14,7 +14,7 @@ FROM golang:1.21-alpine AS builder
 ARG tags=docker
 ARG version=devel
 ARG sha=devel
-ARG swagversion=1.8.10
+ARG swagversion=1.16.2
 
 ENV CGOENABLED=1
 
