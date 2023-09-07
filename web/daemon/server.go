@@ -120,7 +120,6 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 			c.Header("Access-Control-Allow-Credentials", "false")
 		})
 		l.OPTIONS("/:serverId/socket", response.CreateOptions("GET", "CONNECT"))
-
 	}
 
 	l.POST("", middleware.IsPanelCaller, createServer)
@@ -752,14 +751,17 @@ func openSocket(c *gin.Context) {
 		return
 	}
 
-	internalMap, _ := c.Get("scopes")
-	scopes := internalMap.([]*pufferpanel.Scope)
-
 	socket := pufferpanel.Create(conn)
 
-	go listenOnSocket(socket, server, scopes)
+	if _, exists := c.Params.Get("console"); exists {
+		server.GetEnvironment().AddConsoleListener(socket)
+	}
 
-	if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerConsole) {
-		server.GetEnvironment().AddListener(socket)
+	if _, exists := c.Params.Get("stats"); exists {
+		server.GetEnvironment().AddStatsListener(socket)
+	}
+
+	if _, exists := c.Params.Get("status"); exists {
+		server.GetEnvironment().AddStatusListener(socket)
 	}
 }

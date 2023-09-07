@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"io"
 	"log"
 	"os"
@@ -61,7 +62,11 @@ type Environment interface {
 
 	GetConsoleFrom(time int64) (console []string, epoch int64)
 
-	AddListener(ws *Socket)
+	AddConsoleListener(ws *Socket)
+
+	AddStatusListener(ws *Socket)
+
+	AddStatsListener(ws *Socket)
 
 	GetStats() (*ServerStats, error)
 
@@ -76,6 +81,8 @@ type Environment interface {
 	GetStdOutConfiguration() ConsoleConfiguration
 
 	GetWrapper() io.Writer
+
+	SendStats()
 }
 
 type BaseEnvironment struct {
@@ -83,7 +90,6 @@ type BaseEnvironment struct {
 	Type              string               `json:"type"`
 	RootDirectory     string               `json:"root,omitempty"`
 	ConsoleBuffer     Cache                `json:"-"`
-	WSManager         *Tracker             `json:"-"`
 	Wait              *sync.WaitGroup      `json:"-"`
 	ExecutionFunction ExecutionFunction    `json:"-"`
 	WaitFunction      func() (err error)   `json:"-"`
@@ -92,6 +98,9 @@ type BaseEnvironment struct {
 	StdOutConfig      ConsoleConfiguration `json:"stdout,omitempty"`
 	StdInConfig       ConsoleConfiguration `json:"stdin,omitempty"`
 	Wrapper           io.Writer            `json:"-"` //our proxy back to the main
+	ConsoleTracker    *Tracker             `json:"-"`
+	StatusTracker     *Tracker             `json:"-"`
+	StatsTracker      *Tracker             `json:"-"`
 }
 
 type ConsoleConfiguration struct {
@@ -140,8 +149,16 @@ func (e *BaseEnvironment) GetConsoleFrom(time int64) (console []string, epoch in
 	return
 }
 
-func (e *BaseEnvironment) AddListener(ws *Socket) {
-	e.WSManager.Register(ws)
+func (e *BaseEnvironment) AddConsoleListener(ws *Socket) {
+	e.ConsoleTracker.Register(ws)
+}
+
+func (e *BaseEnvironment) AddStatListener(ws *Socket) {
+	e.StatsTracker.Register(ws)
+}
+
+func (e *BaseEnvironment) AddStatusListener(ws *Socket) {
+	e.StatusTracker.Register(ws)
 }
 
 func (e *BaseEnvironment) DisplayToConsole(daemon bool, msg string, data ...interface{}) {
@@ -154,10 +171,10 @@ func (e *BaseEnvironment) DisplayToConsole(daemon bool, msg string, data ...inte
 	}
 	if len(data) == 0 {
 		_, _ = fmt.Fprint(e.ConsoleBuffer, format)
-		_, _ = fmt.Fprint(e.WSManager, format)
+		_, _ = fmt.Fprint(e.ConsoleTracker, format)
 	} else {
 		_, _ = fmt.Fprintf(e.ConsoleBuffer, format, data...)
-		_, _ = fmt.Fprintf(e.WSManager, format, data...)
+		_, _ = fmt.Fprintf(e.ConsoleTracker, format, data...)
 	}
 }
 
@@ -172,9 +189,9 @@ func (e *BaseEnvironment) Delete() (err error) {
 
 func (e *BaseEnvironment) CreateWrapper() io.Writer {
 	if config.ConsoleForward.Value() {
-		return io.MultiWriter(newLogger(e.ServerId).Writer(), e.ConsoleBuffer, e.WSManager)
+		return io.MultiWriter(newLogger(e.ServerId).Writer(), e.ConsoleBuffer, e.ConsoleTracker)
 	}
-	return io.MultiWriter(e.ConsoleBuffer, e.WSManager)
+	return io.MultiWriter(e.ConsoleBuffer, e.ConsoleTracker)
 }
 
 func (e *BaseEnvironment) GetBase() *BaseEnvironment {
@@ -191,6 +208,17 @@ func (e *BaseEnvironment) GetStdOutConfiguration() ConsoleConfiguration {
 
 func (e *BaseEnvironment) GetWrapper() io.Writer {
 	return e.Wrapper
+}
+
+func (e *BaseEnvironment) SendStats() {
+	stats, err := e.GetStats()
+	if err != nil {
+		return
+	}
+	_ = e.StatsTracker.WriteMessage(&messages.Stat{
+		Memory: stats.Memory,
+		Cpu:    stats.Cpu,
+	})
 }
 
 func (e *BaseEnvironment) Log(l *log.Logger, format string, obj ...interface{}) {

@@ -129,7 +129,7 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		d.Wait.Done()
 
 		msg := messages.Status{Running: false}
-		_ = d.WSManager.WriteMessage(msg)
+		_ = d.StatusTracker.WriteMessage(msg)
 
 		if steps.Callback != nil {
 			steps.Callback(exitCode)
@@ -139,7 +139,7 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	startOpts := types.ContainerStartOptions{}
 
 	msg := messages.Status{Running: true}
-	_ = d.WSManager.WriteMessage(msg)
+	_ = d.StatusTracker.WriteMessage(msg)
 
 	d.DisplayToConsole(true, "Starting container\n")
 	err = dockerClient.ContainerStart(ctx, d.ContainerId, startOpts)
@@ -353,7 +353,7 @@ func (d *Docker) PullImage(ctx context.Context, imageName string, force bool) er
 		return err
 	}
 
-	w := &ImageWriter{Parent: d.WSManager}
+	w := &ImageWriter{Parent: d.ConsoleTracker}
 	_, err = io.Copy(w, r)
 
 	if err != nil {

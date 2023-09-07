@@ -1061,6 +1061,26 @@ func proxyServerRequest(c *gin.Context) {
 		pufferpanel.Engine.HandleContext(c)
 	} else {
 		if c.IsWebsocket() {
+			//for websocket, nuke the query params to avoid trying to escalate
+			resolvedPath = strings.SplitN(c.Request.URL.Path, "?", 2)[0]
+			if !strings.HasPrefix(resolvedPath, "/") {
+				resolvedPath = "/" + resolvedPath
+			}
+
+			//add the params we can grant for this request
+			scopes := c.MustGet("scopes").([]*pufferpanel.Scope)
+			var params []string
+			if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerConsole) {
+				params = append(params, "console")
+			}
+			if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerStatus) {
+				params = append(params, "status")
+			}
+			if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerStats) {
+				params = append(params, "stats")
+			}
+			resolvedPath = resolvedPath + "?" + strings.Join(params, "&")
+
 			proxySocketRequest(c, resolvedPath, ns, node)
 		} else {
 			proxyHttpRequest(c, resolvedPath, ns, node)

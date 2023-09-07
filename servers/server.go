@@ -49,14 +49,14 @@ type Server struct {
 
 var queue *list.List
 var lock = sync.Mutex{}
-var ticker *time.Ticker
+var startQueueTicker, statTicker *time.Ticker
 var running = false
 
 func InitService() {
 	queue = list.New()
-	ticker = time.NewTicker(1 * time.Second)
 	running = true
 	go processQueue()
+	go processStats()
 }
 
 func StartViaService(p *Server) {
@@ -81,11 +81,13 @@ func ShutdownService() {
 	}()
 
 	running = false
-	ticker.Stop()
+	startQueueTicker.Stop()
+	statTicker.Stop()
 }
 
 func processQueue() {
-	for range ticker.C {
+	startQueueTicker = time.NewTicker(time.Second)
+	for range startQueueTicker.C {
 		lock.Lock()
 		next := queue.Front()
 		if next != nil {
@@ -101,6 +103,17 @@ func processQueue() {
 			if err != nil {
 				logging.Error.Printf("[%s] Error starting server: %s", program.Id(), err)
 			}
+		}
+	}
+}
+
+func processStats() {
+	statTicker = time.NewTicker(5 * time.Second)
+	for range startQueueTicker.C {
+		for _, v := range allServers {
+			go func(p *Server) {
+				p.GetEnvironment().SendStats()
+			}(v)
 		}
 	}
 }

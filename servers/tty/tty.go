@@ -67,7 +67,7 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	t.Log(logging.Info, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 
 	msg := messages.Status{Running: true}
-	_ = t.WSManager.WriteMessage(msg)
+	_ = t.StatusTracker.WriteMessage(msg)
 
 	processTty, err := pty.Start(pr)
 	if err != nil {
@@ -208,7 +208,7 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 	t.Wait.Done()
 
 	msg := messages.Status{Running: false}
-	_ = t.WSManager.WriteMessage(msg)
+	_ = t.StatusTracker.WriteMessage(msg)
 
 	if callback != nil {
 		callback(exitCode)

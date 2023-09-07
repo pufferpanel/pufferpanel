@@ -49,13 +49,15 @@ func CreateEnvironment(environmentType, folder, id string, environmentSection pu
 
 	serverRoot := filepath.Join(folder, id)
 	envCache := pufferpanel.CreateCache()
-	wsManager := pufferpanel.CreateTracker()
 
 	e := item.GetBase()
 	if e.RootDirectory == "" {
 		e.RootDirectory = serverRoot
 	}
-	e.WSManager = wsManager
+	e.ConsoleTracker = pufferpanel.CreateTracker()
+	e.StatusTracker = pufferpanel.CreateTracker()
+	e.StatsTracker = pufferpanel.CreateTracker()
+
 	e.ConsoleBuffer = envCache
 	e.Wait = &sync.WaitGroup{}
 	e.Wrapper = e.CreateWrapper()
