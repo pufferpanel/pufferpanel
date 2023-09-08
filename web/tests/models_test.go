@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"gorm.io/gorm"
@@ -105,4 +106,12 @@ func initLoginNoAdminWithServersUser(db *gorm.DB) error {
 func createSession(db *gorm.DB, user *models.User) (string, error) {
 	ss := &services.Session{DB: db}
 	return ss.CreateForUser(user)
+}
+
+func createSessionAdmin() (string, error) {
+	db, err := database.GetConnection()
+	if err != nil {
+		return "", err
+	}
+	return createSession(db, loginAdminUser)
 }

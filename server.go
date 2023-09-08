@@ -28,7 +28,7 @@ type Server struct {
 	Variables             map[string]Variable `json:"data,omitempty"`
 	Display               string              `json:"display,omitempty"`
 	Environment           MetadataType        `json:"environment,omitempty"`
-	SupportedEnvironments MetadataType        `json:"supportedEnvironments,omitempty"`
+	SupportedEnvironments []MetadataType      `json:"supportedEnvironments,omitempty"`
 	Installation          []MetadataType      `json:"install,omitempty"`
 	Uninstallation        []MetadataType      `json:"uninstall,omitempty"`
 	Identifier            string              `json:"id,omitempty"`

@@ -28,9 +28,9 @@ import (
 )
 
 func registerTemplates(g *gin.RouterGroup) {
-	g.Handle("GET", "/", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView), getRepos)
-	g.Handle("POST", "/", middleware.RequiresPermission(pufferpanel.ScopeTemplatesRepoCreate), addRepo)
-	g.Handle("OPTIONS", "/", response.CreateOptions("GET", "POST"))
+	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView), getRepos)
+	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeTemplatesRepoCreate), addRepo)
+	g.Handle("OPTIONS", "", response.CreateOptions("GET", "POST"))
 
 	g.Handle("GET", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView), getsTemplatesForRepo)
 	g.Handle("DELETE", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesRepoDelete), deleteRepo)
@@ -74,7 +74,7 @@ func getsTemplatesForRepo(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
-	repoId, err := cast.ToUintE(c.Param("repoId"))
+	repoId, err := cast.ToUintE(c.Param("repo"))
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
@@ -128,7 +128,7 @@ func addRepo(c *gin.Context) {
 // @Router /api/templates/{repo} [delete]
 // @Security OAuth2Application[templates.repo.delete]
 func deleteRepo(c *gin.Context) {
-	repoId, err := cast.ToUintE(c.Param("repoId"))
+	repoId, err := cast.ToUintE(c.Param("repo"))
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
@@ -155,7 +155,7 @@ func getTemplateFromRepo(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
-	repoId, err := cast.ToUintE(c.Param("repoId"))
+	repoId, err := cast.ToUintE(c.Param("repo"))
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
