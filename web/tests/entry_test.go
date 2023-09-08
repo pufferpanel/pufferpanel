@@ -45,6 +45,7 @@ func TestMain(m *testing.M) {
 	}
 
 	_ = os.Remove("testing.db")
+	_ = os.Remove("cache")
 	os.Exit(exitCode)
 }
 
