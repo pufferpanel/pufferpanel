@@ -28,7 +28,7 @@ type FileDesc struct {
 	Size      int64  `json:"size,omitempty"`
 	File      bool   `json:"isFile"`
 	Extension string `json:"extension,omitempty"`
-}
+} //@name FileDescription
 
 func (m FileList) Key() string {
 	return "file"

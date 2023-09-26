@@ -80,7 +80,7 @@ func registerServers(g *gin.RouterGroup) {
 
 	g.GET("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServerTaskView), middleware.ResolveServerPanel, proxyServerRequest)
 	g.POST("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServerTaskCreate), middleware.ResolveServerPanel, proxyServerRequest)
-	g.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServerTaskCreate), middleware.ResolveServerPanel, proxyServerRequest)
+	g.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServerTaskEdit), middleware.ResolveServerPanel, proxyServerRequest)
 	g.DELETE("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServerTaskDelete), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/tasks", response.CreateOptions("GET", "POST", "PUT", "DELETE"))
 

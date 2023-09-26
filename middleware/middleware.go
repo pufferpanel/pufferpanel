@@ -57,6 +57,11 @@ func Recover(c *gin.Context) {
 }
 
 func IsPanelCaller(c *gin.Context) {
+	//option calls are permitted without auth
+	if c.Request.Method == "OPTIONS" {
+		return
+	}
+
 	actuallyFinished := false
 	defer func() {
 		if !actuallyFinished && !c.IsAborted() {

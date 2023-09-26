@@ -103,7 +103,7 @@ var clientFiles fs.ReadFileFS
 // @scope.server.console.send Allows sending commands to a server's console
 // @scope.server.stats Allows getting stats of a server like CPU and memory usage
 // @scope.server.status Allows getting the status of a server
-// @scope.panel.settings.edit Allows for viewing and editing of panel settings
+// @scope.settings.edit Allows for editing of panel settings
 // @scope.templates.view Allows viewing templates
 // @scope.templates.local.edit Allows editing of templates in the local repo
 // @scope.templates.repo.create Allows adding a new template repo

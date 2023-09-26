@@ -70,7 +70,8 @@ var (
 	ScopeServerStats        = registerServerScope("server.stats")
 	ScopeServerStatus       = registerServerScope("server.status")
 
-	ScopeSettingsEdit        = registerNonServerScope("settings.edit")
+	ScopeSettingsEdit = registerNonServerScope("settings.edit")
+
 	ScopeTemplatesView       = registerNonServerScope("templates.view")
 	ScopeTemplatesLocalEdit  = registerNonServerScope("templates.local.edit")
 	ScopeTemplatesRepoCreate = registerNonServerScope("templates.repo.create")

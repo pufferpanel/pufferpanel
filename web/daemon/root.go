@@ -43,6 +43,7 @@ func RegisterDaemonRoutes(e *gin.RouterGroup) {
 // @Description Check to see if the daemon is online or not
 // @Success 200 {object} pufferpanel.DaemonRunning
 // @Router /daemon [get]
+// @Security OAuth2Application[none]
 func getStatusGET(c *gin.Context) {
 	c.JSON(http.StatusOK, &pufferpanel.DaemonRunning{Message: "daemon is running"})
 }
@@ -51,10 +52,16 @@ func getStatusGET(c *gin.Context) {
 // @Description Check to see if the daemon is online or not
 // @Success 204 {object} nil
 // @Router /daemon [head]
+// @Security OAuth2Application[none]
 func getStatusHEAD(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Get features of the node
+// @Description Gets the features that the node supports, like it's OS and environments
+// @Success 200 {object} Features
+// @Router /daemon/features [get]
+// @Security OAuth2Application[none]
 func getFeatures(c *gin.Context) {
 	features := make([]string, 0)
 

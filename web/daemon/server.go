@@ -47,83 +47,80 @@ var wsupgrader = websocket.Upgrader{
 }
 
 func RegisterServerRoutes(e *gin.RouterGroup) {
-	l := e.Group("/server")
+	l := e.Group("/server", middleware.IsPanelCaller)
 	{
-		l.PUT("/:serverId", middleware.IsPanelCaller, createServer)
-		l.DELETE("/:serverId", middleware.IsPanelCaller, middleware.ResolveServerNode, deleteServer)
+		l.PUT("/:serverId", createServer)
+		l.DELETE("/:serverId", middleware.ResolveServerNode, deleteServer)
 		l.OPTIONS("/:serverId", response.CreateOptions("PUT", "DELETE", "GET"))
 
-		l.GET("/:serverId/definition", middleware.IsPanelCaller, middleware.ResolveServerNode, getServerAdmin)
-		l.PUT("/:serverId/definition", middleware.IsPanelCaller, middleware.ResolveServerNode, editServerAdmin)
+		l.GET("/:serverId/definition", middleware.ResolveServerNode, getServerAdmin)
+		l.PUT("/:serverId/definition", middleware.ResolveServerNode, editServerAdmin)
 		l.OPTIONS("/:serverId/definition", response.CreateOptions("PUT", "DELETE", "GET"))
 
-		l.GET("/:serverId/data", middleware.IsPanelCaller, middleware.ResolveServerNode, getServerData)
-		l.POST("/:serverId/data", middleware.IsPanelCaller, middleware.ResolveServerNode, editServerData)
+		l.GET("/:serverId/data", middleware.ResolveServerNode, getServerData)
+		l.POST("/:serverId/data", middleware.ResolveServerNode, editServerData)
 		l.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:serverId/tasks", middleware.IsPanelCaller, middleware.ResolveServerNode, getServerTasks)
+		l.GET("/:serverId/tasks", middleware.ResolveServerNode, getServerTasks)
 		l.OPTIONS("/:serverId/tasks", response.CreateOptions("GET"))
 
-		l.GET("/:serverId/tasks/:taskId", middleware.IsPanelCaller, middleware.ResolveServerNode, getServerTask)
-		l.PUT("/:serverId/tasks/:taskId", middleware.IsPanelCaller, middleware.ResolveServerNode, editServerTask)
-		l.DELETE("/:serverId/tasks/:taskId", middleware.IsPanelCaller, middleware.ResolveServerNode, deleteServerTask)
+		l.GET("/:serverId/tasks/:taskId", middleware.ResolveServerNode, getServerTask)
+		l.PUT("/:serverId/tasks/:taskId", middleware.ResolveServerNode, editServerTask)
+		l.DELETE("/:serverId/tasks/:taskId", middleware.ResolveServerNode, deleteServerTask)
 		l.OPTIONS("/:serverId/tasks/:taskId", response.CreateOptions("GET", "PUT", "DELETE"))
 
-		l.POST("/:serverId/tasks/:taskId/run", middleware.IsPanelCaller, middleware.ResolveServerNode, runServerTask)
+		l.POST("/:serverId/tasks/:taskId/run", middleware.ResolveServerNode, runServerTask)
 		l.OPTIONS("/:serverId/tasks/:taskId/run", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/reload", middleware.IsPanelCaller, middleware.ResolveServerNode, reloadServer)
+		l.POST("/:serverId/reload", middleware.ResolveServerNode, reloadServer)
 		l.OPTIONS("/:serverId/reload", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/start", middleware.IsPanelCaller, middleware.ResolveServerNode, startServer)
+		l.POST("/:serverId/start", middleware.ResolveServerNode, startServer)
 		l.OPTIONS("/:serverId/start", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/stop", middleware.IsPanelCaller, middleware.ResolveServerNode, stopServer)
+		l.POST("/:serverId/stop", middleware.ResolveServerNode, stopServer)
 		l.OPTIONS("/:serverId/stop", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/kill", middleware.IsPanelCaller, middleware.ResolveServerNode, killServer)
+		l.POST("/:serverId/kill", middleware.ResolveServerNode, killServer)
 		l.OPTIONS("/:serverId/kill", response.CreateOptions("POST"))
 
-		l.POST("/:serverId/install", middleware.IsPanelCaller, middleware.ResolveServerNode, installServer)
+		l.POST("/:serverId/install", middleware.ResolveServerNode, installServer)
 		l.OPTIONS("/:serverId/install", response.CreateOptions("POST"))
 
-		l.GET("/:serverId/file/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, getFile)
-		l.PUT("/:serverId/file/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, putFile)
-		l.DELETE("/:serverId/file/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, deleteFile)
-		l.POST("/:serverId/file/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, response.NotImplemented)
+		l.GET("/:serverId/file/*filename", middleware.ResolveServerNode, getFile)
+		l.PUT("/:serverId/file/*filename", middleware.ResolveServerNode, putFile)
+		l.DELETE("/:serverId/file/*filename", middleware.ResolveServerNode, deleteFile)
+		l.POST("/:serverId/file/*filename", middleware.ResolveServerNode, response.NotImplemented)
 		l.OPTIONS("/:serverId/file/*filename", response.CreateOptions("GET", "PUT", "DELETE", "POST"))
 
-		l.GET("/:serverId/console", middleware.IsPanelCaller, middleware.ResolveServerNode, getLogs)
-		l.POST("/:serverId/console", middleware.IsPanelCaller, middleware.ResolveServerNode, postConsole)
+		l.GET("/:serverId/console", middleware.ResolveServerNode, getLogs)
+		l.POST("/:serverId/console", middleware.ResolveServerNode, postConsole)
 		l.OPTIONS("/:serverId/console", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:serverId/flags", middleware.IsPanelCaller, middleware.ResolveServerNode, getFlags)
-		l.POST("/:serverId/flags", middleware.IsPanelCaller, middleware.ResolveServerNode, setFlags)
+		l.GET("/:serverId/flags", middleware.ResolveServerNode, getFlags)
+		l.POST("/:serverId/flags", middleware.ResolveServerNode, setFlags)
 		l.OPTIONS("/:serverId/flags", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:serverId/stats", middleware.IsPanelCaller, middleware.ResolveServerNode, getStats)
+		l.GET("/:serverId/stats", middleware.ResolveServerNode, getStats)
 		l.OPTIONS("/:serverId/stats", response.CreateOptions("GET"))
 
-		l.GET("/:serverId/status", middleware.IsPanelCaller, middleware.ResolveServerNode, getStatus)
+		l.GET("/:serverId/status", middleware.ResolveServerNode, getStatus)
 		l.OPTIONS("/:serverId/status", response.CreateOptions("GET"))
 
-		l.POST("/:serverId/archive/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, archive)
-		l.GET("/:serverId/extract/*filename", middleware.IsPanelCaller, middleware.ResolveServerNode, extract)
+		l.POST("/:serverId/archive/*filename", middleware.ResolveServerNode, archive)
+		l.GET("/:serverId/extract/*filename", middleware.ResolveServerNode, extract)
 
-		l.GET("/:serverId/socket", middleware.IsPanelCaller, middleware.ResolveServerNode, cors.New(cors.Config{
+		l.GET("/:serverId/socket", middleware.ResolveServerNode, cors.New(cors.Config{
 			AllowAllOrigins:  true,
 			AllowCredentials: true,
 		}), openSocket)
 
-		l.Handle("CONNECT", "/:serverId/socket", middleware.IsPanelCaller, middleware.ResolveServerNode, func(c *gin.Context) {
+		l.Handle("CONNECT", "/:serverId/socket", middleware.ResolveServerNode, func(c *gin.Context) {
 			c.Header("Access-Control-Allow-Origin", "*")
 			c.Header("Access-Control-Allow-Credentials", "false")
 		})
 		l.OPTIONS("/:serverId/socket", response.CreateOptions("GET", "CONNECT"))
 	}
-
-	l.POST("", middleware.IsPanelCaller, createServer)
-	l.OPTIONS("", response.CreateOptions("POST"))
 }
 
 func getServerFromGin(c *gin.Context) *servers.Server {
@@ -525,6 +522,15 @@ func editServerAdmin(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Get file/folder
+// @Description Gets a specific file or a list of files in a folder. This will either return
+// @Description a) A raw file if the path points to a valid file
+// @Description or b) An array of files for the folder contents
+// @Success 200 {object} nil
+// @Param id path string true "Server ID"
+// @Param filepath path string true "File path"
+// @Router /api/servers/{id}/file/{filepath} [get]
+// @Security OAuth2Application[server.files.view]
 func getFile(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -565,6 +571,15 @@ func getFile(c *gin.Context) {
 	}
 }
 
+// @Summary Edit file
+// @Description Adds or edit a file, replacing the contents with the provided body
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param filepath path string true "File path"
+// @Param file formData file true "File contents"
+// @Accept multipart/form-data
+// @Router /api/servers/{id}/file/{filepath} [put]
+// @Security OAuth2Application[server.files.edit]
 func putFile(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -599,15 +614,25 @@ func putFile(c *gin.Context) {
 	file, err := server.OpenFile(targetPath)
 	defer pufferpanel.Close(file)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
-	} else {
-		_, err = io.Copy(file, sourceFile)
-		if response.HandleError(c, err, http.StatusInternalServerError) {
-		} else {
-			c.Status(http.StatusNoContent)
-		}
+		return
 	}
+
+	_, err = io.Copy(file, sourceFile)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
+// @Summary Delete file
+// @Description Deletes a file or folder.
+// @Description WARNING: This is a recursive operation, specifying a folder will delete all children
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param filepath path string true "File path"
+// @Router /api/servers/{id}/file/{filepath} [delete]
+// @Security OAuth2Application[server.files.edit]
 func deleteFile(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -620,18 +645,40 @@ func deleteFile(c *gin.Context) {
 	}
 }
 
+// @Summary Send command
+// @Description Sends a command to the server
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param command body string true "Command"
+// @Router /api/servers/{id}/console [post]
+// @Security OAuth2Application[server.console.send]
 func postConsole(c *gin.Context) {
 	server := getServerFromGin(c)
 
-	d, _ := io.ReadAll(c.Request.Body)
-	cmd := string(d)
-	err := server.Execute(cmd)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-	} else {
-		c.Status(http.StatusNoContent)
+	d, err := io.ReadAll(c.Request.Body)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
 	}
+
+	cmd, err := cast.ToStringE(d)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	err = server.Execute(cmd)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+	c.Status(http.StatusNoContent)
+
 }
 
+// @Summary Get stats
+// @Description Gets the CPU and memory usage of the server
+// @Success 200 {object} pufferpanel.ServerStats
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/stats [get]
+// @Security OAuth2Application[server.stats]
 func getStats(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -642,6 +689,12 @@ func getStats(c *gin.Context) {
 	}
 }
 
+// @Summary Get logs
+// @Description Get the console logs for the server
+// @Success 200 {object} pufferpanel.ServerLogs
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/console [get]
+// @Security OAuth2Application[server.console]
 func getLogs(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -665,6 +718,12 @@ func getLogs(c *gin.Context) {
 	})
 }
 
+// @Summary Get status
+// @Description Get the server's status (is it running)
+// @Success 200 {object} pufferpanel.ServerRunning
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/status [get]
+// @Security OAuth2Application[server.status]
 func getStatus(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -676,6 +735,14 @@ func getStatus(c *gin.Context) {
 	}
 }
 
+// @Summary Create archive
+// @Description Creates an archive of files or folders
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param files body []string true "Files to archive"
+// @Param filename path string true "Archive name"
+// @Router /api/servers/{id}/archive/{filename} [post]
+// @Security OAuth2Application[server.files.edit]
 func archive(c *gin.Context) {
 	server := getServerFromGin(c)
 	var files []string
@@ -696,6 +763,14 @@ func archive(c *gin.Context) {
 	}
 }
 
+// @Summary Extract archive
+// @Description Extracts an archive to the server
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param filename path string true "Target file to extract"
+// @Param destination query string true "Path to place files"
+// @Router /api/servers/{id}/extract/{filename} [post]
+// @Security OAuth2Application[server.files.edit]
 func extract(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -709,6 +784,12 @@ func extract(c *gin.Context) {
 	}
 }
 
+// @Summary Get flags
+// @Description Get the management flags for a server
+// @Success 200 {object} pufferpanel.ServerFlags
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/flags [get]
+// @Security OAuth2Application[server.view.flags]
 func getFlags(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -719,6 +800,13 @@ func getFlags(c *gin.Context) {
 	})
 }
 
+// @Summary Set flags
+// @Description Sets management flags for a server
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Param flags body pufferpanel.ServerFlags true "Flags to change"
+// @Router /api/servers/{id}/flags [post]
+// @Security OAuth2Application[server.edit.flags]
 func setFlags(c *gin.Context) {
 	server := getServerFromGin(c)
 
