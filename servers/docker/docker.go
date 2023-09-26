@@ -28,14 +28,15 @@ import (
 
 type Docker struct {
 	*pufferpanel.BaseEnvironment
-	ContainerId string              `json:"-"`
-	ImageName   string              `json:"image"`
-	Binds       map[string]string   `json:"bindings,omitempty"`
-	NetworkMode string              `json:"networkMode,omitempty"`
-	Network     string              `json:"networkName,omitempty"`
-	Ports       []string            `json:"portBindings,omitempty"`
-	Resources   container.Resources `json:"resources,omitempty"`
-	Labels      map[string]string   `json:"labels,omitempty"`
+	ContainerId   string              `json:"-"`
+	ImageName     string              `json:"image"`
+	Binds         map[string]string   `json:"bindings,omitempty"`
+	NetworkMode   string              `json:"networkMode,omitempty"`
+	Network       string              `json:"networkName,omitempty"`
+	Ports         []string            `json:"portBindings,omitempty"`
+	Resources     container.Resources `json:"resources,omitempty"`
+	Labels        map[string]string   `json:"labels,omitempty"`
+	ContainerRoot string              `json:"containerRoot,omitempty"`
 
 	connection       types.HijackedResponse
 	cli              *client.Client
@@ -351,7 +352,14 @@ func (d *Docker) PullImage(ctx context.Context, imageName string, force bool) er
 
 func (d *Docker) createContainer(ctx context.Context, data pufferpanel.ExecutionData) error {
 	d.Log(logging.Debug, "Creating container")
-	containerRoot := "/pufferpanel"
+	containerRoot := d.ContainerRoot
+	if containerRoot == "" {
+		containerRoot = "/pufferpanel"
+	}
+
+	if !filepath.IsAbs(containerRoot) {
+		return pufferpanel.ErrPathNotAbs(containerRoot)
+	}
 
 	imageName := pufferpanel.ReplaceTokens(d.ImageName, data.Variables)
 
@@ -421,18 +429,17 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		containerConfig.User = fmt.Sprintf("%d:%d", os.Getuid(), os.Getgid())
 	}
 
-	dir := d.RootDirectory
+	dir := d.GetRootDirectory()
 
 	//convert root dir to a full path, so we can bind it
 	if !filepath.IsAbs(dir) {
-		pwd, err := os.Getwd()
+		dir, err = filepath.Abs(dir)
 		if err != nil {
 			return err
 		}
-		dir = filepath.Join(pwd, dir)
 	}
 
-	bindDirs := []string{dir + ":" + containerRoot}
+	bindDirs := []string{convertToBind(dir) + ":" + containerRoot}
 	if binaryFolder != "" {
 		bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+convertToBind(binaryFolder))
 	}

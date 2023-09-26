@@ -130,6 +130,10 @@ var ErrMissingBinary = func(expected string) *Error {
 	return CreateError("missing binary: ${expected}", "ErrMissingBinary").Metadata(map[string]interface{}{"expected": expected})
 }
 
+var ErrPathNotAbs = func(path string) *Error {
+	return CreateError("path not abs: ${path}", "ErrPathNotAbs").Metadata(map[string]interface{}{"path": path})
+}
+
 func GenerateValidationMessage(err error) error {
 	var errs validator.ValidationErrors
 	if errors.As(err, &errs) {
