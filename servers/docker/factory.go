@@ -11,7 +11,7 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: ef.Key(), ServerId: id},
 		ContainerId:     id,
 		ImageName:       "pufferpanel/generic",
-		NetworkMode:     "host",
+		Network:         "host",
 		Ports:           make([]string, 0),
 		Binds:           make(map[string]string),
 		Labels:          make(map[string]string),

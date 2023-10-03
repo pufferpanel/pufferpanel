@@ -31,7 +31,6 @@ type Docker struct {
 	ContainerId   string              `json:"-"`
 	ImageName     string              `json:"image"`
 	Binds         map[string]string   `json:"bindings,omitempty"`
-	NetworkMode   string              `json:"networkMode,omitempty"`
 	Network       string              `json:"networkName,omitempty"`
 	Ports         []string            `json:"portBindings,omitempty"`
 	Resources     container.Resources `json:"resources,omitempty"`
@@ -450,7 +449,7 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 
 	hostConfig := &container.HostConfig{
 		AutoRemove:   true,
-		NetworkMode:  container.NetworkMode(d.NetworkMode),
+		NetworkMode:  container.NetworkMode(d.Network),
 		Resources:    d.Resources,
 		Binds:        bindDirs,
 		PortBindings: nat.PortMap{},
