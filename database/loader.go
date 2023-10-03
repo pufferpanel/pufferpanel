@@ -53,6 +53,9 @@ func openConnection() (err error) {
 		connString = addConnectionSetting(connString, "cache=shared")
 		connString = addConnectionSetting(connString, "_loc=auto")
 		connString = addConnectionSetting(connString, "_foreign_keys=1")
+		connString = addConnectionSetting(connString, "_journal_mode=WAL")
+		connString = addConnectionSetting(connString, "_busy_timeout=5000")
+		connString = addConnectionSetting(connString, "_tx_lock=immediate")
 	}
 
 	var dialector gorm.Dialector
@@ -96,13 +99,20 @@ func openConnection() (err error) {
 		return err
 	}
 
-	if dialect == "sqlite3" {
-		err = dbConn.Raw("PRAGMA journal_mode=WAL").Error
-		if err != nil {
-			return err
-		}
+	err = migrate(dbConn)
+	if err != nil {
+		return err
 	}
-	return migrate(dbConn)
+
+	if dialect == "sqlite3" {
+		d, e := dbConn.DB()
+		if e != nil {
+			return e
+		}
+		d.SetMaxOpenConns(1)
+	}
+
+	return nil
 }
 
 func GetConnection() (*gorm.DB, error) {

@@ -17,6 +17,7 @@ import (
 
 func TestLogin(t *testing.T) {
 	t.Run("GoodLoginButNoScope", func(t *testing.T) {
+		t.Parallel()
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
 			Email:    loginNoLoginUser.Email,
 			Password: loginNoLoginUserPassword,
@@ -26,6 +27,7 @@ func TestLogin(t *testing.T) {
 		assert.Empty(t, response.Header().Values("Set-Cookie"))
 	})
 	t.Run("GoodLoginWithLoginScope", func(t *testing.T) {
+		t.Parallel()
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
 			Email:    loginNoServerViewUser.Email,
 			Password: loginNoServerViewUserPassword,
@@ -55,6 +57,7 @@ func TestLogin(t *testing.T) {
 		assert.True(t, valid, "No puffer_auth cookie found")
 	})
 	t.Run("GoodLoginWithAdminScope", func(t *testing.T) {
+		t.Parallel()
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
 			Email:    loginAdminUser.Email,
 			Password: loginAdminUserPassword,
@@ -85,6 +88,7 @@ func TestLogin(t *testing.T) {
 		assert.True(t, valid, "No puffer_auth cookie found")
 	})
 	t.Run("NoDataLogin", func(t *testing.T) {
+		t.Parallel()
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
 			Email:    "",
 			Password: "",
@@ -93,6 +97,7 @@ func TestLogin(t *testing.T) {
 		assert.Empty(t, response.Header().Values("Set-Cookie"))
 	})
 	t.Run("InvalidEmail", func(t *testing.T) {
+		t.Parallel()
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
 			Email:    "test@notreal.com",
 			Password: "testing123",
@@ -101,6 +106,7 @@ func TestLogin(t *testing.T) {
 		assert.Empty(t, response.Header().Values("Set-Cookie"))
 	})
 	t.Run("InvalidPassword", func(t *testing.T) {
+		t.Parallel()
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
 			Email:    "test@example.com",
 			Password: "testing",
@@ -112,6 +118,7 @@ func TestLogin(t *testing.T) {
 
 func TestLogout(t *testing.T) {
 	t.Run("ValidSessionCookie", func(t *testing.T) {
+		t.Parallel()
 		db, err := database.GetConnection()
 		if !assert.NoError(t, err) {
 			return
@@ -147,6 +154,7 @@ func TestLogout(t *testing.T) {
 	})
 
 	t.Run("ValidSessionToken", func(t *testing.T) {
+		t.Parallel()
 		db, err := database.GetConnection()
 		if !assert.NoError(t, err) {
 			return
@@ -200,6 +208,7 @@ func TestLogout(t *testing.T) {
 	})
 
 	t.Run("InvalidSessions", func(t *testing.T) {
+		t.Parallel()
 		db, err := database.GetConnection()
 		if !assert.NoError(t, err) {
 			return
@@ -236,12 +245,14 @@ func TestLogout(t *testing.T) {
 
 func TestReauth(t *testing.T) {
 	t.Run("ReauthNoSession", func(t *testing.T) {
+		t.Parallel()
 		request, _ := http.NewRequest("POST", "/auth/reauth", nil)
 		writer := httptest.NewRecorder()
 		pufferpanel.Engine.ServeHTTP(writer, request)
 		assert.Equal(t, http.StatusUnauthorized, writer.Code)
 	})
 	t.Run("ReauthWithValidSession", func(t *testing.T) {
+		t.Parallel()
 		db, err := database.GetConnection()
 		if !assert.NoError(t, err) {
 			return
@@ -302,6 +313,7 @@ func TestReauth(t *testing.T) {
 
 	})
 	t.Run("ReauthWithExpiredSession", func(t *testing.T) {
+		t.Parallel()
 		db, err := database.GetConnection()
 		if !assert.NoError(t, err) {
 			return
@@ -329,6 +341,7 @@ func TestReauth(t *testing.T) {
 		assert.Equal(t, http.StatusForbidden, writer.Code)
 	})
 	t.Run("ReauthWithInvalidSession", func(t *testing.T) {
+		t.Parallel()
 		request, _ := http.NewRequest("POST", "/auth/reauth", nil)
 		request.AddCookie(&http.Cookie{
 			Name:  "puffer_auth",
