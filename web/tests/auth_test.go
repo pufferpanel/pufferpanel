@@ -16,6 +16,7 @@ import (
 )
 
 func TestLogin(t *testing.T) {
+	t.Parallel()
 	t.Run("GoodLoginButNoScope", func(t *testing.T) {
 		t.Parallel()
 		response := CallAPI("POST", "/auth/login", auth.LoginRequestData{
@@ -117,6 +118,7 @@ func TestLogin(t *testing.T) {
 }
 
 func TestLogout(t *testing.T) {
+	t.Parallel()
 	t.Run("ValidSessionCookie", func(t *testing.T) {
 		t.Parallel()
 		db, err := database.GetConnection()
@@ -244,6 +246,7 @@ func TestLogout(t *testing.T) {
 }
 
 func TestReauth(t *testing.T) {
+	t.Parallel()
 	t.Run("ReauthNoSession", func(t *testing.T) {
 		t.Parallel()
 		request, _ := http.NewRequest("POST", "/auth/reauth", nil)
