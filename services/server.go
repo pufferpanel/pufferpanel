@@ -65,7 +65,7 @@ func (ss *Server) Get(id string) (*models.Server, error) {
 		Identifier: id,
 	}
 
-	err := ss.DB.Where(model).Preload(clause.Associations).First(model).Error
+	err := ss.DB.Preload(clause.Associations).First(model).Error
 	if err != nil {
 		return nil, err
 	}

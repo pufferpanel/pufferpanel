@@ -1016,7 +1016,7 @@ func proxyServerRequest(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
-	resolvedPath := "/daemon/server/" + strings.TrimPrefix(c.Request.RequestURI, "/api/servers/")
+	resolvedPath := "/daemon/server/" + strings.TrimPrefix(c.Request.URL.Path, "/api/servers/")
 
 	server := c.MustGet("server").(*models.Server)
 	node := &server.Node

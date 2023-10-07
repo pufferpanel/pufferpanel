@@ -11,7 +11,7 @@ RUN yarn install && \
 
 FROM golang:1.21-alpine AS builder
 
-ARG tags=docker
+ARG tags=nohost
 ARG version=devel
 ARG sha=devel
 ARG swagversion=1.16.2

@@ -157,6 +157,9 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 	}
 
 	ts := &PanelService{}
+	if request.Header == nil {
+		request.Header = http.Header{}
+	}
 	request.Header.Set("Authorization", "Bearer "+ts.GetActiveToken())
 
 	if node.IsLocal() {
