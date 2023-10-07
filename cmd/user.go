@@ -123,14 +123,14 @@ func addUser(cmd *cobra.Command, args []string) {
 			return err
 		}
 
-		us := &services.User{DB: db}
+		us := &services.User{DB: tx}
 		err = us.Create(user)
 		if err != nil {
 			fmt.Printf("Failed to create user: %s\n", err.Error())
 			return err
 		}
 
-		ps := &services.Permission{DB: db}
+		ps := &services.Permission{DB: tx}
 		perms, err := ps.GetForUserAndServer(user.ID, nil)
 		if err != nil {
 			fmt.Printf("Failed to get permissions: %s\n", err.Error())
