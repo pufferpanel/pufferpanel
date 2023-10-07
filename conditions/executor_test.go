@@ -125,7 +125,7 @@ func TestResolveIf(t *testing.T) {
 				data:      nil,
 				extraCels: nil,
 			},
-			want:    false,
+			want:    true,
 			wantErr: false,
 		},
 	}
