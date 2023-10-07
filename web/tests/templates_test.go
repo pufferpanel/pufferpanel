@@ -6,7 +6,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/stretchr/testify/assert"
 	"net/http"
-	"strings"
 	"testing"
 )
 
@@ -97,7 +96,7 @@ func TestTemplateAPI(t *testing.T) {
 			return
 		}
 
-		response := CallAPI("PUT", "/api/templates/0/minecraft-vanilla", strings.NewReader(TemplateData), session)
+		response := CallAPIRaw("PUT", "/api/templates/0/minecraft-vanilla", TemplateData, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
@@ -138,7 +137,7 @@ func TestTemplateAPI(t *testing.T) {
 			return
 		}
 
-		response := CallAPI("DELETE", "/api/templates/0/minecraft-vanilla", strings.NewReader(TemplateData), session)
+		response := CallAPIRaw("DELETE", "/api/templates/0/minecraft-vanilla", TemplateData, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}

@@ -25,6 +25,8 @@ func TestMain(m *testing.M) {
 	config.PanelEnabled.Set(true, false)
 	config.DatabaseLoggingEnabled.Set(true, false)
 
+	_ = os.Mkdir("servers", 0755)
+
 	//open db connection
 	db, err := database.GetConnection()
 	if err != nil {
@@ -45,13 +47,19 @@ func TestMain(m *testing.M) {
 	}
 
 	_ = os.Remove("testing.db")
-	_ = os.Remove("cache")
+	_ = os.RemoveAll("cache")
+	_ = os.RemoveAll("servers")
+
 	os.Exit(exitCode)
 }
 
 func CallAPI(method, url string, body interface{}, token string) *httptest.ResponseRecorder {
 	requestBody, _ := json.Marshal(body)
-	request, _ := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
+	return CallAPIRaw(method, url, requestBody, token)
+}
+
+func CallAPIRaw(method, url string, body []byte, token string) *httptest.ResponseRecorder {
+	request, _ := http.NewRequest(method, url, bytes.NewBuffer(body))
 	if token != "" {
 		request.Header.Add("Authorization", "Bearer "+token)
 	}

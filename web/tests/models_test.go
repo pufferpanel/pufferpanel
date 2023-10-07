@@ -120,7 +120,7 @@ func createSessionAdmin() (string, error) {
 	return createSession(db, loginAdminUser)
 }
 
-const CreateServerData = `{
+var CreateServerData = []byte(`{
   "type": "testing",
   "display": "API Test Server",
   "name": "Test",
@@ -129,7 +129,8 @@ const CreateServerData = `{
       "value": "127.0.0.1",
       "required": true,
       "desc": "What IP to bind the server to",
-      "display": "IP"
+      "display": "IP",
+      "type": "string"
     },
     "port": {
       "value": "123",
@@ -153,11 +154,11 @@ const CreateServerData = `{
     "stop": "norun"
   },
   "environment": {
-    "type": "tty"
+    "type": "standard"
   }
-}`
+}`)
 
-const TestServerData = `{
+var TestServerData = []byte(`{
   "type": "testing",
   "display": "API Test Server",
   "name": "Test Var",
@@ -166,7 +167,8 @@ const TestServerData = `{
       "value": "0.0.0.0",
       "required": true,
       "desc": "What IP to bind the server to",
-      "display": "IP"
+      "display": "IP",
+      "type": "string"
     },
     "port": {
       "value": "25565",
@@ -192,9 +194,9 @@ const TestServerData = `{
   "environment": {
     "type": "standard"
   }
-}`
+}`)
 
-const TemplateData = `{
+var TemplateData = []byte(`{
   "type": "minecraft-java",
   "display": "Vanilla - Minecraft",
   "data": {
@@ -279,4 +281,4 @@ const TemplateData = `{
   "environment": {
     "type": "standard"
   }
-}`
+}`)

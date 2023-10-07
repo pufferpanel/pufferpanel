@@ -23,7 +23,9 @@ func TestLogin(t *testing.T) {
 			Email:    loginNoLoginUser.Email,
 			Password: loginNoLoginUserPassword,
 		}, "")
-		assert.Equal(t, http.StatusForbidden, response.Code)
+		if !assert.Equal(t, http.StatusForbidden, response.Code) {
+			return
+		}
 		//ensure we sent back correct headers
 		assert.Empty(t, response.Header().Values("Set-Cookie"))
 	})

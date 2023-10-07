@@ -2,7 +2,6 @@ package pufferpanel
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"reflect"
 )
@@ -21,13 +20,9 @@ func (t *MetadataType) UnmarshalJSON(bs []byte) error {
 	}
 
 	a := t.Metadata["type"]
-	if a == nil {
-		return errors.New("no type defined")
-	}
-
 	var ok bool
 	t.Type, ok = a.(string)
-	if !ok {
+	if !ok && reflect.TypeOf(a) != reflect.TypeOf(nil) {
 		return fmt.Errorf("type is of %s instead of string", reflect.TypeOf(a))
 	}
 

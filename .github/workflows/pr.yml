@@ -98,7 +98,7 @@ jobs:
       - name: Build Linux
         run: |
           go build -o pufferpanel -buildvcs=false -v github.com/pufferpanel/pufferpanel/v3/cmd
-          go test -v ./...
+          go test -tags "docker host" -v ./...
         env:
           GOOS: linux
           GOARCH: amd64

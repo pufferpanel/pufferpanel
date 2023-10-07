@@ -283,7 +283,7 @@ func createServer(c *gin.Context) {
 	}
 
 	postBody := &models.ServerCreation{}
-	err = c.Bind(postBody)
+	err = c.ShouldBindJSON(&postBody)
 	postBody.Identifier = serverId
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -381,12 +381,6 @@ func createServer(c *gin.Context) {
 		}
 	}
 
-	err = db.Commit().Error
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		c.Abort()
-		return
-	}
-
 	data, _ := json.Marshal(postBody.Server)
 	reader := io.NopCloser(bytes.NewReader(data))
 
@@ -410,13 +404,6 @@ func createServer(c *gin.Context) {
 		c.Status(nodeResponse.StatusCode)
 		_, _ = c.Writer.Write(resData)
 		c.Abort()
-
-		//revert DB, we need to actually now use the non-transactional connection
-		noTransDbCtx, _ := c.Get("noTransactionDb")
-		noTransDb := noTransDbCtx.(*gorm.DB)
-
-		tempSS := &services.Server{DB: noTransDb}
-		_ = tempSS.Delete(server.Identifier)
 		return
 	}
 

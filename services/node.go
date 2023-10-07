@@ -156,6 +156,9 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 		request.Body = body
 	}
 
+	ts := &PanelService{}
+	request.Header.Set("Authorization", "Bearer "+ts.GetActiveToken())
+
 	if node.IsLocal() {
 		w := &httptest.ResponseRecorder{}
 		w.Body = &bytes.Buffer{}
