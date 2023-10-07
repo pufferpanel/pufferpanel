@@ -93,7 +93,7 @@ func processQueue() {
 
 func processStats() {
 	statTicker = time.NewTicker(5 * time.Second)
-	for range startQueueTicker.C {
+	for range statTicker.C {
 		for _, v := range allServers {
 			go func(p *Server) {
 				p.GetEnvironment().SendStats()
