@@ -2,6 +2,7 @@ package conditions
 
 import (
 	"github.com/google/cel-go/cel"
+	"runtime"
 	"testing"
 )
 
@@ -120,7 +121,7 @@ func TestResolveIf(t *testing.T) {
 		{
 			name: "string condition with variable os",
 			args: args{
-				condition: "os == \"linux\"",
+				condition: "os == \"" + runtime.GOOS + "\"",
 				data:      nil,
 				extraCels: nil,
 			},
