@@ -39,6 +39,7 @@ func ResolveIf(condition interface{}, data map[string]interface{}, extraCels []c
 	}
 
 	for k, v := range GlobalConstantValues {
+		celVars = append(celVars, cel.Variable(k, cel.AnyType))
 		inputData[k] = v
 	}
 
