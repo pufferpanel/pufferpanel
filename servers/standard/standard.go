@@ -122,7 +122,10 @@ func (s *standard) GetStats() (*pufferpanel.ServerStats, error) {
 		return nil, err
 	}
 	if !running {
-		return nil, pufferpanel.ErrServerOffline
+		return &pufferpanel.ServerStats{
+			Cpu:    0,
+			Memory: 0,
+		}, nil
 	}
 	pr, err := process.NewProcess(int32(s.mainProcess.Process.Pid))
 	if err != nil {

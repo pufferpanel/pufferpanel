@@ -196,7 +196,10 @@ func (d *Docker) GetStats() (*pufferpanel.ServerStats, error) {
 	}
 
 	if !running {
-		return nil, pufferpanel.ErrServerOffline
+		return &pufferpanel.ServerStats{
+			Cpu:    0,
+			Memory: 0,
+		}, nil
 	}
 
 	dockerClient, err := d.getClient()

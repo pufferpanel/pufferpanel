@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"io"
 	"log"
 	"os"
@@ -66,7 +65,7 @@ type Environment interface {
 
 	GetWrapper() io.Writer
 
-	SendStats()
+	GetStatsTracker() *Tracker
 }
 
 type BaseEnvironment struct {
@@ -145,6 +144,10 @@ func (e *BaseEnvironment) AddStatusListener(ws *Socket) {
 	e.StatusTracker.Register(ws)
 }
 
+func (e *BaseEnvironment) GetStatsTracker() *Tracker {
+	return e.StatsTracker
+}
+
 func (e *BaseEnvironment) DisplayToConsole(daemon bool, msg string, data ...interface{}) {
 	format := msg
 	if daemon {
@@ -192,17 +195,6 @@ func (e *BaseEnvironment) GetStdOutConfiguration() ConsoleConfiguration {
 
 func (e *BaseEnvironment) GetWrapper() io.Writer {
 	return e.Wrapper
-}
-
-func (e *BaseEnvironment) SendStats() {
-	stats, err := e.GetStats()
-	if err != nil {
-		return
-	}
-	_ = e.StatsTracker.WriteMessage(&messages.Stat{
-		Memory: stats.Memory,
-		Cpu:    stats.Cpu,
-	})
 }
 
 func (e *BaseEnvironment) Log(l *log.Logger, format string, obj ...interface{}) {

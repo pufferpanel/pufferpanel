@@ -94,12 +94,27 @@ func processQueue() {
 func processStats() {
 	statTicker = time.NewTicker(5 * time.Second)
 	for range statTicker.C {
-		for _, v := range allServers {
-			go func(p *Server) {
-				p.GetEnvironment().SendStats()
-			}(v)
-		}
+		SendStatsForServers()
 	}
+}
+
+func SendStatsForServers() {
+	var wg sync.WaitGroup
+	for _, v := range allServers {
+		wg.Add(1)
+		go func(p *Server) {
+			defer wg.Done()
+			stats, err := p.GetEnvironment().GetStats()
+			if err != nil {
+				return
+			}
+			_ = p.GetEnvironment().GetStatsTracker().WriteMessage(&messages.Stat{
+				Memory: stats.Memory,
+				Cpu:    stats.Cpu,
+			})
+		}(v)
+	}
+	wg.Wait()
 }
 
 type FileData struct {
