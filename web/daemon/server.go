@@ -825,15 +825,15 @@ func openSocket(c *gin.Context) {
 
 	socket := pufferpanel.Create(conn)
 
-	if _, exists := c.Params.Get("console"); exists {
+	if _, exists := c.GetQuery("console"); exists {
 		server.GetEnvironment().AddConsoleListener(socket)
 	}
 
-	if _, exists := c.Params.Get("stats"); exists {
+	if _, exists := c.GetQuery("stats"); exists {
 		server.GetEnvironment().AddStatsListener(socket)
 	}
 
-	if _, exists := c.Params.Get("status"); exists {
+	if _, exists := c.GetQuery("status"); exists {
 		server.GetEnvironment().AddStatusListener(socket)
 	}
 }
