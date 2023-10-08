@@ -129,9 +129,16 @@ func Create(program *Server) error {
 	}
 
 	replacement, err := Load(program.Id())
-	if err == nil {
-		allServers = append(allServers, replacement)
+	if err != nil {
+		return err
 	}
+
+	err = replacement.GetEnvironment().Create()
+	if err != nil {
+		return err
+	}
+
+	allServers = append(allServers, replacement)
 	return err
 }
 

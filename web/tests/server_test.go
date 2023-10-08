@@ -41,4 +41,14 @@ func TestServers(t *testing.T) {
 	t.Run("SendStatsForServers", func(t *testing.T) {
 		servers.SendStatsForServers()
 	})
+
+	t.Run("GetEmptyFiles", func(t *testing.T) {
+		session, err := createSessionAdmin()
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		response := CallAPI("GET", "/api/servers/testserver/file/", nil, session)
+		assert.Equal(t, http.StatusOK, response.Code)
+	})
 }
