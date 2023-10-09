@@ -60,13 +60,13 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	s.Log(logging.Info, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 	s.DisplayToConsole(true, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 
-	msg := messages.Status{Running: true}
+	msg := messages.Status{Running: true, Installing: s.IsInstalling()}
 	_ = s.StatusTracker.WriteMessage(msg)
 
 	err = s.mainProcess.Start()
 	if err != nil && err.Error() != "exit status 1" {
 		s.Wait.Done()
-		msg := messages.Status{Running: false}
+		msg := messages.Status{Running: false, Installing: s.IsInstalling()}
 		_ = s.StatusTracker.WriteMessage(msg)
 		s.Log(logging.Info, "Process failed to start: %s", err)
 		return

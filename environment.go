@@ -35,6 +35,10 @@ type Environment interface {
 
 	IsRunning() (isRunning bool, err error)
 
+	IsInstalling() bool
+
+	SetInstalling(bool) bool
+
 	WaitForMainProcess() error
 
 	WaitForMainProcessFor(timeout time.Duration) error
@@ -84,6 +88,7 @@ type BaseEnvironment struct {
 	ConsoleTracker    *Tracker             `json:"-"`
 	StatusTracker     *Tracker             `json:"-"`
 	StatsTracker      *Tracker             `json:"-"`
+	Installing        bool                 `json:"-"`
 }
 
 type ConsoleConfiguration struct {
@@ -200,6 +205,14 @@ func (e *BaseEnvironment) GetWrapper() io.Writer {
 func (e *BaseEnvironment) Log(l *log.Logger, format string, obj ...interface{}) {
 	msg := fmt.Sprintf("[%s] ", e.ServerId) + format
 	l.Printf(msg, obj...)
+}
+
+func (e *BaseEnvironment) IsInstalling() bool {
+	return e.Installing
+}
+
+func (e *BaseEnvironment) SetInstalling(flag bool) {
+	e.Installing = flag
 }
 
 func newLogger(prefix string) *log.Logger {

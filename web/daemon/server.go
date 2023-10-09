@@ -711,6 +711,13 @@ func getLogs(c *gin.Context) {
 func getStatus(c *gin.Context) {
 	server := getServerFromGin(c)
 
+	installing := server.IsInstalling()
+
+	if installing {
+		c.JSON(http.StatusOK, &pufferpanel.ServerRunning{Installing: installing})
+		return
+	}
+
 	running, err := server.IsRunning()
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {

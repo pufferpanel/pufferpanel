@@ -15,7 +15,8 @@ type ServerLogs struct {
 } //@name ServerLogs
 
 type ServerRunning struct {
-	Running bool `json:"running"`
+	Running    bool `json:"running"`
+	Installing bool `json:"installing"`
 } //@name ServerRunning
 
 type ServerData struct {

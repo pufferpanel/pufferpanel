@@ -386,6 +386,13 @@ func (p *Server) Install() error {
 		return pufferpanel.ErrServerDisabled
 	}
 
+	if p.GetEnvironment().IsInstalling() {
+		return nil
+	}
+
+	p.GetEnvironment().SetInstalling(true)
+	defer p.GetEnvironment().SetInstalling(false)
+
 	p.Log(logging.Info, "Installing server %s", p.Id())
 	r, err := p.IsRunning()
 	if err != nil {

@@ -112,7 +112,7 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 
 		d.Wait.Done()
 
-		msg := messages.Status{Running: false}
+		msg := messages.Status{Running: false, Installing: d.IsInstalling()}
 		_ = d.StatusTracker.WriteMessage(msg)
 
 		if steps.Callback != nil {
@@ -122,7 +122,7 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 
 	startOpts := types.ContainerStartOptions{}
 
-	msg := messages.Status{Running: true}
+	msg := messages.Status{Running: true, Installing: d.IsInstalling()}
 	_ = d.StatusTracker.WriteMessage(msg)
 
 	d.DisplayToConsole(true, "Starting container\n")
