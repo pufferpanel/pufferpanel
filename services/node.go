@@ -185,13 +185,14 @@ func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseW
 	}
 	addr := fmt.Sprintf("%s:%d", node.PrivateHost, node.PrivatePort)
 
-	u := url.URL{Scheme: scheme, Host: addr, Path: path}
-	logging.Debug.Printf("Proxying connection to %s", u.String())
+	u := fmt.Sprintf("%s://%s%s", scheme, addr, path)
+	logging.Debug.Printf("Proxying connection to %s", u)
 
+	ts := &PanelService{}
 	header := http.Header{}
-	header.Set("Authorization", request.Header.Get("Authorization"))
+	header.Set("Authorization", "Bearer "+ts.GetActiveToken())
 
-	c, _, err := websocket.DefaultDialer.Dial(u.String(), header)
+	c, _, err := websocket.DefaultDialer.Dial(u, header)
 	if err != nil {
 		return err
 	}
@@ -209,7 +210,6 @@ func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseW
 
 		ch := make(chan error)
 		go proxyRead(daemon, client, ch)
-		go proxyRead(client, daemon, ch)
 
 		err := <-ch
 
