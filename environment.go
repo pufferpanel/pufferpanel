@@ -37,7 +37,7 @@ type Environment interface {
 
 	IsInstalling() bool
 
-	SetInstalling(bool) bool
+	SetInstalling(bool)
 
 	WaitForMainProcess() error
 
