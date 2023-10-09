@@ -25,7 +25,7 @@ func TestMain(m *testing.M) {
 	config.DatabaseUrl.Set("file:testing.db", false)
 	config.DaemonEnabled.Set(true, false)
 	config.PanelEnabled.Set(true, false)
-	config.DatabaseLoggingEnabled.Set(true, false)
+	config.DatabaseLoggingEnabled.Set(false, false)
 
 	_ = os.Mkdir("servers", 0755)
 	_ = os.Mkdir("cache", 0755)

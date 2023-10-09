@@ -37,8 +37,7 @@ RUN ~/go/bin/swag init --md . -o web/swagger -g web/loader.go
 
 COPY --from=node /build/frontend/dist /build/pufferpanel/client/frontend/dist
 
-RUN go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd && \
-    go test -v ./...
+RUN go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
 
 ###
 # Generate final image

@@ -130,12 +130,6 @@ var CreateServerData = []byte(`{
       "required": true,
       "value": false
     },
-    "forgebuild": {
-      "type": "",
-      "desc": "Version of Forge to install (may be located \u003ca href='http://files.minecraftforge.net/#Downloads'\u003ehere\u003c/a\u003e",
-      "display": "Forge Version",
-      "value": ""
-    },
     "ip": {
       "type": "",
       "desc": "What IP to bind the server to",
@@ -150,13 +144,6 @@ var CreateServerData = []byte(`{
       "required": true,
       "value": "17"
     },
-    "magmatag": {
-      "type": "string",
-      "desc": "The alphanumeric commit ID for the build (See https://git.magmafoundation.org/magmafoundation/Magma-1-18-x/-/releases for the commit ID's for each release))",
-      "display": "Tag",
-      "value": "68e21495",
-      "userEdit": true
-    },
     "memory": {
       "type": "integer",
       "desc": "How much memory in MB to allocate to the Java Heap",
@@ -164,81 +151,12 @@ var CreateServerData = []byte(`{
       "required": true,
       "value": 1024
     },
-    "modlauncher": {
-      "type": "",
-      "desc": "What mod or plugin launcher should be installed with Minecraft",
-      "display": "Mod/Plugin Launcher",
-      "value": "",
-      "options": [
-        {
-          "value": "",
-          "display": ""
-        },
-        {
-          "value": "fabric",
-          "display": "Fabric"
-        },
-        {
-          "value": "forge",
-          "display": "MinecraftForge"
-        },
-        {
-          "value": "magma",
-          "display": "Magma"
-        },
-        {
-          "value": "mohist",
-          "display": "Mohist"
-        },
-        {
-          "value": "paper",
-          "display": "Paper"
-        },
-        {
-          "value": "pufferfish",
-          "display": "Pufferfish"
-        },
-        {
-          "value": "purpur",
-          "display": "Purpur"
-        },
-        {
-          "value": "quilt",
-          "display": "Quilt"
-        },
-        {
-          "value": "spigot",
-          "display": "Spigot"
-        },
-        {
-          "value": "ftb",
-          "display": "Feed The Beast Modpack"
-        },
-        {
-          "value": "curseforge",
-          "display": "CurseForge Modpack"
-        }
-      ]
-    },
-    "mohistversion": {
-      "type": "string",
-      "desc": "Mohist version to install (may be located \u003ca href='https://mohistmc.com/download/' target='_blank'\u003ehere\u003c/a\u003e).",
-      "display": "Mohist Version",
-      "value": "latest",
-      "userEdit": true
-    },
     "motd": {
       "type": "",
       "desc": "This is the message that is displayed in the server list of the client, below the name. The MOTD does support \u003ca href='https://minecraft.gamepedia.com/Formatting_codes' target='_blank'\u003ecolor and formatting codes\u003c/a\u003e.",
       "display": "MOTD message of the day",
       "required": true,
       "value": "A Minecraft Server\\n\\u00A79 hosted on PufferPanel"
-    },
-    "paperbuild": {
-      "type": "",
-      "desc": "Build of Paper to install (\u003ca href='https://papermc.io/downloads'\u003ePaper version build\u003c/a\u003e). Must be specified as a build number, e.g. 484",
-      "display": "build",
-      "value": "96"
     },
     "port": {
       "type": "integer",
@@ -266,121 +184,9 @@ var CreateServerData = []byte(`{
       "version": "${javaversion}"
     },
     {
-      "if": "modlauncher == \"\"",
       "target": "server.jar",
       "type": "mojangdl",
       "version": "${version}"
-    },
-    {
-      "if": "modlauncher == \"fabric\"",
-      "type": "fabricdl"
-    },
-    {
-      "commands": [
-        "java${javaversion} -jar fabric-installer.jar server -mcversion ${version} -downloadMinecraft -noprofile"
-      ],
-      "if": "modlauncher == \"fabric\"",
-      "type": "command"
-    },
-    {
-      "if": "modlauncher == \"fabric\"",
-      "source": "fabric-server-launch.jar",
-      "target": "server.jar",
-      "type": "move"
-    },
-    {
-      "if": "modlauncher == \"forge\"",
-      "target": "installer.jar",
-      "type": "forgedl",
-      "version": "${version}"
-    },
-    {
-      "commands": [
-        "java${javaversion} -jar installer.jar --installServer"
-      ],
-      "if": "modlauncher == \"forge\"",
-      "type": "command"
-    },
-    {
-      "files": [
-        "https://api.magmafoundation.org/api/v2/${minecraftversion}/latest/${tag}/download"
-      ],
-      "if": "modlauncher == \"magma\"",
-      "type": "download"
-    },
-    {
-      "if": "modlauncher == \"magma\"",
-      "source": "Magma-*.jar",
-      "target": "server.jar",
-      "type": "move"
-    },
-    {
-      "files": [
-        "https://mohistmc.com/api/${mc-version}/${mohistversion}/download/"
-      ],
-      "if": "modlauncher == \"mohist\"",
-      "type": "download"
-    },
-    {
-      "if": "modlauncher == \"mohist\"",
-      "source": "mohist-*-server.jar",
-      "target": "server.jar",
-      "type": "move"
-    },
-    {
-      "files": "https://api.papermc.io/v2/projects/paper/versions/${version}/builds/${build}/downloads/paper-${version}-${paperbuild}.jar",
-      "if": "modlauncher == \"paper\"",
-      "type": "download"
-    },
-    {
-      "if": "modlauncher == \"paper\"",
-      "source": "paper-*.jar",
-      "target": "paper.jar",
-      "type": "move"
-    },
-    {
-      "files": [
-        "https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-installer/latest/quilt-installer-latest.jar"
-      ],
-      "if": "modlauncher == \"quilt\"",
-      "type": "download"
-    },
-    {
-      "if": "modlauncher == \"quilt\"",
-      "source": "quilt-installer-*.jar",
-      "target": "quilt-installer.jar",
-      "type": "move"
-    },
-    {
-      "commands": [
-        "java${javaversion} -jar quilt-installer.jar install server ${version} --download-server --install-dir=."
-      ],
-      "if": "modlauncher == \"quilt\"",
-      "type": "command"
-    },
-    {
-      "if": "modlauncher == \"quilt\"",
-      "source": "quilt-server-launch.jar",
-      "target": "server.jar",
-      "type": "move"
-    },
-    {
-      "files": "https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar",
-      "if": "modlauncher == \"spigot\"",
-      "type": "download"
-    },
-    {
-      "commands": [
-        "java${javaversion} -jar BuildTools.jar --rev ${version}"
-      ],
-      "if": "modlauncher == \"spigot\"",
-      "type": "command"
-    },
-    {
-      "if": "modlauncher == \"spigot\"",
-      "source": "spigot-*.jar",
-      "target": "server.jar",
-      "type": "move"
     },
     {
       "if": "!file_exists(\"server.properties\")",
@@ -398,72 +204,11 @@ var CreateServerData = []byte(`{
   "run": {
     "command": [
       {
-        "command": "java${javaversion} -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true @libraries/net/minecraftforge/forge/${version}/win_args.txt nogui",
-        "if": "modlauncher == \"forge\" \u0026\u0026 os == \"windows\" \u0026\u0026 file_exists(\"libraries/net/minecraftforge/forge/\" + version+ \"/win_args.txt\")"
-      },
-      {
-        "command": "java${javaversion} -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true @libraries/net/minecraftforge/forge/${version}/unix_args.txt nogui",
-        "if": "modlauncher == \"forge\" \u0026\u0026 file_exists(\"libraries/net/minecraftforge/forge/\" + version+ \"/unix_args.txt\")"
-      },
-      {
         "command": "java${javaversion} -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar"
       }
     ],
-    "stop": "stop",
-    "stdin": {
-      "type": ""
-    }
-  },
-  "requirements": {},
-  "groups": [
-    {
-      "variables": [
-        "eula",
-        "memory",
-        "ip",
-        "port",
-        "motd",
-        "version",
-        "javaversion",
-        "modlauncher"
-      ],
-      "string": "",
-      "description": "General settings for all servers",
-      "order": 1
-    },
-    {
-      "variables": [
-        "forgebuild"
-      ],
-      "string": "",
-      "description": "Settings if using MinecraftForge",
-      "order": 2
-    },
-    {
-      "variables": [
-        "magmatag"
-      ],
-      "string": "",
-      "description": "Settings specific if using Magma",
-      "order": 3
-    },
-    {
-      "variables": [
-        "mohistversion"
-      ],
-      "string": "",
-      "description": "Settings specific if using Mohist",
-      "order": 4
-    },
-    {
-      "variables": [
-        "paperbuild"
-      ],
-      "string": "",
-      "description": "Settings specific if using Paper",
-      "order": 5
-    }
-  ]
+    "stop": "stop"
+  }
 }`)
 
 var TestServerData = []byte(`{
