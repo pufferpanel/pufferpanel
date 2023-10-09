@@ -2,23 +2,47 @@ package tests
 
 import (
 	"encoding/json"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
+	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/stretchr/testify/assert"
 	"net/http"
+	"path/filepath"
 	"testing"
 	"time"
 )
 
 func TestServers(t *testing.T) {
+	serverId := "testserver"
+
 	t.Run("CreateServer", func(t *testing.T) {
 		session, err := createSessionAdmin()
 		if !assert.NoError(t, err) {
 			return
 		}
 
-		response := CallAPIRaw("PUT", "/api/servers/testserver", CreateServerData, session)
-		assert.Equal(t, http.StatusOK, response.Code)
+		response := CallAPIRaw("PUT", "/api/servers/"+serverId, CreateServerData, session)
+		if !assert.Equal(t, http.StatusOK, response.Code) {
+			return
+		}
+
+		db, err := database.GetConnection()
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		var count int64
+		err = db.Model(&models.Server{}).Where(&models.Server{Identifier: serverId}).Count(&count).Error
+		if !assert.NoError(t, err) {
+			return
+		}
+		assert.Equal(t, int64(1), count)
+
+		if !assert.DirExists(t, filepath.Join(config.ServersFolder.Value(), serverId)) {
+			return
+		}
 	})
 
 	t.Run("GetStats", func(t *testing.T) {
@@ -27,7 +51,7 @@ func TestServers(t *testing.T) {
 			return
 		}
 
-		response := CallAPI("GET", "/api/servers/testserver/stats", nil, session)
+		response := CallAPI("GET", "/api/servers/"+serverId+"/stats", nil, session)
 		assert.Equal(t, http.StatusOK, response.Code)
 	})
 
@@ -41,7 +65,7 @@ func TestServers(t *testing.T) {
 			return
 		}
 
-		response := CallAPI("GET", "/api/servers/testserver/file/", nil, session)
+		response := CallAPI("GET", "/api/servers/"+serverId+"/file/", nil, session)
 		assert.Equal(t, http.StatusOK, response.Code)
 	})
 
@@ -51,7 +75,7 @@ func TestServers(t *testing.T) {
 			return
 		}
 
-		response := CallAPI("POST", "/api/servers/testserver/install", nil, session)
+		response := CallAPI("POST", "/api/servers/"+serverId+"/install", nil, session)
 		if !assert.Equal(t, http.StatusAccepted, response.Code) {
 			return
 		}
@@ -59,7 +83,7 @@ func TestServers(t *testing.T) {
 		time.Sleep(100 * time.Millisecond)
 
 		//we expect it to take more than 100ms, so ensure there is an install occurring
-		response = CallAPI("GET", "/api/servers/testserver/status", nil, session)
+		response = CallAPI("GET", "/api/servers/"+serverId+"/status", nil, session)
 		assert.Equal(t, http.StatusOK, response.Code)
 		var status messages.Status
 		err = json.NewDecoder(response.Body).Decode(&status)
@@ -75,7 +99,7 @@ func TestServers(t *testing.T) {
 		counter := 0
 		for counter < timeout {
 			time.Sleep(time.Second)
-			response = CallAPI("GET", "/api/servers/testserver/status", nil, session)
+			response = CallAPI("GET", "/api/servers/"+serverId+"/status", nil, session)
 			assert.Equal(t, http.StatusOK, response.Code)
 			var status messages.Status
 			err = json.NewDecoder(response.Body).Decode(&status)
@@ -99,13 +123,13 @@ func TestServers(t *testing.T) {
 			return
 		}
 
-		response := CallAPI("POST", "/api/servers/testserver/start", nil, session)
+		response := CallAPI("POST", "/api/servers/"+serverId+"/start", nil, session)
 		assert.Equal(t, http.StatusAccepted, response.Code)
 
 		time.Sleep(1000 * time.Millisecond)
 
 		//we expect it to take more than 1 second, so ensure there is a started server
-		response = CallAPI("GET", "/api/servers/testserver/status", nil, session)
+		response = CallAPI("GET", "/api/servers/"+serverId+"/status", nil, session)
 		assert.Equal(t, http.StatusOK, response.Code)
 		var status messages.Status
 		err = json.NewDecoder(response.Body).Decode(&status)
@@ -117,4 +141,32 @@ func TestServers(t *testing.T) {
 		}
 	})
 
+	t.Run("Delete", func(t *testing.T) {
+		session, err := createSessionAdmin()
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		response := CallAPIRaw("DELETE", "/api/servers/"+serverId, nil, session)
+		if !assert.Equal(t, http.StatusNoContent, response.Code) {
+			return
+		}
+
+		db, err := database.GetConnection()
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		//ensure was actually removed
+		if !assert.NoDirExists(t, filepath.Join(config.ServersFolder.Value(), serverId)) {
+			return
+		}
+
+		var count int64
+		err = db.Model(&models.Server{}).Where(&models.Server{Identifier: serverId}).Count(&count).Error
+		if !assert.NoError(t, err) {
+			return
+		}
+		assert.Equal(t, int64(0), count)
+	})
 }

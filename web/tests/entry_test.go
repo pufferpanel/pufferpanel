@@ -12,6 +12,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -28,6 +30,12 @@ func TestMain(m *testing.M) {
 	_ = os.Mkdir("servers", 0755)
 	_ = os.Mkdir("cache", 0755)
 	_ = os.Mkdir("binaries", 0755)
+
+	newPath := os.Getenv("PATH")
+	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
+	if !strings.Contains(newPath, fullPath) {
+		_ = os.Setenv("PATH", newPath+":"+fullPath)
+	}
 
 	//open db connection
 	db, err := database.GetConnection()

@@ -540,14 +540,10 @@ func deleteServer(c *gin.Context) {
 
 	_, skipNode := c.GetQuery("skipNode")
 	if !skipNode {
-		newHeader, err := c.Cookie("puffer_auth")
-		if response.HandleError(c, err, http.StatusInternalServerError) {
-			db.Rollback()
-			return
-		}
+		ps := &services.PanelService{}
 
 		headers := http.Header{}
-		headers.Add("Authorization", "Bearer "+newHeader)
+		headers.Add("Authorization", "Bearer "+ps.GetActiveToken())
 
 		nodeRes, err := ns.CallNode(node, "DELETE", "/daemon/server/"+server.Identifier, nil, headers)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
