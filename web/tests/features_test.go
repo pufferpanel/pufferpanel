@@ -9,12 +9,12 @@ import (
 )
 
 func TestFeatures(t *testing.T) {
-	t.Run("TestFeatures", func(t *testing.T) {
-		session, err := createSessionAdmin()
-		if !assert.NoError(t, err) {
-			return
-		}
+	session, err := createSessionAdmin()
+	if !assert.NoError(t, err) {
+		return
+	}
 
+	t.Run("TestFeatures", func(t *testing.T) {
 		url := fmt.Sprintf("/api/nodes/%d/features", models.LocalNode.ID)
 		response := CallAPI("GET", url, nil, session)
 		if !assert.Equal(t, http.StatusOK, response.Code) {

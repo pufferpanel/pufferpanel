@@ -18,6 +18,7 @@ import (
 	"gorm.io/gorm"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -1014,6 +1015,7 @@ func proxyServerRequest(c *gin.Context) {
 
 	resolvedPath := "/daemon/server/" + strings.TrimPrefix(c.Request.URL.Path, "/api/servers/")
 
+	user := c.MustGet("user").(*models.User)
 	server := c.MustGet("server").(*models.Server)
 	node := &server.Node
 
@@ -1023,36 +1025,46 @@ func proxyServerRequest(c *gin.Context) {
 	//switch to our token for auth
 	c.Request.Header.Set("Authorization", "Bearer "+token)
 
-	if node.IsLocal() {
-		c.Request.URL.Path = resolvedPath
-		pufferpanel.Engine.HandleContext(c)
-	} else {
-		if c.IsWebsocket() {
-			//for websocket, nuke the query params to avoid trying to escalate
-			resolvedPath = strings.SplitN(c.Request.URL.Path, "?", 2)[0]
-			if !strings.HasPrefix(resolvedPath, "/") {
-				resolvedPath = "/" + resolvedPath
-			}
-
-			//add the params we can grant for this request
-			scopes := c.MustGet("scopes").([]*pufferpanel.Scope)
-			var params []string
-			if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerConsole) {
-				params = append(params, "console")
-			}
-			if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerStatus) {
-				params = append(params, "status")
-			}
-			if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerStats) {
-				params = append(params, "stats")
-			}
-			resolvedPath = resolvedPath + "?" + strings.Join(params, "&")
-
-			proxySocketRequest(c, resolvedPath, ns, node)
-		} else {
-			proxyHttpRequest(c, resolvedPath, ns, node)
+	if c.IsWebsocket() {
+		//for websocket, nuke the query params to avoid trying to escalate
+		resolvedPath = strings.SplitN(resolvedPath, "?", 2)[0]
+		if !strings.HasPrefix(resolvedPath, "/") {
+			resolvedPath = "/" + resolvedPath
 		}
+
+		permService := &services.Permission{DB: db}
+		perms, err := permService.GetForUserAndServer(user.ID, &server.Identifier)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+
+		scopes := perms.Scopes
+
+		perms, err = permService.GetForUserAndServer(user.ID, nil)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+
+		scopes = append(scopes, perms.Scopes...)
+
+		//add the params we can grant for this request
+		var params []string
+		if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerConsole) {
+			params = append(params, "console")
+		}
+		if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerStatus) {
+			params = append(params, "status")
+		}
+		if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServerStats) {
+			params = append(params, "stats")
+		}
+		resolvedPath = resolvedPath + "?" + strings.Join(params, "&")
+
+		proxySocketRequest(c, resolvedPath, ns, node)
+	} else {
+		proxyHttpRequest(c, resolvedPath, ns, node)
 	}
+
 	c.Abort()
 }
 
@@ -1085,7 +1097,12 @@ func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *mode
 func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
 	if node.IsLocal() {
 		//have gin handle the request again, but send it to daemon instead
-		c.Request.URL.Path = path
+		//c.Request.URL.Path = path
+		addr, err := url.Parse(path)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+		c.Request.URL = addr
 		pufferpanel.Engine.HandleContext(c)
 	} else {
 		err := ns.OpenSocket(node, path, c.Writer, c.Request)

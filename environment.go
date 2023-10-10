@@ -141,7 +141,7 @@ func (e *BaseEnvironment) AddConsoleListener(ws *Socket) {
 	e.ConsoleTracker.Register(ws)
 }
 
-func (e *BaseEnvironment) AddStatListener(ws *Socket) {
+func (e *BaseEnvironment) AddStatsListener(ws *Socket) {
 	e.StatsTracker.Register(ws)
 }
 

@@ -94,16 +94,18 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.POST("/:serverId/archive/*filename", middleware.ResolveServerNode, archive)
 		l.GET("/:serverId/extract/*filename", middleware.ResolveServerNode, extract)
 
-		l.GET("/:serverId/socket", middleware.ResolveServerNode, cors.New(cors.Config{
-			AllowAllOrigins:  true,
-			AllowCredentials: true,
-		}), openSocket)
-
-		l.Handle("CONNECT", "/:serverId/socket", middleware.ResolveServerNode, func(c *gin.Context) {
-			c.Header("Access-Control-Allow-Origin", "*")
-			c.Header("Access-Control-Allow-Credentials", "false")
-		})
-		l.OPTIONS("/:serverId/socket", response.CreateOptions("GET", "CONNECT"))
+		p := l.Group("/:serverId/socket")
+		{
+			p.GET("", middleware.ResolveServerNode, cors.New(cors.Config{
+				AllowAllOrigins:  true,
+				AllowCredentials: true,
+			}), openSocket)
+			p.Handle("CONNECT", "", func(c *gin.Context) {
+				c.Header("Access-Control-Allow-Origin", "*")
+				c.Header("Access-Control-Allow-Credentials", "false")
+			})
+			p.OPTIONS("", response.CreateOptions("GET", "CONNECT"))
+		}
 	}
 }
 

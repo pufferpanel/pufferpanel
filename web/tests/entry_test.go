@@ -3,18 +3,23 @@ package tests
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/braintree/manners"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
+	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/web"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestMain(m *testing.M) {
@@ -49,7 +54,27 @@ func TestMain(m *testing.M) {
 		//router.Use(gin.Logger())
 		gin.SetMode(gin.ReleaseMode)
 		web.RegisterRoutes(router)
+
+		l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", models.LocalNode.PrivateHost, models.LocalNode.PrivatePort))
+		if err != nil {
+			fmt.Printf("Error starting web services: %s", err.Error())
+			os.Exit(1)
+		}
+
+		webService := manners.NewWithServer(&http.Server{Handler: router})
 		pufferpanel.Engine = router
+
+		go func() {
+			err = webService.Serve(l)
+			if err != nil && !errors.Is(err, http.ErrServerClosed) {
+				fmt.Printf("Error starting web services: %s", err.Error())
+				os.Exit(1)
+			}
+		}()
+
+		//sleep just to give time for the web service to start
+		time.Sleep(time.Second)
+
 		exitCode = m.Run()
 		database.Close()
 	} else {

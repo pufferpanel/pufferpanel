@@ -10,20 +10,25 @@ import (
 )
 
 func TestTemplateAPI(t *testing.T) {
+	db, err := database.GetConnection()
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	session, err := createSessionAdmin()
+	if !assert.NoError(t, err) {
+		return
+	}
+
 	t.Parallel()
 	t.Run("GetRepos", func(t *testing.T) {
 		t.Parallel()
-		session, err := createSessionAdmin()
-		if !assert.NoError(t, err) {
-			return
-		}
-
 		response := CallAPI("GET", "/api/templates", nil, session)
 		if !assert.Equal(t, http.StatusOK, response.Code) {
 			return
 		}
 		var templates []*models.TemplateRepo
-		err = json.NewDecoder(response.Body).Decode(&templates)
+		err := json.NewDecoder(response.Body).Decode(&templates)
 		if !assert.NoError(t, err) {
 			return
 		}
@@ -46,17 +51,13 @@ func TestTemplateAPI(t *testing.T) {
 
 	t.Run("GetCommunityRepo", func(t *testing.T) {
 		t.Parallel()
-		session, err := createSessionAdmin()
-		if !assert.NoError(t, err) {
-			return
-		}
 
 		response := CallAPI("GET", "/api/templates/1", nil, session)
 		if !assert.Equal(t, http.StatusOK, response.Code) {
 			return
 		}
 		var templates []*models.Template
-		err = json.NewDecoder(response.Body).Decode(&templates)
+		err := json.NewDecoder(response.Body).Decode(&templates)
 		if !assert.NoError(t, err) {
 			return
 		}
@@ -66,17 +67,12 @@ func TestTemplateAPI(t *testing.T) {
 	})
 
 	t.Run("GetTemplateFromCommunity", func(t *testing.T) {
-		session, err := createSessionAdmin()
-		if !assert.NoError(t, err) {
-			return
-		}
-
 		response := CallAPI("GET", "/api/templates/1/minecraft", nil, session)
 		if !assert.Equal(t, http.StatusOK, response.Code) {
 			return
 		}
 		var template models.Template
-		err = json.NewDecoder(response.Body).Decode(&template)
+		err := json.NewDecoder(response.Body).Decode(&template)
 		if !assert.NoError(t, err) {
 			return
 		}
@@ -86,16 +82,6 @@ func TestTemplateAPI(t *testing.T) {
 	})
 
 	t.Run("AddTemplateToLocal", func(t *testing.T) {
-		db, err := database.GetConnection()
-		if !assert.NoError(t, err) {
-			return
-		}
-
-		session, err := createSessionAdmin()
-		if !assert.NoError(t, err) {
-			return
-		}
-
 		response := CallAPIRaw("PUT", "/api/templates/0/minecraft-vanilla", TemplateData, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
@@ -105,7 +91,7 @@ func TestTemplateAPI(t *testing.T) {
 			Name: "minecraft-vanilla",
 		}
 		var count int64
-		err = db.Model(mo).Where(mo).Count(&count).Error
+		err := db.Model(mo).Where(mo).Count(&count).Error
 		if !assert.NoError(t, err) {
 			return
 		}
@@ -115,21 +101,11 @@ func TestTemplateAPI(t *testing.T) {
 	})
 
 	t.Run("DeleteTemplateFromLocal", func(t *testing.T) {
-		db, err := database.GetConnection()
-		if !assert.NoError(t, err) {
-			return
-		}
-
-		session, err := createSessionAdmin()
-		if !assert.NoError(t, err) {
-			return
-		}
-
 		mo := &models.Template{
 			Name: "minecraft-vanilla",
 		}
 		var count int64
-		err = db.Model(mo).Where(mo).Count(&count).Error
+		err := db.Model(mo).Where(mo).Count(&count).Error
 		if !assert.NoError(t, err) {
 			return
 		}

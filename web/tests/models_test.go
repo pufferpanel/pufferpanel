@@ -6,6 +6,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"gorm.io/gorm"
+	"sync"
 )
 
 var loginNoLoginUser = &models.User{
@@ -112,12 +113,23 @@ func createSession(db *gorm.DB, user *models.User) (string, error) {
 	return ss.CreateForUser(user)
 }
 
+var adminSession string
+var adminSessionLock sync.Mutex
+
 func createSessionAdmin() (string, error) {
+	adminSessionLock.Lock()
+	defer adminSessionLock.Unlock()
+
+	if adminSession != "" {
+		return adminSession, nil
+	}
+
 	db, err := database.GetConnection()
 	if err != nil {
 		return "", err
 	}
-	return createSession(db, loginAdminUser)
+	adminSession, err = createSession(db, loginAdminUser)
+	return adminSession, err
 }
 
 var CreateServerData = []byte(`{
@@ -204,7 +216,11 @@ var CreateServerData = []byte(`{
   "run": {
     "command": [
       {
-        "command": "java${javaversion} -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar"
+        "command": "java${javaversion} -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar",
+        "if": "in_path(\"java${javaversion}\")"
+      },
+      {
+        "command": "java -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar"
       }
     ],
     "stop": "stop"
