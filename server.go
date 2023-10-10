@@ -83,7 +83,7 @@ type Requirements struct {
 
 type Group struct {
 	Variables   []string `json:"variables"`
-	Display     string   `json:"string"`
+	Display     string   `json:"display"`
 	Description string   `json:"description"`
 	Order       int      `json:"order"`
 } //@name Group
