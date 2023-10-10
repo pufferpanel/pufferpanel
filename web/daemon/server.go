@@ -693,14 +693,10 @@ func getLogs(c *gin.Context) {
 	}
 
 	console, epoch := server.GetEnvironment().GetConsoleFrom(castedTime)
-	msg := ""
-	for _, k := range console {
-		msg += k
-	}
 
 	c.JSON(http.StatusOK, &pufferpanel.ServerLogs{
 		Epoch: epoch,
-		Logs:  msg,
+		Logs:  console,
 	})
 }
 

@@ -1,7 +1,7 @@
 package messages
 
 type Console struct {
-	Logs []string `json:"logs"`
+	Logs []byte `json:"logs"`
 }
 
 func (m Console) Key() string {

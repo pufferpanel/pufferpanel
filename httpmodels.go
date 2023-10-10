@@ -11,7 +11,7 @@ type ServerStats struct {
 
 type ServerLogs struct {
 	Epoch int64  `json:"epoch"`
-	Logs  string `json:"logs"`
+	Logs  []byte `json:"logs"`
 } //@name ServerLogs
 
 type ServerRunning struct {

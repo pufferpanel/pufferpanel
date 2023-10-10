@@ -55,9 +55,7 @@ func (ws *Tracker) WriteMessage(msg messages.Message) error {
 }
 
 func (ws *Tracker) Write(source []byte) (n int, e error) {
-	logs := make([]string, 1)
-	logs[0] = string(source)
-	packet := messages.Console{Logs: logs}
+	packet := messages.Console{Logs: source}
 	e = ws.WriteMessage(packet)
 	n = len(source)
 	return

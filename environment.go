@@ -45,9 +45,9 @@ type Environment interface {
 
 	GetRootDirectory() string
 
-	GetConsole() (console []string, epoch int64)
+	GetConsole() (console []byte, epoch int64)
 
-	GetConsoleFrom(time int64) (console []string, epoch int64)
+	GetConsoleFrom(time int64) (console []byte, epoch int64)
 
 	AddConsoleListener(ws *Socket)
 
@@ -76,7 +76,7 @@ type BaseEnvironment struct {
 	Environment
 	Type              string               `json:"type"`
 	RootDirectory     string               `json:"root,omitempty"`
-	ConsoleBuffer     Cache                `json:"-"`
+	ConsoleBuffer     *MemoryCache         `json:"-"`
 	Wait              *sync.WaitGroup      `json:"-"`
 	ExecutionFunction ExecutionFunction    `json:"-"`
 	WaitFunction      func() (err error)   `json:"-"`
@@ -127,12 +127,12 @@ func (e *BaseEnvironment) GetRootDirectory() string {
 	return e.RootDirectory
 }
 
-func (e *BaseEnvironment) GetConsole() (console []string, epoch int64) {
+func (e *BaseEnvironment) GetConsole() (console []byte, epoch int64) {
 	console, epoch = e.ConsoleBuffer.Read()
 	return
 }
 
-func (e *BaseEnvironment) GetConsoleFrom(time int64) (console []string, epoch int64) {
+func (e *BaseEnvironment) GetConsoleFrom(time int64) (console []byte, epoch int64) {
 	console, epoch = e.ConsoleBuffer.ReadFrom(time)
 	return
 }

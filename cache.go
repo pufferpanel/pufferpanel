@@ -6,24 +6,16 @@ import (
 	"time"
 )
 
-type Cache interface {
-	Read() (cache []string, epoch int64)
-
-	ReadFrom(startTime int64) (cache []string, epoch int64)
-
-	Write(b []byte) (n int, err error)
-}
-
 type Message struct {
-	msg  string
+	msg  []byte
 	time int64
 }
 
 type MemoryCache struct {
-	Cache
 	Buffer   []Message
 	Capacity int
-	Lock     sync.Locker
+	Size     int
+	Lock     sync.RWMutex
 }
 
 func CreateCache() *MemoryCache {
@@ -33,24 +25,26 @@ func CreateCache() *MemoryCache {
 	}
 	return &MemoryCache{
 		Buffer:   make([]Message, 0),
-		Capacity: capacity,
-		Lock:     &sync.Mutex{},
+		Capacity: capacity * 1024, //convert to KB
 	}
 }
 
-func (c *MemoryCache) Read() (msg []string, lastTime int64) {
+func (c *MemoryCache) Read() (msg []byte, lastTime int64) {
 	msg, lastTime = c.ReadFrom(0)
 	return
 }
 
-func (c *MemoryCache) ReadFrom(startTime int64) (msg []string, lastTime int64) {
-	result := make([]string, 0)
+func (c *MemoryCache) ReadFrom(startTime int64) (msg []byte, lastTime int64) {
+	c.Lock.RLock()
+	defer c.Lock.RUnlock()
+
+	result := make([]byte, 0)
 
 	var endTime int64 = 0
 
 	for _, v := range c.Buffer {
 		if v.time > startTime {
-			result = append(result, v.msg)
+			result = append(result, v.msg...)
 			endTime = v.time
 		}
 	}
@@ -64,10 +58,16 @@ func (c *MemoryCache) ReadFrom(startTime int64) (msg []string, lastTime int64) {
 func (c *MemoryCache) Write(b []byte) (n int, err error) {
 	c.Lock.Lock()
 	defer c.Lock.Unlock()
-	if len(c.Buffer) == c.Capacity {
-		c.Buffer = c.Buffer[1:]
-	}
-	c.Buffer = append(c.Buffer, Message{msg: string(b), time: time.Now().Unix()})
 	n = len(b)
+
+	//remove data until we've gotten small enough
+	var pop Message
+	for c.Size+n > c.Capacity {
+		pop, c.Buffer = c.Buffer[0], c.Buffer[1:]
+		c.Size = c.Size - len(pop.msg)
+	}
+
+	c.Buffer = append(c.Buffer, Message{msg: b, time: time.Now().Unix()})
+	c.Size = c.Size + n
 	return
 }
