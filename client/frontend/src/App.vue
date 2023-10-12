@@ -73,12 +73,6 @@ function showErrorDetails(e) {
       break
   }
 
-  let auth = e.request.headers.Authorization
-  if (auth) {
-    auth = auth.substring(0, 16)
-    if (auth.length === 16) auth = auth + '...'
-  } else auth = 'Not present'
-
   let body = e.request.data
   if (body) {
     body = JSON.stringify(JSON.parse(body), getCircularReplacer(), 2)
@@ -87,8 +81,6 @@ function showErrorDetails(e) {
   error.value = `${statusMessage}
 
 Endpoint: ${e.request.method} ${e.request.url}
-
-Authorization Header: ${auth}
 
 ${body ? 'Request Body: ' + body : ''}`
     .replace(/>/g, '&gt;')

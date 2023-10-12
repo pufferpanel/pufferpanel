@@ -1,10 +1,7 @@
 <script setup>
 import { ref, onUpdated } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Btn from '@/components/ui/Btn.vue'
 import Dropdown from '@/components/ui/Dropdown.vue'
-import Icon from '@/components/ui/Icon.vue'
-import Toggle from '@/components/ui/Toggle.vue'
 import EnvironmentConfig from '@/components/ui/EnvironmentConfig.vue'
 
 const props = defineProps({

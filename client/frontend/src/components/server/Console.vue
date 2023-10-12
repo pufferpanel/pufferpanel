@@ -10,7 +10,7 @@ let lastElem = null
 
 const { t } = useI18n()
 const config = inject('config')
-const name = config.branding.name
+const panelName = config.branding.name
 
 const command = ref('')
 const console = ref(null)
@@ -22,24 +22,16 @@ const props = defineProps({
 
 let unbindEvent = null
 let task = null
-onMounted(() => {
-  unbindEvent = props.server.on('console', e => {
-    if ('epoch' in event) {
-      lastMessageTime = event.epoch
-    } else {
-      lastMessageTime = Math.floor(Date.now() / 1000)
-    }
-    worker.postMessage({ ...e, name })
-  })
+onMounted(async () => {
   worker.addEventListener("message", onWorkerMessage)
+  unbindEvent = props.server.on('console', onMessage)
 
-  task = props.server.startTask(() => {
+  onMessage(await props.server.getConsole())
+  task = props.server.startTask(async () => {
     if (props.server.needsPolling()) {
-      props.server.replayConsole(lastMessageTime)
+      onMessage(await props.server.getConsole(lastMessageTime))
     }
   }, 5000)
-
-  props.server.replayConsole()
 })
 
 onUnmounted(() => {
@@ -47,6 +39,15 @@ onUnmounted(() => {
   if (task) props.server.stopTask(task)
   clearConsole()
 })
+
+function onMessage(e) {
+  if ('epoch' in e) {
+    lastMessageTime = e.epoch
+  } else {
+    lastMessageTime = Math.floor(Date.now() / 1000)
+  }
+  worker.postMessage({ ...e, panelName })
+}
 
 function onWorkerMessage(e) {
   const newElems = []

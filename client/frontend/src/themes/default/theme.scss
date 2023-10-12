@@ -183,13 +183,29 @@ hr {
 }
 
 
-.main .operators, .main .variables {
+.main .operators, .main .variables, #run {
   .list {
     gap: 0.25em;
     grid-gap: 0.25em;
     .list-item {
       @include cols(12);
     }
+  }
+}
+
+.main .variables {
+  .group-header {
+    padding: 0 .5em;
+    display: flex;
+    .title {
+      flex-grow: 1;
+      h3 {
+        margin-bottom: .25em;
+      }
+    }
+  }
+  .select-var-group .overlay .dropdown {
+    margin-bottom: 25rem;
   }
 }
 
@@ -478,7 +494,7 @@ html[dir="rtl"] .menu.open {
   input {
     width: 100%;
     padding: 0;
-    appearence: none;
+    appearance: none;
     border: none;
     cursor: pointer;
     margin: 0.5em;
@@ -490,6 +506,7 @@ html[dir="rtl"] .menu.open {
     }
     &::-webkit-color-swatch {
       border: none;
+      border-radius: 16px;
     }
   }
 }
@@ -680,6 +697,9 @@ html[dir="rtl"] {
     @include card;
     height: -moz-fit-content;
     height: fit-content;
+    h3 {
+      margin-top: 2em;
+    }
   }
 }
 

@@ -21,6 +21,11 @@ const editIndex = ref(0)
 const editOpen = ref(false)
 const model = ref([...props.modelValue])
 
+onUpdated(() => {
+  if (JSON.stringify(model.value) !== JSON.stringify(props.modelValue) && Array.isArray(props.modelValue))
+    model.value = [...props.modelValue]
+})
+
 function update() {
   emit('update:modelValue', model.value)
 }

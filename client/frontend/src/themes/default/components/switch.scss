@@ -62,7 +62,7 @@
   .label {
     line-height: 1.6em;
     margin-left: 4em;
-    margin-right: 4em;
+    margin-right: .5em;
     top: -0.5em;
     position: relative;
   }
@@ -70,11 +70,18 @@
   .hint {
     display: block;
     margin-left: 4em;
-    margin-right: 4em;
+    margin-right: .5em;
     margin-bottom: 12px;
     p {
       margin: 0;
       color: var(--text-disabled);
     }
+  }
+}
+
+html[dir="rtl"] {
+  .switch-wrapper .label, .switch-wrapper .hint {
+    margin-left: .5em;
+    margin-right: 4em;
   }
 }

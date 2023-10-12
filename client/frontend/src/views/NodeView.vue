@@ -189,6 +189,7 @@ function closeDeploy() {
       <btn color="error" @click="deleteNode()"><icon name="remove" />{{ t('nodes.Delete') }}</btn>
       <btn @click="deploymentOpen = true" v-text="t('nodes.Deploy')" />
     </div>
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-else class="edit" v-html="markdown(t('nodes.LocalNodeEdit'))" />
     <overlay v-model="deploymentOpen" closable :title="t('nodes.Deploy')" @close="closeDeploy()">
       <!-- eslint-disable-next-line vue/no-v-html -->

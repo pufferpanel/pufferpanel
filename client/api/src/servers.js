@@ -30,6 +30,11 @@ export class ServerApi {
     return res.data.running
   }
 
+  async getStats(id) {
+    const res = await this._api.get(`/api/servers/${id}/stats`)
+    return res.data
+  }
+
   async action(id, action, wait = false) {
     await this._api.post(`/api/servers/${id}/${action}?wait=${wait}`)
     return true
@@ -49,6 +54,11 @@ export class ServerApi {
 
   async install(id, wait = false) {
     return await this.action(id, 'install', wait)
+  }
+
+  async reload(id) {
+    await this._api.post(`/api/servers/${id}/reload`)
+    return true
   }
 
   async sendCommand(id, command) {
@@ -88,6 +98,11 @@ export class ServerApi {
 
   async getUsers(id) {
     const res = await this._api.get(`/api/servers/${id}/user`)
+    return res.data
+  }
+
+  async getUser(id, email) {
+    const res = await this._api.get(`/api/servers/${id}/user/${email}`)
     return res.data
   }
 
@@ -184,7 +199,7 @@ export class ServerApi {
 
   async extractFile(id, path, destination) {
     if (path.startsWith('/')) path = path.substring(1)
-    await this._api.get(`/api/servers/${id}/extract/${path}`, { destination })
+    await this._api.post(`/api/servers/${id}/extract/${path}`, { destination })
     return true
   }
 
@@ -223,7 +238,6 @@ class Server {
   _socket = null
   _api = null
   _tasks = []
-  _preOpenMessages = []
   _emitter = null
   readyState = WebSocket.CONNECTING
 
@@ -251,22 +265,15 @@ class Server {
     this.node = serverData.server.node
     this.port = serverData.server.port
     this.type = serverData.server.type
-    this.permissions = api.auth.hasScope('servers.admin') ? {
-      editServerData: true,
-      editServerUsers: true,
-      installServer: true,
-      putServerFiles: true,
-      sendServerConsole: true,
-      sftpServer: true,
-      startServer: true,
-      stopServer: true,
-      viewServerConsole: true,
-      viewServerFiles: true,
-      viewServerStats: true
-    } : serverData.permissions
+    this._scopes = serverData.permissions.scopes
     this._api = api
     this._openSocket()
     this.emit('open')
+  }
+
+  hasScope(scope) {
+    if (this._scopes.indexOf(scope) !== -1) return true
+    return this._api.auth.hasScope('admin')
   }
 
   on(event, cb) {
@@ -298,8 +305,6 @@ class Server {
   _onOpen(e) {
     this.readyState = this._socket.readyState
     this.emit('socket-open', e)
-
-    this._preOpenMessages.forEach(msg => this.send(msg))
   }
 
   _onMessage(e) {
@@ -318,6 +323,7 @@ class Server {
     if (this._expectClose) {
       this._cleanup()
     } else {
+      // eslint-disable-next-line no-console
       console.warn('socket closed', e)
       if (this._connectionAttemptsFailed === this._connectionAttemptsMax) {
         // emit an error once after a certain number of failed retries
@@ -360,73 +366,40 @@ class Server {
     return state === WebSocket.CLOSING || state === WebSocket.CLOSED
   }
 
-  async send(message) {
-    let msg
-    if (typeof message !== 'string') {
-      msg = JSON.stringify(message)
-    } else {
-      msg = message
-    }
-
-    if (this._socket.readyState === WebSocket.CONNECTING) {
-      this._preOpenMessages.push(message)
-    } else if (this._socket.readyState === WebSocket.OPEN) {
-      this._socket.send(msg)
-    } else {
-      // replicate socket behavior through http
-      switch (message.type) {
-        case 'status':
-          const running = await this._api.server.getStatus(this.id)
-          this._onMessage({ data: JSON.stringify({ data: { running }, type: 'status' }) })
-          break
-        case 'start':
-        case 'stop':
-        case 'kill':
-        case 'install':
-          this._api.server.action(this.id, message.type)
-          break
-        case 'console':
-          this._api.server.sendCommand(this.id, message.command)
-          break
-        case 'replay':
-          this._api.server.getConsole(this.id, message.since)
-          break
-        default:
-          console.error('SOCKET SEND', 'unknown message', message)
-      }
-    }
+  async getStatus() {
+    return await this._api.server.getStatus(this.id)
   }
 
-  status() {
-    this.send({ type: 'status' })
+  async getStats() {
+    return await this._api.server.getStats(this.id)
   }
 
-  stats() {
-    this.send({ type: 'stat' })
+  async start() {
+    return await this._api.server.start(this.id)
   }
 
-  start() {
-    this.send({ type: 'start' })
+  async stop() {
+    return await this._api.server.stop(this.id)
   }
 
-  stop() {
-    this.send({ type: 'stop' })
+  async kill() {
+    return await this._api.server.kill(this.id)
   }
 
-  kill() {
-    this.send({ type: 'kill' })
+  async install() {
+    return await this._api.server.install(this.id)
   }
 
-  install() {
-    this.send({ type: 'install' })
+  async reload() {
+    return await this._api.server.reload(this.id)
   }
 
-  sendCommand(command) {
-    this.send({ type: 'console', command })
+  async sendCommand(command) {
+    return await this._api.server.sendCommand(this.id, command)
   }
 
-  replayConsole(since = 0) {
-    this.send({ type: 'replay', since })
+  async getConsole(since = 0) {
+    return await this._api.server.getConsole(this.id, since)
   }
 
   async updateName(name) {
@@ -511,7 +484,7 @@ class Server {
     return await this._api.server.deleteOAuthClient(this.id, clientId)
   }
 
-  close() {
+  closeSocket() {
     this._expectClose = true
     this._cleanup()
     if (this.readyState === WebSocket.CONNECTING || this.readyState === WebSocket.OPEN) {

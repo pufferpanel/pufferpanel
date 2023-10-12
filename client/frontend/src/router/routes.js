@@ -35,7 +35,7 @@ export default (api) => [
     name: 'ServerList',
     meta: {
       tkey: 'servers.Servers',
-      permission: 'servers.view',
+      permission: 'servers.list',
       icon: 'server',
       hotkey: 'g s'
     }
@@ -77,7 +77,7 @@ export default (api) => [
     name: 'UserList',
     meta: {
       tkey: 'users.Users',
-      permission: 'users.view',
+      permission: 'users.info.view',
       icon: 'users',
       hotkey: 'g u'
     }
@@ -119,7 +119,7 @@ export default (api) => [
     name: 'Settings',
     meta: {
       tkey: 'settings.Settings',
-      permission: 'servers.admin',
+      permission: 'settings.edit',
       icon: 'settings',
       hotkey: 'g c'
     }

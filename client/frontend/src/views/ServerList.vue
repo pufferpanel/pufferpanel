@@ -99,7 +99,7 @@ function focusList() {
       <div v-if="!allServersLoaded" class="list-item">
         <loader ref="loaderRef" small />
       </div>
-      <div v-if="$api.auth.hasScope('servers.create')" class="list-item">
+      <div v-if="$api.auth.hasScope('server.create')" class="list-item">
         <router-link v-hotkey="'c'" :to="{ name: 'ServerCreate' }">
           <div class="createLink"><icon name="plus" />{{ t('servers.Add') }}</div>
         </router-link>

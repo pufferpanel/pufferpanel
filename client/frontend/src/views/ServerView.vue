@@ -19,7 +19,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  server.value.close()
+  server.value.closeSocket()
 })
 </script>
 

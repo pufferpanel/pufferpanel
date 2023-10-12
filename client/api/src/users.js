@@ -27,7 +27,7 @@ export class UserApi {
 
   async getPermissions(id) {
     const res = await this._api.get(`/api/users/${id}/perms`)
-    return res.data
+    return res.data.scopes
   }
 
   async update(id, user) {

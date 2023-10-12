@@ -6754,6 +6754,9 @@ $mdi-icons: (
 .icon-edit {
   @include icon-name(pencil);
 }
+.icon-select-group {
+  @include icon-name(select-group);
+}
 html[dir="ltr"] {
   .icon-back {
     @include icon-name(chevron-left);

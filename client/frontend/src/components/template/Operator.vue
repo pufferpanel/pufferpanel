@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onUpdated } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { operators } from '@/utils/operators.js'
 import Ace from '@/components/ui/Ace.vue'
@@ -28,6 +28,7 @@ function update() {
 
 function typeChanged(newType) {
   const m = { type: newType }
+  model.value.if ? m.if = model.value.if : m.if = ''
   operators[newType].map(field => {
     m[field.name] = field.default
   })
@@ -43,6 +44,7 @@ function getLabel(field) {
 <template>
   <div :class="['operator', typeSelect.isOpen ? 'typeselect-open' : '']">
     <dropdown ref="typeSelect" v-model="model.type" :options="types" @update:modelValue="typeChanged" />
+    <text-field v-model="model.if" :label="t('common.Condition')" :hint="t('operators.ConditionHint')" @update:modelValue="update" />
     <div v-for="field in operators[model.type]" :key="field.name">
       <text-field v-if="field.type === 'text'" v-model="model[field.name]" :label="getLabel(field)" @update:modelValue="update" />
       <toggle v-if="field.type === 'boolean'" v-model="model[field.name]" :label="getLabel(field)" @update:modelValue="update" />

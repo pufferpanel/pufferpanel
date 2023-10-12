@@ -58,7 +58,7 @@ export class AuthApi {
     const scopes = this._sessionStore.getScopes()
     if (scopes !== null) {
       if (scopes.indexOf(scope) !== -1) return true
-      return scopes.indexOf('servers.admin') !== -1
+      return scopes.indexOf('admin') !== -1
     }
     return false
   }

@@ -85,7 +85,7 @@ onMounted(() => {
 
     <tabs anchors>
       <tab
-        v-if="server.permissions.viewServerConsole"
+        v-if="server.hasScope('server.console')"
         id="console"
         :title="t('servers.Console')"
         icon="console"
@@ -94,7 +94,7 @@ onMounted(() => {
         <console :server="server" />
       </tab>
       <tab
-        v-if="server.permissions.viewServerStats"
+        v-if="server.hasScope('server.stats')"
         id="stats"
         :title="t('servers.Statistics')"
         icon="stats"
@@ -103,7 +103,7 @@ onMounted(() => {
         <stats :server="server" />
       </tab>
       <tab
-        v-if="server.permissions.viewServerFiles"
+        v-if="server.hasScope('server.files.view')"
         id="files"
         :title="t('servers.Files')"
         icon="files"
@@ -112,7 +112,7 @@ onMounted(() => {
         <files :server="server" />
       </tab>
       <tab
-        v-if="server.permissions.editServerData"
+        v-if="server.hasScope('server.data.view')"
         id="settings"
         :title="t('servers.Settings')"
         icon="settings"
@@ -121,7 +121,7 @@ onMounted(() => {
         <settings :server="server" />
       </tab>
       <tab
-        v-if="server.permissions.editServerData"
+        v-if="server.hasScope('server.users.view')"
         id="users"
         :title="t('users.Users')"
         icon="users"
@@ -131,7 +131,7 @@ onMounted(() => {
       </tab>
       <!-- currently disabled due to tasks being broken -->
       <tab
-        v-if="false && server.permissions.editServerData"
+        v-if="false && server.hasScope('server.tasks.view')"
         id="tasks"
         :title="t('servers.Tasks')"
         icon="tasks"
@@ -140,7 +140,7 @@ onMounted(() => {
         <tasks :server="server" />
       </tab>
       <tab
-        v-if="server.permissions.sftpServer"
+        v-if="server.hasScope('server.sftp')"
         id="sftp"
         :title="t('servers.SFTPInfo')"
         icon="sftp"
@@ -149,6 +149,7 @@ onMounted(() => {
         <sftp :server="server" />
       </tab>
       <tab
+        v-if="server.hasScope('server.clients.view')"
         id="api"
         :title="t('servers.API')"
         icon="api"
@@ -157,6 +158,7 @@ onMounted(() => {
         <api :server="server" />
       </tab>
       <tab
+        v-if="server.hasScope('server.definition.view')"
         id="admin"
         :title="t('servers.Admin')"
         icon="admin"

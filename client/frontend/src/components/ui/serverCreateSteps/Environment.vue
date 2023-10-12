@@ -51,6 +51,8 @@ async function nodeChanged() {
       if (env === 'docker') {
         // only allow if the node is actually configured to talk to docker
         return nodeFeatures.value.features.indexOf('docker') >= 0
+      } else if (env === 'tty' || env === 'standard') {
+        return false
       } else {
         return true
       }

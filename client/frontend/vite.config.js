@@ -7,6 +7,7 @@ import fs from 'fs'
 
 export default defineConfig({
   build: {
+    sourcemap: true,
     chunkSizeWarningLimit: 550,
     rollupOptions: {
       output: {

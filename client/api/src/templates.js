@@ -16,14 +16,10 @@ export class TemplateApi {
   }
 
   async listAllTemplates() {
-    const res = {}
+    const res = []
     const repos = await this.listRepos()
-    // treating `local` specially to have it come first in iterations over the
-    // result objects properties
-    if (repos.filter(r => r.name === 'local').length > 0)
-      res['local'] = await this.listRepoTemplates('local')
-    await Promise.all(repos.filter(r => r.name !== 'local').map(async repo => {
-      res[repo.name] = await this.listRepoTemplates(repo.name)
+    await Promise.all(repos.map(async repo => {
+      res.push({ name: repo.name, id: repo.id, templates: await this.listRepoTemplates(repo.id) })
     }))
     return res
   }
@@ -44,12 +40,12 @@ export class TemplateApi {
   }
 
   async save(name, template) {
-    await this._api.put(`/api/templates/local/${name}`, template)
+    await this._api.put(`/api/templates/0/${name}`, template)
     return true
   }
 
   async delete(name) {
-    await this._api.delete(`/api/templates/local/${name}`)
+    await this._api.delete(`/api/templates/0/${name}`)
     return true
   }
 

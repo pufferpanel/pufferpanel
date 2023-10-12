@@ -73,7 +73,7 @@ async function settingsConfirmed(settings) {
         <div :class="['step', 'step-template', step === 'template' ? 'step-current' : '']" />
         <div :class="['step', 'step-settings', step === 'settings' ? 'step-current' : '']" />
       </div>
-      <environment v-if="step === 'environment'" :nouser="!$api.auth.hasScope('users.view')" @confirm="envConfirmed" />
+      <environment v-if="step === 'environment'" :nouser="!$api.auth.hasScope('users.info.search')" @confirm="envConfirmed" />
       <select-template
         v-if="step === 'template'"
         :env="environment.envConfig.type"

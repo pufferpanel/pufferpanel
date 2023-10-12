@@ -10,7 +10,7 @@ const { t } = useI18n()
 const api = inject('api')
 const toast = inject('toast')
 const emit = defineEmits(['selected', 'back'])
-const templatesByRepo = ref({})
+const templatesByRepo = ref([])
 const showing = ref(false)
 const currentTemplate = ref({})
 
@@ -38,15 +38,17 @@ function templateArchMatches(template) {
 
 async function load() {
   const repos = await api.template.listAllTemplates()
-  Object.keys(repos).map(repo => {
-    repos[repo] = repos[repo].filter(template => {
+  const res = []
+  Object.keys(repos).sort((a, b) => repos[a].id > repos[b].id).map(repo => {
+    if (repos[repo].templates.length === 0) return
+    const templates = repos[repo].templates.filter(template => {
       return templateEnvMatches(template) &&
         templateOsMatches(template) &&
         templateArchMatches(template)
     })
-    if (repos[repo].length === 0) delete repos[repo]
+    res.push({ ...repos[repo], templates })
   })
-  templatesByRepo.value = repos
+  templatesByRepo.value = res
 }
 
 onMounted(async () => {
@@ -67,9 +69,9 @@ function choice(confirm) {
 <template>
   <div class="select-template">
     <h2 v-text="t('servers.SelectTemplate')" />
-    <div v-for="(templates, repo) in templatesByRepo" :key="repo" class="list">
-      <h3 class="list-header" v-text="repo" />
-      <div v-for="template in templates" :key="template.name" class="list-item template" @click="show(repo, template.name)">
+    <div v-for="repo in templatesByRepo" :key="repo.id" class="list">
+      <h3 class="list-header" v-text="repo.name" />
+      <div v-for="template in repo.templates" :key="template.name" class="list-item template" @click="show(repo.id, template.name)">
         <span class="title" v-text="template.display" />
       </div>
     </div>

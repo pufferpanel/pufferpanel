@@ -7,7 +7,7 @@ import Icon from '@/components/ui/Icon.vue'
 import TextField from '@/components/ui/TextField.vue'
 import Toggle from '@/components/ui/Toggle.vue'
 
-const { t } = useI18n()
+const { t, te, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const api = inject('api')
@@ -64,45 +64,91 @@ async function deleteUser() {
   )
 }
 
-const scopes = [
-  'viewServers',
-  'createServers',
-  'deleteServers',
-  'editServerAdmin',
-  'viewNodes',
-  'editNodes',
-  'deployNodes',
-  'panelSettings',
-  'viewTemplates',
-  'editTemplates',
-  'viewUsers',
-  'editUsers'
-]
+const scopes = {
+  general: [
+    'admin',
+    'login',
+    'self.edit',
+    'self.clients',
+    'settings.edit'
+  ],
+  servers: [
+    'servers.list',
+    'server.create'
+  ],
+  nodes: [
+    'nodes.view',
+    'nodes.create',
+    'nodes.edit',
+    'nodes.deploy',
+    'nodes.delete'
+  ],
+  users: [
+    'users.info.search',
+    'users.info.view',
+    'users.info.edit',
+    'users.perms.view',
+    'users.perms.edit'
+  ],
+  templates: [
+    'templates.view',
+    'templates.local.edit',
+    'templates.repo.view',
+    'templates.repo.add',
+    'templates.repo.remove'
+  ]
+}
 
-const permissions = ref({ admin: false })
-
-scopes.map(scope => {
-  permissions.value[scope] = false
-})
+const permissions = ref([])
 
 onMounted(async () => {
   const user = await api.user.get(route.params.id)
   username.value = user.username
   email.value = user.email
-  const perms = await api.user.getPermissions(route.params.id)
-  for (const scope in perms) {
-    permissions.value[scope] = perms[scope]
-  }
+  permissions.value = await api.user.getPermissions(route.params.id)
 })
 
 function scopeLabel(scope) {
-  return t('scopes.' + scope[0].toUpperCase() + scope.substring(1))
+  return t('scopes.name.' + scope.replace(/\./g, '-'))
+}
+
+function scopeHint(scope) {
+  if (te('scopes.hint.' + scope.replace(/\./g, '-'), locale)) {
+    return t('scopes.hint.' + scope.replace(/\./g, '-'))
+  }
+}
+
+function permissionCategoryHeading(category) {
+  const map = {
+    servers: 'servers.Servers',
+    nodes: 'nodes.Nodes',
+    users: 'users.Users',
+    templates: 'templates.Templates'
+  }
+  return t(map[category])
+}
+
+function permissionDisabled(scope) {
+  if (!api.auth.hasScope('user.perms.edit')) return true
+  if (scope === 'admin' && api.auth.hasScope('admin')) return false
+  if (scope === 'admin') return true
+
+  if (permissions.value.indexOf('admin') >= 0) return true
+  return !api.auth.hasScope(scope)
+}
+
+function togglePermission(scope) {
+  if (permissions.value.indexOf(scope) === -1) {
+    permissions.value = [...permissions.value, scope]
+  } else {
+    permissions.value = permissions.value.filter(e => e !== scope)
+  }
 }
 </script>
 
 <template>
   <div class="userview">
-    <div class="details">
+    <div v-if="$api.auth.hasScope('users.info.view')" class="details">
       <h1 v-text="t('users.Details')" />
       <form @submit.prevent="submitDetails()">
         <text-field
@@ -110,6 +156,7 @@ function scopeLabel(scope) {
           :label="t('users.Username')"
           icon="account"
           :error="usernameError"
+          :disabled="!$api.auth.hasScope('users.info.edit')"
           @blur="usernameError = validate.username(username) ? '' : t('errors.ErrUsernameRequirements')"
         />
         <text-field
@@ -118,9 +165,11 @@ function scopeLabel(scope) {
           type="email"
           icon="email"
           :error="emailError"
+          :disabled="!$api.auth.hasScope('users.info.edit')"
           @blur="emailError = validate.email(email) ? '' : t('errors.ErrEmailInvalid')"
         />
         <text-field
+          v-if="$api.auth.hasScope('users.info.edit')"
           v-model="password"
           :label="t('users.Password')"
           type="password"
@@ -128,15 +177,26 @@ function scopeLabel(scope) {
           :error="passwordError"
           @blur="passwordError = (validate.password(password) || password.length === 0) ? '' : t('error.PasswordInvalid')"
         />
-        <btn color="primary" :disabled="!canSubmitDetails()" @click="submitDetails()"><icon name="save" />{{ t('users.UpdateDetails') }}</btn>
-        <btn color="error" @click="deleteUser()"><icon name="remove" />{{ t('users.Delete') }}</btn>
+        <btn v-if="$api.auth.hasScope('users.info.edit')" color="primary" :disabled="!canSubmitDetails()" @click="submitDetails()"><icon name="save" />{{ t('users.UpdateDetails') }}</btn>
+        <btn v-if="$api.auth.hasScope('users.info.edit')" color="error" @click="deleteUser()"><icon name="remove" />{{ t('users.Delete') }}</btn>
       </form>
     </div>
-    <div class="permissions">
+
+    <div v-if="$api.auth.hasScope('users.perms.view')" class="permissions">
       <h1 v-text="t('users.Permissions')" />
-      <toggle v-model="permissions.admin" :label="t('scopes.Admin')" />
-      <toggle v-for="scope in scopes" :key="scope" v-model="permissions[scope]" :disabled="permissions.admin" :label="scopeLabel(scope)" />
-      <btn color="primary" @click="submitPermissions()"><icon name="save" />{{ t('users.UpdatePermissions') }}</btn>
+      <div v-for="(scopeCat, catName) in scopes" :key="scopeCat">
+        <h3 v-if="catName !== 'general'" v-text="permissionCategoryHeading(catName)" />
+        <toggle
+          v-for="scope in scopeCat"
+          :key="scope"
+          :model-value="permissions.indexOf(scope) >= 0"
+          :disabled="permissionDisabled(scope)"
+          :label="scopeLabel(scope)"
+          :hint="scopeHint(scope)"
+          @update:modelValue="togglePermission(scope)"
+        />
+      </div>
+      <btn v-if="api.auth.hasScope('user.perms.edit')" color="primary" @click="submitPermissions()"><icon name="save" />{{ t('users.UpdatePermissions') }}</btn>
     </div>
   </div>
 </template>

@@ -22,7 +22,7 @@ const toast = inject('toast')
 const events = inject('events')
 const router = useRouter()
 
-const isAdmin = api.auth.hasScope('servers.admin')
+const isAdmin = api.auth.hasScope('server.admin')
 
 const props = defineProps({
   server: { type: Object, required: true }

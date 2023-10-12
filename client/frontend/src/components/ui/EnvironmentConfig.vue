@@ -70,13 +70,16 @@ const { t } = useI18n()
 
 onMounted(() => {
   const defaults = {}
-  fields[props.modelValue.type].map(field => {
+  let envType = props.modelValue.type
+  // remap legacy names for the host env
+  if (envType === 'standard' || envType === 'tty') envType = 'host'
+  fields[envType].map(field => {
     if (!props.modelValue[field.name]) {
       defaults[field.name] = field.default
     }
   })
   if (Object.keys(defaults).length > 0)
-    emit('update:modelValue', { ...props.modelValue, ...defaults })
+    emit('update:modelValue', { ...props.modelValue, type: envType, ...defaults })
 })
 
 function onInput(field, event) {

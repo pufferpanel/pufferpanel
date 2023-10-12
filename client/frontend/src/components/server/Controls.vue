@@ -32,43 +32,49 @@ const hotkeys = {
 function onHotkey(keys) {
   if (hotkeys[keys]) hotkeys[keys]()
 }
+
+const showMenu =
+  props.server.hasScope('server.start') || 
+  props.server.hasScope('server.stop') || 
+  props.server.hasScope('server.kill') || 
+  props.server.hasScope('server.install')
 </script>
 
 <template>
   <span v-hotkey="Object.keys(hotkeys)" class="server-controls" @hotkey="onHotkey">
-    <btn class="start" @click="server.start()">
+    <btn v-if="server.hasScope('server.start')" class="start" @click="server.start()">
       <icon name="play" />
       <span class="text">{{ t('servers.Start') }}</span>
     </btn>
-    <btn class="stop" @click="server.stop()">
+    <btn v-if="server.hasScope('server.stop')" class="stop" @click="server.stop()">
       <icon name="stop" />
       <span class="text">{{ t('servers.Stop') }}</span>
     </btn>
-    <btn class="kill" @click="server.kill()">
+    <btn v-if="server.hasScope('server.kill')" class="kill" @click="server.kill()">
       <icon name="kill" />
       <span class="text">{{ t('servers.Kill') }}</span>
     </btn>
-    <btn class="install" @click="server.install()">
+    <btn v-if="server.hasScope('server.install')" class="install" @click="server.install()">
       <icon name="install" />
       <span class="text">{{ t('servers.Install') }}</span>
     </btn>
     <btn class="menu" @click="toggleMenu()">
       <icon name="menu" />
     </btn>
-    <div v-click-outside="hideMenu" :class="['menu', menuOpen ? 'open' : 'closed']">
-      <btn class="start" @click="menuOpen = false; server.start()">
+    <div v-if="showMenu" v-click-outside="hideMenu" :class="['menu', menuOpen ? 'open' : 'closed']">
+      <btn v-if="server.hasScope('server.start')" class="start" @click="menuOpen = false; server.start()">
         <icon name="play" />
         <span class="text">{{ t('servers.Start') }}</span>
       </btn>
-      <btn class="stop" @click="menuOpen = false; server.stop()">
+      <btn v-if="server.hasScope('server.stop')" class="stop" @click="menuOpen = false; server.stop()">
         <icon name="stop" />
         <span class="text">{{ t('servers.Stop') }}</span>
       </btn>
-      <btn class="kill" @click="menuOpen = false; server.kill()">
+      <btn v-if="server.hasScope('server.kill')" class="kill" @click="menuOpen = false; server.kill()">
         <icon name="kill" />
         <span class="text">{{ t('servers.Kill') }}</span>
       </btn>
-      <btn class="install" @click="menuOpen = false; server.install()">
+      <btn v-if="server.hasScope('server.install')" class="install" @click="menuOpen = false; server.install()">
         <icon name="install" />
         <span class="text">{{ t('servers.Install') }}</span>
       </btn>

@@ -16,6 +16,7 @@ export default {
     labelProp: { type: String, default: () => 'label' },
     error: { type: String, default: () => undefined },
     hint: { type: String, default: () => undefined },
+    object: { type: Boolean, default: () => false},
     options: { type: Array, default: () => [] },
     type: { type: String, default: () => 'text' },
     icon: { type: String, default: () => undefined },
@@ -39,7 +40,7 @@ export default {
   <div class="dropdown-wrapper">
     <div :class="['dropdown', error ? 'error' : '']">
       <icon v-if="icon" class="pre" :name="icon" />
-      <multiselect :id="id" ref="ms" :model-value="modelValue" :label="labelProp"  mode="single" :can-deselect="false" :can-clear="false" :options="options" :placeholder="label" @input="$emit('update:modelValue', $event); $emit('change', $event)" @open="$nextTick(() => isOpen = true)" @close="isOpen = false">
+      <multiselect :id="id" ref="ms" :model-value="modelValue" :label="labelProp"  mode="single" :can-deselect="false" :can-clear="false" :options="options" :object="object" :placeholder="label" @input="$emit('update:modelValue', $event); $emit('change', $event)" @open="$nextTick(() => isOpen = true)" @close="isOpen = false">
         <template v-for="(index, name) in $slots" #[name]="data">
           <slot :name="name" v-bind="data"></slot>
         </template>

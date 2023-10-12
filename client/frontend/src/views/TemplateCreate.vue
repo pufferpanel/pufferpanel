@@ -29,6 +29,7 @@ let unmodified = `{
     "display": "",
     "type": "",
     "data": {},
+    "groups": [],
     "install": [],
     "run": {
         "command": "",
