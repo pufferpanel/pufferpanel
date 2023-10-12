@@ -441,7 +441,7 @@ func reloadServer(c *gin.Context) {
 // @Success 200 {object} pufferpanel.ServerData
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/data [get]
-// @Security OAuth2Application[server.view.data]
+// @Security OAuth2Application[server.data.view]
 func getServerData(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -463,7 +463,7 @@ func getServerData(c *gin.Context) {
 // @Success 200 {object} pufferpanel.Server
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/definition [get]
-// @Security OAuth2Application[server.view.definition]
+// @Security OAuth2Application[server.definition.view]
 func getServerAdmin(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -476,7 +476,7 @@ func getServerAdmin(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param server body pufferpanel.Server true "New definition"
 // @Router /api/servers/{id}/definition [post]
-// @Security OAuth2Application[server.edit.definition]
+// @Security OAuth2Application[server.definition.edit]
 func editServerAdmin(c *gin.Context) {
 	prg := getServerFromGin(c)
 	server := &prg.Server
@@ -778,7 +778,7 @@ func extract(c *gin.Context) {
 // @Success 200 {object} pufferpanel.ServerFlags
 // @Param id path string true "Server ID"
 // @Router /api/servers/{id}/flags [get]
-// @Security OAuth2Application[server.view.flags]
+// @Security OAuth2Application[server.flags.view]
 func getFlags(c *gin.Context) {
 	server := getServerFromGin(c)
 
@@ -795,7 +795,7 @@ func getFlags(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param flags body pufferpanel.ServerFlags true "Flags to change"
 // @Router /api/servers/{id}/flags [post]
-// @Security OAuth2Application[server.edit.flags]
+// @Security OAuth2Application[server.flags.edit]
 func setFlags(c *gin.Context) {
 	server := getServerFromGin(c)
 

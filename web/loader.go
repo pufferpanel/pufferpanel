@@ -55,13 +55,13 @@ var clientFiles fs.ReadFileFS
 // @scope.server.view Allows viewing a server
 // @scope.server.create Allows creating servers
 // @scope.server.delete Allows deleting servers
-// @scope.server.edit.definition Allows editing a server's definition
-// @scope.server.edit.data Allows editing the values of variables
-// @scope.server.edit.flags Allows changing flags on the server
-// @scope.server.edit.name Allows editing of a server name
-// @scope.server.view.definition Allows viewing a server's definition
-// @scope.server.view.data Allows viewing a server's variables
-// @scope.server.view.flags Allows viewing a server's flags
+// @scope.server.definition.edit Allows editing a server's definition
+// @scope.server.data.edit Allows editing the values of variables
+// @scope.server.flags.edit Allows changing flags on the server
+// @scope.server.name.edit Allows editing of a server name
+// @scope.server.definition.view Allows viewing a server's definition
+// @scope.server.data.view Allows viewing a server's variables
+// @scope.server.flags.view Allows viewing a server's flags
 // @scope.server.clients.view Allows viewing OAuth2 clients associated to a server
 // @scope.server.clients.edit Allows editing OAuth2 clients associated to a server
 // @scope.server.clients.create Allows adding a new OAuth2 client to a server

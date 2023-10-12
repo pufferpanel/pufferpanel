@@ -429,7 +429,7 @@ func createServer(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param server body models.ServerWithName true "Server definition"
 // @Router /api/servers/{id}/definition [put]
-// @Security OAuth2Application[server.edit.definition]
+// @Security OAuth2Application[server.definition.edit]
 func editServer(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -797,7 +797,7 @@ func removeServerUser(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param name body pufferpanel.Name true "New server name"
 // @Router /api/servers/{id}/name [post]
-// @Security OAuth2Application[server.edit.name]
+// @Security OAuth2Application[server.name.edit]
 func renameServer(c *gin.Context) {
 	var err error
 
@@ -945,7 +945,7 @@ func deleteOAuth2Client(c *gin.Context) {
 // @Param id path string true "Server ID"
 // @Param server body pufferpanel.ServerData true "Server variables"
 // @Router /api/servers/{id}/data [put]
-// @Security OAuth2Application[server.edit.data]
+// @Security OAuth2Application[server.data.edit]
 func editServerData(c *gin.Context) {
 	server := getServerFromGin(c)
 
