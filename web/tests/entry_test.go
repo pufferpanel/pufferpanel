@@ -32,6 +32,11 @@ func TestMain(m *testing.M) {
 	config.PanelEnabled.Set(true, false)
 	config.DatabaseLoggingEnabled.Set(false, false)
 
+	_ = os.Remove("testing.db")
+	_ = os.RemoveAll("cache")
+	_ = os.RemoveAll("servers")
+	_ = os.RemoveAll("binaries")
+
 	_ = os.Mkdir("servers", 0755)
 	_ = os.Mkdir("cache", 0755)
 	_ = os.Mkdir("binaries", 0755)

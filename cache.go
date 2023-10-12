@@ -67,7 +67,10 @@ func (c *MemoryCache) Write(b []byte) (n int, err error) {
 		c.Size = c.Size - len(pop.msg)
 	}
 
-	c.Buffer = append(c.Buffer, Message{msg: b, time: time.Now().Unix()})
+	co := make([]byte, len(b))
+	copy(co, b)
+
+	c.Buffer = append(c.Buffer, Message{msg: co, time: time.Now().Unix()})
 	c.Size = c.Size + n
 	return
 }

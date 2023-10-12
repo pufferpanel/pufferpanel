@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
@@ -84,8 +85,22 @@ func TestServers(t *testing.T) {
 				fmt.Printf("Failed to decode message: %s\n", err.Error())
 				continue
 			}
+
+			msgData := msg["data"]
+
 			switch msg["type"].(string) {
 			case messages.Console{}.Key():
+				var ms messages.Console
+				err = pufferpanel.UnmarshalTo(msgData, &ms)
+				if err != nil {
+					fmt.Printf("Failed to decode message: %s\n", err.Error())
+					continue
+				}
+
+				if config.ConsoleForward.Value() {
+					fmt.Printf("[WEBSOCKET] %s\n", ms.Logs)
+				}
+
 				messageReceived = true
 			case messages.Status{}.Key():
 				statusReceived = true
