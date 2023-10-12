@@ -1,7 +1,6 @@
 <script setup>
-import { ref, onMounted, nextTick, inject } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Ace from '@/components/ui/Ace.vue'
 import Btn from '@/components/ui/Btn.vue'
 import Icon from '@/components/ui/Icon.vue'
 import Loader from '@/components/ui/Loader.vue'
@@ -11,7 +10,6 @@ import Upload from './files/Upload.vue'
 import TextField from '@/components/ui/TextField.vue'
 
 const { t } = useI18n()
-const toast = inject('toast')
 const events = inject('events')
 
 const props = defineProps({
@@ -19,6 +17,7 @@ const props = defineProps({
 })
 
 const allowDirectoryUpload = 'webkitdirectory' in document.createElement('input')
+const canEdit = props.server.hasScope('server.files.edit')
 
 const fileEls = ref([])
 const files = ref([])
@@ -244,11 +243,11 @@ function trackFileEl(index) {
       <h2 v-text="t('servers.Files')" />
       <h3 v-text="'/' + getCurrentPath()" />
       <span class="spacer" />
-      <btn v-hotkey="'f a'" variant="icon" @click="archiveCurrentDirectory()"><icon name="archive" /></btn>
-      <upload :path="getCurrentPath()" :server="server" hotkey="f u" @uploaded="refresh()" />
-      <upload v-if="allowDirectoryUpload" :path="getCurrentPath()" :server="server" folder hotkey="f d" @uploaded="refresh()" />
-      <btn v-hotkey="'f c f'" variant="icon" @click="startCreateFile()"><icon name="file-create" /></btn>
-      <btn v-hotkey="'f c d'" variant="icon" @click="startCreateFolder()"><icon name="folder-create" /></btn>
+      <btn v-if="canEdit" v-hotkey="'f a'" variant="icon" @click="archiveCurrentDirectory()"><icon name="archive" /></btn>
+      <upload v-if="canEdit" :path="getCurrentPath()" :server="server" hotkey="f u" @uploaded="refresh()" />
+      <upload v-if="canEdit && allowDirectoryUpload" :path="getCurrentPath()" :server="server" folder hotkey="f d" @uploaded="refresh()" />
+      <btn v-if="canEdit" v-hotkey="'f c f'" variant="icon" @click="startCreateFile()"><icon name="file-create" /></btn>
+      <btn v-if="canEdit" v-hotkey="'f c d'" variant="icon" @click="startCreateFolder()"><icon name="folder-create" /></btn>
       <btn v-hotkey="'f r'" variant="icon" @click="refresh(true)"><icon name="reload" /></btn>
     </div>
     <div v-hotkey="'f l'" class="file-list" @hotkey="fileListHotkey">
@@ -259,10 +258,10 @@ function trackFileEl(index) {
           <div class="name">{{ file.name }}</div>
           <div v-if="file.isFile" class="size">{{ formatFileSize(file.size) }}</div>
         </div>
-        <btn v-if="file.name !== '..' && !file.isFile" tabindex="-1" variant="icon" @click.stop="archive(file)">
+        <btn v-if="canEdit && file.name !== '..' && !file.isFile" tabindex="-1" variant="icon" @click.stop="archive(file)">
           <icon name="archive" />
         </btn>
-        <btn v-if="file.isFile && isArchive(file)" tabindex="-1" variant="icon" @click.stop="extract(file)">
+        <btn v-if="canEdit && file.isFile && isArchive(file)" tabindex="-1" variant="icon" @click.stop="extract(file)">
           <icon name="extract" />
         </btn>
         <a v-if="file.isFile" tabindex="-1" class="dl-link" :href="downloadLink(file)" target="_blank" rel="noopener">
@@ -270,7 +269,7 @@ function trackFileEl(index) {
             <icon name="download" />
           </btn>
         </a>
-        <btn v-if="file.name !== '..'" tabindex="-1" variant="icon" @click.stop="deleteFile(file)">
+        <btn v-if="canEdit && file.name !== '..'" tabindex="-1" variant="icon" @click.stop="deleteFile(file)">
           <icon name="remove" />
         </btn>
       </a>
@@ -291,13 +290,7 @@ function trackFileEl(index) {
       <loader />
     </overlay>
     <overlay v-model="editorOpen" class="editor">
-      <!--<div class="overlay-header">
-        <h1 class="title" v-text="file.name" />
-        <btn variant="text" @click="saveFile()"><icon name="save" /> {{ t('common.Save') }}</btn>
-        <btn v-hotkey="'Escape'" variant="icon" @click="editorOpen = false"><icon name="close" /></btn>
-      </div>
-      <ace id="file-editor" v-model="file.content" class="file-editor" :file="file.name" theme="monokai" />-->
-      <editor v-if="file" v-model="file" @save="saveFile()" @close="editorOpen = false" />
+      <editor v-if="file" v-model="file" :read-only="!canEdit" @save="saveFile()" @close="editorOpen = false" />
     </overlay>
   </div>
 </template>

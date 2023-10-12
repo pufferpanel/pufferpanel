@@ -56,7 +56,7 @@ const props = defineProps({
 })
 
 onMounted(() => {
-  if (route.query.created) {
+  if (route.query.created && props.server.hasScope('server.install')) {
     events.emit(
       'confirm',
       {
@@ -85,7 +85,7 @@ onMounted(() => {
 
     <tabs anchors>
       <tab
-        v-if="server.hasScope('server.console')"
+        v-if="server.hasScope('server.console') || server.hasScope('server.console.send')"
         id="console"
         :title="t('servers.Console')"
         icon="console"
@@ -112,7 +112,7 @@ onMounted(() => {
         <files :server="server" />
       </tab>
       <tab
-        v-if="server.hasScope('server.data.view')"
+        v-if="server.hasScope('server.data.view') || server.hasScope('server.flags.view')"
         id="settings"
         :title="t('servers.Settings')"
         icon="settings"
@@ -158,7 +158,7 @@ onMounted(() => {
         <api :server="server" />
       </tab>
       <tab
-        v-if="server.hasScope('server.definition.view')"
+        v-if="server.hasScope('server.definition.view') || server.hasScope('server.delete')"
         id="admin"
         :title="t('servers.Admin')"
         icon="admin"

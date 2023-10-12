@@ -13,26 +13,38 @@ const props = defineProps({
 let unbindEvent = null
 let task = null
 onMounted(async () => {
-  unbindEvent = props.server.on('status', e => status.value = e.running)
+  unbindEvent = props.server.on('status', e => {
+    if (e.installing) {
+      status.value = 'installing'
+    } else if (e.running) {
+      status.value = 'online'
+    } else {
+      status.value = 'offline'
+    }
+  })
 
   task = props.server.startTask(async () => {
-    if (props.server.needsPolling()) {
+    if (props.server.needsPolling() && props.server.hasScope('server.status')) {
       status.value = await props.server.getStatus()
     }
   }, 5000)
 
-  status.value = await props.server.getStatus()
+  if (props.server.hasScope('server.status'))
+    status.value = await props.server.getStatus()
 })
 
 onUnmounted(() => {
   if (unbindEvent) unbindEvent()
   if (task) props.server.stopTask(task)
 })
+
+const log = console.log
 </script>
 
 <template>
   <span
-    :class="['status', status === true ? 'online' : status === false ? 'offline' : 'unknown']"
-    :data-hint="t(status === true ? 'common.Online' : status === false ? 'common.Offline' : 'common.Unknown')"
+    v-if="server.hasScope('server.status')"
+    :class="['status', status]"
+    :data-hint="t(status === 'online' ? 'common.Online' : status === 'offline' ? 'common.Offline' : status === 'installing' ? 'common.Installing' : 'common.Unknown')"
   />
 </template>

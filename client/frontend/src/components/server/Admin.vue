@@ -8,7 +8,6 @@ import Icon from '@/components/ui/Icon.vue'
 import Overlay from '@/components/ui/Overlay.vue'
 import Tab from '@/components/ui/Tab.vue'
 import Tabs from '@/components/ui/Tabs.vue'
-import Toggle from '@/components/ui/Toggle.vue'
 
 import Variables from '@/components/template/Variables.vue'
 import Install from '@/components/template/Install.vue'
@@ -22,16 +21,9 @@ const toast = inject('toast')
 const events = inject('events')
 const router = useRouter()
 
-const isAdmin = api.auth.hasScope('server.admin')
-
 const props = defineProps({
   server: { type: Object, required: true }
 })
-
-function toggleSetting(field) {
-  def.value.run[field] = !def.value.run[field]
-  props.server.updateDefinition(def.value)
-}
 
 function editDefinition() {
   edit.value = JSON.stringify(def.value, undefined, 4)
@@ -70,38 +62,21 @@ function deleteServer() {
   )
 }
 
-const def = ref({
-  run: {
-    autostart: false,
-    autorestart: false,
-    autorecover: false
-  }
-})
+const def = ref({})
 const edit = ref("")
 const editorOpen = ref(false)
-const name = ref(props.server.name)
 
 onMounted(async () => {
-  // if user is not admin, nothing to load
-  if (!isAdmin) return
-
-  const d = await props.server.getDefinition()
-  // ensure properties actually exist
-  d.run.autostart = !!d.run.autostart
-  d.run.autorestart = !!d.run.autorestart
-  d.run.autorecover = !!d.run.autorecover
-  def.value = d
+  if (props.server.hasScope('server.definition.view'))
+    def.value = await props.server.getDefinition()
 })
 </script>
 
 <template>
   <div class="admin">
     <h2 v-text="t('servers.Admin')" />
-    <toggle v-if="isAdmin" v-model="def.run.autostart" :label="t('servers.Autostart')" @click.prevent="toggleSetting('autostart')" />
-    <toggle v-if="isAdmin" v-model="def.run.autorestart" :label="t('servers.Autorestart')" @click.prevent="toggleSetting('autorestart')" />
-    <toggle v-if="isAdmin" v-model="def.run.autorecover" :label="t('servers.Autorecover')" @click.prevent="toggleSetting('autorecover')" />
-    <btn v-if="isAdmin" v-hotkey="'a e'" variant="text" @click="editDefinition()"><icon name="edit" />{{ t('servers.EditDefinition') }}</btn>
-    <btn v-if="isAdmin" color="error" @click="deleteServer()"><icon name="remove" />{{ t('servers.Delete') }}</btn>
+    <btn v-if="server.hasScope('server.definition.view')" v-hotkey="'a e'" variant="text" @click="editDefinition()"><icon name="edit" />{{ t('servers.EditDefinition') }}</btn>
+    <btn v-if="server.hasScope('server.delete')" color="error" @click="deleteServer()"><icon name="remove" />{{ t('servers.Delete') }}</btn>
 
     <overlay v-model="editorOpen" class="server-definition">
       <tabs>
@@ -127,7 +102,7 @@ onMounted(async () => {
       </tabs>
       <div class="actions">
         <btn v-hotkey="'Escape'" color="error" @click="cancelEdit()"><icon name="close" />{{ t('common.Cancel') }}</btn>
-        <btn color="primary" @click="saveDefinition()"><icon name="save" />{{ t('common.Save') }}</btn>
+        <btn :disabled="server.hasScope('server.definition.edit')" color="primary" @click="saveDefinition()"><icon name="save" />{{ t('common.Save') }}</btn>
       </div>
     </overlay>
   </div>

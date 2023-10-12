@@ -15,6 +15,12 @@
     font-size: 3em;
   }
 
+  &[data-online="installing"]::before {
+    @include status-indicator;
+    @include icon-name-base(package-down);
+    color: var(--primary);
+  }
+
   &[data-online="online"]::before {
     @include status-indicator;
     @include icon-name-base(play-circle);
@@ -64,7 +70,7 @@ $serverTypes: ('7days', 'ark', 'csgo', 'css', 'dontstarvetogether', 'factorio', 
     }
   }
 
-  @mixin status-indicator {
+  @mixin status-indicator($rad: 0.75em) {
     @include icon-base;
     position: absolute;
     top: 0.25em;
@@ -75,7 +81,13 @@ $serverTypes: ('7days', 'ark', 'csgo', 'css', 'dontstarvetogether', 'factorio', 
     width: 1em;
     z-index: 1;
     background-color: var(--background);
-    border-radius: 0.75em;
+    border-radius: $rad;
+  }
+
+  &[data-online="installing"]::before {
+    @include status-indicator($rad: 4px);
+    @include icon-name-base(package-down);
+    color: var(--primary);
   }
 
   &[data-online="online"]::before {
@@ -100,7 +112,7 @@ $serverTypes: ('7days', 'ark', 'csgo', 'css', 'dontstarvetogether', 'factorio', 
 html[dir="rtl"] {
   .server-type-none .server {
     padding-left: 4em;
-    &[data-online="online"]::before, &[data-online="offline"]::before, &[data-online="loading"]::before {
+    &[data-online="installing"]::before, &[data-online="online"]::before, &[data-online="offline"]::before, &[data-online="loading"]::before {
       left: 0.2em;
       right: unset;
     }
@@ -126,7 +138,7 @@ html[dir="rtl"] {
       right: unset;
     }
 
-    &[data-online="online"]::before, &[data-online="offline"]::before, &[data-online="loading"]::before {
+    &[data-online="installing"]::before, &[data-online="online"]::before, &[data-online="offline"]::before, &[data-online="loading"]::before {
       @include status-indicator;
     }
   }

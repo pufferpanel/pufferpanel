@@ -11,6 +11,8 @@ const api = inject('api')
 const events = inject('events')
 
 const props = defineProps({
+  allowCreate: { type: Boolean, default: () => true },
+  allowDelete: { type: Boolean, default: () => true },
   server: { type: String, default: () => undefined }
 })
 
@@ -93,11 +95,11 @@ async function deleteClient(clientId, clientName) {
           <div v-text="client.client_id" />
           <div :title="client.description" v-text="client.description" />
         </div>
-        <btn variant="icon" @click="deleteClient(client.client_id, client.name || t('oauth.UnnamedClient'))"><icon name="remove" /></btn>
+        <btn v-if="allowDelete" variant="icon" @click="deleteClient(client.client_id, client.name || t('oauth.UnnamedClient'))"><icon name="remove" /></btn>
       </div>
       <hr v-if="index < clients.length - 1" />
     </div>
-    <btn color="primary" @click="startCreate()"><icon name="plus" />{{ t('oauth.Create') }}</btn>
+    <btn v-if="allowCreate" color="primary" @click="startCreate()"><icon name="plus" />{{ t('oauth.Create') }}</btn>
     <overlay v-model="creating" :title="t('oauth.Create')" closable>
       <text-field v-model="newName" autofocus :label="t('common.Name')" />
       <text-field v-model="newDescription" :label="t('common.Description')" />

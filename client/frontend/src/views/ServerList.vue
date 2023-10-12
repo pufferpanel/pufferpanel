@@ -1,9 +1,8 @@
 <script setup>
 import { ref, inject, onMounted, onUnmounted, nextTick } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Icon from '@/components/ui/Icon.vue'
-import Btn from '@/components/ui/Btn.vue'
 import Loader from '@/components/ui/Loader.vue'
 
 const api = inject('api')
@@ -23,7 +22,14 @@ function addServers(newServers) {
 }
 
 async function refreshServerStatus() {
-  servers.value.map(async s => s.online = await api.server.getStatus(s.id))
+  servers.value.map(async s => {
+    s.online = 'loading'
+    try {
+      s.online = await api.server.getStatus(s.id)
+    } catch {
+      s.online = undefined
+    }
+  })
 }
 
 function isLoaderVisible() {
@@ -88,7 +94,7 @@ function focusList() {
         <router-link :ref="setFirstEntry" :to="{ name: 'ServerView', params: { id: server.id } }">
           <div
             :class="['server', 'server-' + server.type]"
-            :data-online="server.online === true ? 'online' : server.online === false ? 'offline' : 'loading'"
+            :data-online="server.online"
           >
             <span class="title" :title="server.name">{{server.name}}</span>
             <span class="type">{{server.type}}</span>

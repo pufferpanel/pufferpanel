@@ -28,7 +28,7 @@ onMounted(async () => {
 
   onMessage(await props.server.getConsole())
   task = props.server.startTask(async () => {
-    if (props.server.needsPolling()) {
+    if (props.server.needsPolling() && props.server.hasScope('server.console')) {
       onMessage(await props.server.getConsole(lastMessageTime))
     }
   }, 5000)
@@ -83,12 +83,12 @@ function sendCommand() {
 <template>
   <div>
     <h2 v-text="t('servers.Console')" />
-    <icon v-hotkey="'c c'" name="clear-console" @click="clearConsole()" />
-    <div dir="ltr" class="console-wrapper">
+    <icon v-if="server.hasScope('server.console')" v-hotkey="'c x'" name="clear-console" @click="clearConsole()" />
+    <div v-if="server.hasScope('server.console')" dir="ltr" class="console-wrapper">
       <div ref="console" class="console" />
     </div>
-    <div dir="ltr" class="command">
-      <text-field v-model="command" :label="t('servers.Command')" @keyup.enter="sendCommand()" />
+    <div v-if="server.hasScope('server.console.send')" dir="ltr" class="command">
+      <text-field v-model="command" v-hotkey="'c c'" :label="t('servers.Command')" @keyup.enter="sendCommand()" />
       <icon name="send" @click="sendCommand()" />
     </div>
   </div>

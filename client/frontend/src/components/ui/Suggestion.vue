@@ -5,6 +5,7 @@ import TextField from './TextField.vue'
 const props = defineProps({
   // default to random id as labels need target ids to exist exactly once
   id: { type: String, default: () => (Math.random() + 1).toString(36).substring(2) },
+  disabled: { type: Boolean, default: () => false },
   label: { type: String, default: () => undefined },
   hint: { type: String, default: () => undefined },
   error: { type: String, default: () => undefined },
@@ -40,7 +41,7 @@ function onFocus(e) {
 
 <template>
   <div :class="['suggestions', open ? 'open' : 'closed']">
-    <text-field :id="id" :model-value="modelValue" :label="label" :hint="hint" :error="error" :name="name" :type="type" :icon="icon" :autofocus="autofocus" @blur="onBlur" @focus="onFocus" @update:modelValue="onInput" />
+    <text-field :id="id" :model-value="modelValue" :disabled="disabled" :label="label" :hint="hint" :error="error" :name="name" :type="type" :icon="icon" :autofocus="autofocus" @blur="onBlur" @focus="onFocus" @update:modelValue="onInput" />
     <div class="suggestions-list">
       <div v-for="option in options" :key="typeof option === 'object' ? option.value : option" class="suggestion" @click="onInput(typeof option === 'object' ? option.value : option)" v-text="typeof option === 'object' ? option[labelProp] || option.value : option" />
     </div>

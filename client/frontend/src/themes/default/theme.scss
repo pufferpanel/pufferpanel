@@ -300,6 +300,13 @@ hr {
     }
   }
 
+  &.installing {
+    @include icon-name(package-down);
+    &::before {
+      color: var(--primary);
+    }
+  }
+
   &.online {
     @include icon-name(play-circle);
     &::before {

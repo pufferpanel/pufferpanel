@@ -155,7 +155,7 @@ function updateThemeSetting(name, newSetting) {
           <btn color="primary" @click="savePreferences()"><icon name="save" />{{ t('users.SavePreferences') }}</btn>
         </div>
       </tab>
-      <tab id="account" :title="t('users.ChangeInfo')" icon="account" hotkey="t a">
+      <tab v-if="api.auth.hasScope('self.edit')" id="account" :title="t('users.ChangeInfo')" icon="account" hotkey="t a">
         <div class="accountdetails">
           <h1 v-text="t('users.ChangeInfo')" />
           <form>
@@ -166,7 +166,7 @@ function updateThemeSetting(name, newSetting) {
           </form>
         </div>
       </tab>
-      <tab id="changepassword" :title="t('users.ChangePassword')" icon="lock" hotkey="t p">
+      <tab v-if="api.auth.hasScope('self.edit')" id="changepassword" :title="t('users.ChangePassword')" icon="lock" hotkey="t p">
         <div class="changepassword">
           <h1 v-text="t('users.ChangePassword')" />
           <form>
@@ -177,7 +177,7 @@ function updateThemeSetting(name, newSetting) {
           </form>
         </div>
       </tab>
-      <tab id="otp" :title="t('users.Otp')" icon="2fa" hotkey="t 2">
+      <tab v-if="api.auth.hasScope('self.edit')" id="otp" :title="t('users.Otp')" icon="2fa" hotkey="t 2">
         <div class="mfa">
           <h1 v-text="t('users.Otp')" />
           <span class="description">{{ t('users.OtpHint') }}</span>
@@ -212,7 +212,7 @@ function updateThemeSetting(name, newSetting) {
           </overlay>
         </div>
       </tab>
-      <tab id="oauth" :title="t('oauth.Clients')" icon="api" hotkey="t o">
+      <tab v-if="api.auth.hasScope('self.clients')" id="oauth" :title="t('oauth.Clients')" icon="api" hotkey="t o">
         <div class="oauth">
           <h1 v-text="t('oauth.Clients')" />
           <o-auth />

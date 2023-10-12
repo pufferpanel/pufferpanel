@@ -49,7 +49,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/:serverId/user/:email", response.CreateOptions("GET", "PUT", "DELETE"))
 
 	g.Handle("GET", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServerClientView), middleware.ResolveServerPanel, getOAuth2Clients)
-	g.Handle("POST", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServerClientEdit), middleware.ResolveServerPanel, middleware.HasTransaction, createOAuth2Client)
+	g.Handle("POST", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServerClientCreate), middleware.ResolveServerPanel, middleware.HasTransaction, createOAuth2Client)
 	g.Handle("OPTIONS", "/:serverId/oauth2", response.CreateOptions("GET", "POST"))
 
 	g.Handle("DELETE", "/:serverId/oauth2/:clientId", middleware.RequiresPermission(pufferpanel.ScopeServerClientDelete), middleware.ResolveServerPanel, middleware.HasTransaction, deleteOAuth2Client)

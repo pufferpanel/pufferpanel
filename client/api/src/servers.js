@@ -27,7 +27,9 @@ export class ServerApi {
 
   async getStatus(id) {
     const res = await this._api.get(`/api/servers/${id}/status`)
-    return res.data.running
+    if (res.data.installing) return 'installing'
+    if (res.data.running) return 'online'
+    return 'offline'
   }
 
   async getStats(id) {
@@ -73,6 +75,16 @@ export class ServerApi {
 
   async updateName(id, name) {
     await this._api.put(`/api/servers/${id}/name/${encodeURIComponent(name)}`)
+    return true
+  }
+
+  async getFlags(id) {
+    const res = await this._api.get(`/api/servers/${id}/flags`)
+    return res.data
+  }
+
+  async setFlags(id, flags) {
+    await this._api.post(`/api/servers/${id}/flags`, flags)
     return true
   }
 
@@ -273,6 +285,7 @@ class Server {
 
   hasScope(scope) {
     if (this._scopes.indexOf(scope) !== -1) return true
+    if (this._scopes.indexOf('server.admin') !== -1) return true
     return this._api.auth.hasScope('admin')
   }
 
@@ -406,6 +419,14 @@ class Server {
     const r = await this._api.server.updateName(this.id, name)
     this.name = name
     return r
+  }
+
+  async getFlags() {
+    return await this._api.server.getFlags(this.id)
+  }
+
+  async setFlags(flags) {
+    return await this._api.server.setFlags(this.id, flags)
   }
 
   async getDefinition() {

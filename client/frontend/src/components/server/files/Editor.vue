@@ -39,15 +39,16 @@ export default {
     Icon
   },
   props: {
+    readOnly: { type: Boolean, default: () => false },
     modelValue: { type: Object, required: true }
   },
   emits: ['update:modelValue', 'save', 'close'],
   setup(props, { emit }) {
-const { t } = useI18n()
+    const { t } = useI18n()
 
-function emitUpdate(event) {
-  emit('update:modelValue', { ...props.modelValue, content: event })
-}
+    function emitUpdate(event) {
+      emit('update:modelValue', { ...props.modelValue, content: event })
+    }
 
     return { t, emit, emitUpdate, extensions, getType, skipDownload }
   }
@@ -58,7 +59,7 @@ function emitUpdate(event) {
   <div>
     <div class="overlay-header">
       <h1 class="title" v-text="modelValue.name" />
-      <btn v-if="!((extensions[modelValue.extension] || {}).disableSave)" variant="text" @click="emit('save')"><icon name="save" /> {{ t('common.Save') }}</btn>
+      <btn v-if="!readOnly && !((extensions[modelValue.extension] || {}).disableSave)" variant="text" @click="emit('save')"><icon name="save" /> {{ t('common.Save') }}</btn>
       <btn v-hotkey="'Escape'" variant="icon" @click="emit('close')"><icon name="close" /></btn>
     </div>
     <img v-if="getType(modelValue) === 'image'" class="file-viewer" :src="modelValue.url" />
@@ -70,6 +71,6 @@ function emitUpdate(event) {
       <source :src="modelValue.url" />
       <div class="warning unsupported" v-text="t('errors.AudioUnsupported')" />
     </audio>
-    <ace v-else id="file-editor" :model-value="modelValue.content" class="file-editor" :file="modelValue.name" theme="monokai" @update:modelValue="emitUpdate" />
+    <ace v-else id="file-editor" :read-only="readOnly" :model-value="modelValue.content" class="file-editor" :file="modelValue.name" theme="monokai" @update:modelValue="emitUpdate" />
   </div>
 </template>

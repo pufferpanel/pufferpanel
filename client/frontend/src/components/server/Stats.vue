@@ -158,7 +158,7 @@ onMounted(() => {
   stopListener = props.server.on('stat', addData)
 
   task = props.server.startTask(async () => {
-    if (props.server.needsPolling()) {
+    if (props.server.needsPolling() && props.server.hasScope('server.stats')) {
       addData(await props.server.getStats())
     }
   }, 1000)

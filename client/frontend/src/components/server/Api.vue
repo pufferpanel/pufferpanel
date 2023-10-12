@@ -12,6 +12,10 @@ const props = defineProps({
 <template>
   <div class="oauth">
     <h2 v-text="t('servers.API')" />
-    <o-auth :server="server.id" />
+    <o-auth
+      :allow-create="server.hasScope('server.clients.create')"
+      :allow-delete="server.hasScope('server.clients.delete')"
+      :server="server.id"
+    />
   </div>
 </template>

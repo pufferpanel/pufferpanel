@@ -5,6 +5,7 @@ const props = defineProps({
   id: { type: String, default: () => 'editor' },
   file: { type: String, default: () => undefined },
   mode: { type: String, default: () => undefined },
+  readOnly: { type: Boolean, default: () => false },
   modelValue: { type: String, required: true }
 })
 
@@ -45,6 +46,9 @@ onUnmounted(() => {
 onUpdated(() => {
   if (editor && editor.session.getValue() !== props.modelValue)
     editor.session.setValue(props.modelValue)
+  if (editor) {
+    editor.setReadOnly(props.readOnly)
+  }
 })
 
 function init() {
@@ -60,6 +64,7 @@ function init() {
       editor.session.setMode(mode)
     }
     editor.session.setValue(props.modelValue)
+    editor.setReadOnly(props.readOnly)
     editor.on('change', () => {
       emit('update:modelValue', editor.session.getValue())
     })
