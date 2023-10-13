@@ -109,6 +109,16 @@ $serverTypes: ('7days', 'ark', 'csgo', 'css', 'dontstarvetogether', 'factorio', 
   }
 }
 
+.server-type-icon .global-search .server {
+  @each $type in $serverTypes {
+    &.server-#{$type}::after {
+      top: -0.125em;
+      height: 2.5em;
+      width: 2.5em;
+    }
+  }
+}
+
 html[dir="rtl"] {
   .server-type-none .server {
     padding-left: 4em;

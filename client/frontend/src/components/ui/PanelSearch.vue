@@ -31,7 +31,7 @@ function cancel() {
     timeout = null
   }
   setTimeout(() => {
-    //active.value = false
+    active.value = false
   }, 500)
 }
 
@@ -200,8 +200,10 @@ function link(index, to) {
         <h3 v-text="t('servers.Servers')" />
         <div v-for="(server, i) in servers" :key="server.id" :ref="setRef(serverIndex(i))" :class="['result', currIndex === serverIndex(i) ? 'selected' : '' ]">
           <router-link :to="link(serverIndex(i), { name: 'ServerView', params: { id: server.id } })">
-            <div class="title">{{ server.name }}</div>
-            <div class="subline">{{ getServerAddress(server) }} @ {{ server.node.name }}</div>
+            <div :class="['server', `server-${server.type}`]">
+              <div class="title">{{ server.name }}</div>
+              <div class="subline">{{ getServerAddress(server) }} @ {{ server.node.name }}</div>
+            </div>
           </router-link>
         </div>
       </div>
