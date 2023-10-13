@@ -1,8 +1,9 @@
 <script setup>
-import { ref, inject, onMounted } from 'vue'
+import { inject } from 'vue'
 import { RouterLink } from 'vue-router'
 import md5 from 'js-md5'
 import Icon from './Icon.vue'
+import PanelSearch from './PanelSearch.vue'
 
 const props = defineProps({
   user: { type: Object, default: () => undefined }
@@ -25,6 +26,7 @@ function getAvatarLink() {
     <div :data-name="name" class="name">
       {{ name }}
     </div>
+    <panel-search />
     <router-link v-if="props.user" v-hotkey="'g a'" :to="{ name: 'Self' }"><img class="avatar" :src="getAvatarLink()" /></router-link>
   </header>
 </template>

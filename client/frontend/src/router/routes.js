@@ -35,7 +35,7 @@ export default (api) => [
     name: 'ServerList',
     meta: {
       tkey: 'servers.Servers',
-      permission: 'servers.list',
+      permission: true,
       icon: 'server',
       hotkey: 'g s'
     }

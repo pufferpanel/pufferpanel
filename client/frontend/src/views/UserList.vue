@@ -1,10 +1,9 @@
 <script setup>
 import { ref, inject, onMounted, onUnmounted, nextTick } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import md5 from 'js-md5'
 import Icon from '@/components/ui/Icon.vue'
-import Btn from '@/components/ui/Btn.vue'
 import Loader from '@/components/ui/Loader.vue'
 
 const api = inject('api')

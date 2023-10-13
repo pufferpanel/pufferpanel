@@ -45,7 +45,7 @@ function onFocus(e) {
 </script>
 
 <template>
-  <div class="input-field-wrapper">
+  <div class="input-field-wrapper" @click="input.focus()">
     <div :class="['input-field', 'input-' + type, error ? 'error' : '', disabled ? 'disabled' : '']">
       <icon v-if="icon" class="pre" :name="icon" />
       <input :id="id" ref="input" :value="modelValue" :type="showPassword ? 'text' : type" :placeholder="label" :name="name" :disabled="disabled" @input="onInput($event)" @blur="onBlur($event)" @focus="onFocus($event)" />

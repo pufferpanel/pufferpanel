@@ -40,7 +40,7 @@ async function submitDetails() {
 
 async function submitPermissions() {
   if (!canSubmitDetails()) return false
-  await api.user.updatePermissions(route.params.id, permissions.value)
+  await api.user.updatePermissions(route.params.id, { scopes: permissions.value })
   toast.success(t('users.UpdateSuccess'))
 }
 
@@ -73,7 +73,6 @@ const scopes = {
     'settings.edit'
   ],
   servers: [
-    'servers.list',
     'server.create'
   ],
   nodes: [

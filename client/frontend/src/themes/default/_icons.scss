@@ -6757,6 +6757,9 @@ $mdi-icons: (
 .icon-select-group {
   @include icon-name(select-group);
 }
+.icon-search {
+  @include icon-name(magnify);
+}
 html[dir="ltr"] {
   .icon-back {
     @include icon-name(chevron-left);

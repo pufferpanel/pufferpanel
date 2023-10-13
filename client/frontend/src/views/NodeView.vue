@@ -52,7 +52,6 @@ async function fetchFeatures() {
   features.value = {}
   try {
     const f = await api.node.features(route.params.id)
-    console.log(f)
     features.value.envs = [ ...new Set(f.environments) ].map(e => t(`env.${e}.name`))
     features.value.docker = f.features.indexOf('docker') !== -1
     features.value.os = f.os

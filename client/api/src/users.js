@@ -10,8 +10,17 @@ export class UserApi {
     return res.data
   }
 
-  async search(query) {
-    const res = await this._api.get('/api/users', { username: `*${query}*` })
+  async search(name, limit) {
+    const query = { username: `*${name}*` }
+    if (limit) query.limit = limit
+    const res = await this._api.get('/api/users', query)
+    return res.data.users
+  }
+
+  async searchEmail(email, limit) {
+    const query = { email: `*${email}*` }
+    if (limit) query.limit = limit
+    const res = await this._api.get('/api/users', query)
     return res.data.users
   }
 
