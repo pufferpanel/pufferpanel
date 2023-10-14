@@ -268,13 +268,13 @@ func installServer(c *gin.Context) {
 func editServerData(c *gin.Context) {
 	server := getServerFromGin(c)
 
-	data := &pufferpanel.ServerData{}
+	var data map[string]interface{}
 	err := json.NewDecoder(c.Request.Body).Decode(&data)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	err = server.EditData(data.Variables)
+	err = server.EditData(data)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -453,9 +453,8 @@ func getServerData(c *gin.Context) {
 			replacement[k] = v
 		}
 	}
-	data = replacement
 
-	c.JSON(http.StatusOK, &pufferpanel.ServerData{Variables: data})
+	c.JSON(http.StatusOK, &pufferpanel.ServerData{Variables: replacement})
 }
 
 // @Summary Get server definition

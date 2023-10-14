@@ -114,11 +114,30 @@ func TestServers(t *testing.T) {
 	}(c)
 
 	t.Run("UpdateVariable", func(t *testing.T) {
-		var variables = []byte(`{"memory": "2048" }`)
+		motd := "This is a changed MOTD"
+		var variables = []byte(`{"motd": "` + motd + `" }`)
 		response := CallAPIRaw("POST", "/api/servers/"+serverId+"/data", variables, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
+
+		response = CallAPI("GET", "/api/servers/"+serverId+"/data", variables, session)
+		if !assert.Equal(t, http.StatusOK, response.Code) {
+			return
+		}
+
+		var res map[string]map[string]pufferpanel.Variable
+		err := json.NewDecoder(response.Body).Decode(&res)
+		if !assert.NoError(t, err) {
+			return
+		}
+		data := res["data"]
+		if !assert.Len(t, data, 1) {
+			return
+		}
+
+		memVar := data["motd"]
+		assert.Equal(t, motd, memVar.Value)
 	})
 
 	t.Run("GetStats", func(t *testing.T) {

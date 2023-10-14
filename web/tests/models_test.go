@@ -168,7 +168,8 @@ var CreateServerData = []byte(`{
       "desc": "This is the message that is displayed in the server list of the client, below the name. The MOTD does support \u003ca href='https://minecraft.gamepedia.com/Formatting_codes' target='_blank'\u003ecolor and formatting codes\u003c/a\u003e.",
       "display": "MOTD message of the day",
       "required": true,
-      "value": "A Minecraft Server\\n\\u00A79 hosted on PufferPanel"
+      "value": "A Minecraft Server\\n\\u00A79 hosted on PufferPanel",
+      "userEdit": true
     },
     "port": {
       "type": "integer",
