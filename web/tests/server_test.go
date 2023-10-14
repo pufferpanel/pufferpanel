@@ -113,6 +113,14 @@ func TestServers(t *testing.T) {
 		}
 	}(c)
 
+	t.Run("UpdateVariable", func(t *testing.T) {
+		var variables = []byte(`{"memory": "2048" }`)
+		response := CallAPIRaw("POST", "/api/servers/"+serverId+"/data", variables, session)
+		if !assert.Equal(t, http.StatusNoContent, response.Code) {
+			return
+		}
+	})
+
 	t.Run("GetStats", func(t *testing.T) {
 		response := CallAPI("GET", "/api/servers/"+serverId+"/stats", nil, session)
 		assert.Equal(t, http.StatusOK, response.Code)

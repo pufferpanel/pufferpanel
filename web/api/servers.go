@@ -943,10 +943,15 @@ func deleteOAuth2Client(c *gin.Context) {
 // @Description Updates a server's set of variables
 // @Success 202 {object} nil
 // @Param id path string true "Server ID"
-// @Param server body pufferpanel.ServerData true "Server variables"
+// @Param server body map[string]interface{} true "Server variables"
 // @Router /api/servers/{id}/data [put]
 // @Security OAuth2Application[server.data.edit]
 func editServerData(c *gin.Context) {
+	//TODO: Get this to actually set ip and port when it's safe
+	proxyServerRequest(c)
+}
+
+/*func editServerData(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	//clone request body, so we can re-set it for the proxy call
@@ -954,7 +959,7 @@ func editServerData(c *gin.Context) {
 	useThere := &bytes.Buffer{}
 
 	multi := io.MultiWriter(useHere, useThere)
-	_, err := io.CopyN(multi, c.Request.Body, 1024 /* 1KB */ *512 /* .5 MB */)
+	_, err := io.CopyN(multi, c.Request.Body, 1024*512)
 	if err != nil && errors.Is(err, io.EOF) && response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
@@ -962,33 +967,41 @@ func editServerData(c *gin.Context) {
 	_ = c.Request.Body.Close()
 	c.Request.Body = io.NopCloser(useThere)
 
-	postBody := &pufferpanel.ServerData{}
-	err = json.NewDecoder(useHere).Decode(postBody)
+	var postBody map[string]interface{}
+	err = json.NewDecoder(useHere).Decode(&postBody)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	port, err := getFromDataOrDefault(postBody.Variables, "port", uint16(0))
-	if response.HandleError(c, err, http.StatusBadRequest) {
-		return
+	dirty := false
+	port, exist := postBody["port"]
+	if exist {
+		portVal, err := cast.ToUint16E(port)
+		if response.HandleError(c, err, http.StatusBadRequest) {
+			return
+		}
+		server.Port = portVal
+		dirty = true
 	}
-	server.Port = cast.ToUint16(port)
 
-	ip, err := getFromDataOrDefault(postBody.Variables, "ip", "0.0.0.0")
+	ip, exist := postBody["ip"]
+	ip, err := getFromDataOrDefault(postBody, "ip", "0.0.0.0")
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 	server.IP = cast.ToString(ip)
 
-	db := middleware.GetDatabase(c)
-	ss := &services.Server{DB: db}
-	err = ss.Update(server)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
+	if dirty {
+		db := middleware.GetDatabase(c)
+		ss := &services.Server{DB: db}
+		err = ss.Update(server)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
 	}
 
 	proxyServerRequest(c)
-}
+}*/
 
 func getFromData(variables map[string]pufferpanel.Variable, key string) (result interface{}, exists bool) {
 	for k, v := range variables {
