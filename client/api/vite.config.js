@@ -6,7 +6,13 @@ module.exports = defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/index.js'),
       name: 'PufferPanel',
-      fileName: (format) => `pufferpanel.${format}.js`
+      fileName: (format) => {
+        if (format === 'es') {
+          return 'pufferpanel.mjs'
+        } else {
+          return 'pufferpanel.cjs'
+        }
+      }
     },
     minify: false,
     rollupOptions: {

@@ -1,7 +1,7 @@
 <script setup>
 import Icon from '@/components/ui/Icon.vue'
 
-const props = defineProps({
+defineProps({
   icon: { type: String, default: () => undefined }
 })
 </script>

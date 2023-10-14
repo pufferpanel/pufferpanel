@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 
-const props = defineProps({
+defineProps({
   // eslint-disable-next-line vue/require-prop-types
   to: { default: () => undefined }
 })

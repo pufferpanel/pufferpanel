@@ -1,6 +1,5 @@
 <script>
 import { ref, onMounted, onUnmounted, provide, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
 import Icon from './Icon.vue'
 
 export default {

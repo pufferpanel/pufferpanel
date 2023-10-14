@@ -24,7 +24,7 @@ async function updateName() {
 
 <template>
   <h1 class="server-header">
-    <status :server="server" />
+    <Status :server="server" />
     <span class="name">{{ server.name }}<btn v-if="server.hasScope('server.name.edit')" variant="icon" @click="edit = !edit"><icon name="edit" /></btn></span>
     <controls :server="server" />
   </h1>

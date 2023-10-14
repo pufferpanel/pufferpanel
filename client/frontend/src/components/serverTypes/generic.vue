@@ -91,7 +91,7 @@ onMounted(() => {
         icon="console"
         hotkey="t c"
       >
-        <console :server="server" />
+        <Console :server="server" />
       </tab>
       <tab
         v-if="server.hasScope('server.stats')"

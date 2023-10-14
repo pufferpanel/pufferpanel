@@ -8,7 +8,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const { t } = useI18n()
+const { t, locale, fallbackLocale } = useI18n()
 
 function onInput(event) {
   emit('update:modelValue', { ...props.modelValue, current: event })

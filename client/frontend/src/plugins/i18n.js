@@ -1,4 +1,4 @@
-import { ref, provide } from 'vue'
+import { ref } from 'vue'
 import { createI18n } from 'vue-i18n'
 
 let i18n = null

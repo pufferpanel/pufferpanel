@@ -27,7 +27,7 @@ const msEnv = ref(null)
 const users = ref([])
 const msUsers = ref(null)
 
-const props = defineProps({
+defineProps({
   nouser: { type: Boolean, default: () => true }
 })
 
@@ -118,10 +118,6 @@ async function searchUsers(query) {
 
 function validateUsers() {
   return users.value.length > 0
-}
-
-function removeUser(user) {
-  users.value = users.value.filter(u => u.name !== user)
 }
 
 function canSubmit() {

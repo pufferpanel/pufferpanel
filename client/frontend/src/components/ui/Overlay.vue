@@ -2,13 +2,13 @@
 import Btn from './Btn.vue'
 import Icon from './Icon.vue'
 
-const props = defineProps({
+defineProps({
   title: { type: String, required: false, default: () => undefined },
   closable: { type: Boolean, required: false },
   modelValue: { type: Boolean, required: true }
 })
 
-const emit = defineEmits(['update:modelValue', 'close'])
+defineEmits(['update:modelValue', 'close'])
 </script>
 
 <template>

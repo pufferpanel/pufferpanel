@@ -1,12 +1,11 @@
 <script setup>
-import { ref, inject, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
 import Icon from '@/components/ui/Icon.vue'
 import SettingInput from '@/components/ui/SettingInput.vue'
 
 const { t } = useI18n()
-const api = inject('api')
 const emit = defineEmits(['back', 'confirm'])
 const props = defineProps({
   data: { type: Object, default: () => { return {} } }

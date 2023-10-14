@@ -52,7 +52,7 @@ const perms = [
     label: t('scopes.name.' + scope.replace(/\./g, '-')),
     name: scope
   }
-  if (te('scopes.hint.' + scope.replace(/\./g, '-')))
+  if (te('scopes.hint.' + scope.replace(/\./g, '-'), locale))
     res.hint = t('scopes.hint.' + scope.replace(/\./g, '-'))
   return res
 })

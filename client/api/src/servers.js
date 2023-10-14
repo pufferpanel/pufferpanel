@@ -6,8 +6,10 @@ export class ServerApi {
   }
 
   async create(data) {
-    const id = Array.from(crypto.getRandomValues(new Uint8Array(4))).map(b => b.toString(16).padStart(2, '0')).join('')
-    const res = await this._api.put(`/api/servers/${id}`, data)
+    const c = (crypto || {}).getRandomValues ? crypto : ((crypto || {}).webcrypto || {}).getRandomValues ? crypto.webcrypto.getRandomValues : undefined
+    if (c === undefined) throw new Error('no suitable crypto found')
+    const id = Array.from(c.getRandomValues(new Uint8Array(4))).map(b => b.toString(16).padStart(2, '0')).join('')
+    await this._api.put(`/api/servers/${id}`, data)
     return id
   }
 

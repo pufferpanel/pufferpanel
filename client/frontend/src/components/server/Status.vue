@@ -37,8 +37,6 @@ onUnmounted(() => {
   if (unbindEvent) unbindEvent()
   if (task) props.server.stopTask(task)
 })
-
-const log = console.log
 </script>
 
 <template>

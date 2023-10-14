@@ -51,7 +51,7 @@ function canSubmit() {
 
 async function register() {
   if (!canSubmit()) return
-  const res = await api.auth.register(username.value, email.value, password.value)
+  await api.auth.register(username.value, email.value, password.value)
   router.push(defaultRoute(api))
   events.emit('login')
 }

@@ -1,7 +1,7 @@
 export default {
   install: (app) => {
     app.directive('click-outside', {
-      beforeMount(el, binding, vnode) {
+      beforeMount(el, binding) {
         el.clickOutsideEvent = function (event) {
           if (!(el == event.target || el.contains(event.target))) {
             binding.value(event)
@@ -9,7 +9,7 @@ export default {
         }
         document.body.addEventListener('click', el.clickOutsideEvent)
       },
-      beforeUnmount(el, binding, vnode) {
+      beforeUnmount(el) {
         document.body.removeEventListener('click', el.clickOutsideEvent)
       }
     })

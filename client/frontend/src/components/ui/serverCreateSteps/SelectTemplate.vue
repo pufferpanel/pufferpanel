@@ -8,7 +8,6 @@ import markdown from '@/utils/markdown.js'
 
 const { t } = useI18n()
 const api = inject('api')
-const toast = inject('toast')
 const emit = defineEmits(['selected', 'back'])
 const templatesByRepo = ref([])
 const showing = ref(false)

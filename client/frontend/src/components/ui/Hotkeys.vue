@@ -33,7 +33,7 @@ function currentHotkeys() {
 
 watch(
   () => route.name,
-  async newName => {
+  async () => {
     setTimeout(() => {
       hotkeys.value = currentHotkeys()
     }, 500)

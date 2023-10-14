@@ -59,7 +59,7 @@ function init() {
     if (props.mode) {
       editor.session.setMode(`ace/mode/${props.mode}`)
     } else if (props.file) {
-      const modelist = ace.require('ace/ext/modelist')
+      const modelist = window.ace.require('ace/ext/modelist')
       const mode = modelist.getModeForPath(props.file).mode
       editor.session.setMode(mode)
     }

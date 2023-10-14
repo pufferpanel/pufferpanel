@@ -9,9 +9,8 @@ const props = defineProps({
   user: { type: Object, default: () => undefined }
 })
 
-const emit = defineEmits(['toggleSidebar'])
+defineEmits(['toggleSidebar'])
 
-const api = inject('api')
 const config = inject('config')
 const name = config.branding.name
 

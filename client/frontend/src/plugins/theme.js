@@ -1,5 +1,5 @@
-import { ref, inject } from 'vue'
-import { contrast, deriveColor } from '@/utils/theme'
+import { ref } from 'vue'
+import { deriveColor } from '@/utils/theme'
 import { extract } from '@/utils/tar'
 
 import defaultStyles from '@/themes/default/theme.scss?inline'
@@ -29,13 +29,14 @@ function appendStyle(style) {
 
 function getDefaultValue(name, definition) {
   switch (definition.type) {
-    case 'class':
+    case 'class': {
       const defaults =  definition.options.filter(e => e.default)
       if (defaults.length < 1) {
         if (!definition.options[0].value) console.error(`no default found for setting '${name}'`)
         return definition.options[0].value
       }
       return defaults[0].value
+    }
     case 'color':
       return definition.default
     default:
@@ -173,8 +174,7 @@ const themeApi = {
     return settings
   },
   // copy to prevent uncontrolled 3rd party mutation
-  getThemeClasses: () => [...rootClasses.value],
-  getThemeStyleAttributes: () => { return { ...rootAttributes.value } }
+  getThemeClasses: () => [...rootClasses.value]
 }
 
 function initTheme() {

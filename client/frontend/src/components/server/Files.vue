@@ -228,7 +228,7 @@ function downloadLink(file) {
   return props.server.getFileUrl(getCurrentPath() + '/' + file.name)
 }
 
-function fileListHotkey(keys) {
+function fileListHotkey() {
   if (fileEls.value[0]) fileEls.value[0].focus()
 }
 

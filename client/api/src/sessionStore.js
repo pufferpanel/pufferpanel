@@ -82,7 +82,7 @@ export class ServerCookieSessionStore {
     this._cookieOptions = options
   }
 
-  setToken(token) {
+  setToken() {
     throw new Error('It seems you want the ClientCookieSessionStore, not the ServerCookieSessionStore')
   }
 

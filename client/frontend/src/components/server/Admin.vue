@@ -16,7 +16,6 @@ import RunConfig from '@/components/template/RunConfig.vue'
 import ServerEnvironment from '@/components/template/ServerEnvironment.vue'
 
 const { t } = useI18n()
-const api = inject('api')
 const toast = inject('toast')
 const events = inject('events')
 const router = useRouter()

@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import Icon from './Icon.vue'
 
-const props = defineProps({
+defineProps({
   small: { type: Boolean, default: () => false }
 })
 

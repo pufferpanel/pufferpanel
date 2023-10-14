@@ -60,23 +60,6 @@ function emailProviderChanged() {
   emailFields.value = emailProviderConfigs[emailProvider.value]
 }
 
-function getSettingLabel(setting) {
-  const fallback = setting.label || undefined
-  if (setting.tkey) {
-    return t(setting.tkey, fallback)
-  } else if (setting.tlabels) {
-    return setting.tlabels[locale.value] || setting.tlabels[fallbackLocale.value] || fallback
-  } else {
-    return fallback
-  }
-}
-
-function withNormalizedLabels(options) {
-  return options.map(option => {
-    return { ...option, label: getSettingLabel(option) }
-  })
-}
-
 async function savePanelSettings() {
   await api.settings.set({
     'panel.settings.masterUrl': masterUrl.value,

@@ -71,7 +71,7 @@ export function hsl2rgb(hsl) {
   if (hsl[1] == 0) {
     return [hsl[2] * 255, hsl[2] * 255, hsl[2] * 255]
   } else {
-    function hue2rgb(p, q, t) {
+    const hue2rgb = (p, q, t) => {
       if (t < 0) t += 1;
       if (t > 1) t -= 1;
       if (t < 1/6) return p + (q - p) * 6 * t;

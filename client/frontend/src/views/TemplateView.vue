@@ -32,11 +32,11 @@ const valid = ref({
 })
 const ace = ref(null)
 
-onBeforeRouteLeave((to, from) => {
+onBeforeRouteLeave(() => {
   if (unmodified === template.value) {
     return true
   } else {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       events.emit(
         'confirm',
         t('common.ConfirmLeave'),
@@ -141,7 +141,7 @@ function tabChanged(newTab) {
           <environment v-model="template" />
         </tab>
         <tab id="json" :title="t('templates.Json')" icon="json" hotkey="t j">
-          <ace id="template-json" ref="ace" v-model="template" class="template-json-editor" mode="json" />
+          <Ace id="template-json" ref="ace" v-model="template" class="template-json-editor" mode="json" />
         </tab>
       </tabs>
       <div v-if="route.params.repo === 'local'" class="actions">

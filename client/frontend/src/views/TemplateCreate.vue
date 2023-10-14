@@ -13,7 +13,6 @@ import Environment from '@/components/template/Environment.vue'
 import Ace from '@/components/ui/Ace.vue'
 import Btn from '@/components/ui/Btn.vue'
 import Icon from '@/components/ui/Icon.vue'
-import Loader from '@/components/ui/Loader.vue'
 import Tabs from '@/components/ui/Tabs.vue'
 import Tab from '@/components/ui/Tab.vue'
 
@@ -49,11 +48,11 @@ const valid = ref({
   run: false
 })
 
-onBeforeRouteLeave((to, from) => {
+onBeforeRouteLeave(() => {
   if (unmodified === template.value) {
     return true
   } else {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       events.emit(
         'confirm',
         t('common.ConfirmLeave'),

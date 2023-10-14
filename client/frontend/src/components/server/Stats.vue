@@ -138,7 +138,9 @@ onMounted(() => {
   nextTick(() => {
     width.value = wrapper.value.clientWidth
     const observer = new ResizeObserver(elems => {
-      for (const elem of elems) {
+      // eslint doesn't understand iteration syntax
+      // eslint-disable-next-line no-unused-vars
+      for (let _ of elems) {
         if (wrapper.value) width.value = wrapper.value.clientWidth
       }
     })

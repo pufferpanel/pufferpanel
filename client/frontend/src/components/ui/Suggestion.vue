@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import TextField from './TextField.vue'
 
-const props = defineProps({
+defineProps({
   // default to random id as labels need target ids to exist exactly once
   id: { type: String, default: () => (Math.random() + 1).toString(36).substring(2) },
   disabled: { type: Boolean, default: () => false },

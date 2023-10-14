@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from 'vue'
+import { inject } from 'vue'
 
 const props = defineProps({
   title: { type: String, required: true },

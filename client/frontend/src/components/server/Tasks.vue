@@ -1,9 +1,5 @@
 <script setup>
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
-
-const props = defineProps({
+defineProps({
   server: { type: Object, required: true }
 })
 </script>

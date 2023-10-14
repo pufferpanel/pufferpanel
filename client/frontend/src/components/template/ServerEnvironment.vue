@@ -16,9 +16,6 @@ function updateEnv(env, updated) {
   const e = template.value.supportedEnvironments.find(e => e.type === env)
   Object.keys(e).map(f => delete e[f])
   Object.keys(updated).map(f => e[f] = updated[f])
-  if (isDefault(env)) {
-    template.value.environment = e
-  }
   emit('update:modelValue', JSON.stringify(template.value, undefined, 4))
 }
 

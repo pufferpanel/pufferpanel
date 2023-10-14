@@ -13,7 +13,7 @@ import Tab from '@/components/ui/Tab.vue'
 import Tabs from '@/components/ui/Tabs.vue'
 import ThemeSetting from '@/components/ui/ThemeSetting.vue'
 
-const { t, locale, fallbackLocale } = useI18n()
+const { t, locale } = useI18n()
 const api = inject('api')
 const toast = inject('toast')
 const themeApi = inject('theme')

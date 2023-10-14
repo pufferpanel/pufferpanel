@@ -18,7 +18,7 @@ export default function(api) {
     }
   })
 
-  router.beforeEach((to, from) => {
+  router.beforeEach((to) => {
     if (to.meta.noAuth && api.auth.isLoggedIn()) {
         return defaultRoute(api)
     }

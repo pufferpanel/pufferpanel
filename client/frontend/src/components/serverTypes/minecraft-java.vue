@@ -1,7 +1,7 @@
 <script setup>
 import generic from './generic.vue'
 
-const props = defineProps({
+defineProps({
   server: { type: Object, required: true }
 })
 </script>

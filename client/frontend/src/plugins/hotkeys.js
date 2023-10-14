@@ -46,7 +46,7 @@ export default {
           registerHotkey(el, binding.value.join(','), vnode)
         }
       },
-      beforeUnmount(el, binding, vnode) {
+      beforeUnmount(el, binding) {
         Object.keys(currentHotkeys).map(k => {
           if (currentHotkeys[k][el]) {
             currentHotkeys[k][el] = currentHotkeys[k][el].filter(e => e !== binding.value)
