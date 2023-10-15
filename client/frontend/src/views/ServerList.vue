@@ -23,11 +23,13 @@ function addServers(newServers) {
 
 async function refreshServerStatus() {
   servers.value.map(async s => {
-    s.online = 'loading'
-    try {
-      s.online = await api.server.getStatus(s.id)
-    } catch {
-      s.online = undefined
+    if (s.canGetStatus) {
+      s.online = 'loading'
+      try {
+        s.online = await api.server.getStatus(s.id)
+      } catch {
+        s.online = undefined
+      }
     }
   })
 }
