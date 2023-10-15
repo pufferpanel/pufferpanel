@@ -209,10 +209,28 @@ func searchServers(c *gin.Context) {
 		return
 	}
 
-	data := models.FromServers(results)
+	data := models.RemoveServerPrivateInfoFromAll(models.FromServers(results))
+
+	for _, v := range data {
+		if isAdmin {
+			v.CanGetStatus = true
+			continue
+		}
+
+		serverPerms, _ := ps.GetForUserAndServer(user.ID, &v.Identifier)
+		for _, p := range append(perms, serverPerms) {
+			if p == nil {
+				continue
+			}
+			if pufferpanel.ContainsScope(p.Scopes, pufferpanel.ScopeServerStatus) {
+				v.CanGetStatus = true
+				break
+			}
+		}
+	}
 
 	c.JSON(http.StatusOK, &models.ServerSearchResponse{
-		Servers: models.RemoveServerPrivateInfoFromAll(data),
+		Servers: data,
 		Metadata: &pufferpanel.Metadata{Paging: &pufferpanel.Paging{
 			Page:    uint(page),
 			Size:    uint(pageSize),
