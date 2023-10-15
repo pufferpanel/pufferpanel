@@ -95,7 +95,7 @@ func GenerateProcess(directions []pufferpanel.MetadataType, environment pufferpa
 		task := &OperationTask{Operation: op}
 
 		var ifMap map[string]interface{}
-		err = pufferpanel.UnmarshalTo(mapping, &ifMap)
+		err = pufferpanel.UnmarshalTo(mapping.Metadata, &ifMap)
 		if item, exists := ifMap["if"]; err == nil && exists && item != nil {
 			task.Condition = ifMap["if"]
 		}
