@@ -181,11 +181,11 @@ func requiresPermission(c *gin.Context, perm *pufferpanel.Scope) {
 }
 
 func GetToken(c *gin.Context) string {
-	cookie, err := c.Cookie("puffer_auth")
-	if errors.Is(err, http.ErrNoCookie) || cookie == "" {
-		authHeader := c.Request.Header.Get("Authorization")
-		authHeader = strings.TrimSpace(authHeader)
+	//use header first, because we set that a lot
+	authHeader := c.Request.Header.Get("Authorization")
 
+	if authHeader != "" {
+		authHeader = strings.TrimSpace(authHeader)
 		parts := strings.SplitN(authHeader, " ", 2)
 		if len(parts) != 2 {
 			return ""
@@ -195,10 +195,14 @@ func GetToken(c *gin.Context) string {
 			return ""
 		}
 
-		cookie = parts[1]
+		return parts[1]
 	}
 
-	return cookie
+	cookie, err := c.Cookie("puffer_auth")
+	if errors.Is(err, http.ErrNoCookie) {
+		return ""
+	}
+	return strings.TrimSpace(cookie)
 }
 
 func ResolveServerPanel(c *gin.Context) {
