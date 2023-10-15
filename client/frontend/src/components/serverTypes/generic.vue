@@ -71,7 +71,7 @@ onMounted(() => {
         }
       },
       {
-        color: 'none'
+        color: 'neutral'
       }
     )
     router.push({query: {}, hash: route.hash})
