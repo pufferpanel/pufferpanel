@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/hex"
+	"fmt"
 	"github.com/braintree/manners"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -165,8 +166,9 @@ func daemon() error {
 	newPath := os.Getenv("PATH")
 	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
 	if !strings.Contains(newPath, fullPath) {
-		_ = os.Setenv("PATH", newPath+":"+fullPath)
+		_ = os.Setenv("PATH", fmt.Sprintf("%s%c%s", newPath, os.PathListSeparator, fullPath))
 	}
+	logging.Debug.Printf("Daemon PATH variable: %s", os.Getenv("PATH"))
 
 	servers.LoadFromFolder()
 
