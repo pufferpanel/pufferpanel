@@ -163,7 +163,7 @@ onMounted(() => {
     if (props.server.needsPolling() && props.server.hasScope('server.stats')) {
       addData(await props.server.getStats())
     }
-  }, 1000)
+  }, 5000)
 })
 
 onUnmounted(() => {
