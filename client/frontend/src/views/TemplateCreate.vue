@@ -88,7 +88,7 @@ async function save() {
   if (!canSave()) return
   const name = JSON.parse(template.value).name
 
-  const exists = await api.template.exists('local', name)
+  const exists = await api.template.exists(0, name)
   if (!exists) {
     await api.template.save(name, template.value)
     toast.success(t('templates.Saved'))
