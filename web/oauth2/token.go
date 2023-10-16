@@ -1,6 +1,7 @@
 package oauth2
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -81,10 +82,19 @@ func handleTokenRequest(c *gin.Context) {
 				return
 			}
 
+			var scopes []string
+			for _, v := range client.Scopes {
+				if client.ServerId != "" {
+					scopes = append(scopes, fmt.Sprintf("%s:%s", client.ServerId, v.String()))
+				} else {
+					scopes = append(scopes, v.String())
+				}
+			}
+
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
 				AccessToken: token,
 				TokenType:   "Bearer",
-				Scope:       pufferpanel.ScopeOAuth2Auth.Value,
+				Scope:       strings.Join(scopes, " "),
 				ExpiresIn:   expiresIn,
 			})
 			return
