@@ -20,7 +20,7 @@ import (
 	"bytes"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"regexp"
 )
@@ -36,7 +36,7 @@ func (c AlterFile) Run(env pufferpanel.Environment) error {
 	logging.Info.Printf("Changing data in file: %s", c.TargetFile)
 	env.DisplayToConsole(true, "Changing some data in file: %s\n ", c.TargetFile)
 	target := filepath.Join(env.GetRootDirectory(), c.TargetFile)
-	data, err := ioutil.ReadFile(target)
+	data, err := os.ReadFile(target)
 	if err != nil {
 		return err
 	}
@@ -52,5 +52,5 @@ func (c AlterFile) Run(env pufferpanel.Environment) error {
 		out = bytes.ReplaceAll(data, []byte(c.Search), []byte(c.Replace))
 	}
 
-	return ioutil.WriteFile(target, out, 0644)
+	return os.WriteFile(target, out, 0644)
 }

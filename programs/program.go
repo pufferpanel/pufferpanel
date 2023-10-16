@@ -20,6 +20,15 @@ import (
 	"container/list"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/fs"
+	"log"
+	"os"
+	"path"
+	"path/filepath"
+	"sync"
+	"time"
+
 	"github.com/mholt/archiver/v3"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
@@ -27,14 +36,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/pufferpanel/pufferpanel/v2/operations"
 	"github.com/spf13/cast"
-	"io"
-	"io/ioutil"
-	"log"
-	"os"
-	"path"
-	"path/filepath"
-	"sync"
-	"time"
 )
 
 type Program struct {
@@ -400,7 +401,7 @@ func (p *Program) Save() (err error) {
 		return
 	}
 
-	err = ioutil.WriteFile(file, data, 0664)
+	err = os.WriteFile(file, data, 0664)
 	return
 }
 
@@ -496,7 +497,12 @@ func (p *Program) GetItem(name string) (*FileData, error) {
 	}
 
 	if info.IsDir() {
-		files, _ := ioutil.ReadDir(targetFile)
+		entries, _ := os.ReadDir(targetFile)
+		files := make([]fs.FileInfo, 0, len(entries))
+		for _, entry := range entries {
+			fi, _ := entry.Info()
+			files = append(files, fi)
+		}
 		var fileNames []messages.FileDesc
 		offset := 0
 		if name == "" || name == "." || name == "/" {

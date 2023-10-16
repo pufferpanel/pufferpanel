@@ -29,7 +29,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/satori/go.uuid"
 	"gorm.io/gorm"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -318,7 +318,7 @@ func createServer(c *gin.Context) {
 	}
 
 	data, _ := json.Marshal(postBody.Server)
-	reader := ioutil.NopCloser(bytes.NewReader(data))
+	reader := io.NopCloser(bytes.NewReader(data))
 
 	//we need to get your new token
 	token, err := ps.GenerateOAuthForUser(c.MustGet("user").(*models.User).ID, nil)
@@ -339,7 +339,7 @@ func createServer(c *gin.Context) {
 	}
 
 	if nodeResponse.StatusCode != http.StatusOK {
-		resData, err := ioutil.ReadAll(nodeResponse.Body)
+		resData, err := io.ReadAll(nodeResponse.Body)
 		if err != nil {
 			logging.Error.Printf("Failed to parse response from daemon\n%s", err.Error())
 		}

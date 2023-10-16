@@ -29,7 +29,6 @@ import (
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -281,7 +280,7 @@ func readPublicKey(path string) ([]byte, error) {
 		}
 
 		defer pufferpanel.Close(response.Body)
-		return ioutil.ReadAll(response.Body)
+		return io.ReadAll(response.Body)
 	} else {
 		pubKeyFile, err := os.OpenFile(path, os.O_RDONLY, 0644)
 		if err != nil {
@@ -289,6 +288,6 @@ func readPublicKey(path string) ([]byte, error) {
 		}
 
 		defer pufferpanel.Close(pubKeyFile)
-		return ioutil.ReadAll(pubKeyFile)
+		return io.ReadAll(pubKeyFile)
 	}
 }

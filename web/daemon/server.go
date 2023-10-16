@@ -31,7 +31,6 @@ import (
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cast"
 	"io"
-	"io/ioutil"
 	"mime"
 	"net/http"
 	"os"
@@ -678,7 +677,7 @@ func PostConsole(c *gin.Context) {
 	item, _ := c.Get("server")
 	prg := item.(*programs.Program)
 
-	d, _ := ioutil.ReadAll(c.Request.Body)
+	d, _ := io.ReadAll(c.Request.Body)
 	cmd := string(d)
 	err := prg.Execute(cmd)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
