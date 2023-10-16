@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3/database"
-	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"gorm.io/gorm"
@@ -41,18 +40,23 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	ss := services.Session{DB: db}
-	var user models.User
 
-	cookie, err := c.Cookie("puffer_auth")
-	if errors.Is(err, http.ErrNoCookie) || cookie == "" {
-		// reset err so we don't trip the final error
-		// check despite successful auth from header
-		err = nil
+	var token string
 
-		//check for token Auth header
-		authHeader := c.Request.Header.Get("Authorization")
-		authHeader = strings.TrimSpace(authHeader)
+	//order of priority, use auth headers first
+	//check for token Auth header
+	authHeader := c.Request.Header.Get("Authorization")
+	authHeader = strings.TrimSpace(authHeader)
 
+	if authHeader == "" {
+		token, err = c.Cookie("puffer_auth")
+
+		if errors.Is(err, http.ErrNoCookie) || token == "" {
+			c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+	} else {
 		parts := strings.SplitN(authHeader, " ", 2)
 		if len(parts) != 2 {
 			c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
@@ -66,46 +70,28 @@ func AuthMiddleware(c *gin.Context) {
 			return
 		}
 
-		session := parts[1]
-		sess, err := ss.Validate(session)
+		token = parts[1]
+	}
 
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		} else if response.HandleError(c, err, http.StatusInternalServerError) {
-			return
-		}
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
 
-		if sess.UserId != nil {
-			user = sess.User
-		}
-		if sess.ClientId != nil {
-			c.Set("client", &sess.Client)
-		}
+	//pull user from the session
+	sess, err := ss.Validate(token)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
-	} else {
-		//pull user from the session
-		sess, err := ss.Validate(cookie)
-
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		} else if response.HandleError(c, err, http.StatusInternalServerError) {
-			return
-		}
-
-		if sess.UserId != nil {
-			user = sess.User
-		}
 	}
 
-	if response.HandleError(c, err, http.StatusUnauthorized) {
-		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
-		return
+	if sess.UserId != nil {
+		c.Set("user", &sess.User)
 	}
-
-	c.Set("user", &user)
+	if sess.ClientId != nil {
+		c.Set("client", &sess.Client)
+	}
 }

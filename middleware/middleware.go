@@ -121,6 +121,7 @@ func requiresPermission(c *gin.Context, perm *pufferpanel.Scope) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
+
 	ginClient, _ := c.Get("client")
 
 	db := GetDatabase(c)
