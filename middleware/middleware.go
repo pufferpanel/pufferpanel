@@ -130,45 +130,24 @@ func requiresPermission(c *gin.Context, perm *pufferpanel.Scope) {
 		return
 	}
 
-	ginClient, _ := c.Get("client")
-
 	db := GetDatabase(c)
 	ps := &services.Permission{DB: db}
 
 	var perms []*models.Permissions
 
-	//if we're a client, get the client's permissions for this particular resource
-	if ginClient != nil {
-		client := ginClient.(*models.Client)
-		p, err := ps.GetForClientAndServer(client.ID, serverId)
+	p, err := ps.GetForUserAndServer(user.ID, serverId)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	perms = append(perms, p)
+	if serverId != nil {
+		//if we had a server, also grab global scopes
+		p, err = ps.GetForUserAndServer(user.ID, nil)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
-
 		perms = append(perms, p)
-		if serverId != nil {
-			//if we had a server, also grab global scopes
-			p, err = ps.GetForClientAndServer(client.ID, nil)
-			if response.HandleError(c, err, http.StatusInternalServerError) {
-				return
-			}
-			perms = append(perms, p)
-		}
-	} else {
-		p, err := ps.GetForUserAndServer(user.ID, serverId)
-		if response.HandleError(c, err, http.StatusInternalServerError) {
-			return
-		}
-
-		perms = append(perms, p)
-		if serverId != nil {
-			//if we had a server, also grab global scopes
-			p, err = ps.GetForUserAndServer(user.ID, nil)
-			if response.HandleError(c, err, http.StatusInternalServerError) {
-				return
-			}
-			perms = append(perms, p)
-		}
 	}
 
 	allowed := false

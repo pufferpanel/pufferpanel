@@ -251,19 +251,12 @@ func getPersonalOAuth2Clients(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
-	clients, err := os.GetForUserAndServer(user.ID, "")
+	clients, err := os.GetForUser(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	data := make([]*models.Client, 0)
-	for _, v := range clients {
-		if v.ServerId == "" {
-			data = append(data, v)
-		}
-	}
-
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, clients)
 }
 
 // @Summary Create an account-level OAuth2 client
@@ -308,7 +301,7 @@ func createPersonalOAuth2Client(c *gin.Context) {
 		return
 	}
 
-	err = os.Update(client)
+	err = os.Create(client)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -318,7 +311,7 @@ func createPersonalOAuth2Client(c *gin.Context) {
 		logging.Error.Printf("Error sending email: %s\n", err)
 	}
 
-	c.JSON(http.StatusOK, models.CreatedClient{
+	c.JSON(http.StatusOK, models.Client{
 		ClientId:     client.ClientId,
 		ClientSecret: secret,
 	})
@@ -346,12 +339,12 @@ func deletePersonalOAuth2Client(c *gin.Context) {
 	}
 
 	//ensure the client id is specific for this server, and this user
-	if client.UserId != user.ID || client.ServerId != "" {
+	if client.UserId != user.ID {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
-	err = os.Delete(client)
+	err = os.Delete(client.ClientId)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

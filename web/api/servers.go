@@ -48,13 +48,6 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("DELETE", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServerUserDelete), middleware.ResolveServerPanel, middleware.HasTransaction, removeServerUser)
 	g.Handle("OPTIONS", "/:serverId/user/:email", response.CreateOptions("GET", "PUT", "DELETE"))
 
-	g.Handle("GET", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServerClientView), middleware.ResolveServerPanel, getOAuth2Clients)
-	g.Handle("POST", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServerClientCreate), middleware.ResolveServerPanel, middleware.HasTransaction, createOAuth2Client)
-	g.Handle("OPTIONS", "/:serverId/oauth2", response.CreateOptions("GET", "POST"))
-
-	g.Handle("DELETE", "/:serverId/oauth2/:clientId", middleware.RequiresPermission(pufferpanel.ScopeServerClientDelete), middleware.ResolveServerPanel, middleware.HasTransaction, deleteOAuth2Client)
-	g.Handle("OPTIONS", "/:serverId/oauth2/:clientId", response.CreateOptions("DELETE"))
-
 	g.GET("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServerViewData), middleware.ResolveServerPanel, proxyServerRequest)
 	g.POST("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServerEditData), middleware.ResolveServerPanel, editServerData)
 	g.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST"))
@@ -846,111 +839,6 @@ func renameServer(c *gin.Context) {
 	if err != nil {
 		logging.Error.Printf("renaming server with err `%s`", err)
 		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
-
-	c.Status(http.StatusNoContent)
-}
-
-// @Summary Gets server-level OAuth2 credentials for the logged in user
-// @Success 200 {object} []models.Client
-// @Param id path string true "Server ID"
-// @Router /api/servers/{id}/oauth2 [get]
-// @Security OAuth2Application[server.clients.view]
-func getOAuth2Clients(c *gin.Context) {
-	user := c.MustGet("user").(*models.User)
-	server := getServerFromGin(c)
-
-	db := middleware.GetDatabase(c)
-	os := &services.OAuth2{DB: db}
-
-	clients, err := os.GetForUserAndServer(user.ID, server.Identifier)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	c.JSON(http.StatusOK, clients)
-}
-
-// @Summary Creates server-level OAuth2 credentials for the logged in user
-// @Success 200 {object} models.CreatedClient
-// @Param id path string true "Server ID"
-// @Param body body models.Client false "Client to create"
-// @Router /api/servers/{id}/oauth2 [post]
-// @Security OAuth2Application[server.clients.create]
-func createOAuth2Client(c *gin.Context) {
-	user := c.MustGet("user").(*models.User)
-	server := getServerFromGin(c)
-
-	db := middleware.GetDatabase(c)
-	os := &services.OAuth2{DB: db}
-
-	var request models.Client
-	err := c.BindJSON(&request)
-	if response.HandleError(c, err, http.StatusBadRequest) {
-		return
-	}
-
-	id, err := uuid.NewV4()
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-	client := &models.Client{
-		ClientId:    id.String(),
-		UserId:      user.ID,
-		ServerId:    server.Identifier,
-		Name:        request.Name,
-		Description: request.Description,
-	}
-
-	secret, err := pufferpanel.GenerateRandomString(36)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	err = client.SetClientSecret(secret)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	err = os.Update(client)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	c.JSON(http.StatusOK, models.CreatedClient{
-		ClientId:     client.ClientId,
-		ClientSecret: secret,
-	})
-}
-
-// @Summary Deletes server-level OAuth2 credential
-// @Success 204 {object} nil
-// @Param id path string true "Server ID"
-// @Param clientId path string true "Client ID"
-// @Router /api/servers/{id}/oauth2/{clientId} [delete]
-// @Security OAuth2Application[server.clients.delete]
-func deleteOAuth2Client(c *gin.Context) {
-	user := c.MustGet("user").(*models.User)
-	server := getServerFromGin(c)
-	clientId := c.Param("clientId")
-
-	db := middleware.GetDatabase(c)
-	os := &services.OAuth2{DB: db}
-
-	client, err := os.Get(clientId)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	//ensure the client id is specific for this server, and this user
-	if client.UserId != user.ID || client.ServerId != server.Identifier {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	err = os.Delete(client)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 

@@ -1,13 +1,11 @@
 package oauth2
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/oauth2"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -62,29 +60,6 @@ func handleTokenRequest(c *gin.Context) {
 				return
 			}
 
-			var perms []*models.Permissions
-
-			ps := &services.Permission{DB: db}
-			var serverId *string
-			if client.ServerId != "" {
-				serverId = &client.ServerId
-			}
-
-			p, err := ps.GetForClientAndServer(client.ID, serverId)
-			if response.HandleError(c, err, http.StatusInternalServerError) {
-				return
-			}
-
-			perms = append(perms, p)
-			if serverId != nil {
-				//if we had a server, also grab global scopes
-				p, err = ps.GetForClientAndServer(client.ID, nil)
-				if response.HandleError(c, err, http.StatusInternalServerError) {
-					return
-				}
-				perms = append(perms, p)
-			}
-
 			token, err := session.CreateForClient(client)
 			if err != nil {
 				if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -93,15 +68,7 @@ func handleTokenRequest(c *gin.Context) {
 			}
 
 			var scopes []string
-			for _, v := range perms {
-				for _, k := range v.Scopes {
-					if client.ServerId != "" {
-						scopes = append(scopes, fmt.Sprintf("%s:%s", client.ServerId, k.String()))
-					} else {
-						scopes = append(scopes, k.String())
-					}
-				}
-			}
+			//TODO: add scopes the client has
 
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
 				AccessToken: token,

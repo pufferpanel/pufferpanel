@@ -9,23 +9,17 @@ import (
 
 type Client struct {
 	ID                 uint   `gorm:"PRIMARY_KEY,AUTO_INCREMEMT" json:"-"`
-	ClientId           string `gorm:"NOT NULL" json:"client_id"`
+	ClientId           string `gorm:"NOT NULL;uniqueIndex" json:"client_id"`
 	HashedClientSecret string `gorm:"column:client_secret;NOT NULL" json:"-"`
+
+	ClientSecret string `gorm:"-" json:"client_secret"`
 
 	UserId uint  `gorm:"NOT NULL" json:"-"`
 	User   *User `json:"-"`
 
-	ServerId string  `gorm:"NOT NULL" json:"-"`
-	Server   *Server `json:"-"`
-
 	Name        string `gorm:"column:name;NOT NULL;size:100;default\"\"" json:"name"`
 	Description string `gorm:"column:description;NOT NULL;size:4000;default:\"\"" json:"description"`
-} //@name Client
-
-type CreatedClient struct {
-	ClientId     string `json:"id"`
-	ClientSecret string `json:"secret"`
-} //@name CreatedClient
+}
 
 func (c *Client) SetClientSecret(secret string) error {
 	res, err := bcrypt.GenerateFromPassword([]byte(secret), bcrypt.DefaultCost)

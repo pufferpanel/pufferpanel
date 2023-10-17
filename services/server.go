@@ -91,11 +91,6 @@ func (ss *Server) Delete(id string) error {
 		return err
 	}
 
-	err = ss.DB.Delete(models.Client{}, "server_id = ?", id).Error
-	if err != nil {
-		return err
-	}
-
 	err = ss.DB.Delete(model).Error
 	if err != nil {
 		return err
