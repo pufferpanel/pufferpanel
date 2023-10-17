@@ -260,7 +260,7 @@ func getPersonalOAuth2Clients(c *gin.Context) {
 }
 
 // @Summary Create an account-level OAuth2 client
-// @Success 200 {object} models.CreatedClient
+// @Success 200 {object} models.Client
 // @Failure 400 {object} pufferpanel.ErrorResponse
 // @Failure 403 {object} pufferpanel.ErrorResponse
 // @Failure 404 {object} pufferpanel.ErrorResponse

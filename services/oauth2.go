@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
 )
@@ -21,17 +20,25 @@ func (s *OAuth2) Get(clientId string) (*models.Client, error) {
 
 // GetForUser Gets all clients for a user
 func (s *OAuth2) GetForUser(userId uint) ([]*models.Client, error) {
-	return nil, errors.New("not implemented")
+	client := &models.Client{
+		UserId: userId,
+	}
+	var clients []*models.Client
+	err := s.DB.Where(client).Find(&client).Error
+	return clients, err
 }
 
 func (s *OAuth2) Create(request *models.Client) error {
-	return errors.New("not implemented")
+	return s.DB.Create(request).Error
 }
 
 func (s *OAuth2) Update(request *models.Client) error {
-	return errors.New("not implemented")
+	return s.DB.Save(request).Error
 }
 
 func (s *OAuth2) Delete(clientId string) error {
-	return errors.New("not implemented")
+	client := &models.Client{
+		ClientId: clientId,
+	}
+	return s.DB.Model(client).Delete(client).Error
 }
