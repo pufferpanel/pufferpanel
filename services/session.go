@@ -38,7 +38,7 @@ func (ss *Session) CreateForUser(user *models.User) (string, error) {
 	return sessionToken, err
 }
 
-func (ss *Session) CreateForClient(node *models.Client) (string, error) {
+func (ss *Session) CreateForClient(client *models.Client) (string, error) {
 	token, err := uuid.NewV4()
 	if err != nil {
 		return "", err
@@ -54,7 +54,8 @@ func (ss *Session) CreateForClient(node *models.Client) (string, error) {
 	session := &models.Session{
 		Token:          res,
 		ExpirationTime: time.Now().Add(time.Hour),
-		ClientId:       &node.ID,
+		ClientId:       &client.ID,
+		UserId:         &client.UserId,
 	}
 
 	err = ss.DB.Create(session).Error
@@ -73,7 +74,7 @@ func (ss *Session) Validate(token string) (*models.Session, error) {
 	query = query.Where("user_id IS NOT NULL OR client_id IS NOT NULL")
 	query = query.Where(session)
 
-	err = query.Find(session).Error
+	err = query.First(session).Error
 
 	return session, err
 }

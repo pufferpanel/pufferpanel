@@ -5,7 +5,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
-	"strings"
 )
 
 type Client struct {
@@ -18,9 +17,6 @@ type Client struct {
 
 	ServerId string  `gorm:"NOT NULL" json:"-"`
 	Server   *Server `json:"-"`
-
-	Scopes    []*pufferpanel.Scope `gorm:"-" json:"-"`
-	RawScopes string               `gorm:"column:scopes;NOT NULL;size:4000" json:"-"`
 
 	Name        string `gorm:"column:name;NOT NULL;size:100;default\"\"" json:"name"`
 	Description string `gorm:"column:description;NOT NULL;size:4000;default:\"\"" json:"description"`
@@ -55,31 +51,6 @@ func (c *Client) IsValid() (err error) {
 	return
 }
 
-func (c *Client) BeforeSave(*gorm.DB) (err error) {
-	err = c.IsValid()
-
-	scopes := make([]string, 0)
-
-	for _, s := range c.Scopes {
-		scopes = append(scopes, s.Value)
-	}
-	c.RawScopes = strings.Join(scopes, " ")
-
-	return
-}
-
-func (c *Client) AfterFind(*gorm.DB) (err error) {
-	if c.RawScopes == "" {
-		c.Scopes = make([]*pufferpanel.Scope, 0)
-		return
-	}
-
-	split := strings.Split(c.RawScopes, " ")
-	c.Scopes = make([]*pufferpanel.Scope, len(split))
-
-	for i, v := range split {
-		c.Scopes[i] = pufferpanel.GetScope(v)
-	}
-
-	return
+func (c *Client) BeforeSave(*gorm.DB) error {
+	return c.IsValid()
 }

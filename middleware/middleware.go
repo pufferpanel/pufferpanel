@@ -109,15 +109,23 @@ func requiresPermission(c *gin.Context, perm *pufferpanel.Scope) {
 		return
 	}
 
-	//defer to auth middleware to resolve this to a user, and check basic stuff
-	AuthMiddleware(c)
-	if c.IsAborted() {
+	userGin, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatus(http.StatusForbidden)
 		return
+	}
+	user, ok := userGin.(*models.User)
+	if !ok {
+		panic("user not defined")
 	}
 
 	//we now have a user and they are allowed to access something, let's confirm they have server access
-	serverId := c.Param("serverId")
-	if perm.ForServer && serverId == "" {
+	var serverId *string
+	id := c.Param("serverId")
+	if id != "" {
+		serverId = &id
+	}
+	if perm.ForServer && serverId == nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -127,40 +135,39 @@ func requiresPermission(c *gin.Context, perm *pufferpanel.Scope) {
 	db := GetDatabase(c)
 	ps := &services.Permission{DB: db}
 
-	var perms []models.Permissions
+	var perms []*models.Permissions
 
 	//if we're a client, get the client's permissions for this particular resource
 	if ginClient != nil {
 		client := ginClient.(*models.Client)
-		p, err := ps.GetForClientAndServer(client.ID, &serverId)
+		p, err := ps.GetForClientAndServer(client.ID, serverId)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
 
-		perms = append(perms, *p)
-		if serverId != "" {
+		perms = append(perms, p)
+		if serverId != nil {
 			//if we had a server, also grab global scopes
 			p, err = ps.GetForClientAndServer(client.ID, nil)
 			if response.HandleError(c, err, http.StatusInternalServerError) {
 				return
 			}
-			perms = append(perms, *p)
+			perms = append(perms, p)
 		}
 	} else {
-		user := c.MustGet("user").(*models.User)
-		p, err := ps.GetForUserAndServer(user.ID, &serverId)
+		p, err := ps.GetForUserAndServer(user.ID, serverId)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
 
-		perms = append(perms, *p)
-		if serverId != "" {
+		perms = append(perms, p)
+		if serverId != nil {
 			//if we had a server, also grab global scopes
 			p, err = ps.GetForUserAndServer(user.ID, nil)
 			if response.HandleError(c, err, http.StatusInternalServerError) {
 				return
 			}
-			perms = append(perms, *p)
+			perms = append(perms, p)
 		}
 	}
 

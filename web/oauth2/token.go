@@ -7,6 +7,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
+	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/oauth2"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -31,7 +32,7 @@ func registerTokens(g *gin.RouterGroup) {
 // @Failure 500 {object} oauth2.ErrorResponse
 // @Router /oauth2/token [post]
 func handleTokenRequest(c *gin.Context) {
-	var request oauth2TokenRequest
+	var request OAuth2TokenRequest
 	err := c.MustBindWith(&request, binding.FormPost)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
@@ -61,33 +62,44 @@ func handleTokenRequest(c *gin.Context) {
 				return
 			}
 
-			//if the client we have has 0 scopes, then we will have to pull the rights the user has
-			if len(client.Scopes) == 0 {
-				ps := &services.Permission{DB: db}
-				var serverId *string
-				if client.ServerId != "" {
-					serverId = &client.ServerId
-				}
-				perms, err := ps.GetForUserAndServer(client.UserId, serverId)
-				if err != nil {
-					c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+			var perms []*models.Permissions
+
+			ps := &services.Permission{DB: db}
+			var serverId *string
+			if client.ServerId != "" {
+				serverId = &client.ServerId
+			}
+
+			p, err := ps.GetForClientAndServer(client.ID, serverId)
+			if response.HandleError(c, err, http.StatusInternalServerError) {
+				return
+			}
+
+			perms = append(perms, p)
+			if serverId != nil {
+				//if we had a server, also grab global scopes
+				p, err = ps.GetForClientAndServer(client.ID, nil)
+				if response.HandleError(c, err, http.StatusInternalServerError) {
 					return
 				}
-				client.Scopes = perms.Scopes
+				perms = append(perms, p)
 			}
 
 			token, err := session.CreateForClient(client)
 			if err != nil {
-				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
-				return
+				if response.HandleError(c, err, http.StatusInternalServerError) {
+					return
+				}
 			}
 
 			var scopes []string
-			for _, v := range client.Scopes {
-				if client.ServerId != "" {
-					scopes = append(scopes, fmt.Sprintf("%s:%s", client.ServerId, v.String()))
-				} else {
-					scopes = append(scopes, v.String())
+			for _, v := range perms {
+				for _, k := range v.Scopes {
+					if client.ServerId != "" {
+						scopes = append(scopes, fmt.Sprintf("%s:%s", client.ServerId, k.String()))
+					} else {
+						scopes = append(scopes, k.String())
+					}
 				}
 			}
 
@@ -186,7 +198,7 @@ func handleTokenRequest(c *gin.Context) {
 	}
 }
 
-type oauth2TokenRequest struct {
+type OAuth2TokenRequest struct {
 	GrantType    string `form:"grant_type"`
 	ClientId     string `form:"client_id"`
 	ClientSecret string `form:"client_secret"`

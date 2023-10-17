@@ -41,11 +41,25 @@ var loginNoAdminWithServersUser = &models.User{
 
 const loginNoAdminWithServersUserPassword = "dowiuzlaslf"
 
+var loginOAuth2Admin = &models.Client{
+	ClientId:    "testadmin",
+	Name:        "testadminclient",
+	Description: "For unit testing only",
+	User:        loginAdminUser,
+}
+
+var loginOAuth2AdminPermissions = &models.Permissions{
+	Scopes: []*pufferpanel.Scope{pufferpanel.ScopeAdmin},
+}
+
+const loginOAuth2AdminSecret = "rawr"
+
 func init() {
 	_ = loginNoLoginUser.SetPassword(loginNoLoginUserPassword)
 	_ = loginNoServerViewUser.SetPassword(loginNoServerViewUserPassword)
 	_ = loginAdminUser.SetPassword(loginAdminUserPassword)
 	_ = loginNoAdminWithServersUser.SetPassword(loginNoAdminWithServersUserPassword)
+	_ = loginOAuth2Admin.SetClientSecret(loginOAuth2AdminSecret)
 }
 
 func prepareUsers(db *gorm.DB) error {
@@ -65,6 +79,11 @@ func prepareUsers(db *gorm.DB) error {
 	}
 
 	err = initLoginNoAdminWithServersUser(db)
+	if err != nil {
+		return err
+	}
+
+	err = initOauth2Client(db)
 	if err != nil {
 		return err
 	}
@@ -106,6 +125,21 @@ func initLoginAdminUser(db *gorm.DB) error {
 
 func initLoginNoAdminWithServersUser(db *gorm.DB) error {
 	return db.Create(loginNoAdminWithServersUser).Error
+}
+
+func initOauth2Client(db *gorm.DB) error {
+	loginOAuth2Admin.User = loginAdminUser
+	err := db.Create(loginOAuth2Admin).Error
+	if err != nil {
+		return err
+	}
+
+	perms := &models.Permissions{
+		ClientId: &loginOAuth2Admin.ID,
+		Scopes:   []*pufferpanel.Scope{pufferpanel.ScopeAdmin},
+	}
+	err = db.Create(perms).Error
+	return err
 }
 
 func createSession(db *gorm.DB, user *models.User) (string, error) {

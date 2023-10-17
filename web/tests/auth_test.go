@@ -343,7 +343,7 @@ func TestReauth(t *testing.T) {
 		})
 		writer := httptest.NewRecorder()
 		pufferpanel.Engine.ServeHTTP(writer, request)
-		assert.Equal(t, http.StatusForbidden, writer.Code)
+		assert.Equal(t, http.StatusUnauthorized, writer.Code)
 	})
 	t.Run("ReauthWithInvalidSession", func(t *testing.T) {
 		t.Parallel()
@@ -354,6 +354,6 @@ func TestReauth(t *testing.T) {
 		})
 		writer := httptest.NewRecorder()
 		pufferpanel.Engine.ServeHTTP(writer, request)
-		assert.Equal(t, http.StatusForbidden, writer.Code)
+		assert.Equal(t, http.StatusUnauthorized, writer.Code)
 	})
 }
