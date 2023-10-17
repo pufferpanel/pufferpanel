@@ -25,7 +25,7 @@ func registerTokens(g *gin.RouterGroup) {
 
 // @Summary Authenticate
 // @Description Get a OAuth2 token to consume this API
-// @Param request body oauth2TokenRequest true "OAuth2 token request"
+// @Param request body OAuth2TokenRequest true "OAuth2 token request"
 // @Success 200 {object} oauth2.TokenResponse
 // @Failure 400 {object} oauth2.ErrorResponse
 // @Failure 401 {object} oauth2.ErrorResponse
