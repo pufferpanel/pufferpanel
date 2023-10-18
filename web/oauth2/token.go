@@ -68,7 +68,19 @@ func handleTokenRequest(c *gin.Context) {
 			}
 
 			var scopes []string
-			//TODO: add scopes the client has
+			ps := &services.Permission{DB: db}
+			perms, err := ps.GetForUserAndServer(client.UserId, nil)
+			if response.HandleError(c, err, http.StatusInternalServerError) {
+				return
+			}
+
+			if !pufferpanel.ContainsScope(perms.Scopes, pufferpanel.ScopeLogin) {
+				c.AbortWithStatus(http.StatusForbidden)
+				return
+			}
+			for _, v := range perms.Scopes {
+				scopes = append(scopes, v.String())
+			}
 
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
 				AccessToken: token,
