@@ -112,6 +112,10 @@ func handleTokenRequest(c *gin.Context) {
 
 			//get user and server information
 			parts := strings.SplitN(request.Username, "|", 2)
+			if len(parts) != 2 {
+				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+				return
+			}
 			user, err := us.GetByEmail(parts[0])
 			if err != nil {
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
