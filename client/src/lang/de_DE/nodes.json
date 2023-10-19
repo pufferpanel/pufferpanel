@@ -17,6 +17,6 @@
   "DeploymentInstruction": "Um den Knoten bereitzustellen, installieren Sie PufferPanel auf dem neuen Server und platzieren Sie die Konfigurationsdatei in `/etc/pufferpanel/`<br/>Starten Sie PufferPanel anschließend auf dem neuen Server neu.",
   "UpdateSuccess": "Knoten wurde erfolgreich aktualisiert",
   "UpdateError": "Fehler beim Aktualisieren des Knotens",
-  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
-  "CannotEdit": "Cannot Edit"
+  "LocalNodeInstructions": "Der lokale Knoten kann über diesen Bildschirm nicht bearbeitet werden. Um die Host-oder Port-Informationen zu ändern, aktualisieren Sie bitte die `Master Url` in den Einstellungen.",
+  "CannotEdit": "Bearbeiten nicht möglich"
 }
