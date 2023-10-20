@@ -3,6 +3,7 @@ package pufferpanel
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"reflect"
 )
 
 func GenerateRandomString(n int) (string, error) {
@@ -24,7 +25,7 @@ func Union[T comparable](a, b []T) []T {
 
 	for _, v := range a {
 		for _, x := range b {
-			if v == x {
+			if reflect.DeepEqual(v, x) {
 				result = append(result, v)
 				break
 			}

@@ -652,7 +652,6 @@ func editServerUser(c *gin.Context) {
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
-	perms.Email = email
 
 	server := getServerFromGin(c)
 
