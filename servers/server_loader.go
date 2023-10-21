@@ -105,12 +105,10 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 	return data, nil
 }
 
-func Create(program *Server) error {
+func Create(program *Server) (server *Server, err error) {
 	if GetFromCache(program.Id()) != nil {
-		return pufferpanel.ErrServerAlreadyExists
+		return nil, pufferpanel.ErrServerAlreadyExists
 	}
-
-	var err error
 
 	defer func() {
 		if err != nil {
@@ -119,27 +117,28 @@ func Create(program *Server) error {
 			if program.RunningEnvironment != nil {
 				_ = program.RunningEnvironment.Delete()
 			}
+			server = nil
 		}
 	}()
 
 	err = program.Save()
 	if err != nil {
 		logging.Error.Printf("Error writing server: %s", err)
-		return err
+		return
 	}
 
-	replacement, err := Load(program.Id())
+	server, err = Load(program.Id())
 	if err != nil {
-		return err
+		return
 	}
 
-	err = replacement.GetEnvironment().Create()
+	err = server.GetEnvironment().Create()
 	if err != nil {
-		return err
+		return
 	}
 
-	allServers = append(allServers, replacement)
-	return err
+	allServers = append(allServers, server)
+	return
 }
 
 func Delete(id string) (err error) {

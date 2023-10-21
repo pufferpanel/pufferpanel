@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/docker/docker/api/types"
@@ -224,7 +225,7 @@ func main() {
 			}
 		}
 
-		err = servers.Create(prg)
+		prg, err = servers.Create(prg)
 		panicIf(err)
 
 		err = prg.Install()
@@ -232,6 +233,13 @@ func main() {
 
 		err = runServer(prg)
 		panicIf(err)
+
+		running, err := prg.IsRunning()
+		panicIf(err)
+
+		if !running {
+			panic(errors.New("server is still running"))
+		}
 
 		if prg.RunningEnvironment.GetLastExitCode() != 0 {
 			panicIf(fmt.Errorf("exit code status %d", prg.RunningEnvironment.GetLastExitCode()))
@@ -282,6 +290,15 @@ func runServer(prg *servers.Server) (err error) {
 		c <- prg.RunningEnvironment.WaitForMainProcess()
 	}()
 	t := time.After(time.Minute * 1)
+
+	//we need to make sure we were running for a minute
+	//if we did not, something went wrong
+	running, err := prg.IsRunning()
+	panicIf(err)
+
+	if !running {
+		panic(errors.New("server did not run for a minute"))
+	}
 
 	select {
 	case <-t:
