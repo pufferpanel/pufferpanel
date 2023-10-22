@@ -3,12 +3,12 @@
   "PanelSettings": "Panel indstillinger",
   "EmailSettings": "Email Indstillinger",
   "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
+  "MasterUrlHint": "Den grundlæggende URL panelet kan nås under i formatet http://localhost:8080",
   "CompanyName": "Virksomheds navn",
   "DefaultTheme": "Standardtema",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabled": "Tillad brugere at registrere sig selv",
+  "RegistrationEnabledHint1": "Selv-registrerede brugere kan ikke gøre noget før tilladelser gives",
+  "RegistrationEnabledHint2": "Deaktivering af dette forhindrer kun direkte registrering, invitation til en server og brugersiden påvirkes ikke",
   "EmailProvider": "Email Udbyder",
   "emailProviders": {
     "none": "Intet",
@@ -19,7 +19,7 @@
   "emailFields": {
     "from": "Sender Adress",
     "domain": "Domæne",
-    "key": "API Key",
+    "key": "API Nøgle",
     "host": "Vært",
     "username": "Brugernavn",
     "password": "Adgangskode"
