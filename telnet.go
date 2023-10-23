@@ -43,9 +43,10 @@ func (tc *TelnetConnection) Start() {
 
 func (tc *TelnetConnection) Close() error {
 	tc.Reconnect = false
-	_ = tc.connection.Close()
-
-	return nil
+	if tc.connection == nil {
+		return nil
+	}
+	return tc.connection.Close()
 }
 
 func (tc *TelnetConnection) reconnector() {

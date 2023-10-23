@@ -17,6 +17,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
+	"github.com/spf13/cast"
 	"log"
 	"os"
 	"path/filepath"
@@ -134,27 +135,6 @@ func main() {
 				tmp := &TestTemplate{}
 				tmp.Name = strings.TrimSuffix(file.Name(), ".json")
 
-				skip := false
-				for _, v := range templatesToSkip {
-					if match(v, tmp.Name) {
-						skip = true
-						break
-					}
-				}
-				if skip {
-					for _, v := range mustTest {
-						if match(v, tmp.Name) {
-							skip = false
-							break
-						}
-					}
-
-					if skip {
-						log.Printf("Skipping %s", tmp.Name)
-						continue
-					}
-				}
-
 				tmp.Template, err = os.ReadFile(filePath)
 				panicIf(err)
 
@@ -173,9 +153,10 @@ func main() {
 						testScenarios = append(testScenarios, &TestScenario{
 							Name: v.Name,
 							Test: &TestTemplate{
-								Template:  tmp.Template,
-								Name:      tmp.Name,
-								Variables: v.Variables,
+								Template:    tmp.Template,
+								Name:        tmp.Name,
+								Variables:   v.Variables,
+								Environment: v.Environment,
 							},
 						})
 					}
@@ -198,6 +179,27 @@ func main() {
 
 	//now... we can create servers from each one of them
 	for _, scenario := range testScenarios {
+		skip := false
+		for _, v := range templatesToSkip {
+			if match(v, scenario.Name) {
+				skip = true
+				break
+			}
+		}
+		if skip {
+			for _, v := range mustTest {
+				if match(v, scenario.Name) {
+					skip = false
+					break
+				}
+			}
+
+			if skip {
+				log.Printf("Skipping %s", scenario.Name)
+				continue
+			}
+		}
+
 		log.Printf("Starting test for %s", scenario.Name)
 
 		template := scenario.Test
@@ -240,6 +242,13 @@ func main() {
 				variable := prg.Variables[k]
 				variable.Value = v
 				prg.Variables[k] = variable
+			}
+		}
+
+		if template.Environment != nil && len(template.Environment) > 0 {
+			prg.Environment = pufferpanel.MetadataType{
+				Type:     cast.ToString(template.Environment["type"]),
+				Metadata: template.Environment,
 			}
 		}
 
@@ -335,7 +344,7 @@ func runServer(prg *servers.Server) (err error) {
 	err = prg.Stop()
 	panicIf(err)
 
-	return prg.GetEnvironment().WaitForMainProcessFor(time.Minute * 3)
+	return prg.GetEnvironment().WaitForMainProcessFor(time.Minute * 5)
 }
 
 func panicIf(err error) {
@@ -362,7 +371,7 @@ func wildCardToRegexp(pattern string) string {
 }
 
 func match(pattern string, value string) bool {
-	result, _ := regexp.MatchString(wildCardToRegexp(pattern), value)
+	result, _ := regexp.MatchString("^"+wildCardToRegexp(pattern)+"$", value)
 	return result
 }
 
@@ -372,12 +381,14 @@ type TestScenario struct {
 }
 
 type TestTemplate struct {
-	Template  []byte
-	Name      string
-	Variables map[string]interface{}
+	Template    []byte
+	Name        string
+	Variables   map[string]interface{}
+	Environment map[string]interface{}
 }
 
 type TestData struct {
-	Name      string                 `json:"name"`
-	Variables map[string]interface{} `json:"variables"`
+	Name        string                 `json:"name"`
+	Variables   map[string]interface{} `json:"variables"`
+	Environment map[string]interface{} `json:"environment"`
 }
