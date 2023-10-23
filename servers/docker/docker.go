@@ -163,7 +163,7 @@ func (d *Docker) Kill() (err error) {
 	return
 }
 
-func (d *Docker) IsRunning() (bool, error) {
+func (d *Docker) isRunning() (bool, error) {
 	dockerClient, err := d.getClient()
 	if err != nil {
 		return false, err

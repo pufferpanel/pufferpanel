@@ -19,7 +19,7 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 
 	d.ExecutionFunction = d.dockerExecuteAsync
 	d.BaseEnvironment.Wrapper = d.CreateWrapper()
-	d.BaseEnvironment.IsRunningFunc = d.IsRunning
+	d.BaseEnvironment.IsRunningFunc = d.isRunning
 	return d
 }
 

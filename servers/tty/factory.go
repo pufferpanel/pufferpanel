@@ -14,7 +14,7 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 	}
 	t.BaseEnvironment.ExecutionFunction = t.ttyExecuteAsync
 	t.BaseEnvironment.Wrapper = t.CreateWrapper()
-	t.BaseEnvironment.IsRunningFunc = t.IsRunning
+	t.BaseEnvironment.IsRunningFunc = t.isRunning
 	return t
 }
 

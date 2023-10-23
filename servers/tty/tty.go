@@ -127,6 +127,19 @@ func (t *tty) SendCode(code int) error {
 	return t.mainProcess.Process.Signal(syscall.Signal(code))
 }
 
+func (t *tty) isRunning() (isRunning bool, err error) {
+	isRunning = t.mainProcess != nil && t.mainProcess.Process != nil
+	if isRunning {
+		pr, pErr := os.FindProcess(t.mainProcess.Process.Pid)
+		if pr == nil || pErr != nil {
+			isRunning = false
+		} else if pr.Signal(syscall.Signal(0)) != nil {
+			isRunning = false
+		}
+	}
+	return
+}
+
 func (t *tty) handleClose(callback func(exitCode int)) {
 	err := t.mainProcess.Wait()
 

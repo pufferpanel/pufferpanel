@@ -99,7 +99,7 @@ func (s *standard) Kill() (err error) {
 	return s.mainProcess.Process.Kill()
 }
 
-func (s *standard) IsRunning() (isRunning bool, err error) {
+func (s *standard) isRunning() (isRunning bool, err error) {
 	isRunning = s.mainProcess != nil && s.mainProcess.Process != nil
 	if isRunning {
 		pr, pErr := os.FindProcess(s.mainProcess.Process.Pid)
