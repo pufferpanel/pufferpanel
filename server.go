@@ -48,18 +48,19 @@ type VariableOption struct {
 } //@name VariableOption
 
 type Execution struct {
-	Command                 interface{}       `json:"command,omitempty"`
-	StopCommand             string            `json:"stop,omitempty"`
-	Disabled                bool              `json:"disabled,omitempty"`
-	AutoStart               bool              `json:"autostart,omitempty"`
-	AutoRestartFromCrash    bool              `json:"autorecover,omitempty"`
-	AutoRestartFromGraceful bool              `json:"autorestart,omitempty"`
-	PreExecution            []MetadataType    `json:"pre,omitempty"`
-	PostExecution           []MetadataType    `json:"post,omitempty"`
-	StopCode                int               `json:"stopCode,omitempty"`
-	EnvironmentVariables    map[string]string `json:"environmentVars,omitempty"`
-	WorkingDirectory        string            `json:"workingDirectory,omitempty"`
-	Stdin                   MetadataType      `json:"stdin,omitempty"`
+	Command                 interface{}          `json:"command,omitempty"`
+	StopCommand             string               `json:"stop,omitempty"`
+	Disabled                bool                 `json:"disabled,omitempty"`
+	AutoStart               bool                 `json:"autostart,omitempty"`
+	AutoRestartFromCrash    bool                 `json:"autorecover,omitempty"`
+	AutoRestartFromGraceful bool                 `json:"autorestart,omitempty"`
+	PreExecution            []MetadataType       `json:"pre,omitempty"`
+	PostExecution           []MetadataType       `json:"post,omitempty"`
+	StopCode                int                  `json:"stopCode,omitempty"`
+	EnvironmentVariables    map[string]string    `json:"environmentVars,omitempty"`
+	WorkingDirectory        string               `json:"workingDirectory,omitempty"`
+	Stdin                   ConsoleConfiguration `json:"stdin,omitempty"`
+	Stdout                  ConsoleConfiguration `json:"stdout,omitempty"`
 } //@name Execution
 
 type Name struct {
@@ -67,8 +68,9 @@ type Name struct {
 } //@name Name
 
 type Command struct {
-	Command string `json:"command"`
-	If      string `json:"if,omitempty"`
+	Command string               `json:"command"`
+	If      string               `json:"if,omitempty"`
+	StdIn   ConsoleConfiguration `json:"stdin"`
 } //@name Command
 
 type Type struct {

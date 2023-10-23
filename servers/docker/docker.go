@@ -23,7 +23,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"time"
 )
 
 type Docker struct {
@@ -130,21 +129,20 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	if err != nil {
 		return err
 	}
+
+	if steps.StdInConfig.Type == "telnet" {
+		telnet := &pufferpanel.TelnetConnection{
+			IP:       steps.StdInConfig.IP,
+			Port:     steps.StdInConfig.Port,
+			Password: steps.StdInConfig.Password,
+		}
+		telnet.Start()
+		d.BaseEnvironment.StdInWriter = telnet
+	} else {
+		d.BaseEnvironment.StdInWriter = d.connection.Conn
+	}
+
 	return err
-}
-
-func (d *Docker) ExecuteInMainProcess(cmd string) (err error) {
-	running, err := d.IsRunning()
-	if err != nil {
-		return
-	}
-	if !running {
-		err = pufferpanel.ErrServerOffline
-		return
-	}
-
-	_, _ = d.connection.Conn.Write([]byte(cmd + "\n"))
-	return
 }
 
 func (d *Docker) Kill() (err error) {
@@ -163,10 +161,6 @@ func (d *Docker) Kill() (err error) {
 	}
 	err = dockerClient.ContainerKill(context.Background(), d.ContainerId, "SIGKILL")
 	return
-}
-
-func (d *Docker) Create() error {
-	return os.Mkdir(d.RootDirectory, 0755)
 }
 
 func (d *Docker) IsRunning() (bool, error) {
@@ -229,29 +223,6 @@ func (d *Docker) GetStats() (*pufferpanel.ServerStats, error) {
 		Memory: calculateMemoryPercent(data),
 		Cpu:    calculateCPUPercent(data),
 	}, nil
-}
-
-func (d *Docker) WaitForMainProcess() error {
-	return d.WaitForMainProcessFor(0)
-}
-
-func (d *Docker) WaitForMainProcessFor(timeout time.Duration) (err error) {
-	running, err := d.IsRunning()
-	if err != nil {
-		return
-	}
-	if running {
-		if timeout > 0 {
-			var timer = time.AfterFunc(timeout, func() {
-				err = d.Kill()
-			})
-			d.Wait.Wait()
-			timer.Stop()
-		} else {
-			d.Wait.Wait()
-		}
-	}
-	return
 }
 
 func (d *Docker) getClient() (*client.Client, error) {

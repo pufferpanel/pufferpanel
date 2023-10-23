@@ -191,10 +191,10 @@ func (p *Server) Start() error {
 		return err
 	}
 
-	var command string
+	var command pufferpanel.Command
 
 	if c, ok := p.Execution.Command.(string); ok {
-		command = c
+		command = pufferpanel.Command{Command: c}
 	} else {
 		//we have a list
 		var possibleCommands []pufferpanel.Command
@@ -229,24 +229,19 @@ func (p *Server) Start() error {
 			}
 		}
 
-		command = commandToRun.Command
+		command = commandToRun
 
 		//if no command, use default
-		if command == "" {
-			command = defaultCommand.Command
+		if command.Command == "" {
+			command = defaultCommand
 		}
 	}
 
-	/*
-		if command == ""  {
-			err = pufferpanel.ErrNoCommand
-			p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
-			p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
-			return err
-		}
-	*/
+	if command.StdIn.Type == "" {
+		command.StdIn = p.Execution.Stdin
+	}
 
-	commandLine := pufferpanel.ReplaceTokens(command, data)
+	commandLine := pufferpanel.ReplaceTokens(command.Command, data)
 	if p.Execution.WorkingDirectory == "${rootDir}" {
 		p.Execution.WorkingDirectory = ""
 	}
@@ -266,6 +261,7 @@ func (p *Server) Start() error {
 		WorkingDirectory: workDir,
 		Variables:        p.DataToMap(),
 		Callback:         p.afterExit,
+		StdInConfig:      command.StdIn,
 	})
 
 	if err != nil {
@@ -275,7 +271,7 @@ func (p *Server) Start() error {
 	}
 
 	//server started, now kick off our special "hook" for the console
-	consoleConfig := p.GetEnvironment().GetStdOutConfiguration()
+	consoleConfig := p.Execution.Stdout
 	switch consoleConfig.Type {
 	case "file":
 		{

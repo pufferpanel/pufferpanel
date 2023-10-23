@@ -39,9 +39,17 @@ func main() {
 	var gitRef string
 	var skipStr string
 	var requiredStr string
+	var templateFolder string
+	var deleteTemp bool
+	var workingDir string
+	var reuse bool
 	flag.StringVar(&gitRef, "gitref", "refs/heads/v3", "")
 	flag.StringVar(&skipStr, "skip", "", "")
 	flag.StringVar(&requiredStr, "required", "", "")
+	flag.StringVar(&templateFolder, "path", "", "")
+	flag.BoolVar(&deleteTemp, "delete", true, "")
+	flag.StringVar(&workingDir, "workDir", "", "")
+	flag.BoolVar(&reuse, "reuse", false, "")
 	flag.Parse()
 
 	if skipStr != "" {
@@ -51,24 +59,28 @@ func main() {
 		mustTest = strings.Split(requiredStr, ",")
 	}
 
-	tmpDir, err := os.MkdirTemp("", "puffertemplatetest")
-	panicIf(err)
-	defer os.RemoveAll(tmpDir)
+	var err error
+	if workingDir == "" {
+		workingDir, err = os.MkdirTemp("", "puffertemplatetest")
+		panicIf(err)
+	}
+
+	if deleteTemp {
+		defer os.RemoveAll(workingDir)
+	}
 
 	config.DatabaseDialect.Set("sqlite3", false)
 	config.DatabaseUrl.Set("file:test.db?cache=shared&mode=memory", false)
 	config.ConsoleForward.Set(true, false)
-	config.ServersFolder.Set(filepath.Join(tmpDir, "servers"), false)
-	config.BinariesFolder.Set(filepath.Join(tmpDir, "binaries"), false)
-	config.CacheFolder.Set(filepath.Join(tmpDir, "cache"), false)
-	config.LogsFolder.Set(filepath.Join(tmpDir, "logs"), false)
-	templateFolder := filepath.Join(tmpDir, "templates")
+	config.ServersFolder.Set(filepath.Join(workingDir, "servers"), false)
+	config.BinariesFolder.Set(filepath.Join(workingDir, "binaries"), false)
+	config.CacheFolder.Set(filepath.Join(workingDir, "cache"), false)
+	config.LogsFolder.Set(filepath.Join(workingDir, "logs"), false)
 
 	_ = os.MkdirAll(config.ServersFolder.Value(), 0755)
 	_ = os.MkdirAll(config.BinariesFolder.Value(), 0755)
 	_ = os.MkdirAll(config.CacheFolder.Value(), 0755)
 	_ = os.MkdirAll(config.LogsFolder.Value(), 0755)
-	_ = os.MkdirAll(templateFolder, 0755)
 
 	newPath := os.Getenv("PATH")
 	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
@@ -84,12 +96,18 @@ func main() {
 	//panicIf(err)
 
 	//get all templates
-	log.Printf("Cloning template repo")
-	_, err = git.PlainClone(templateFolder, false, &git.CloneOptions{
-		URL:           "https://github.com/PufferPanel/templates",
-		ReferenceName: plumbing.ReferenceName(gitRef),
-	})
-	panicIf(err)
+	if templateFolder == "" {
+		templateFolder = filepath.Join(workingDir, "templates")
+		err = os.MkdirAll(templateFolder, 0755)
+		panicIf(err)
+
+		log.Printf("Cloning template repo")
+		_, err = git.PlainClone(templateFolder, false, &git.CloneOptions{
+			URL:           "https://github.com/PufferPanel/templates",
+			ReferenceName: plumbing.ReferenceName(gitRef),
+		})
+		panicIf(err)
+	}
 
 	var templateFolders []os.DirEntry
 	templateFolders, err = os.ReadDir(templateFolder)
@@ -225,6 +243,12 @@ func main() {
 			}
 		}
 
+		if reuse {
+			_ = os.Remove(filepath.Join(config.ServersFolder.Value(), prg.Identifier+".json"))
+		} else {
+			_ = os.RemoveAll(filepath.Join(config.ServersFolder.Value(), prg.Identifier))
+		}
+
 		prg, err = servers.Create(prg)
 		panicIf(err)
 
@@ -237,7 +261,7 @@ func main() {
 		running, err := prg.IsRunning()
 		panicIf(err)
 
-		if !running {
+		if running {
 			panic(errors.New("server is still running"))
 		}
 

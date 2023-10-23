@@ -11,7 +11,16 @@ type OperationFactory struct {
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	cmds := cast.ToStringSlice(op.OperationArgs["commands"])
-	return Command{Commands: cmds, Env: op.EnvironmentVariables}, nil
+
+	var stdIn pufferpanel.ConsoleConfiguration
+	if field, exists := op.OperationArgs["stdin"]; exists {
+		err := pufferpanel.UnmarshalTo(field, stdIn)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return Command{Commands: cmds, Env: op.EnvironmentVariables, StdIn: stdIn}, nil
 }
 
 func (of OperationFactory) Key() string {

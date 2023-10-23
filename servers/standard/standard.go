@@ -1,13 +1,13 @@
 package standard
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
-	"io"
 	"os"
 	"os/exec"
 	"path"
@@ -20,7 +20,6 @@ import (
 type standard struct {
 	*pufferpanel.BaseEnvironment
 	mainProcess *exec.Cmd
-	stdInWriter io.Writer
 }
 
 func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
@@ -49,13 +48,24 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 
 	s.mainProcess.Stdout = s.Wrapper
 	s.mainProcess.Stderr = s.Wrapper
-	pipe, err := s.mainProcess.StdinPipe()
-	if err != nil {
-		s.Wait.Done()
-		return
-	}
 
-	s.stdInWriter = pipe
+	if steps.StdInConfig.Type == "telnet" {
+		telnet := &pufferpanel.TelnetConnection{
+			IP:       steps.StdInConfig.IP,
+			Port:     steps.StdInConfig.Port,
+			Password: steps.StdInConfig.Password,
+		}
+		telnet.Start()
+		s.BaseEnvironment.StdInWriter = telnet
+	} else {
+		pipe, err := s.mainProcess.StdinPipe()
+		if err != nil {
+			s.Wait.Done()
+			return err
+		}
+
+		s.BaseEnvironment.StdInWriter = pipe
+	}
 
 	s.Log(logging.Info, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 	s.DisplayToConsole(true, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
@@ -75,20 +85,6 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	}
 
 	go s.handleClose(steps.Callback)
-	return
-}
-
-func (s *standard) ExecuteInMainProcess(cmd string) (err error) {
-	running, err := s.IsRunning()
-	if err != nil {
-		return err
-	}
-	if !running {
-		err = pufferpanel.ErrServerOffline
-		return
-	}
-	stdIn := s.stdInWriter
-	_, err = io.WriteString(stdIn, cmd+"\n")
 	return
 }
 
@@ -141,33 +137,6 @@ func (s *standard) GetStats() (*pufferpanel.ServerStats, error) {
 	}, nil
 }
 
-func (s *standard) Create() error {
-	return os.Mkdir(s.RootDirectory, 0755)
-}
-
-func (s *standard) WaitForMainProcess() error {
-	return s.WaitForMainProcessFor(0)
-}
-
-func (s *standard) WaitForMainProcessFor(timeout time.Duration) (err error) {
-	running, err := s.IsRunning()
-	if err != nil {
-		return
-	}
-	if running {
-		if timeout > 0 {
-			var timer = time.AfterFunc(timeout, func() {
-				err = s.Kill()
-			})
-			s.Wait.Wait()
-			timer.Stop()
-		} else {
-			s.Wait.Wait()
-		}
-	}
-	return
-}
-
 func (s *standard) SendCode(code int) error {
 	running, err := s.IsRunning()
 
@@ -186,7 +155,12 @@ func (s *standard) handleClose(callback func(exitCode int)) {
 
 	var exitCode int
 	if s.mainProcess == nil || s.mainProcess.ProcessState == nil || err != nil {
-		exitCode = 1
+		var psErr *exec.ExitError
+		if errors.As(err, &psErr) {
+			exitCode = psErr.ExitCode()
+		} else {
+			exitCode = 1
+		}
 	} else {
 		exitCode = s.mainProcess.ProcessState.ExitCode()
 	}
@@ -197,7 +171,6 @@ func (s *standard) handleClose(callback func(exitCode int)) {
 	}
 
 	s.mainProcess = nil
-	s.stdInWriter = nil
 
 	s.Wait.Done()
 

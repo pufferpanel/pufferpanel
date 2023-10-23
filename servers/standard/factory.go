@@ -11,7 +11,8 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: ef.Key(), ServerId: id},
 	}
 	s.BaseEnvironment.ExecutionFunction = s.standardExecuteAsync
-	s.BaseEnvironment.WaitFunction = s.WaitForMainProcess
+	s.BaseEnvironment.Wrapper = s.CreateWrapper()
+	s.BaseEnvironment.IsRunningFunc = s.IsRunning
 	return s
 }
 

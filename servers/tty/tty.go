@@ -22,7 +22,6 @@ import (
 type tty struct {
 	*pufferpanel.BaseEnvironment
 	mainProcess *exec.Cmd
-	stdInWriter io.Writer
 }
 
 func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
@@ -62,27 +61,23 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 		return
 	}
 
-	t.stdInWriter = processTty
+	if steps.StdInConfig.Type == "telnet" {
+		telnet := &pufferpanel.TelnetConnection{
+			IP:       steps.StdInConfig.IP,
+			Port:     steps.StdInConfig.Port,
+			Password: steps.StdInConfig.Password,
+		}
+		telnet.Start()
+		t.BaseEnvironment.StdInWriter = telnet
+	} else {
+		t.BaseEnvironment.StdInWriter = processTty
+	}
 
 	go func(proxy io.Writer) {
 		_, _ = io.Copy(proxy, processTty)
 	}(t.Wrapper)
 
 	go t.handleClose(steps.Callback)
-	return
-}
-
-func (t *tty) ExecuteInMainProcess(cmd string) (err error) {
-	running, err := t.IsRunning()
-	if err != nil {
-		return err
-	}
-	if !running {
-		err = pufferpanel.ErrServerOffline
-		return
-	}
-	stdIn := t.stdInWriter
-	_, err = io.WriteString(stdIn, cmd+"\n")
 	return
 }
 
@@ -95,19 +90,6 @@ func (t *tty) Kill() (err error) {
 		return
 	}
 	return t.mainProcess.Process.Kill()
-}
-
-func (t *tty) IsRunning() (isRunning bool, err error) {
-	isRunning = t.mainProcess != nil && t.mainProcess.Process != nil
-	if isRunning {
-		pr, pErr := os.FindProcess(t.mainProcess.Process.Pid)
-		if pr == nil || pErr != nil {
-			isRunning = false
-		} else if pr.Signal(syscall.Signal(0)) != nil {
-			isRunning = false
-		}
-	}
-	return
 }
 
 func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
@@ -135,33 +117,6 @@ func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
 	}, nil
 }
 
-func (t *tty) Create() error {
-	return os.Mkdir(t.RootDirectory, 0755)
-}
-
-func (t *tty) WaitForMainProcess() error {
-	return t.WaitForMainProcessFor(0)
-}
-
-func (t *tty) WaitForMainProcessFor(timeout time.Duration) error {
-	running, err := t.IsRunning()
-	if err != nil {
-		return err
-	}
-	if running {
-		if timeout > 0 {
-			var timer = time.AfterFunc(timeout, func() {
-				err = t.Kill()
-			})
-			t.Wait.Wait()
-			timer.Stop()
-		} else {
-			t.Wait.Wait()
-		}
-	}
-	return err
-}
-
 func (t *tty) SendCode(code int) error {
 	running, err := t.IsRunning()
 
@@ -174,6 +129,8 @@ func (t *tty) SendCode(code int) error {
 
 func (t *tty) handleClose(callback func(exitCode int)) {
 	err := t.mainProcess.Wait()
+
+	_ = t.BaseEnvironment.StdInWriter.Close()
 
 	var exitCode int
 	if t.mainProcess.ProcessState == nil || err != nil {

@@ -66,8 +66,6 @@ type Environment interface {
 
 	GetLastExitCode() int
 
-	GetStdOutConfiguration() ConsoleConfiguration
-
 	GetWrapper() io.Writer
 
 	GetStatsTracker() *Tracker
@@ -80,21 +78,23 @@ type BaseEnvironment struct {
 	ConsoleBuffer     *MemoryCache         `json:"-"`
 	Wait              *sync.WaitGroup      `json:"-"`
 	ExecutionFunction ExecutionFunction    `json:"-"`
-	WaitFunction      func() (err error)   `json:"-"`
 	ServerId          string               `json:"-"`
 	LastExitCode      int                  `json:"-"`
-	StdOutConfig      ConsoleConfiguration `json:"stdout,omitempty"`
-	StdInConfig       ConsoleConfiguration `json:"stdin,omitempty"`
 	Wrapper           io.Writer            `json:"-"` //our proxy back to the main
+	StdInWriter       io.WriteCloser       `json:"-"`
 	ConsoleTracker    *Tracker             `json:"-"`
 	StatusTracker     *Tracker             `json:"-"`
 	StatsTracker      *Tracker             `json:"-"`
 	Installing        bool                 `json:"-"`
+	IsRunningFunc     func() (bool, error) `json:"-"`
 }
 
 type ConsoleConfiguration struct {
-	Type string `json:"type"`
-	File string `json:"file,omitempty"`
+	Type     string `json:"type"`
+	File     string `json:"file,omitempty"`
+	IP       string `json:"ip,omitempty"`
+	Port     string `json:"port,omitempty"`
+	Password string `json:"password,omitempty"`
 }
 
 type ExecutionData struct {
@@ -104,6 +104,7 @@ type ExecutionData struct {
 	WorkingDirectory string
 	Variables        map[string]interface{}
 	Callback         func(exitCode int)
+	StdInConfig      ConsoleConfiguration
 }
 
 type ExecutionFunction func(steps ExecutionData) (err error)
@@ -114,10 +115,6 @@ func (e *BaseEnvironment) Execute(steps ExecutionData) error {
 		return err
 	}
 	return e.WaitForMainProcess()
-}
-
-func (e *BaseEnvironment) WaitForMainProcess() (err error) {
-	return e.WaitFunction()
 }
 
 func (e *BaseEnvironment) ExecuteAsync(steps ExecutionData) (err error) {
@@ -180,6 +177,37 @@ func (e *BaseEnvironment) Delete() (err error) {
 	return
 }
 
+func (e *BaseEnvironment) Create() error {
+	err := os.Mkdir(e.RootDirectory, 0755)
+	if os.IsExist(err) {
+		return nil
+	}
+	return err
+}
+
+func (e *BaseEnvironment) WaitForMainProcess() error {
+	return e.WaitForMainProcessFor(0)
+}
+
+func (e *BaseEnvironment) WaitForMainProcessFor(timeout time.Duration) (err error) {
+	running, err := e.IsRunning()
+	if err != nil {
+		return
+	}
+	if running {
+		if timeout > 0 {
+			var timer = time.AfterFunc(timeout, func() {
+				err = e.Kill()
+			})
+			e.Wait.Wait()
+			timer.Stop()
+		} else {
+			e.Wait.Wait()
+		}
+	}
+	return
+}
+
 func (e *BaseEnvironment) CreateWrapper() io.Writer {
 	if config.ConsoleForward.Value() {
 		return io.MultiWriter(newLogger(e.ServerId).Writer(), e.ConsoleBuffer, e.ConsoleTracker)
@@ -193,10 +221,6 @@ func (e *BaseEnvironment) GetBase() *BaseEnvironment {
 
 func (e *BaseEnvironment) GetLastExitCode() int {
 	return e.LastExitCode
-}
-
-func (e *BaseEnvironment) GetStdOutConfiguration() ConsoleConfiguration {
-	return e.StdOutConfig
 }
 
 func (e *BaseEnvironment) GetWrapper() io.Writer {
@@ -215,6 +239,23 @@ func (e *BaseEnvironment) IsInstalling() bool {
 func (e *BaseEnvironment) SetInstalling(flag bool) {
 	e.Installing = flag
 	_ = e.StatusTracker.WriteMessage(&messages.Status{Installing: flag})
+}
+
+func (e *BaseEnvironment) ExecuteInMainProcess(cmd string) (err error) {
+	running, err := e.IsRunning()
+	if err != nil {
+		return err
+	}
+	if !running {
+		err = ErrServerOffline
+		return
+	}
+	_, err = io.WriteString(e.StdInWriter, cmd+"\n")
+	return
+}
+
+func (e *BaseEnvironment) IsRunning() (isRunning bool, err error) {
+	return e.IsRunningFunc()
 }
 
 func newLogger(prefix string) *log.Logger {

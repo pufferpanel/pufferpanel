@@ -183,7 +183,7 @@ func downloadMetadata(env pufferpanel.Environment) error {
 }
 
 func walkManifest(folder, filename string) error {
-	file, err := os.Open(filename)
+	file, err := os.Open(filepath.Join(folder, ".manifest", filename))
 	defer pufferpanel.Close(file)
 	if err != nil {
 		return err
@@ -197,10 +197,13 @@ func walkManifest(folder, filename string) error {
 			continue
 		}
 		parts := strings.Fields(line)
+		if len(parts) < 5 || parts[0] == "Size" {
+			continue
+		}
 		if len(parts) > 5 {
 			//the filename at the end has spaces, we need to consolidate
 			parts[4] = strings.Join(parts[5:], " ")
-			parts = parts[0:4]
+			parts = parts[0:5]
 		}
 
 		//we will only work on 0 files, because this mean no other flags were told
