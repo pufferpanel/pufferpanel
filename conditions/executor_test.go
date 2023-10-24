@@ -109,6 +109,16 @@ func TestResolveIf(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "string condition with variable true using 's",
+			args: args{
+				condition: "loader == 'vanilla'",
+				data:      map[string]interface{}{"loader": "vanilla"},
+				extraCels: nil,
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
 			name: "string condition with variable false",
 			args: args{
 				condition: "loader == \"vanilla\"",

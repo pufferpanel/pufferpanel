@@ -165,10 +165,34 @@ func main() {
 					panicIf(err)
 				} else {
 					//no data json, which means it's a single test
-					testScenarios = append(testScenarios, &TestScenario{
-						Name: tmp.Name,
-						Test: tmp,
-					})
+					//but, each template could support envs, so auto-
+
+					template := pufferpanel.Server{}
+					err = json.NewDecoder(bytes.NewReader(tmp.Template)).Decode(&template)
+					panicIf(err)
+
+					if len(template.SupportedEnvironments) > 0 {
+						for _, v := range template.SupportedEnvironments {
+							scenario := &TestScenario{
+								Name: tmp.Name,
+								Test: tmp,
+							}
+							if v.Type != "host" {
+								scenario.Name = scenario.Name + "-" + v.Type
+							}
+
+							t := v.Metadata
+							t["type"] = v.Type
+							scenario.Test.Environment = t
+
+							testScenarios = append(testScenarios, scenario)
+						}
+					} else {
+						testScenarios = append(testScenarios, &TestScenario{
+							Name: tmp.Name,
+							Test: tmp,
+						})
+					}
 				}
 			}
 		}
@@ -204,7 +228,7 @@ func main() {
 
 		template := scenario.Test
 
-		if strings.HasSuffix(template.Name, "-docker") {
+		if strings.HasSuffix(scenario.Name, "-docker") {
 			//kill off any existing docker containers
 			if docker == nil {
 				docker, err = client.NewClientWithOpts(client.FromEnv)
@@ -217,7 +241,7 @@ func main() {
 			}
 
 			opts.All = true
-			opts.Filters.Add("name", template.Name)
+			opts.Filters.Add("name", scenario.Name)
 
 			existingContainers, err := docker.ContainerList(ctx, opts)
 			panicIf(err)
@@ -235,7 +259,7 @@ func main() {
 		prg := servers.CreateProgram()
 		err = json.NewDecoder(buf).Decode(prg)
 		panicIf(err)
-		prg.Identifier = strings.ReplaceAll(template.Name, "+", "")
+		prg.Identifier = strings.ReplaceAll(scenario.Name, "+", "")
 
 		if template.Variables != nil {
 			for k, v := range template.Variables {
