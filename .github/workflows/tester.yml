@@ -68,4 +68,5 @@ jobs:
         run: |
           docker pull ghcr.io/${{ env.REPO }}:templatetester
           docker rm -f templatetester || true
+          echo "::add-mask::${{ secrets.RUNNER_IP }}"
           docker run --rm --name templatetester -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/${{ env.REPO }}:templatetester
