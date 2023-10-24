@@ -55,9 +55,11 @@ func main() {
 
 	if skipStr != "" {
 		templatesToSkip = strings.Split(skipStr, ",")
+		fmt.Printf("Skip rules: %s\n", strings.Join(templatesToSkip, " "))
 	}
 	if requiredStr != "" {
 		mustTest = strings.Split(requiredStr, ",")
+		fmt.Printf("Require rules: %s\n", strings.Join(mustTest, " "))
 	}
 
 	var err error
@@ -294,7 +296,7 @@ func main() {
 		prg, err = servers.Create(prg)
 		panicIf(err)
 
-		//err = prg.Install()
+		err = prg.Install()
 		panicIf(err)
 
 		err = runServer(prg)

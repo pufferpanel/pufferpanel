@@ -37,5 +37,5 @@ RUN go build -v -buildvcs=false -tags "docker host" -o /home/pufferpanel/templat
 
 WORKDIR /home/pufferpanel
 
-ENTRYPOINT "./templatetester"
+ENTRYPOINT ["./templatetester"]
 CMD []

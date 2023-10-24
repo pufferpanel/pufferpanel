@@ -78,4 +78,4 @@ jobs:
           docker pull ghcr.io/${{ env.REPO }}:templatetester
           docker rm -f templatetester || true
           echo "::add-mask::${{ secrets.RUNNER_IP }}"
-          docker run --rm --name templatetester --network host -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/${{ env.REPO }}:templatetester --skip "${{ inputs.skip }}" --require "${{ inputs.require }}"
+          docker run --rm --name templatetester --network host -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/${{ env.REPO }}:templatetester --skip=${{ inputs.skip }} --require=${{ inputs.require }}
