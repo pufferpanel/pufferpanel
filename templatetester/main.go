@@ -173,17 +173,30 @@ func main() {
 
 					if len(template.SupportedEnvironments) > 0 {
 						for _, v := range template.SupportedEnvironments {
+							z := &TestTemplate{
+								Template:    tmp.Template,
+								Name:        tmp.Name,
+								Environment: make(map[string]interface{}),
+								Variables:   make(map[string]interface{}),
+							}
+
+							for r, p := range template.Variables {
+								z.Variables[r] = p
+							}
+
 							scenario := &TestScenario{
-								Name: tmp.Name,
-								Test: tmp,
+								Name: z.Name,
+								Test: z,
 							}
 							if v.Type != "host" {
 								scenario.Name = scenario.Name + "-" + v.Type
 							}
 
-							t := v.Metadata
-							t["type"] = v.Type
-							scenario.Test.Environment = t
+							for r, p := range v.Metadata {
+								scenario.Test.Environment[r] = p
+							}
+
+							scenario.Test.Environment["type"] = v.Type
 
 							testScenarios = append(testScenarios, scenario)
 						}
