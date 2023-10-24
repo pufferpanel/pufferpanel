@@ -146,6 +146,7 @@ func downloadBinaries(rootBinaryFolder string) error {
 		return err
 	}
 
+	_ = os.Chmod(filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary), 0755)
 	return nil
 }
 
@@ -174,10 +175,7 @@ func downloadMetadata(env pufferpanel.Environment) error {
 	}
 
 	for source, target := range RenameFolders {
-		err = os.Rename(filepath.Join(env.GetRootDirectory(), ".steam", source), filepath.Join(env.GetRootDirectory(), ".steam", target))
-		if err != nil {
-			return err
-		}
+		_ = os.Rename(filepath.Join(env.GetRootDirectory(), ".steam", source), filepath.Join(env.GetRootDirectory(), ".steam", target))
 	}
 	return err
 }

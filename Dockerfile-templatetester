@@ -6,13 +6,16 @@ FROM ubuntu:20.04 AS builder
 ENV CGOENABLED=1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="$PATH:/usr/local/go/bin"
+ENV NODE_MAJOR=20
 
 RUN apt-get update && \
     apt-get install -y dirmngr gnupg apt-transport-https ca-certificates software-properties-common curl && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
     apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-focal main' && \
     dpkg --add-architecture i386 && \
-    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
     apt-get update && \
     apt-get install -y wget build-essential zip unzip tar git xz-utils nodejs lib32gcc1 libstdc++6 mono-complete&& \
     wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz && \
