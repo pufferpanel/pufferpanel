@@ -46,7 +46,7 @@ func main() {
 	var reuse bool
 	flag.StringVar(&gitRef, "gitref", "refs/heads/v3", "")
 	flag.StringVar(&skipStr, "skip", "", "")
-	flag.StringVar(&requiredStr, "required", "", "")
+	flag.StringVar(&requiredStr, "require", "", "")
 	flag.StringVar(&templateFolder, "path", "", "")
 	flag.BoolVar(&deleteTemp, "delete", true, "")
 	flag.StringVar(&workingDir, "workDir", "", "")
