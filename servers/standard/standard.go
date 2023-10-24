@@ -153,6 +153,8 @@ func (s *standard) handleClose(callback func(exitCode int)) {
 	msg := messages.Status{Running: false}
 	_ = s.StatusTracker.WriteMessage(msg)
 
+	_ = s.StdInWriter.Close()
+
 	var exitCode int
 	if s.mainProcess == nil || s.mainProcess.ProcessState == nil || err != nil {
 		var psErr *exec.ExitError

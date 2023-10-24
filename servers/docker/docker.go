@@ -114,6 +114,8 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		msg := messages.Status{Running: false, Installing: d.IsInstalling()}
 		_ = d.StatusTracker.WriteMessage(msg)
 
+		_ = d.StdInWriter.Close()
+
 		if steps.Callback != nil {
 			steps.Callback(exitCode)
 		}

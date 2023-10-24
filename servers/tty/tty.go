@@ -143,7 +143,7 @@ func (t *tty) isRunning() (isRunning bool, err error) {
 func (t *tty) handleClose(callback func(exitCode int)) {
 	err := t.mainProcess.Wait()
 
-	_ = t.BaseEnvironment.StdInWriter.Close()
+	_ = t.StdInWriter.Close()
 
 	var exitCode int
 	if t.mainProcess.ProcessState == nil || err != nil {
@@ -169,6 +169,8 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 
 	msg := messages.Status{Running: false, Installing: t.IsInstalling()}
 	_ = t.StatusTracker.WriteMessage(msg)
+
+	_ = t.StdInWriter.Close()
 
 	if callback != nil {
 		callback(exitCode)
