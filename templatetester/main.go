@@ -180,10 +180,6 @@ func main() {
 								Variables:   make(map[string]interface{}),
 							}
 
-							for r, p := range template.Variables {
-								z.Variables[r] = p
-							}
-
 							scenario := &TestScenario{
 								Name: z.Name,
 								Test: z,
@@ -298,7 +294,7 @@ func main() {
 		prg, err = servers.Create(prg)
 		panicIf(err)
 
-		err = prg.Install()
+		//err = prg.Install()
 		panicIf(err)
 
 		err = runServer(prg)
