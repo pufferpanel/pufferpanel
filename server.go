@@ -88,6 +88,7 @@ type Group struct {
 	Display     string   `json:"display"`
 	Description string   `json:"description"`
 	Order       int      `json:"order"`
+	If          string   `json:"if,omitempty"`
 } //@name Group
 
 func (s *Server) CopyFrom(replacement *Server) {
