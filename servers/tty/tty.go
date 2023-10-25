@@ -3,6 +3,7 @@
 package tty
 
 import (
+	"errors"
 	"fmt"
 	"github.com/creack/pty"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -81,7 +82,7 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	return
 }
 
-func (t *tty) Kill() (err error) {
+func (t *tty) kill() (err error) {
 	running, err := t.IsRunning()
 	if err != nil {
 		return
@@ -147,7 +148,12 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 
 	var exitCode int
 	if t.mainProcess.ProcessState == nil || err != nil {
-		exitCode = 1
+		var psErr *exec.ExitError
+		if errors.As(err, &psErr) {
+			exitCode = psErr.ExitCode()
+		} else {
+			exitCode = 1
+		}
 	} else {
 		exitCode = t.mainProcess.ProcessState.ExitCode()
 	}

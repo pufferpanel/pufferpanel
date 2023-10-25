@@ -12,9 +12,12 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 	t := &tty{
 		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: ef.Key(), ServerId: id},
 	}
-	t.BaseEnvironment.ExecutionFunction = t.ttyExecuteAsync
+
 	t.BaseEnvironment.Wrapper = t.CreateWrapper()
+	t.BaseEnvironment.ExecutionFunction = t.ttyExecuteAsync
 	t.BaseEnvironment.IsRunningFunc = t.isRunning
+	t.BaseEnvironment.KillFunc = t.Kill
+
 	return t
 }
 

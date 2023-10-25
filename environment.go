@@ -87,6 +87,7 @@ type BaseEnvironment struct {
 	StatsTracker      *Tracker             `json:"-"`
 	Installing        bool                 `json:"-"`
 	IsRunningFunc     func() (bool, error) `json:"-"`
+	KillFunc          func() error         `json:"-"`
 }
 
 type ConsoleConfiguration struct {
@@ -256,6 +257,10 @@ func (e *BaseEnvironment) ExecuteInMainProcess(cmd string) (err error) {
 
 func (e *BaseEnvironment) IsRunning() (isRunning bool, err error) {
 	return e.IsRunningFunc()
+}
+
+func (e *BaseEnvironment) Kill() error {
+	return e.KillFunc()
 }
 
 func newLogger(prefix string) *log.Logger {

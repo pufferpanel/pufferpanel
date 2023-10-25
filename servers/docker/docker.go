@@ -147,7 +147,7 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	return err
 }
 
-func (d *Docker) Kill() (err error) {
+func (d *Docker) kill() (err error) {
 	running, err := d.IsRunning()
 	if err != nil {
 		return err

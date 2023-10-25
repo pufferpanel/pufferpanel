@@ -88,7 +88,7 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	return
 }
 
-func (s *standard) Kill() (err error) {
+func (s *standard) kill() (err error) {
 	running, err := s.IsRunning()
 	if err != nil {
 		return err
