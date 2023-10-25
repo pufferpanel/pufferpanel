@@ -1,0 +1,55 @@
+This tool is designed to reformat the templates in our main repo so they all follow a consistent pattern.
+
+Currently, our standard order is:
+
+- type
+- description
+- data
+    - type
+    - value
+    - display
+    - description
+    - required
+    - internal
+    - userEdit
+    - options
+- groups
+    - if
+    - display
+    - description
+    - variables
+    - order
+- install
+    - if
+    - type
+    - other fields
+- run
+    - command
+        - if
+        - command
+    - stop
+    - stopCode
+    - pre
+        - same as install
+    - post
+        - same as install
+    - environment variables
+    - working directory
+    - stdin
+        - type
+        - other fields
+    - stdout
+        - type
+        - other fields
+    - autostart
+    - autorecover
+    - autorestart
+- environment
+    - type
+    - other fields
+- supportedEnvironments
+    - same as environment
+- requirements
+    - os
+    - arch
+    - binaries

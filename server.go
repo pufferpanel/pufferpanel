@@ -12,32 +12,32 @@ import (
 
 type Server struct {
 	Type
-	Variables             map[string]Variable `json:"data,omitempty"`
-	Display               string              `json:"display,omitempty"`
-	Environment           MetadataType        `json:"environment,omitempty"`
-	SupportedEnvironments []MetadataType      `json:"supportedEnvironments,omitempty"`
-	Installation          []MetadataType      `json:"install,omitempty"`
-	Uninstallation        []MetadataType      `json:"uninstall,omitempty"`
-	Identifier            string              `json:"id,omitempty"`
-	Execution             Execution           `json:"run,omitempty"`
-	Requirements          Requirements        `json:"requirements,omitempty"`
-	Groups                []Group             `json:"groups,omitempty"`
+	Identifier            string                    `json:"id,omitempty"`
+	Display               string                    `json:"display,omitempty"`
+	Variables             map[string]Variable       `json:"data,omitempty"`
+	Groups                []Group                   `json:"groups,omitempty"`
+	Installation          []ConditionalMetadataType `json:"install,omitempty"`
+	Uninstallation        []ConditionalMetadataType `json:"uninstall,omitempty"`
+	Execution             Execution                 `json:"run,omitempty"`
+	Environment           MetadataType              `json:"environment,omitempty"`
+	SupportedEnvironments []MetadataType            `json:"supportedEnvironments,omitempty"`
+	Requirements          Requirements              `json:"requirements,omitempty"`
 } //@name ServerDefinition
 
 type Task struct {
-	Name         string         `json:"name"`
-	CronSchedule string         `json:"cronSchedule,omitempty"`
-	Operations   []MetadataType `json:"operations" binding:"required"`
-	Description  string         `json:"description,omitempty"`
+	Name         string                    `json:"name"`
+	CronSchedule string                    `json:"cronSchedule,omitempty"`
+	Description  string                    `json:"description,omitempty"`
+	Operations   []ConditionalMetadataType `json:"operations" binding:"required"`
 } //@name Task
 
 type Variable struct {
 	Type
-	Description  string           `json:"desc,omitempty"`
-	Display      string           `json:"display,omitempty"`
-	Internal     bool             `json:"internal,omitempty"`
-	Required     bool             `json:"required,omitempty"`
 	Value        interface{}      `json:"value,omitempty"`
+	Display      string           `json:"display,omitempty"`
+	Description  string           `json:"desc,omitempty"`
+	Required     bool             `json:"required,omitempty"`
+	Internal     bool             `json:"internal,omitempty"`
 	UserEditable bool             `json:"userEdit,omitempty"`
 	Options      []VariableOption `json:"options,omitempty"`
 } //@name Variable
@@ -48,19 +48,18 @@ type VariableOption struct {
 } //@name VariableOption
 
 type Execution struct {
-	Command                 interface{}          `json:"command,omitempty"`
-	StopCommand             string               `json:"stop,omitempty"`
-	Disabled                bool                 `json:"disabled,omitempty"`
-	AutoStart               bool                 `json:"autostart,omitempty"`
-	AutoRestartFromCrash    bool                 `json:"autorecover,omitempty"`
-	AutoRestartFromGraceful bool                 `json:"autorestart,omitempty"`
-	PreExecution            []MetadataType       `json:"pre,omitempty"`
-	PostExecution           []MetadataType       `json:"post,omitempty"`
-	StopCode                int                  `json:"stopCode,omitempty"`
-	EnvironmentVariables    map[string]string    `json:"environmentVars,omitempty"`
-	WorkingDirectory        string               `json:"workingDirectory,omitempty"`
-	Stdin                   ConsoleConfiguration `json:"stdin,omitempty"`
-	Stdout                  ConsoleConfiguration `json:"stdout,omitempty"`
+	Command                 interface{}               `json:"command,omitempty"`
+	StopCommand             string                    `json:"stop,omitempty"`
+	StopCode                int                       `json:"stopCode,omitempty"`
+	PreExecution            []ConditionalMetadataType `json:"pre,omitempty"`
+	PostExecution           []ConditionalMetadataType `json:"post,omitempty"`
+	EnvironmentVariables    map[string]string         `json:"environmentVars,omitempty"`
+	WorkingDirectory        string                    `json:"workingDirectory,omitempty"`
+	Stdin                   ConsoleConfiguration      `json:"stdin,omitempty"`
+	Stdout                  ConsoleConfiguration      `json:"stdout,omitempty"`
+	AutoStart               bool                      `json:"autostart,omitempty"`
+	AutoRestartFromCrash    bool                      `json:"autorecover,omitempty"`
+	AutoRestartFromGraceful bool                      `json:"autorestart,omitempty"`
 } //@name Execution
 
 type Name struct {
@@ -68,8 +67,8 @@ type Name struct {
 } //@name Name
 
 type Command struct {
-	Command string               `json:"command"`
 	If      string               `json:"if,omitempty"`
+	Command string               `json:"command"`
 	StdIn   ConsoleConfiguration `json:"stdin"`
 } //@name Command
 
@@ -78,17 +77,17 @@ type Type struct {
 } //@name Type
 
 type Requirements struct {
-	Binaries []string `json:"binaries,omitempty"`
 	OS       string   `json:"os,omitempty"`
 	Arch     string   `json:"arch,omitempty"`
+	Binaries []string `json:"binaries,omitempty"`
 } //@name Requirements
 
 type Group struct {
-	Variables   []string `json:"variables"`
+	If          string   `json:"if,omitempty"`
 	Display     string   `json:"display"`
 	Description string   `json:"description"`
+	Variables   []string `json:"variables"`
 	Order       int      `json:"order"`
-	If          string   `json:"if,omitempty"`
 } //@name Group
 
 func (s *Server) CopyFrom(replacement *Server) {

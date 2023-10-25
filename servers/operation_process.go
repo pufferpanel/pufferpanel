@@ -33,7 +33,7 @@ func init() {
 	loadCoreModules()
 }
 
-func GenerateProcess(directions []pufferpanel.MetadataType, environment pufferpanel.Environment, dataMapping map[string]interface{}, env map[string]string) (OperationProcess, error) {
+func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, environment pufferpanel.Environment, dataMapping map[string]interface{}, env map[string]string) (OperationProcess, error) {
 	dataMap := make(map[string]interface{})
 	for k, v := range dataMapping {
 		dataMap[k] = v
@@ -92,14 +92,7 @@ func GenerateProcess(directions []pufferpanel.MetadataType, environment pufferpa
 			return OperationProcess{}, pufferpanel.ErrFactoryError(mapping.Type, err)
 		}
 
-		task := &OperationTask{Operation: op}
-
-		var ifMap map[string]interface{}
-		err = pufferpanel.UnmarshalTo(mapping.Metadata, &ifMap)
-		if item, exists := ifMap["if"]; err == nil && exists && item != nil {
-			task.Condition = ifMap["if"]
-		}
-
+		task := &OperationTask{Operation: op, Condition: mapping.If}
 		operationList = append(operationList, task)
 	}
 	return operationList, nil

@@ -91,7 +91,7 @@ type BaseEnvironment struct {
 }
 
 type ConsoleConfiguration struct {
-	Type     string `json:"type"`
+	Type     string `json:"type,omitempty"`
 	File     string `json:"file,omitempty"`
 	IP       string `json:"ip,omitempty"`
 	Port     string `json:"port,omitempty"`

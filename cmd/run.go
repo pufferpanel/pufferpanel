@@ -175,13 +175,11 @@ func daemon() error {
 	servers.InitService()
 
 	for _, element := range servers.GetAll() {
-		if element.IsEnabled() {
-			element.GetEnvironment().DisplayToConsole(true, "Daemon has been started\n")
-			if element.IsAutoStart() {
-				logging.Info.Printf("Queued server %s", element.Id())
-				element.GetEnvironment().DisplayToConsole(true, "Server has been queued to start\n")
-				servers.StartViaService(element)
-			}
+		element.GetEnvironment().DisplayToConsole(true, "Daemon has been started\n")
+		if element.IsAutoStart() {
+			logging.Info.Printf("Queued server %s", element.Id())
+			element.GetEnvironment().DisplayToConsole(true, "Server has been queued to start\n")
+			servers.StartViaService(element)
 		}
 	}
 	return nil

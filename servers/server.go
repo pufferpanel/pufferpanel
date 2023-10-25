@@ -137,19 +137,18 @@ func CreateProgram() *Server {
 	p := &Server{
 		Server: pufferpanel.Server{
 			Execution: pufferpanel.Execution{
-				Disabled:                false,
 				AutoStart:               false,
 				AutoRestartFromCrash:    false,
 				AutoRestartFromGraceful: false,
-				PreExecution:            make([]pufferpanel.MetadataType, 0),
-				PostExecution:           make([]pufferpanel.MetadataType, 0),
+				PreExecution:            make([]pufferpanel.ConditionalMetadataType, 0),
+				PostExecution:           make([]pufferpanel.ConditionalMetadataType, 0),
 				EnvironmentVariables:    make(map[string]string),
 			},
 			Type:           pufferpanel.Type{Type: "standard"},
 			Variables:      make(map[string]pufferpanel.Variable),
 			Display:        "Unknown server",
-			Installation:   make([]pufferpanel.MetadataType, 0),
-			Uninstallation: make([]pufferpanel.MetadataType, 0),
+			Installation:   make([]pufferpanel.ConditionalMetadataType, 0),
+			Uninstallation: make([]pufferpanel.ConditionalMetadataType, 0),
 			Groups:         make([]pufferpanel.Group, 0),
 		},
 	}
@@ -161,10 +160,6 @@ func CreateProgram() *Server {
 // Start Starts the program.
 // This includes starting the environment if it is not running.
 func (p *Server) Start() error {
-	if !p.IsEnabled() {
-		p.Log(logging.Error, "Server %s is not enabled, cannot start", p.Id())
-		return pufferpanel.ErrServerDisabled
-	}
 	if r, err := p.IsRunning(); r || err != nil {
 		if err == nil {
 			err = pufferpanel.ErrServerRunning
@@ -377,11 +372,6 @@ func (p *Server) Destroy() (err error) {
 }
 
 func (p *Server) Install() error {
-	if !p.IsEnabled() {
-		p.Log(logging.Error, "Server %s is not enabled, cannot install", p.Id())
-		return pufferpanel.ErrServerDisabled
-	}
-
 	if p.GetEnvironment().IsInstalling() {
 		return nil
 	}
@@ -444,15 +434,6 @@ func (p *Server) IsRunning() (bool, error) {
 func (p *Server) Execute(command string) (err error) {
 	err = p.RunningEnvironment.ExecuteInMainProcess(command)
 	return
-}
-
-func (p *Server) SetEnabled(isEnabled bool) (err error) {
-	p.Execution.Disabled = !isEnabled
-	return
-}
-
-func (p *Server) IsEnabled() (isEnabled bool) {
-	return !p.Execution.Disabled
 }
 
 func (p *Server) SetEnvironment(environment pufferpanel.Environment) (err error) {
