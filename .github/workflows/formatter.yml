@@ -1,18 +1,9 @@
-name: Build Tool - Tester
+name: Build Tool - Formatter
 on:
   workflow_dispatch:
-    inputs:
-      skip:
-        description: Templates to skip
-        required: false
-        default: ""
-      require:
-        description: Templates required to run
-        required: false
-        default: ""
 
 env:
-  TAG: templatetester
+  TAG: formatter
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
@@ -63,27 +54,3 @@ jobs:
             sha: ${{ github.sha }}
             version: ${{ env.VERSION }}
           platforms: ${{ matrix.platform }}
-
-  run-tester:
-    name: Run Tool
-    runs-on: template-tester
-    permissions:
-      packages: read
-
-    needs:
-      - build-tool
-
-    steps:
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Run image
-        run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
-          docker rm -f templatetester || true
-          echo "::add-mask::${{ secrets.RUNNER_IP }}"
-          docker run --rm --name templatetester --network host -v /var/run/docker.sock:/var/run/docker.sock ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --skip=${{ inputs.skip }} --require=${{ inputs.require }}

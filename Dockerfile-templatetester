@@ -33,7 +33,7 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN go build -v -buildvcs=false -tags "docker host" -o /home/pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester
+RUN go build -v -buildvcs=false -o /home/pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/tools/templatetester
 
 WORKDIR /home/pufferpanel
 

@@ -1,0 +1,24 @@
+###
+# Builder container
+###
+FROM golang:alpine AS builder
+
+ENV CGOENABLED=1
+
+WORKDIR /home/pufferpanel/build
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+COPY . .
+
+RUN go build -v -buildvcs=false -o /home/pufferpanel/formatter github.com/pufferpanel/pufferpanel/v3/tools/formatter
+
+# Final image
+FROM alpine
+WORKDIR /home/pufferpanel
+COPY --from=builder /home/pufferpanel/formatter .
+
+
+ENTRYPOINT ["./formatter"]
+CMD []
