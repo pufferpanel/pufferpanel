@@ -7,13 +7,13 @@
   "Upload": "העלאה",
   "Download": "הורדה",
   "Size": "גודל",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file",
+  "NoFiles": "אין פה קבצים עדיין, לך וצור קצת, לדוגמא על ידי לחיצת כפתור הורדה בחלק העליון של הדף",
+  "FileLoadFailed": "טעינת הקובץ נכשלה",
   "Refresh": "רענן",
   "CreateFile": "צור קובץ",
   "CreateFolder": "צור תיקייה",
-  "ArchiveCurrentFolder": "Create archive from current folder",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "ArchiveCurrentFolder": "צור ארכיון מתיקייה נוכחית",
+  "ArchiveFolder": "צור ארכיון מתיקייה",
+  "ExtractArchive": "חילוץ ארכיון",
+  "DropToUpload": "שחרר קבצים כאן כדי להעלות"
 }
