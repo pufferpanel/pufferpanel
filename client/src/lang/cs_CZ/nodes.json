@@ -18,5 +18,5 @@
   "UpdateSuccess": "Uzel byl úspěšně aktualizován",
   "UpdateError": "Chyba při aktualizaci uzlu",
   "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
-  "CannotEdit": "Cannot Edit"
+  "CannotEdit": "Nelze upravit"
 }
