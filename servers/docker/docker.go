@@ -416,7 +416,8 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 
 	bindDirs := []string{convertToBind(dir) + ":" + containerRoot}
 	if binaryFolder != "" {
-		bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+convertToBind(binaryFolder))
+		//bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+convertToBind(binaryFolder))
+		bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+"/var/lib/pufferpanel/binaries")
 	}
 
 	for k, v := range d.Binds {
