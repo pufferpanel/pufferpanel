@@ -497,6 +497,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    environment: ${{ startsWith(github.ref, 'refs/tags/') && 'Release' || 'Development' }}
 
     timeout-minutes: 10
 
@@ -565,6 +566,7 @@ jobs:
     if: "startsWith(github.ref, 'refs/tags/')"
     permissions:
       contents: write
+    environment: ${{ startsWith(github.ref, 'refs/tags/') && 'Release' || 'Development' }}
 
     env:
       PACKAGECLOUD_REPO: pufferpanel/pufferpanel
