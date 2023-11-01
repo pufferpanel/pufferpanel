@@ -14,7 +14,7 @@ PufferPanel is a web-based Game Server Management System. PufferPanel allows you
 Please follow the installation guide for PufferPanel located [here](https://docs.pufferpanel.com/en/latest/installing.html).
 
 ### What's different about PufferPanel?
-In addition to being a free and open source project, PufferPanel provides an easy-to-use interface for everyone from individual users to large networks or companies. We strive to create a friendly community, and we would love for you to join us.
+In addition to being a free and open source project, PufferPanel provides an easy-to-use interface for everyone from individual users to large networks. We strive to create a friendly community, and we would love for you to join us.
 
 ## Having issues or want to help?
 If you need help with PufferPanel, or you'd like to help out, you can contact us on [Discord](https://discord.gg/v8dz49e). Check out our [Documentation](https://docs.pufferpanel.com/) for guides on how to install, update, and manage PufferPanel.
