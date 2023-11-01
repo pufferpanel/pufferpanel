@@ -19,6 +19,7 @@ jobs:
   deploy:
     runs-on: ubuntu-20.04
     name: "Deployment"
+    environment: Release
     
     steps:
     - uses: ruby/setup-ruby@v1

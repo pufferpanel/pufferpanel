@@ -2,10 +2,9 @@ name: Build
 on:
   push:
     branches:
-    - master
+    - v2
     tags:
     - v2.*
-    - v3.*
     paths-ignore:
       - '.github/workflows/release.yml'
       - '.github/workflows/pr.yml'
@@ -478,6 +477,8 @@ jobs:
       matrix:
         platform: ["linux/amd64"]
 
+    environment: Release
+
     timeout-minutes: 10
 
     steps:
@@ -513,8 +514,8 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Build master container
       uses: docker/build-push-action@v2
@@ -536,6 +537,8 @@ jobs:
       VERSION: base
 
     timeout-minutes: 5
+
+    environment: Release
 
     strategy:
       matrix:
@@ -574,8 +577,8 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Build container
       uses: docker/build-push-action@v3
@@ -596,6 +599,8 @@ jobs:
     env:
       REPO: pufferpanel/pufferpanel
       VERSION: devel
+
+    environment: Release
 
     timeout-minutes: 5
 
@@ -637,8 +642,8 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Build container
       uses: docker/build-push-action@v3
