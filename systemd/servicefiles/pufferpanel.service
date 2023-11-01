@@ -11,6 +11,7 @@ Group=pufferpanel
 TimeoutStopSec=5m
 SendSIGKILL=no
 
+OOMPolicy=continue
 Environment="GIN_MODE=release"
 
 [Install]
