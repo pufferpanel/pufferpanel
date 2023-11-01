@@ -10,6 +10,7 @@ on:
       - '.github/workflows/pr.yml'
       - '.github/workflows/tester.yml'
       - '.github/workflows/formatter.yml'
+  pull_request:
 
 env:
   SWAG_VERSION: "1.16.2"
@@ -21,14 +22,14 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.event_name}}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build-shared:
     name: Build Shared Objects
     runs-on: ubuntu-20.04
-    if: "startsWith(github.ref, 'refs/tags/v') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
+    if: "startsWith(github.ref, 'refs/tags/v') || !contains(github.event.head_commit.message, '[skip]')"
 
     timeout-minutes: 10
 
@@ -489,7 +490,7 @@ jobs:
   build-docker-image-base:
     runs-on: ubuntu-20.04
     name: "Build Docker image"
-    if: "startsWith(github.ref, 'refs/tags/v') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
+    if: "startsWith(github.ref, 'refs/tags/v') || !contains(github.event.head_commit.message, '[skip]')"
     strategy:
       matrix:
         platform: [ "linux/amd64" ]
@@ -499,32 +500,38 @@ jobs:
 
     timeout-minutes: 10
 
+    env:
+      REGISTRY: ${{ vars.REGISTRY == 'docker.com' && '' || vars.REGISTRY }}
+      REGISTRY_USERNAME: ${{ vars.REGISTRY == 'ghcr.io' && github.actor || vars.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ vars.REGISTRY == 'ghcr.io' && secrets.GITHUB_TOKEN || vars.REGISTRY_PASSWORD }}
+
     steps:
+      - name: Ensure mask
+        id: values
+        run: |
+          echo "::add-mask::$REGISTRY_USERNAME"
+          echo "::add-mask::REGISTRY_PASSWORD"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
 
-      - name: Log into registry ${{ env.REGISTRY }}
+      - name: Login to DockerHub
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      ### For when we put dockerhub as our repo again
-      #- name: Login to DockerHub
-      #  uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
-      #  with:
-      #    username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #    password: ${{ secrets.DOCKERHUB_TOKEN }}
-      ###
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},enabled=${{ env.REGISTRY != '' }
+            name=${{ env.IMAGE_NAME }},enabled=${{ env.REGISTRY == '' }
           tags: |
-            type=ref,enable=true,priority=600,prefix=branch-,suffix=,event=branch
+            type=ref,prefix=branch-,event=branch
+            type=semver,pattern={{version}}
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
@@ -535,7 +542,6 @@ jobs:
         with:
           context: .
           file: Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -544,3 +550,49 @@ jobs:
             sha: ${{ github.sha }}
             version: ${{ env.VERSION }}
           platforms: ${{ matrix.platform }}
+
+  release:
+    name: "Deployment"
+    runs-on: ubuntu-latest
+    needs:
+      - build-docker-image-base
+      - build-windows-amd64-binaries
+      - build-windows-installer
+      - build-linux-amd64-binaries
+      - build-linux-arm64-binaries
+    if: "startsWith(github.ref, 'refs/tags/')"
+    permissions:
+      contents: write
+
+    env:
+      PACKAGECLOUD_REPO: pufferpanel/pufferpanel
+
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Install gems
+        run: |
+          gem install --no-doc package_cloud
+
+      # download it all, we'll grab what we need
+      - uses: actions/download-artifact@v3
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            *.zip
+            *.rpm
+            *.deb
+            *.msi
+
+      - name: Push to repo
+        env:
+          PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
+        run: |
+          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/any/any pufferpanel_*_amd64.deb 
+          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/any/any pufferpanel_*_arm64.deb 
+          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/rpm_any/rpm_any pufferpanel-*.x86_64.rpm 
