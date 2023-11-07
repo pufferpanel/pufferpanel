@@ -57,6 +57,14 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 		}
 		telnet.Start()
 		s.BaseEnvironment.StdInWriter = telnet
+	} else if steps.StdInConfig.Type == "rcon" {
+		rcon := &pufferpanel.RCONConnection{
+			IP:       steps.StdInConfig.IP,
+			Port:     steps.StdInConfig.Port,
+			Password: steps.StdInConfig.Password,
+		}
+		rcon.Start()
+		s.BaseEnvironment.StdInWriter = rcon
 	} else {
 		pipe, err := s.mainProcess.StdinPipe()
 		if err != nil {

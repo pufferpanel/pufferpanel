@@ -70,6 +70,14 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 		}
 		telnet.Start()
 		t.BaseEnvironment.StdInWriter = telnet
+	} else if steps.StdInConfig.Type == "rcon" {
+		rcon := &pufferpanel.RCONConnection{
+			IP:       steps.StdInConfig.IP,
+			Port:     steps.StdInConfig.Port,
+			Password: steps.StdInConfig.Password,
+		}
+		rcon.Start()
+		t.BaseEnvironment.StdInWriter = rcon
 	} else {
 		t.BaseEnvironment.StdInWriter = processTty
 	}

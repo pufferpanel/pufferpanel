@@ -140,6 +140,14 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		}
 		telnet.Start()
 		d.BaseEnvironment.StdInWriter = telnet
+	} else if steps.StdInConfig.Type == "rcon" {
+		rcon := &pufferpanel.RCONConnection{
+			IP:       steps.StdInConfig.IP,
+			Port:     steps.StdInConfig.Port,
+			Password: steps.StdInConfig.Password,
+		}
+		rcon.Start()
+		d.BaseEnvironment.StdInWriter = rcon
 	} else {
 		d.BaseEnvironment.StdInWriter = d.connection.Conn
 	}
