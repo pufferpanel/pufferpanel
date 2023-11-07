@@ -155,10 +155,11 @@ func main() {
 						testScenarios = append(testScenarios, &TestScenario{
 							Name: v.Name,
 							Test: &TestTemplate{
-								Template:    tmp.Template,
-								Name:        tmp.Name,
-								Variables:   v.Variables,
-								Environment: v.Environment,
+								Template:       tmp.Template,
+								Name:           tmp.Name,
+								Variables:      v.Variables,
+								Environment:    v.Environment,
+								IgnoreExitCode: v.IgnoreExitCode,
 							},
 						})
 					}
@@ -167,7 +168,7 @@ func main() {
 					panicIf(err)
 				} else {
 					//no data json, which means it's a single test
-					//but, each template could support envs, so auto-
+					//but, each template could support envs, so auto-process each
 
 					template := pufferpanel.Server{}
 					err = json.NewDecoder(bytes.NewReader(tmp.Template)).Decode(&template)
@@ -309,7 +310,7 @@ func main() {
 			panic(errors.New("server is still running"))
 		}
 
-		if prg.RunningEnvironment.GetLastExitCode() != 0 {
+		if !template.IgnoreExitCode && prg.RunningEnvironment.GetLastExitCode() != 0 {
 			panicIf(fmt.Errorf("exit code status %d", prg.RunningEnvironment.GetLastExitCode()))
 		}
 
@@ -416,14 +417,16 @@ type TestScenario struct {
 }
 
 type TestTemplate struct {
-	Template    []byte
-	Name        string
-	Variables   map[string]interface{}
-	Environment map[string]interface{}
+	Template       []byte
+	Name           string
+	Variables      map[string]interface{}
+	Environment    map[string]interface{}
+	IgnoreExitCode bool
 }
 
 type TestData struct {
-	Name        string                 `json:"name"`
-	Variables   map[string]interface{} `json:"variables"`
-	Environment map[string]interface{} `json:"environment"`
+	Name           string                 `json:"name"`
+	Variables      map[string]interface{} `json:"variables"`
+	Environment    map[string]interface{} `json:"environment"`
+	IgnoreExitCode bool                   `json:"ignoreExitCode"`
 }
