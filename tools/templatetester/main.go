@@ -132,6 +132,10 @@ func main() {
 		panicIf(err)
 
 		for _, file := range files {
+			if file.Name() == "data.json" {
+				continue
+			}
+
 			filePath := filepath.Join(templateFolder, folder.Name(), file.Name())
 			if strings.HasSuffix(file.Name(), ".json") {
 				tmp := &TestTemplate{}
@@ -213,7 +217,7 @@ func main() {
 	var docker *client.Client
 	ctx := context.Background()
 
-	//now... we can create servers from each one of them
+	finalScenarioList := make([]*TestScenario, 0)
 	for _, scenario := range testScenarios {
 		skip := false
 		for _, v := range templatesToSkip {
@@ -235,7 +239,12 @@ func main() {
 				continue
 			}
 		}
+		log.Printf("Will run test for: %s", scenario.Name)
+		finalScenarioList = append(finalScenarioList, scenario)
+	}
 
+	//now... we can create servers from each one of them
+	for _, scenario := range finalScenarioList {
 		log.Printf("Starting test for %s", scenario.Name)
 
 		template := scenario.Test
