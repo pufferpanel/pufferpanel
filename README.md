@@ -1,6 +1,6 @@
 # PufferPanel [![Release](https://img.shields.io/github/release/PufferPanel/PufferPanel.svg?maxAge=3600)](https://github.com/PufferPanel/PufferPanel/releases) [![Downloads](https://img.shields.io/github/downloads/PufferPanel/PufferPanel/total.svg?maxAge=3600)](https://github.com/PufferPanel/PufferPanel/releases) ![Build](https://github.com/PufferPanel/PufferPanel/workflows/Build/badge.svg)
 
-[![PufferPanel logo](http://i.imgur.com/YCy8Md2.png "PufferPanel")](https://pufferpanel.com)
+[![PufferPanel logo](https://raw.githubusercontent.com/pufferpanel/www/master/logo-alt.png "PufferPanel")](https://pufferpanel.com)
 
 [Website](https://pufferpanel.com) |
 [Discord](https://discord.gg/v8dz49e) |
