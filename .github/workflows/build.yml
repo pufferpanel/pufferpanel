@@ -99,6 +99,7 @@ jobs:
 
       - name: yarn install, build
         run: |
+          npm install -g yarn
           yarn install
           yarn build
         env:
