@@ -17,13 +17,17 @@ func main() {
 	flag.StringVar(&workingDir, "workDir", "", "")
 	flag.Parse()
 
-	err := filepath.Walk(workingDir, reformatFile)
+	err := filepath.WalkDir(workingDir, reformatFile)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func reformatFile(path string, info fs.FileInfo, err error) error {
+func reformatFile(path string, info fs.DirEntry, err error) error {
+	if err != nil {
+		return err
+	}
+
 	nonAbsPath := strings.TrimPrefix(path, workingDir+string(filepath.Separator))
 
 	if info.IsDir() {
@@ -41,25 +45,32 @@ func reformatFile(path string, info fs.FileInfo, err error) error {
 
 	fmt.Printf("Reformatting %s\n", nonAbsPath)
 
+	template, err := readFile(path)
+	return writeFile(path, template)
+}
+
+func readFile(path string) (*pufferpanel.Server, error) {
 	template := &pufferpanel.Server{}
+	file, err := os.OpenFile(path, os.O_RDWR, 0644)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	err = json.NewDecoder(file).Decode(&template)
+	return template, err
+}
+
+func writeFile(path string, template *pufferpanel.Server) error {
 	file, err := os.OpenFile(path, os.O_RDWR, 0644)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	err = json.NewDecoder(file).Decode(&template)
-	if err != nil {
-		return err
-	}
-
-	_ = file.Close()
-
-	data, err := json.MarshalIndent(template, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(path, data, 0644)
+	encoder := json.NewEncoder(file)
+	encoder.SetEscapeHTML(false)
+	encoder.SetIndent("", "  ")
+	err = encoder.Encode(template)
 	return err
 }
