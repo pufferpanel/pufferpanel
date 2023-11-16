@@ -61,15 +61,7 @@ func main() {
 		mustTest = strings.Split(requiredStr, ",")
 		fmt.Printf("Require rules: %s\n", strings.Join(mustTest, " "))
 	}
-
-	tmpDir := os.TempDir()
 	pattern := "puffertemplatetest"
-
-	toDelete, _ := filepath.Glob(filepath.Join(tmpDir, pattern+"*"))
-	for _, z := range toDelete {
-		err := os.RemoveAll(z)
-		panicIf(err)
-	}
 
 	var err error
 	if workingDir == "" {
