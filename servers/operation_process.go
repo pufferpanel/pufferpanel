@@ -42,11 +42,6 @@ func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, environme
 	dataMap["rootDir"] = environment.GetRootDirectory()
 	operationList := make(OperationProcess, 0)
 	for _, mapping := range directions {
-		factory := commandMapping[mapping.Type]
-		if factory == nil {
-			return OperationProcess{}, pufferpanel.ErrMissingFactory
-		}
-
 		mapCopy := make(map[string]interface{})
 
 		//replace tokens
@@ -87,12 +82,7 @@ func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, environme
 			DataMap:              dataMap,
 		}
 
-		op, err := factory.Create(opCreate)
-		if err != nil {
-			return OperationProcess{}, pufferpanel.ErrFactoryError(mapping.Type, err)
-		}
-
-		task := &OperationTask{Operation: op, Condition: mapping.If}
+		task := &OperationTask{Type: mapping.Type, Operation: opCreate, Condition: mapping.If}
 		operationList = append(operationList, task)
 	}
 	return operationList, nil
@@ -101,8 +91,9 @@ func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, environme
 type OperationProcess []*OperationTask
 
 type OperationTask struct {
-	Operation pufferpanel.Operation
+	Operation pufferpanel.CreateOperation
 	Condition interface{}
+	Type      string
 }
 
 func (p *OperationProcess) Run(server *Server) error {
@@ -122,7 +113,16 @@ func (p *OperationProcess) Run(server *Server) error {
 		}
 
 		if shouldRun {
-			err = v.Operation.Run(server.RunningEnvironment)
+			factory := commandMapping[v.Type]
+			if factory == nil {
+				return pufferpanel.ErrMissingFactory
+			}
+			op, err := factory.Create(v.Operation)
+			if err != nil {
+				return pufferpanel.ErrFactoryError(v.Type, err)
+			}
+
+			err = op.Run(server.RunningEnvironment)
 			if err != nil {
 				logging.Error.Printf("Error running command: %s", err.Error())
 				if firstError == nil {
