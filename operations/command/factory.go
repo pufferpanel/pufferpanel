@@ -20,7 +20,7 @@ func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.O
 		}
 	}
 
-	return Command{Commands: cmds, Env: op.EnvironmentVariables, StdIn: stdIn}, nil
+	return Command{Commands: cmds, Env: op.EnvironmentVariables, StdIn: stdIn, Variables: op.DataMap}, nil
 }
 
 func (of OperationFactory) Key() string {

@@ -8,9 +8,10 @@ import (
 )
 
 type Command struct {
-	Commands []string
-	Env      map[string]string
-	StdIn    pufferpanel.ConsoleConfiguration
+	Commands  []string
+	Env       map[string]string
+	StdIn     pufferpanel.ConsoleConfiguration
+	Variables map[string]interface{}
 }
 
 func (c Command) Run(env pufferpanel.Environment) error {
@@ -30,6 +31,7 @@ func (c Command) Run(env pufferpanel.Environment) error {
 				ch <- nil
 			},
 			StdInConfig: c.StdIn,
+			Variables:   c.Variables,
 		})
 		if err != nil {
 			return err

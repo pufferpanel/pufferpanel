@@ -408,7 +408,9 @@ func (p *Server) Install() error {
 
 	if len(p.Installation) > 0 {
 		var process OperationProcess
-		process, err = GenerateProcess(p.Installation, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
+
+		data := p.DataToMap()
+		process, err = GenerateProcess(p.Installation, p.RunningEnvironment, data, p.Execution.EnvironmentVariables)
 		if err != nil {
 			p.Log(logging.Error, "Error installing server: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n")
