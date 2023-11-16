@@ -400,7 +400,7 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		Tty:             true,
 		OpenStdin:       true,
 		NetworkDisabled: false,
-		Image:           d.ImageName,
+		Image:           imageName,
 		WorkingDir:      workDir,
 		Env:             newEnv,
 		Labels:          labels,
