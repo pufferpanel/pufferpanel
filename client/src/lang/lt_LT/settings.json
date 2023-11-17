@@ -1,27 +1,27 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
-  "EmailProvider": "Email Provider",
+  "Settings": "Nustatymai",
+  "PanelSettings": "Panelės nustatymai",
+  "EmailSettings": "El. pašto nustatymai",
+  "MasterUrl": "Pagrindinis URL",
+  "MasterUrlHint": "Pagrindinis URL su kuriuo galima pasiekti panelę, yra formatu: http://localhost:8080",
+  "CompanyName": "Įmonės pavadinimas",
+  "DefaultTheme": "Įprasta tema",
+  "RegistrationEnabled": "Leisti vartotojams užsiregistruoti patiems",
+  "RegistrationEnabledHint1": "Patys užsiregistravę vartotojai negali nieko padaryti kol nesuteiktos teisės",
+  "RegistrationEnabledHint2": "Atjungiant šitą sustabdo tik tiesioginę registraciją, pakvietimai į serverį ir vartotojų puslapis nepaveikti",
+  "EmailProvider": "El. pašto tiekėjas",
   "emailProviders": {
-    "none": "None",
+    "none": "Joks",
     "smtp": "SMTP",
-    "mailgun": "Mailgun",
-    "mailjet": "Mailjet"
+    "mailgun": "„Mailgun“",
+    "mailjet": "„Mailjet“"
   },
   "emailFields": {
-    "from": "Sender Address",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "Siuntėjo adresas",
+    "domain": "Domenas",
+    "key": "API raktas",
+    "host": "Tiekėjas",
+    "username": "Vartotojo vardas",
+    "password": "Slaptažodis"
   }
 }
