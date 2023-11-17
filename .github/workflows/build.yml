@@ -11,6 +11,8 @@ on:
       - '.github/workflows/tester.yml'
       - '.github/workflows/formatter.yml'
   pull_request:
+    branches:
+      - v3
 
 env:
   SWAG_VERSION: "1.16.2"
