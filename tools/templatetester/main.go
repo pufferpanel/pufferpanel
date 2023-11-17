@@ -18,6 +18,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/spf13/cast"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -76,9 +77,12 @@ func main() {
 		workingDir, err = os.MkdirTemp("", pattern)
 		panicIf(err)
 	} else {
-		err = os.RemoveAll(workingDir)
-		panicIf(err)
-		err = os.Mkdir(workingDir, 0755)
+		err = filepath.WalkDir(workingDir, func(path string, info fs.DirEntry, err error) error {
+			if path == workingDir {
+				return err
+			}
+			return os.RemoveAll(path)
+		})
 		panicIf(err)
 	}
 
