@@ -1,119 +1,119 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
-  "Editor": "Editor",
+  "Templates": "Šablonai",
+  "NoTemplates": "Čia dar nėra šablonų kol kas",
+  "Deleted": "Šablonas ištrintas",
+  "New": "Sukurti naują šabloną",
+  "Edit": "Redaguoti šabloną",
+  "Editor": "Redaktorius",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Display": "Rodomas pavadinimas",
+  "Type": "Tipas",
+  "Variables": "Kintamieji",
+  "Install": "Instaliacija",
+  "AddInstallStep": "Pridėti instaliacijos žingsnį",
+  "DeleteInstallStep": "Ištrinti instaliacijos žingsnį",
+  "Description": "Aprašymas",
+  "DataType": "Duomenų tipas",
+  "DefaultValue": "Numatytoji reikšmė",
+  "Required": "Privaloma",
+  "UserEditable": "Vartotojai gali redaguoti",
+  "Value": "Reikšmė",
+  "AddOption": "Pridėti pasirinkimą",
+  "AddCommand": "Pridėti komandą",
+  "Filename": "Failo pavadinimas",
+  "Content": "Turinys",
+  "Source": "Šaltinis",
+  "Target": "Taikinys",
+  "Version": "Versija",
+  "ReleaseType": "Leidimo tipas",
+  "AddFile": "Pridėti failą",
+  "AddVariable": "Pridėti kintamąjį",
+  "Environment": "Aplinka",
+  "Environments": "Aplinkos",
+  "AddEnvironment": "Pridėti aplinką",
+  "DefaultEnvironment": "Standartinė aplinka",
+  "AddEnvVar": "Pridėti aplink. kintamąjį",
+  "EnvVars": "Aplinkos kintamieji",
+  "DockerImage": "„Docker“ kopija",
+  "SaveSuccess": "Išsaugotas šablonas",
+  "VarNameNoSpaces": "Kintamojo pavadinimas negali būti tuščias ar su tarpais",
+  "SupportedEnvironments": "Palaikomos aplinkos",
+  "RunConfig": "Paleisti konfigūraciją",
+  "PreHook": "Prieš paleidimą užkabis (hook)",
+  "PostHook": "Po paleidimo užkabis (hook)",
+  "AddPreStep": "Pridėti prieš paleidimą užkabį (hook)",
+  "AddPostStep": "Pridėti po paleidimo užkabį (hook)",
+  "DeletePreStep": "Ištrinti prieš paleidimą užkabį (hook)",
+  "DeletePostStep": "Ištrinti po paleidimo užkabį (hook)",
+  "Shutdown": "Išjungimas",
+  "Command": "Komanda",
+  "WorkingDirectory": "Darbinė direktorija",
+  "Arguments": "Argumentai",
+  "AddArgument": "Pridėti argumentą",
+  "Convert": "Konvertuoti",
+  "OfferV1Convert": "Šio šablono „JSON“ atrodo kaip šablonas iš „PufferPanel“ 1.x, ar norite automatiškai konvertuoti jį į šabloną skirtą „PufferPanel“ 2.x?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "CommunityWarning": "Šie šablonai yra sukurti bendruomenės ir suteikiami be jokių garantijų",
+    "OverrideWarning": "PERSPĖJIMAS: Įkelti šablonai perrašys egzistuojančius šablonus su vienoda ID",
+    "Import": "Įkeliami šablonai",
+    "Tooltip": "Įkelti šablonus iš oficialios talpyklos",
+    "Select": "Pasirinkite šablonus įkelimui",
+    "Started": "Įkeliami šablonai, šiek tiek palaukite",
+    "Successful": "Sėkmingai įkeltas šablonas „{template}“",
+    "NoTemplatesTitle": "Ar jūs norite įkelti šablonus?",
+    "NoTemplatesContent": "Jūs, šiuo metu, neturite jokių šablonų. Šablonai yra būtini norint kurti serverius.<br/>Ar norite įkelti kelis šablonus iš oficialios „PufferPanel“ šablonų talpyklos dabar?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "Komanda",
+    "Signal": "Signalas"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Parsisiųsti",
+      "files": "Failai"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Paleisti komandą",
+      "commands": "Komandos"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Keisti failą",
+      "regex": "Laikyti paiešką kaip „RegEx“",
+      "search": "Tekstas paieškai",
+      "replace": "Pakeisti su"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Rašyti į failą",
+      "text": "Turinys"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Perkelti failą",
+      "source": "Šaltinis",
+      "target": "Taikinys"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Sukurti direktoriją"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Parsisiųsti „Minecraft“"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Parsisiųsti „Minecraft Forge“"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Parsisiųsti „Minecraft SpongeForge“",
+      "releaseType": "Leidimo tipas"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Parsisiųsti „Minecraft Fabric“"
     },
     "javadl": {
-      "ProcessorName": "Download Java",
-      "version": "Version of Java to install (8, 16, 17)"
+      "ProcessorName": "Parsisiųsti „Java“",
+      "version": "„Java“ versiją instaliuoti (8, 16, 17)"
     },
     "steamgamedl": {
-      "ProcessorName": "Download Game from Steam",
-      "appId": "App Id"
+      "ProcessorName": "Parsisiųsti žaidimą iš „Steam“",
+      "appId": "Programos ID"
     }
   }
 }
