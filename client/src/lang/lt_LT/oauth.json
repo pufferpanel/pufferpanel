@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Credentials": "„OAuth2“ aplikacijos duomenys",
+  "ClientId": "Aplikacijos ID",
+  "ClientSecret": "Aplikacijos paslaptis",
+  "NewClientWarning": "Nusirašykite aplikacijos paslaptį, uždarius šį dialogą ji niekados nebe pasirodys. Jos praradimas ar užmiršimas padarys šią aplikaciją visiškai nebenaudojamą.",
+  "Create": "Sukurkite naują „OAuth2“ aplikaciją",
+  "UnnamedClient": "Nepavadinta „OAuth2“ aplikacija",
+  "Docs": "API dokumentaciją galite rasti čia",
+  "DeleteWarning": "„OAuth2“ aplikacijos trynimas yra nepakartojamas procesas ir naujos aplikacijos negali būti sukurtos naudojant tuos pačius duomenis. Visos integracijos dar naudojančios šią aplikaciją nustos veikti po jos ištrynimo.",
+  "ConfirmDelete": "Aš suprantu kokias pasekmes ištrinant šią „OAuth2“ aplikaciją turės ir noriu tęsti.",
+  "Delete": "Ištrinti {clientName}?",
+  "Clients": "„OAuth2“ aplikacijos",
+  "AccountDescription": "„OAuth2“ aplikacijos išvardytos čia paveldi visas jūsų paskyros prieigas",
+  "ServerDescription": "„OAuth2“ aplikacijos išvardytos čia paveldi jūsų paskyros prieigas tik šiame serveryje"
 }
