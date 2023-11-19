@@ -20,3 +20,7 @@ email/
 www/
 operations/spongedl/cache/
 operations/spongedl/mods/
+
+.vscode/
+
+.devcontainer/

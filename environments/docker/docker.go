@@ -21,6 +21,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"runtime"
+	"time"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
@@ -34,11 +40,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/spf13/cast"
-	"io"
-	"os"
-	"path/filepath"
-	"runtime"
-	"time"
 )
 
 type docker struct {
@@ -381,6 +382,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	}
 
 	binaryFolder := config.BinariesFolder.Value()
+	d.Log(logging.Debug, "Container binaryFolder: %s", binaryFolder)
 	if !filepath.IsAbs(binaryFolder) {
 		var ef error
 		binaryFolder, ef = filepath.Abs(binaryFolder)
@@ -420,6 +422,8 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 
 	dir := d.RootDirectory
 
+	d.Log(logging.Debug, "Container RootDirectory : %s\n", dir)
+
 	//convert root dir to a full path, so we can bind it
 	if !filepath.IsAbs(dir) {
 		pwd, err := os.Getwd()
@@ -433,6 +437,8 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	if binaryFolder != "" {
 		bindDirs = append(bindDirs, binaryFolder+":"+binaryFolder)
 	}
+
+	d.Log(logging.Debug, "Container AutoRemove : %s\n", d.AutoRemove)
 
 	hostConfig := &container.HostConfig{
 		AutoRemove:   true,
@@ -459,6 +465,23 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		exposedPorts[k] = struct{}{}
 	}
 	containerConfig.ExposedPorts = exposedPorts
+
+	containerConfigJson, err := json.Marshal(containerConfig)
+	if err != nil {
+		return err
+	}
+	hostConfigJson, err := json.Marshal(hostConfig)
+	if err != nil {
+		return err
+	}
+	networkConfigJson, err := json.Marshal(networkConfig)
+	if err != nil {
+		return err
+	}
+
+	d.Log(logging.Debug, "Container config: %s\n", containerConfigJson)
+	d.Log(logging.Debug, "Container Host config: %s\n", hostConfigJson)
+	d.Log(logging.Debug, "Container Network config: %s\n", networkConfigJson)
 
 	//for now, default to linux across the board. This resolves problems that Windows has when you use it and docker
 	_, err = client.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, &v1.Platform{OS: "linux"}, d.ContainerId)
