@@ -36,14 +36,20 @@ WORKDIR /build/pufferpanel
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
+COPY client/package.json client/package-lock.json ./client/
+RUN cd client && npm ci
+
 COPY . .
 RUN ~/go/bin/swag init -o web/swagger -g web/loader.go && \
     go build -v -buildvcs=false -tags $tags -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v2.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd && \
     mv assets/email /pufferpanel/email && \
     cd client && \
-    npm install && \
     npm run build && \
     mv dist /pufferpanel/www/
+
+FROM builder AS dev
+RUN go install -v golang.org/x/tools/gopls@latest
+RUN go install -v github.com/go-delve/delve/cmd/dlv@latest
 
 ###
 # Generate final image
