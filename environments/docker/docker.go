@@ -49,6 +49,7 @@ type docker struct {
 	Binds       map[string]string   `json:"bindings,omitempty"`
 	NetworkMode string              `json:"networkMode,omitempty"`
 	Network     string              `json:"networkName,omitempty"`
+	AutoRemove  *bool               `json:"autoRemove,omitempty"`
 	Ports       []string            `json:"portBindings,omitempty"`
 	Resources   container.Resources `json:"resources,omitempty"`
 
@@ -441,7 +442,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	d.Log(logging.Debug, "Container AutoRemove : %s\n", d.AutoRemove)
 
 	hostConfig := &container.HostConfig{
-		AutoRemove:   true,
+		AutoRemove:   *d.AutoRemove,
 		NetworkMode:  container.NetworkMode(d.NetworkMode),
 		Resources:    d.Resources,
 		Binds:        bindDirs,

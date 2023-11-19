@@ -30,6 +30,7 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 		ContainerId:     id,
 		ImageName:       "pufferpanel/generic",
 		NetworkMode:     "host",
+		AutoRemove:      &[]bool{true}[0],
 		Ports:           make([]string, 0),
 		Binds:           make(map[string]string),
 	}
