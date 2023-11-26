@@ -10,10 +10,9 @@ const { t } = useI18n()
 const api = inject('api')
 const events = inject('events')
 
-const props = defineProps({
+defineProps({
   allowCreate: { type: Boolean, default: () => true },
-  allowDelete: { type: Boolean, default: () => true },
-  server: { type: String, default: () => undefined }
+  allowDelete: { type: Boolean, default: () => true }
 })
 
 const docsUrl = location.origin + '/swagger/index.html'
@@ -30,11 +29,7 @@ onMounted(() => {
 })
 
 async function refresh() {
-  if (props.server) {
-    clients.value = await api.server.getOAuthClients(props.server)
-  } else {
-    clients.value = await api.self.getOAuthClients()
-  }
+  clients.value = await api.self.getOAuthClients()
 }
 
 function startCreate() {
@@ -44,11 +39,7 @@ function startCreate() {
 }
 
 async function create() {
-  if (props.server) {
-    createdData.value = await api.server.createOAuthClient(props.server, newName.value, newDescription.value)
-  } else {
-    createdData.value = await api.self.createOAuthClient(newName.value, newDescription.value)
-  }
+  createdData.value = await api.self.createOAuthClient(newName.value, newDescription.value)
 
   created.value = true
   creating.value = false
@@ -64,12 +55,7 @@ async function deleteClient(clientId, clientName) {
       icon: 'remove',
       color: 'error',
       action: async () => {
-        if (props.server) {
-          clients.value = await api.server.deleteOAuthClient(props.server, clientId)
-        } else {
-          clients.value = await api.self.deleteOAuthClient(clientId)
-        }
-
+        clients.value = await api.self.deleteOAuthClient(clientId)
         refresh()
       }
     },
@@ -83,7 +69,7 @@ async function deleteClient(clientId, clientName) {
 <template>
   <div class="oauth">
     <div class="info">
-      <div v-text="t(server ? 'oauth.ServerDescription' : 'oauth.AccountDescription')" />
+      <div v-text="t('oauth.AccountDescription')" />
       <div>
         <a target="_blank" :href="docsUrl" v-text="t('oauth.Docs')" />
       </div>

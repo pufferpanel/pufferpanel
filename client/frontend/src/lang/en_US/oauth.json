@@ -9,6 +9,5 @@
   "Clients": "OAuth2 Clients",
   "Delete": "Delete OAuth2 Client",
   "ConfirmDelete": "Do you really want to delete the OAuth2 client {name}? You will not be able to recreate it with the same credentials!",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions"
 }

@@ -226,21 +226,6 @@ export class ServerApi {
     return true
   }
 
-  async getOAuthClients(id) {
-    const res = await this._api.get(`/api/servers/${id}/oauth2`)
-    return res.data
-  }
-
-  async createOAuthClient(id, name, description) {
-    const res = await this._api.post(`/api/servers/${id}/oauth2`, { name, description })
-    return res.data
-  }
-
-  async deleteOAuthClient(id, clientId) {
-    await this._api.delete(`/api/servers/${id}/oauth2/${clientId}`)
-    return true
-  }
-
   async delete(id) {
     await this._api.delete(`/api/servers/${id}`)
     return true

@@ -37,10 +37,6 @@ const Sftp = defineAsyncComponent({
   loader: () => import('../server/Sftp.vue'),
   loadingComponent: Loader
 })
-const Api = defineAsyncComponent({
-  loader: () => import('../server/Api.vue'),
-  loadingComponent: Loader
-})
 const Admin = defineAsyncComponent({
   loader: () => import('../server/Admin.vue'),
   loadingComponent: Loader
@@ -147,15 +143,6 @@ onMounted(() => {
         hotkey="t 6"
       >
         <sftp :server="server" />
-      </tab>
-      <tab
-        v-if="server.hasScope('server.clients.view')"
-        id="api"
-        :title="t('servers.API')"
-        icon="api"
-        hotkey="t 7"
-      >
-        <api :server="server" />
       </tab>
       <tab
         v-if="server.hasScope('server.definition.view') || server.hasScope('server.delete')"
