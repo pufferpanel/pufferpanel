@@ -87,7 +87,7 @@ async function deleteTemplate() {
 }
 
 function canDelete() {
-  return route.params.repo === 'local'
+  return route.params.repo === '0'
 }
 
 async function save() {
@@ -97,7 +97,7 @@ async function save() {
 }
 
 function canSave() {
-  if (route.params.repo !== 'local') return false
+  if (route.params.repo !== '0') return false
   return Object.values(valid.value).filter(e => e === false).length === 0
 }
 
@@ -117,7 +117,7 @@ function tabChanged(newTab) {
   <div class="templateview">
     <loader v-if="!template" />
     <div v-else>
-      <div v-if="route.params.repo !== 'local'" class="alert info">
+      <div v-if="route.params.repo !== '0'" class="alert info">
         <span v-text="t('templates.EditLocalOnly')" />
         <btn color="primary" @click="createLocalCopy()"><icon name="copy" />{{ t('templates.CreateLocalCopy') }}</btn>
       </div>
@@ -144,7 +144,7 @@ function tabChanged(newTab) {
           <Ace id="template-json" ref="ace" v-model="template" class="template-json-editor" mode="json" />
         </tab>
       </tabs>
-      <div v-if="route.params.repo === 'local'" class="actions">
+      <div v-if="route.params.repo === '0'" class="actions">
         <btn color="error" :disabled="!canDelete()" @click="deleteTemplate()"><icon name="remove" />{{ t('templates.Delete') }}</btn>
         <btn color="primary" :disabled="!canSave()" @click="save()"><icon name="save" />{{ t('templates.Save') }}</btn>
       </div>

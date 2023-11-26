@@ -47,9 +47,10 @@ const valid = ref({
   general: false,
   run: false
 })
+let saved = false
 
 onBeforeRouteLeave(() => {
-  if (unmodified === template.value) {
+  if (saved || (unmodified === template.value)) {
     return true
   } else {
     return new Promise((resolve) => {
@@ -89,10 +90,14 @@ async function save() {
   const name = JSON.parse(template.value).name
 
   const exists = await api.template.exists(0, name)
-  if (!exists) {
+  const doSave = async () => {
     await api.template.save(name, template.value)
     toast.success(t('templates.Saved'))
-    router.push({ name: 'TemplateView', params: { id: name } })
+    saved = true
+    router.push({ name: 'TemplateView', params: { repo: 0, id: name } })
+  }
+  if (!exists) {
+    doSave()
   } else {
     events.emit(
       'confirm',
@@ -100,10 +105,8 @@ async function save() {
       {
         text: t('templates.Overwrite'),
         icon: 'check',
-        action: async () => {
-          await api.template.save(name, template.value)
-          toast.success(t('templates.Saved'))
-          router.push({ name: 'TemplateView', params: { id: name } })
+        action: () => {
+          doSave()
         }
       }
     )

@@ -28,7 +28,7 @@ function nameUpdate() {
   clearTimeout(nameDebounce)
   nameDebounce = setTimeout(async () => {
     if (template.value.name && template.value.name.trim() !== '') {
-      const exists = await api.template.exists('local', template.value.name)
+      const exists = await api.template.exists(0, template.value.name)
       nameUnique.value = !exists
     } else {
       nameUnique.value = true
