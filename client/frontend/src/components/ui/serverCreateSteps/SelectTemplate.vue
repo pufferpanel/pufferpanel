@@ -56,7 +56,12 @@ onMounted(async () => {
 
 async function show(repo, template) {
   currentTemplate.value = await api.template.get(repo, template)
-  showing.value = true
+  if (currentTemplate.value.readme) {
+    showing.value = true
+  } else {
+    // no readme, skip readme popup
+    emit('selected', currentTemplate.value)
+  }
 }
 
 function choice(confirm) {
@@ -78,8 +83,7 @@ function choice(confirm) {
 
     <overlay v-model="showing" :title="currentTemplate.display" closable>
       <!-- eslint-disable-next-line vue/no-v-html -->
-      <div v-if="currentTemplate.readme" dir="ltr" class="readme" v-html="markdown(currentTemplate.readme)" />
-      <h2 v-else v-text="t('servers.ConfirmTemplateChoice')" />
+      <div dir="ltr" class="readme" v-html="markdown(currentTemplate.readme)" />
       <div class="actions">
         <btn color="error" @click="choice(false)"><icon name="close" />{{ t('common.Cancel') }}</btn>
         <btn color="primary" @click="choice(true)"><icon name="check" />{{ t('servers.SelectThisTemplate') }}</btn>

@@ -15,7 +15,6 @@
   "Files": "Files",
   "Name": "Server Name",
   "NameInvalid": "The server name cannot be empty or contain special characters",
-  "ConfirmTemplateChoice": "Do you want to use this template?",
   "SelectTemplate": "Please select template",
   "SelectThisTemplate": "Use this template",
   "Environment": "Environment",
