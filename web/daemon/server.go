@@ -454,7 +454,7 @@ func getServerData(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, &pufferpanel.ServerData{Variables: replacement})
+	c.JSON(http.StatusOK, &pufferpanel.ServerData{Variables: replacement, Groups: server.Groups})
 }
 
 // @Summary Get server definition

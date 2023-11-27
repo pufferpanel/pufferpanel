@@ -21,6 +21,7 @@ type ServerRunning struct {
 
 type ServerData struct {
 	Variables map[string]Variable `json:"data"`
+	Groups    []Group             `json:"groups,omitempty"`
 } //@name ServerData
 
 type ServerDataAdmin struct {
