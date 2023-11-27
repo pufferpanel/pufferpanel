@@ -85,6 +85,7 @@ async function settingsConfirmed(settings) {
       <settings
         v-if="step === 'settings'"
         :data="template.data"
+        :groups="template.groups"
         @back="settingsBack()"
         @confirm="settingsConfirmed"
       />

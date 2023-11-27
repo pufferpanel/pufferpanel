@@ -2468,10 +2468,10 @@ promzard@^0.3.0:
   dependencies:
     read "1"
 
-pufferpanel-conditions@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/pufferpanel-conditions/-/pufferpanel-conditions-1.0.7.tgz#590d7c7e51dc70888b439356b6bf18e13200001c"
-  integrity sha512-/1hqYNhmtulzsSb1np/Z+URRsTY4EANAzjiD/8120l55qrs6E4LIAYhpKSZ4o0GIulJN7aBxvYvmG02JapKn2A==
+pufferpanel-conditions@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/pufferpanel-conditions/-/pufferpanel-conditions-1.0.8.tgz#9f4290f5ed20665aaadbac4512b51543ac021ad5"
+  integrity sha512-3HDUJU/Aesw0Yeph4kWrH+o3/97ZpgcMwwzS786YSKJfUa546y/HT7JC6qLdttYB7kJ3HbOC6rLI5dgQlz5ZMg==
 
 punycode@^2.1.0:
   version "2.1.1"

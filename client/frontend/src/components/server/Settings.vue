@@ -3,8 +3,8 @@ import { ref, inject, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
 import Icon from '@/components/ui/Icon.vue'
-import SettingInput from '@/components/ui/SettingInput.vue'
 import Toggle from '@/components/ui/Toggle.vue'
+import Variables from '@/components/ui/Variables.vue'
 
 const { t, te, locale } = useI18n()
 const toast = inject('toast')
@@ -13,24 +13,29 @@ const props = defineProps({
   server: { type: Object, required: true }
 })
 
-const variables = ref({})
+const vars = ref({})
 const flags = ref({})
 const anyItems = computed(() => {
-  if (Object.keys(variables.value).length > 0) return true
+  if (Object.keys(vars.value).length > 0) return true
   if (Object.keys(flags.value).length > 0) return true
   return false
 })
 
 onMounted(async () => {
   if (props.server.hasScope('server.data.view'))
-    variables.value = (await props.server.getData()) || {}
+    vars.value = (await props.server.getData()) || {}
   if (props.server.hasScope('server.flags.view'))
     flags.value = (await props.server.getFlags()) || {}
 })
 
 async function save() {
-  if (props.server.hasScope('server.data.edit'))
-    await props.server.updateData(variables.value)
+  if (props.server.hasScope('server.data.edit')) {
+    const data = {}
+    Object.keys(vars.value.data).map(name => {
+      data[name] = vars.value.data[name].value
+    })
+    await props.server.updateData(data)
+  }
   if (props.server.hasScope('server.flags.edit'))
     await props.server.setFlags(flags.value)
   toast.success(t('servers.SettingsSaved'))
@@ -45,8 +50,11 @@ function getFlagHint(name) {
 <template>
   <div>
     <h2 v-text="t('servers.Settings')" />
-    <div v-for="(_, name) in variables" :key="name">
-      <setting-input v-model="variables[name]" :disabled="!server.hasScope('server.data.edit')" />
+    <variables v-model="vars" :disabled="!server.hasScope('server.data.edit')" />
+    <div class="group-header">
+      <div class="title">
+        <h3 v-text="t('servers.FlagsHeader')" />
+      </div>
     </div>
     <div v-for="(_, name) in flags" :key="name">
       <toggle v-model="flags[name]" :disabled="!server.hasScope('server.flags.edit')" :label="t(`servers.flags.${name}`)" :hint="getFlagHint()" />

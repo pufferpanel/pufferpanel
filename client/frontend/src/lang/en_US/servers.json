@@ -29,14 +29,17 @@
   "EditDefinition": "Edit Server Definition",
   "Reload": "Reload server data from disk",
   "Reloaded": "Reloaded server data",
-  "Autostart": "Start the server when the node starts",
-  "Autorestart": "Restart the server when it stops normally",
-  "Autorecover": "Restart the server when it crashes",
   "Create": "Create Server",
   "API": "API",
   "NoUsers": "This server does not have any associated users",
   "InviteUser": "Invite user",
   "EnvironmentEditHint": "Changes to these settings will only apply after reloading the server definition",
   "Command": "Command",
-  "CreateMissingPermissions": "You don't have permission to view nodes or templates, these are needed for server creation, please talk to your admin"
+  "CreateMissingPermissions": "You don't have permission to view nodes or templates, these are needed for server creation, please talk to your admin",
+  "FlagsHeader": "Autostart conditions",
+  "flags": {
+    "autoStart": "Start the server when the node starts",
+    "autoRestartOnGraceful": "Restart the server when it stops normally",
+    "autoRestartOnCrash": "Restart the server when it crashes"
+  }
 }

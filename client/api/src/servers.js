@@ -105,11 +105,11 @@ export class ServerApi {
 
   async getData(id) {
     const res = await this._api.get(`/api/servers/${id}/data`)
-    return res.data.data
+    return res.data
   }
 
   async updateData(id, data) {
-    await this._api.post(`/api/servers/${id}/data`, { data })
+    await this._api.post(`/api/servers/${id}/data`, data)
     return true
   }
 

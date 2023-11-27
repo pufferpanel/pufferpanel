@@ -3,12 +3,13 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
 import Icon from '@/components/ui/Icon.vue'
-import SettingInput from '@/components/ui/SettingInput.vue'
+import Variables from '@/components/ui/Variables.vue'
 
 const { t } = useI18n()
 const emit = defineEmits(['back', 'confirm'])
 const props = defineProps({
-  data: { type: Object, default: () => { return {} } }
+  data: { type: Object, default: () => { return {} } },
+  groups: { type: Array, default: undefined }
 })
 
 const settings = ref({})
@@ -28,6 +29,10 @@ onMounted(async () => {
   })
 })
 
+function updateSettings(event) {
+  settings.value = event.data
+}
+
 function canSubmit() {
   for (let key in settings.value) {
     if (settings.value[key].required && settings.value[key].type !== 'boolean') {
@@ -44,9 +49,7 @@ function confirm() {
 
 <template>
   <div class="settings">
-    <div v-for="(setting, name) in settings" :key="name">
-      <setting-input v-model="settings[name]" />
-    </div>
+    <variables :model-value="{ data: settings, groups }" @update:modelValue="updateSettings" />
     <div v-if="Object.keys(settings).length === 0" v-text="t('servers.NoSettings')" />
     <btn color="error" @click="emit('back')"><icon name="back" />{{ t('common.Back') }}</btn>
     <btn color="primary" :disabled="!canSubmit()" @click="confirm()"><icon name="save" />{{ t('servers.Create') }}</btn>
