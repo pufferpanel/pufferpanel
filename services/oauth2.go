@@ -40,5 +40,5 @@ func (s *OAuth2) Delete(clientId string) error {
 	client := &models.Client{
 		ClientId: clientId,
 	}
-	return s.DB.Model(client).Delete(client).Error
+	return s.DB.Model(client).Delete(client, client).Error
 }

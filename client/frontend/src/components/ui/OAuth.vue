@@ -96,11 +96,11 @@ async function deleteClient(clientId, clientName) {
       <div class="warning" v-text="t('oauth.NewClientWarning')" />
       <div class="client-id">
         <span class="name" v-text="t('oauth.ClientId')+':'" />
-        <span class="value" v-text="createdData.id" />
+        <span class="value" v-text="createdData.client_id" />
       </div>
       <div class="client-secret">
         <span class="name" v-text="t('oauth.ClientSecret')+':'" />
-        <span class="value" v-text="createdData.secret" />
+        <span class="value" v-text="createdData.client_secret" />
       </div>
     </overlay>
   </div>
