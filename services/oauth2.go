@@ -24,7 +24,7 @@ func (s *OAuth2) GetForUser(userId uint) ([]*models.Client, error) {
 		UserId: userId,
 	}
 	var clients []*models.Client
-	err := s.DB.Where(client).Find(&client).Error
+	err := s.DB.Where(client).Find(&clients).Error
 	return clients, err
 }
 

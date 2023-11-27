@@ -256,7 +256,7 @@ func getPersonalOAuth2Clients(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, clients)
+	c.JSON(http.StatusOK, &clients)
 }
 
 // @Summary Create an account-level OAuth2 client
@@ -296,6 +296,8 @@ func createPersonalOAuth2Client(c *gin.Context) {
 		return
 	}
 
+	client.ClientSecret = secret
+
 	err = client.SetClientSecret(secret)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -311,10 +313,7 @@ func createPersonalOAuth2Client(c *gin.Context) {
 		logging.Error.Printf("Error sending email: %s\n", err)
 	}
 
-	c.JSON(http.StatusOK, models.Client{
-		ClientId:     client.ClientId,
-		ClientSecret: secret,
-	})
+	c.JSON(http.StatusOK, client)
 }
 
 // @Summary Deletes an account-level OAuth2 client
