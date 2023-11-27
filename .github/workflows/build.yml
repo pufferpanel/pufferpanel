@@ -13,6 +13,8 @@ on:
   pull_request:
     branches:
       - v3
+    paths-ignore:
+      - 'client/frontend/src/lang/**.json'
 
 env:
   SWAG_VERSION: "1.16.2"
