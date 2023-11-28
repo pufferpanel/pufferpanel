@@ -62,6 +62,15 @@ func TestUpdateScopesWhereGranted(t *testing.T) {
 			want: []*Scope{ScopeServerView, ScopeServerSftp},
 		},
 		{
+			name: "Set with admin indirectly",
+			args: args{
+				source:  []*Scope{ScopeServerView, ScopeServerSftp},
+				desired: []*Scope{ScopeServerReload},
+				changer: []*Scope{ScopeAdmin},
+			},
+			want: []*Scope{ScopeServerReload},
+		},
+		{
 			name: "Add and source has others",
 			args: args{
 				source:  []*Scope{ScopeServerView, ScopeServerSftp},

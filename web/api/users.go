@@ -291,13 +291,15 @@ func setUserPerms(c *gin.Context) {
 		return
 	}
 
-	//only allow scopes that the user has
-	allowedScopes := pufferpanel.Union(viewModel.Scopes, editorPerms.Scopes)
-
-	//update perms to match this "setup", but not stomp over what the user can't change
-	replacement := pufferpanel.UpdateScopesWhereGranted(perms.Scopes, allowedScopes, editorPerms.Scopes)
-
-	perms.Scopes = replacement
+	//admins can override, so skip our comparers
+	if pufferpanel.ContainsScope(editorPerms.Scopes, pufferpanel.ScopeAdmin) {
+		perms.Scopes = viewModel.Scopes
+	} else {
+		allowedScopes := pufferpanel.Union(viewModel.Scopes, editorPerms.Scopes)
+		//update perms to match this "setup", but not stomp over what the user can't change
+		replacement := pufferpanel.UpdateScopesWhereGranted(perms.Scopes, allowedScopes, editorPerms.Scopes)
+		perms.Scopes = replacement
+	}
 
 	err = ps.UpdatePermissions(perms)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
