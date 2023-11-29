@@ -120,10 +120,10 @@ func (us *User) Update(model *models.User) error {
 
 func (us *User) Delete(model *models.User) (err error) {
 	return us.DB.Transaction(func(tx *gorm.DB) error {
-		us.DB.Delete(models.Permissions{}, "user_id = ?", model.ID)
-		us.DB.Delete(models.Client{}, "user_id = ?", model.ID)
-		us.DB.Delete(models.Session{}, "user_id = ?", model.ID)
-		us.DB.Delete(models.User{}, "id = ?", model.ID)
+		tx.Delete(models.Permissions{}, "user_id = ?", model.ID)
+		tx.Delete(models.Client{}, "user_id = ?", model.ID)
+		tx.Delete(models.Session{}, "user_id = ?", model.ID)
+		tx.Delete(models.User{}, "id = ?", model.ID)
 		return nil
 	})
 }

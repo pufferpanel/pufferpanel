@@ -95,4 +95,12 @@ func TestUserApi(t *testing.T) {
 			return
 		}
 	})
+
+	t.Run("TestDelete", func(t *testing.T) {
+		url := fmt.Sprintf("/api/users/%d", newUserId)
+		response := CallAPI("DELETE", url, nil, session)
+		if !assert.Equal(t, http.StatusNoContent, response.Code) {
+			return
+		}
+	})
 }
