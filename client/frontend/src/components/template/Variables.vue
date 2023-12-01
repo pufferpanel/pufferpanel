@@ -30,6 +30,9 @@ const newGroup = ref({
 })
 const changeVarGroupOpen = ref(false)
 const changeVarGroup = ref({})
+const editGroupOpen = ref(false)
+const editGroup = ref({})
+const editGroupIndex = ref(0)
 
 const grouplessVars = computed(() => {
   if (Array.isArray(template.value.groups)) {
@@ -64,6 +67,24 @@ function add(group) {
     group
   }
   editOpen.value = true
+}
+
+function startEditGroup(index) {
+  editGroupIndex.value = index
+  editGroup.value = template.value.groups[index]
+  editGroupOpen.value = true
+}
+
+function cancelEditGroup() {
+  editGroupIndex.value = 0
+  editGroup.value = {}
+  editGroupOpen.value = false
+}
+
+function confirmEditGroup() {
+  template.value.groups[editGroupIndex.value] = editGroup.value
+  update()
+  cancelEditGroup()
 }
 
 function startEdit(name) {
@@ -264,12 +285,13 @@ const supportsOptions = {
   <div class="variables">
     <div class="hint" v-text="t('templates.description.Variables')" />
     <div v-if="template.groups && template.groups.length > 0">
-      <div v-for="group in template.groups" :key="group.order">
+      <div v-for="(group, index) in template.groups" :key="group.order">
         <div class="group-header">
           <div class="title">
             <h3 v-text="group.display" />
             <div class="hint" v-text="group.description" />
           </div>
+          <btn variant="icon" @click="startEditGroup(index)"><icon name="edit" /></btn>
           <btn variant="icon" @click="add(group)"><icon name="plus" /></btn>
           <btn :disabled="isFirstGroup(group.order)" variant="icon" @click="moveGroupUp(group.order)"><icon name="up" /></btn>
           <btn :disabled="isLastGroup(group.order)" variant="icon" @click="moveGroupDown(group.order)"><icon name="down" /></btn>
@@ -334,9 +356,20 @@ const supportsOptions = {
     <overlay v-model="addGroupOpen">
       <text-field v-model="newGroup.display" :label="t('templates.Display')" />
       <text-field v-model="newGroup.description" :label="t('templates.variables.Description')" />
+      <text-field v-model="newGroup.if" :label="t('common.Condition')" :hint="t('templates.variables.ConditionHint')" />
       <div class="actions">
         <btn color="error" @click="resetGroupAdd()"><icon name="close" />{{ t('common.Cancel') }}</btn>
         <btn color="primary" :disabled="newGroup.display.trim() === ''" @click="addGroup()"><icon name="check" />{{ t('common.Apply') }}</btn>
+      </div>
+    </overlay>
+
+    <overlay v-model="editGroupOpen">
+      <text-field v-model="editGroup.display" :label="t('templates.Display')" />
+      <text-field v-model="editGroup.description" :label="t('templates.variables.Description')" />
+      <text-field v-model="editGroup.if" :label="t('common.Condition')" :hint="t('templates.variables.ConditionHint')" />
+      <div class="actions">
+        <btn color="error" @click="cancelEditGroup()"><icon name="close" />{{ t('common.Cancel') }}</btn>
+        <btn color="primary" :disabled="editGroup.display.trim() === ''" @click="confirmEditGroup()"><icon name="check" />{{ t('common.Apply') }}</btn>
       </div>
     </overlay>
 
