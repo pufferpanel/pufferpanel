@@ -40,7 +40,10 @@ let unmodified = `{
     },
     "environment": {
         "type": "host"
-    }
+    },
+    "supportedEnvironments": [
+      { "type": "host" }
+    ]
 }`
 const template = ref(unmodified)
 const valid = ref({

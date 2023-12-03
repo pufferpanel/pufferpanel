@@ -9,6 +9,11 @@ const fields = {
       default: 'pufferpanel/generic'
     },
     {
+      name: 'containerRoot',
+      type: 'text',
+      default: ''
+    },
+    {
       name: 'networkMode',
       type: 'text',
       options: [

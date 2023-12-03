@@ -49,27 +49,9 @@ async function submitOtp() {
   loggedIn()
 }
 
-const timeouts = {}
-function now(f) {
-  if (timeouts[f.name]) {
-    clearTimeout(timeouts[f.name])
-    delete timeouts[f.name]
-  }
-  f()
-}
-
-function wait(f) {
-  if (timeouts[f.name]) {
-    clearTimeout(timeouts[f.name])
-  }
-  timeouts[f.name] = setTimeout(() => {
-    delete timeouts[f.name]
-    f()
-  }, 1000)
-}
-
-function validateEmail() {
+function validateEmail(onChange = false) {
   if (!validate.email(email.value)) {
+    if (onChange === true) return
     emailError.value = true
   } else {
     emailError.value = false
@@ -80,8 +62,9 @@ function emailErrorMsg() {
   if (emailError.value) return t('errors.ErrEmailInvalid')
 }
 
-function validatePassword() {
+function validatePassword(onChange = false) {
   if (!validate.password(password.value)) {
+    if (onChange === true) return
     passwordError.value = true
   } else {
     passwordError.value = false
@@ -97,8 +80,8 @@ function passwordErrorMsg() {
   <div class="login">
     <h1 v-text="t('users.Login')" />
     <form @keydown.enter="login()">
-      <text-field v-model="email" type="email" name="email" :label="t('users.Email')" :error="emailErrorMsg()" icon="email" autofocus @blur="now(validateEmail)" @change="wait(validateEmail)" />
-      <text-field v-model="password" type="password" name="password" :label="t('users.Password')" :error="passwordErrorMsg()" icon="lock" @blur="now(validatePassword)" @change="wait(validatePassword)" />
+      <text-field v-model="email" type="email" name="email" :label="t('users.Email')" :error="emailErrorMsg()" icon="email" autofocus @blur="validateEmail" @change="validateEmail(true)" />
+      <text-field v-model="password" type="password" name="password" :label="t('users.Password')" :error="passwordErrorMsg()" icon="lock" @blur="validatePassword" @change="validatePassword(true)" />
       <btn color="primary" :disabled="emailError || passwordError" @click="login()" v-text="t('users.Login')" />
       <btn v-if="$config.registrationEnabled" variant="text" @click="$router.push({ name: 'Register' })" v-text="t('users.RegisterLink')" />
     </form>

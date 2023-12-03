@@ -183,7 +183,7 @@ hr {
 }
 
 
-.main .operators, .main .variables, #run {
+.main .operators, .main .variables, #run, .main .environments {
   .list {
     gap: 0.25em;
     grid-gap: 0.25em;
@@ -191,6 +191,10 @@ hr {
       @include cols(12);
     }
   }
+}
+
+.main .environments .button.active .icon-default::before {
+  color: var(--warning);
 }
 
 .main .variables {

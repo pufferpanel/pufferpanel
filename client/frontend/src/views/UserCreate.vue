@@ -35,7 +35,7 @@ async function submit() {
 <template>
   <div class="usercreate">
     <h1 v-text="t('users.Create')" />
-    <form @submit.prevent="submit()">
+    <form @keydown.enter="submit()">
       <text-field
         v-model="username"
         autofocus
