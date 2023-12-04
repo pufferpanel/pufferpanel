@@ -33,9 +33,12 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN go build -v -buildvcs=false -o /home/pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/tools/templatetester
+RUN go build -v -buildvcs=false -o /home/pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/tools/templatetester && \
+    rm -rf /home/pufferpanel/build
 
 WORKDIR /home/pufferpanel
+
+COPY tester-entrypoint.sh .
 
 ENTRYPOINT ["./tester-entrypoint.sh"]
 CMD []
