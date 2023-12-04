@@ -40,5 +40,7 @@ WORKDIR /home/pufferpanel
 
 COPY tester-entrypoint.sh .
 
+RUN chmod +x tester-entrypoint.sh
+
 ENTRYPOINT ["./tester-entrypoint.sh"]
 CMD []
