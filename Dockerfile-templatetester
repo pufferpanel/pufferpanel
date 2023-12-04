@@ -37,7 +37,5 @@ RUN go build -v -buildvcs=false -o /home/pufferpanel/templatetester github.com/p
 
 WORKDIR /home/pufferpanel
 
-USER pufferpanel
-
-ENTRYPOINT ["./templatetester"]
+ENTRYPOINT ["./tester-entrypoint.sh"]
 CMD []
