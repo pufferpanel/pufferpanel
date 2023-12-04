@@ -29,7 +29,7 @@
   "ErrNoNodes": "利用可能なノードがありません",
   "ErrNoTemplates": "利用可能なテンプレートがありません",
   "ErrPasswordRequirements": "パスワードは最低8文字以上である必要があります",
-  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "ユーザー名は5文字以上で、英数字,下線\"_\",ハイフン\"-\"を含むことができます。",
   "ErrPasswordsNotIdentical": "パスワードが一致しません",
   "ErrSessionTimedOut": "セッションが時間切れです。再度ログインしてください。",
   "ErrMissingScope": "この操作を実行する権限をもっていません。",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "この名前のノードは既に存在しています",
   "ErrDirectoryUploadNotSupported": "フォルダをアップロードできません",
   "ErrDockerNotSupported": "Dockerはこのノードでサポートされていません",
-  "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
-  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
+  "ErrMissingBinary": "バイナリの欠落: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) はサポートされていません。 サポートされているOSは {expected} です。",
+  "ErrUnsupportedArch": "アーキテクチャ {actual} はサポートされていません。サポートされているアーキテクチャ{expected}。"
 }
