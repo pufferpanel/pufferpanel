@@ -86,4 +86,4 @@ jobs:
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
           docker rm -f templatetester || true
           echo "::add-mask::${{ secrets.RUNNER_IP }}"
-          docker run --rm --name templatetester --network host -v /tmp/pufferpanel-tester:/tmp/pufferpanel-tester -v /var/run/docker.sock:/var/run/docker.sock ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --workDir=/tmp/pufferpanel-tester --skip=${{ inputs.skip }} --require=${{ inputs.require }}
+          docker run --rm --name templatetester --network host -v /var/run/docker.sock:/var/run/docker.sock ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --workDir=/tmp/pufferpanel-tester --skip=${{ inputs.skip }} --require=${{ inputs.require }}
