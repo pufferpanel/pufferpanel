@@ -83,7 +83,9 @@ func main() {
 			}
 			return os.RemoveAll(path)
 		})
-		panicIf(err)
+		if err != nil && !os.IsNotExist(err) {
+			panicIf(err)
+		}
 	}
 
 	if deleteTemp {
