@@ -14,4 +14,4 @@ if [ -S ${DOCKER_SOCKET} ]; then
 fi
 
 # Change to regular user and run the rest of the entry point
-su ${REGULAR_USER} -c "./templatetester ${@}"
+su ${REGULAR_USER} -c "./templatetester $*"
