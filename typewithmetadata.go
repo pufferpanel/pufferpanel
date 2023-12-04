@@ -10,7 +10,7 @@ import (
 // MetadataType designed to be overridden
 type MetadataType struct {
 	Type     string                 `json:"type,omitempty"`
-	Metadata map[string]interface{} `json:"-,omitempty"`
+	Metadata map[string]interface{} `json:"-"`
 } //@name Metadata
 
 type ConditionalMetadataType struct {
