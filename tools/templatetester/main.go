@@ -179,11 +179,12 @@ func main() {
 						testScenarios = append(testScenarios, &TestScenario{
 							Name: v.Name,
 							Test: &TestTemplate{
-								Template:       tmp.Template,
-								Name:           tmp.Name,
-								Variables:      v.Variables,
-								Environment:    v.Environment,
-								IgnoreExitCode: v.IgnoreExitCode,
+								Template:           tmp.Template,
+								Name:               tmp.Name,
+								Variables:          v.Variables,
+								Environment:        v.Environment,
+								IgnoreExitCode:     v.IgnoreExitCode,
+								RuntimeRequirement: v.RuntimeRequirement,
 							},
 						})
 					}
@@ -201,10 +202,11 @@ func main() {
 					if len(template.SupportedEnvironments) > 0 {
 						for _, v := range template.SupportedEnvironments {
 							z := &TestTemplate{
-								Template:    tmp.Template,
-								Name:        tmp.Name,
-								Environment: make(map[string]interface{}),
-								Variables:   make(map[string]interface{}),
+								Template:           tmp.Template,
+								Name:               tmp.Name,
+								Environment:        make(map[string]interface{}),
+								Variables:          make(map[string]interface{}),
+								RuntimeRequirement: tmp.RuntimeRequirement,
 							}
 
 							scenario := &TestScenario{
@@ -329,7 +331,7 @@ func main() {
 		err = prg.Install()
 		panicIf(err)
 
-		err = runServer(prg)
+		err = runServer(prg, template.RuntimeRequirement)
 		panicIf(err)
 
 		running, err := prg.IsRunning()
@@ -379,7 +381,11 @@ func readDataJsonFile(fileName string) ([]*TestData, error) {
 	return result, err
 }
 
-func runServer(prg *servers.Server) (err error) {
+func runServer(prg *servers.Server, waitFor int) (err error) {
+	if waitFor == 0 {
+		waitFor = 5
+	}
+
 	err = prg.Start()
 	panicIf(err)
 
@@ -409,7 +415,7 @@ func runServer(prg *servers.Server) (err error) {
 	err = prg.Stop()
 	panicIf(err)
 
-	return prg.GetEnvironment().WaitForMainProcessFor(time.Minute * 5)
+	return prg.GetEnvironment().WaitForMainProcessFor(time.Duration(waitFor) * time.Minute)
 }
 
 func panicIf(err error) {
@@ -446,16 +452,18 @@ type TestScenario struct {
 }
 
 type TestTemplate struct {
-	Template       []byte
-	Name           string
-	Variables      map[string]interface{}
-	Environment    map[string]interface{}
-	IgnoreExitCode bool
+	Template           []byte
+	Name               string
+	Variables          map[string]interface{}
+	Environment        map[string]interface{}
+	IgnoreExitCode     bool
+	RuntimeRequirement int
 }
 
 type TestData struct {
-	Name           string                 `json:"name"`
-	Variables      map[string]interface{} `json:"variables"`
-	Environment    map[string]interface{} `json:"environment"`
-	IgnoreExitCode bool                   `json:"ignoreExitCode"`
+	Name               string                 `json:"name"`
+	Variables          map[string]interface{} `json:"variables"`
+	Environment        map[string]interface{} `json:"environment"`
+	IgnoreExitCode     bool                   `json:"ignoreExitCode"`
+	RuntimeRequirement int                    `json:"runtimeRequirement"`
 }
