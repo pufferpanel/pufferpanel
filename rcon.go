@@ -75,7 +75,7 @@ func (tc *RCONConnection) recon(init bool) {
 	var err error
 	tc.connection, err = rcon.Dial(fmt.Sprintf("%s:%s", tc.IP, tc.Port), tc.Password)
 	if err != nil {
-		logging.Debug.Printf("Error sending password for TCP TELNET socket: %s", err.Error())
+		logging.Debug.Printf("Error connecting to RCON: %s", err.Error())
 		return
 	}
 	defer tc.connection.Close()
