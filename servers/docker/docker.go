@@ -42,18 +42,11 @@ type Docker struct {
 }
 
 func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
-	running, err := d.IsRunning()
-	if err != nil {
-		return err
-	}
-	if running {
-		return pufferpanel.ErrContainerRunning
-	}
-
 	if d.downloadingImage {
 		return pufferpanel.ErrImageDownloading
 	}
 
+	var err error
 	var dockerClient *client.Client
 	dockerClient, err = d.getClient()
 	if err != nil {

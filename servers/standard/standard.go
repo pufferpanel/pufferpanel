@@ -23,15 +23,6 @@ type standard struct {
 }
 
 func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
-	running, err := s.IsRunning()
-	if err != nil {
-		return
-	}
-	if running {
-		err = pufferpanel.ErrProcessRunning
-		return
-	}
-
 	s.Wait.Add(1)
 	s.mainProcess = exec.Command(steps.Command, steps.Arguments...)
 	s.mainProcess.Dir = path.Join(s.GetRootDirectory(), steps.WorkingDirectory)

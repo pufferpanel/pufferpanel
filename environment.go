@@ -119,6 +119,17 @@ func (e *BaseEnvironment) Execute(steps ExecutionData) error {
 }
 
 func (e *BaseEnvironment) ExecuteAsync(steps ExecutionData) (err error) {
+	running, err := e.IsRunning()
+	if err != nil {
+		return
+	}
+	if running {
+		err = ErrProcessRunning
+		return
+	}
+
+	//update configs
+	steps.StdInConfig = steps.StdInConfig.Replace(steps.Variables)
 	return e.ExecutionFunction(steps)
 }
 

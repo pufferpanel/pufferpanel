@@ -26,14 +26,7 @@ type tty struct {
 }
 
 func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
-	running, err := t.IsRunning()
-	if err != nil {
-		return
-	}
-	if running {
-		err = pufferpanel.ErrProcessRunning
-		return
-	}
+	t.Wait.Add(1)
 
 	pr := exec.Command(steps.Command, steps.Arguments...)
 	pr.Dir = path.Join(t.GetRootDirectory(), steps.WorkingDirectory)
@@ -47,7 +40,6 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 		pr.Env = append(pr.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
-	t.Wait.Add(1)
 	pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 	t.mainProcess = pr
 	t.DisplayToConsole(true, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))

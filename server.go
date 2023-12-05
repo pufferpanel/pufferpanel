@@ -199,3 +199,13 @@ func parseRequirementRow(str string) []string {
 	}
 	return d
 }
+
+func (c ConsoleConfiguration) Replace(variables map[string]interface{}) ConsoleConfiguration {
+	return ConsoleConfiguration{
+		Type:     c.Type,
+		File:     ReplaceTokens(c.File, variables),
+		IP:       ReplaceTokens(c.IP, variables),
+		Port:     ReplaceTokens(c.Port, variables),
+		Password: ReplaceTokens(c.Password, variables),
+	}
+}
