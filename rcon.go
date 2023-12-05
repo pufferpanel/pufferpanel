@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gorcon/rcon"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
 	"log"
 	"time"
@@ -28,10 +29,11 @@ func (tc *RCONConnection) Write(p []byte) (n int, err error) {
 		}
 	}
 	if tc.connection != nil {
-		_, err = tc.connection.Execute(string(p))
+		res, err := tc.connection.Execute(string(p))
 		if err != nil {
 			tc.closer <- err
 		}
+		logging.Debug.Printf("RCON Response: %s\n", res)
 		return len(p), err
 	}
 	return 0, errors.New("rcon not available")
