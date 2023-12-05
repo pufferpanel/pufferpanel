@@ -78,6 +78,8 @@ func (tc *RCONConnection) recon(init bool) {
 		logging.Debug.Printf("Error connecting to RCON: %s", err.Error())
 		return
 	}
+	tc.ready = true
 	defer tc.connection.Close()
 	<-tc.closer
+	tc.ready = false
 }
