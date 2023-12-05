@@ -29,6 +29,7 @@ import (
 
 var templatesToSkip []string
 var mustTest []string
+var filesToTest []string
 
 // The purpose of this is to simply test all templates in our repo to the best of our ability
 // This will download all the templates, spin up a fake server using it, and attempt to run everything
@@ -45,13 +46,15 @@ func main() {
 	var deleteTemp bool
 	var workingDir string
 	var reuse bool
-	flag.StringVar(&gitRef, "gitref", "refs/heads/v3", "")
+	var filesArg string
+	flag.StringVar(&gitRef, "gitRef", "refs/heads/v3", "")
 	flag.StringVar(&skipStr, "skip", "", "")
 	flag.StringVar(&requiredStr, "require", "", "")
 	flag.StringVar(&templateFolder, "path", "", "")
 	flag.BoolVar(&deleteTemp, "delete", true, "")
 	flag.StringVar(&workingDir, "workDir", "", "")
 	flag.BoolVar(&reuse, "reuse", false, "")
+	flag.StringVar(&filesArg, "files", "", "")
 	flag.Parse()
 
 	if skipStr != "" {
@@ -61,6 +64,10 @@ func main() {
 	if requiredStr != "" {
 		mustTest = strings.Split(requiredStr, ",")
 		fmt.Printf("Require rules: %s\n", strings.Join(mustTest, " "))
+	}
+	if filesArg != "" {
+		filesToTest = strings.Split(filesArg, ",")
+		fmt.Printf("Files to test rules: %s\n", strings.Join(filesToTest, " "))
 	}
 
 	var err error
@@ -154,6 +161,19 @@ func main() {
 		for _, file := range files {
 			if file.Name() == "data.json" {
 				continue
+			}
+
+			if len(filesToTest) > 0 {
+				test := false
+				for _, t := range filesToTest {
+					if t == file.Name() {
+						test = true
+						break
+					}
+				}
+				if !test {
+					continue
+				}
 			}
 
 			filePath := filepath.Join(templateFolder, folder.Name(), file.Name())
