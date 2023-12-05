@@ -6,7 +6,6 @@ import (
 	"github.com/gorcon/rcon"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
-	"log"
 	"time"
 )
 
@@ -29,7 +28,8 @@ func (tc *RCONConnection) Write(p []byte) (n int, err error) {
 		}
 	}
 	if tc.connection != nil {
-		res, err := tc.connection.Execute(string(p))
+		var res string
+		res, err = tc.connection.Execute(string(p))
 		if err != nil {
 			tc.closer <- err
 		}
@@ -75,7 +75,8 @@ func (tc *RCONConnection) recon(init bool) {
 	var err error
 	tc.connection, err = rcon.Dial(fmt.Sprintf("%s:%s", tc.IP, tc.Port), tc.Password)
 	if err != nil {
-		log.Fatal(err)
+		logging.Debug.Printf("Error sending password for TCP TELNET socket: %s", err.Error())
+		return
 	}
 	defer tc.connection.Close()
 	<-tc.closer
