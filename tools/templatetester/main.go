@@ -393,7 +393,7 @@ func runServer(prg *servers.Server, waitFor int) (err error) {
 	go func() {
 		c <- prg.RunningEnvironment.WaitForMainProcess()
 	}()
-	t := time.After(time.Minute * 1)
+	t := time.After(time.Minute * time.Duration(waitFor))
 
 	//we need to make sure we were running for a minute
 	//if we did not, something went wrong
@@ -415,7 +415,7 @@ func runServer(prg *servers.Server, waitFor int) (err error) {
 	err = prg.Stop()
 	panicIf(err)
 
-	return prg.GetEnvironment().WaitForMainProcessFor(time.Duration(waitFor) * time.Minute)
+	return prg.GetEnvironment().WaitForMainProcessFor(5 * time.Minute)
 }
 
 func panicIf(err error) {
