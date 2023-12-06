@@ -14,22 +14,13 @@ const fields = {
       default: ''
     },
     {
-      name: 'networkMode',
-      type: 'text',
-      options: [
-        'bridge',
-        'host',
-        'overlay',
-        'macvlan',
-        'none'
-      ],
-      label: 'env.docker.networkMode',
-      default: 'host'
-    },
-    {
       name: 'networkName',
       type: 'text',
-      default: ''
+      options: [
+        'host',
+        'bridge'
+      ],
+      default: 'host'
     },
     {
       name: 'bindings',
