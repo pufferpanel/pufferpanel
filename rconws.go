@@ -1,12 +1,12 @@
 package pufferpanel
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/spf13/cast"
 	"io"
-	"log"
 	"net"
 	"sync"
 	"time"
@@ -18,7 +18,7 @@ type RCONWSConnection struct {
 	Port             string
 	Password         string
 	Reconnect        bool
-	Logger           *log.Logger
+	Environment      Environment
 	connection       *websocket.Conn
 	ready            bool
 	identifier       int
@@ -96,11 +96,15 @@ func (tc *RCONWSConnection) reconnector() {
 		listening := true
 		for listening {
 			var data []byte
+			var msg rconwsMessage
 			_, data, err = conn.ReadMessage()
 			if err != nil {
 				listening = false
 			} else if len(data) > 0 {
-				tc.Logger.Printf("[RCON-WS] " + string(data))
+				err = json.Unmarshal(data, &msg)
+				if err == nil {
+					tc.Environment.DisplayToConsole(false, "[RCON] %s", msg.Message)
+				}
 			}
 		}
 	}
