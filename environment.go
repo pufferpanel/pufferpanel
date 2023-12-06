@@ -81,13 +81,13 @@ type BaseEnvironment struct {
 	ServerId          string               `json:"-"`
 	LastExitCode      int                  `json:"-"`
 	Wrapper           io.Writer            `json:"-"` //our proxy back to the main
-	StdInWriter       io.WriteCloser       `json:"-"`
 	ConsoleTracker    *Tracker             `json:"-"`
 	StatusTracker     *Tracker             `json:"-"`
 	StatsTracker      *Tracker             `json:"-"`
 	Installing        bool                 `json:"-"`
 	IsRunningFunc     func() (bool, error) `json:"-"`
 	KillFunc          func() error         `json:"-"`
+	Console           Console              `json:"-"`
 }
 
 type ConsoleConfiguration struct {
@@ -130,7 +130,33 @@ func (e *BaseEnvironment) ExecuteAsync(steps ExecutionData) (err error) {
 
 	//update configs
 	steps.StdInConfig = steps.StdInConfig.Replace(steps.Variables)
+
 	return e.ExecutionFunction(steps)
+}
+
+func (e *BaseEnvironment) CreateConsoleStdinProxy(config ConsoleConfiguration, base io.WriteCloser) {
+	if config.Type == "telnet" {
+		e.Console = &TelnetConnection{
+			IP:       config.IP,
+			Port:     config.Port,
+			Password: config.Password,
+		}
+	} else if config.Type == "rcon" {
+		e.Console = &RCONConnection{
+			IP:       config.IP,
+			Port:     config.Port,
+			Password: config.Password,
+		}
+	} else if config.Type == "rconws" {
+		e.Console = &RCONWSConnection{
+			IP:       config.IP,
+			Port:     config.Port,
+			Password: config.Password,
+			Logger:   newLogger(e.ServerId),
+		}
+	} else {
+		e.Console = &NoStartConsole{Base: base}
+	}
 }
 
 func (e *BaseEnvironment) GetRootDirectory() string {
@@ -222,7 +248,8 @@ func (e *BaseEnvironment) WaitForMainProcessFor(timeout time.Duration) (err erro
 
 func (e *BaseEnvironment) CreateWrapper() io.Writer {
 	if config.ConsoleForward.Value() {
-		return io.MultiWriter(newLogger(e.ServerId).Writer(), e.ConsoleBuffer, e.ConsoleTracker)
+		//return io.MultiWriter(newLogger(e.ServerId).Writer(), e.ConsoleBuffer, e.ConsoleTracker)
+		return io.MultiWriter(logging.OriginalStdOut, e.ConsoleBuffer, e.ConsoleTracker)
 	}
 	return io.MultiWriter(e.ConsoleBuffer, e.ConsoleTracker)
 }
@@ -262,7 +289,7 @@ func (e *BaseEnvironment) ExecuteInMainProcess(cmd string) (err error) {
 		err = ErrServerOffline
 		return
 	}
-	_, err = io.WriteString(e.StdInWriter, cmd+"\n")
+	_, err = io.WriteString(e.Console, cmd+"\n")
 	return
 }
 
@@ -275,5 +302,5 @@ func (e *BaseEnvironment) Kill() error {
 }
 
 func newLogger(prefix string) *log.Logger {
-	return log.New(logging.Server.Writer(), "["+prefix+"] ", log.LstdFlags)
+	return log.New(logging.OriginalStdOut, "["+prefix+"] ", log.LstdFlags)
 }

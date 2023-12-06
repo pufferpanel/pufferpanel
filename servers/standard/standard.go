@@ -40,31 +40,14 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	s.mainProcess.Stdout = s.Wrapper
 	s.mainProcess.Stderr = s.Wrapper
 
-	if steps.StdInConfig.Type == "telnet" {
-		telnet := &pufferpanel.TelnetConnection{
-			IP:       steps.StdInConfig.IP,
-			Port:     steps.StdInConfig.Port,
-			Password: steps.StdInConfig.Password,
-		}
-		telnet.Start()
-		s.BaseEnvironment.StdInWriter = telnet
-	} else if steps.StdInConfig.Type == "rcon" {
-		rcon := &pufferpanel.RCONConnection{
-			IP:       steps.StdInConfig.IP,
-			Port:     steps.StdInConfig.Port,
-			Password: steps.StdInConfig.Password,
-		}
-		rcon.Start()
-		s.BaseEnvironment.StdInWriter = rcon
-	} else {
-		pipe, err := s.mainProcess.StdinPipe()
-		if err != nil {
-			s.Wait.Done()
-			return err
-		}
-
-		s.BaseEnvironment.StdInWriter = pipe
+	pipe, err := s.mainProcess.StdinPipe()
+	if err != nil {
+		s.Wait.Done()
+		return err
 	}
+
+	s.BaseEnvironment.CreateConsoleStdinProxy(steps.StdInConfig, pipe)
+	s.BaseEnvironment.Console.Start()
 
 	s.Log(logging.Info, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 	s.DisplayToConsole(true, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
@@ -152,7 +135,7 @@ func (s *standard) handleClose(callback func(exitCode int)) {
 	msg := messages.Status{Running: false}
 	_ = s.StatusTracker.WriteMessage(msg)
 
-	_ = s.StdInWriter.Close()
+	_ = s.Console.Close()
 
 	var exitCode int
 	if s.mainProcess == nil || s.mainProcess.ProcessState == nil || err != nil {

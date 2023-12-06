@@ -38,9 +38,5 @@ RUN go build -v -buildvcs=false -o /home/pufferpanel/templatetester github.com/p
 
 WORKDIR /home/pufferpanel
 
-COPY tester-entrypoint.sh .
-
-RUN chmod +x tester-entrypoint.sh
-
-ENTRYPOINT ["./tester-entrypoint.sh"]
+ENTRYPOINT ["./templatetester"]
 CMD []

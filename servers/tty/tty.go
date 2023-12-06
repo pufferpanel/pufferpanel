@@ -54,25 +54,8 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 		return
 	}
 
-	if steps.StdInConfig.Type == "telnet" {
-		telnet := &pufferpanel.TelnetConnection{
-			IP:       steps.StdInConfig.IP,
-			Port:     steps.StdInConfig.Port,
-			Password: steps.StdInConfig.Password,
-		}
-		telnet.Start()
-		t.BaseEnvironment.StdInWriter = telnet
-	} else if steps.StdInConfig.Type == "rcon" {
-		rcon := &pufferpanel.RCONConnection{
-			IP:       steps.StdInConfig.IP,
-			Port:     steps.StdInConfig.Port,
-			Password: steps.StdInConfig.Password,
-		}
-		rcon.Start()
-		t.BaseEnvironment.StdInWriter = rcon
-	} else {
-		t.BaseEnvironment.StdInWriter = processTty
-	}
+	t.BaseEnvironment.CreateConsoleStdinProxy(steps.StdInConfig, processTty)
+	t.BaseEnvironment.Console.Start()
 
 	go func(proxy io.Writer) {
 		_, _ = io.Copy(proxy, processTty)
@@ -144,7 +127,7 @@ func (t *tty) isRunning() (isRunning bool, err error) {
 func (t *tty) handleClose(callback func(exitCode int)) {
 	err := t.mainProcess.Wait()
 
-	_ = t.StdInWriter.Close()
+	_ = t.Console.Close()
 
 	var exitCode int
 	if t.mainProcess.ProcessState == nil || err != nil {
@@ -175,8 +158,6 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 
 	msg := messages.Status{Running: false, Installing: t.IsInstalling()}
 	_ = t.StatusTracker.WriteMessage(msg)
-
-	_ = t.StdInWriter.Close()
 
 	if callback != nil {
 		callback(exitCode)

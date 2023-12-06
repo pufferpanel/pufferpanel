@@ -109,7 +109,7 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		msg := messages.Status{Running: false, Installing: d.IsInstalling()}
 		_ = d.StatusTracker.WriteMessage(msg)
 
-		_ = d.StdInWriter.Close()
+		_ = d.Console.Close()
 
 		if steps.Callback != nil {
 			steps.Callback(exitCode)
@@ -127,25 +127,8 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		return err
 	}
 
-	if steps.StdInConfig.Type == "telnet" {
-		telnet := &pufferpanel.TelnetConnection{
-			IP:       steps.StdInConfig.IP,
-			Port:     steps.StdInConfig.Port,
-			Password: steps.StdInConfig.Password,
-		}
-		telnet.Start()
-		d.BaseEnvironment.StdInWriter = telnet
-	} else if steps.StdInConfig.Type == "rcon" {
-		rcon := &pufferpanel.RCONConnection{
-			IP:       steps.StdInConfig.IP,
-			Port:     steps.StdInConfig.Port,
-			Password: steps.StdInConfig.Password,
-		}
-		rcon.Start()
-		d.BaseEnvironment.StdInWriter = rcon
-	} else {
-		d.BaseEnvironment.StdInWriter = d.connection.Conn
-	}
+	d.BaseEnvironment.CreateConsoleStdinProxy(steps.StdInConfig, d.connection.Conn)
+	d.BaseEnvironment.Console.Start()
 
 	return err
 }

@@ -15,6 +15,7 @@ var Error = log.New(os.Stderr, "[ERROR] ", flags)
 var Debug = log.New(os.Stdout, "[DEBUG] ", flags)
 var Info = log.New(os.Stdout, "[INFO] ", flags)
 var Server = log.New(os.Stdout, "[SERVER] ", flags)
+var OriginalStdOut = os.Stdout
 
 func Initialize(useFiles bool) {
 	if useFiles {
