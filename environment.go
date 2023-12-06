@@ -149,10 +149,10 @@ func (e *BaseEnvironment) CreateConsoleStdinProxy(config ConsoleConfiguration, b
 		}
 	} else if config.Type == "rconws" {
 		e.Console = &RCONWSConnection{
-			IP:       config.IP,
-			Port:     config.Port,
-			Password: config.Password,
-			Logger:   newLogger(e.ServerId),
+			IP:          config.IP,
+			Port:        config.Port,
+			Password:    config.Password,
+			Environment: e,
 		}
 	} else {
 		e.Console = &NoStartConsole{Base: base}
