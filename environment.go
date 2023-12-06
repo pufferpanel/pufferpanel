@@ -275,5 +275,5 @@ func (e *BaseEnvironment) Kill() error {
 }
 
 func newLogger(prefix string) *log.Logger {
-	return log.New(logging.Info.Writer(), "["+prefix+"] ", 0)
+	return log.New(logging.Server.Writer(), "["+prefix+"] ", log.LstdFlags)
 }

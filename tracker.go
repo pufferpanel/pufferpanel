@@ -93,7 +93,3 @@ func (s *Socket) WriteJSON(data interface{}) error {
 func (s *Socket) Close() error {
 	return s.conn.Close()
 }
-
-func (s *Socket) ReadMessage() (messageType int, p []byte, err error) {
-	return s.conn.ReadMessage()
-}
