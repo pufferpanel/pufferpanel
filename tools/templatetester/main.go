@@ -361,7 +361,7 @@ func main() {
 			panic(errors.New("server is still running"))
 		}
 
-		if !template.IgnoreExitCode && prg.RunningEnvironment.GetLastExitCode() != 0 {
+		if !template.IgnoreExitCode && prg.RunningEnvironment.GetLastExitCode() != prg.Execution.ExpectedExitCode {
 			panicIf(fmt.Errorf("exit code status %d", prg.RunningEnvironment.GetLastExitCode()))
 		}
 
