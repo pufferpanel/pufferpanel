@@ -88,9 +88,6 @@ func (tc *RCONWSConnection) reconnector() {
 			continue
 		}
 
-		//wait a second for the prompt for passwords/other delays
-		time.Sleep(1 * time.Second)
-
 		tc.connection = conn
 		tc.ready = true
 		listening := true

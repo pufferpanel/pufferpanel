@@ -523,7 +523,7 @@ func (p *Server) GetNetwork() string {
 }
 
 func (p *Server) afterExit(exitCode int) {
-	graceful := exitCode == 0
+	graceful := exitCode == p.Execution.ExpectedExitCode
 	if graceful {
 		p.CrashCounter = 0
 	}

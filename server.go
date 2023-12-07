@@ -60,6 +60,7 @@ type Execution struct {
 	AutoStart               bool                      `json:"autostart,omitempty"`
 	AutoRestartFromCrash    bool                      `json:"autorecover,omitempty"`
 	AutoRestartFromGraceful bool                      `json:"autorestart,omitempty"`
+	ExpectedExitCode        int                       `json:"expectedExitCode,omitempty"`
 } //@name Execution
 
 type Name struct {
