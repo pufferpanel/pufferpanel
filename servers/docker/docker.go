@@ -88,33 +88,7 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		_, _ = io.Copy(d.Wrapper, d.connection.Reader)
 	}()
 
-	go func() {
-		var exitCode int
-
-		okChan, errChan := dockerClient.ContainerWait(ctx, d.ContainerId, container.WaitConditionRemoved)
-		select {
-		case info := <-okChan:
-			exitCode = cast.ToInt(info.StatusCode)
-		case chanErr := <-errChan:
-			exitCode = 1
-			if chanErr != nil {
-				d.Log(logging.Error, "Error from error channel, awaiting exit `%v`\n", chanErr)
-			}
-		}
-
-		d.LastExitCode = exitCode
-
-		d.Wait.Done()
-
-		msg := messages.Status{Running: false, Installing: d.IsInstalling()}
-		_ = d.StatusTracker.WriteMessage(msg)
-
-		_ = d.Console.Close()
-
-		if steps.Callback != nil {
-			steps.Callback(exitCode)
-		}
-	}()
+	go d.handleClose(dockerClient, steps.Callback)
 
 	startOpts := types.ContainerStartOptions{}
 
@@ -452,6 +426,34 @@ func (d *Docker) SendCode(code int) error {
 
 	ctx := context.Background()
 	return dockerClient.ContainerKill(ctx, d.ContainerId, cast.ToString(code))
+}
+
+func (d *Docker) handleClose(client *client.Client, callback func(int)) {
+	exitCode := -1
+	okChan, errChan := client.ContainerWait(context.Background(), d.ContainerId, container.WaitConditionRemoved)
+
+	if chanErr := <-errChan; chanErr != nil {
+		d.Log(logging.Error, "Error from error channel: %s\n", chanErr.Error())
+	} else {
+		info := <-okChan
+		exitCode = cast.ToInt(info.StatusCode)
+		if info.Error != nil {
+			d.Log(logging.Error, "Error from info channel: %s\n", info.Error.Message)
+		}
+	}
+
+	d.LastExitCode = exitCode
+
+	d.Wait.Done()
+
+	msg := messages.Status{Running: false, Installing: d.IsInstalling()}
+	_ = d.StatusTracker.WriteMessage(msg)
+
+	_ = d.Console.Close()
+
+	if callback != nil {
+		callback(exitCode)
+	}
 }
 
 func calculateCPUPercent(v *types.StatsJSON) float64 {
