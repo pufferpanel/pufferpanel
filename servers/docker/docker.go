@@ -88,6 +88,9 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		_, _ = io.Copy(d.Wrapper, d.connection.Reader)
 	}()
 
+	d.BaseEnvironment.CreateConsoleStdinProxy(steps.StdInConfig, d.connection.Conn)
+	d.BaseEnvironment.Console.Start()
+
 	go d.handleClose(dockerClient, steps.Callback)
 
 	startOpts := types.ContainerStartOptions{}
@@ -100,9 +103,6 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	if err != nil {
 		return err
 	}
-
-	d.BaseEnvironment.CreateConsoleStdinProxy(steps.StdInConfig, d.connection.Conn)
-	d.BaseEnvironment.Console.Start()
 
 	return err
 }
@@ -292,8 +292,10 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		containerRoot = "/pufferpanel"
 	}
 
-	if !filepath.IsAbs(containerRoot) {
-		return pufferpanel.ErrPathNotAbs(containerRoot)
+	if runtime.GOOS != "windows" {
+		if !filepath.IsAbs(containerRoot) {
+			return pufferpanel.ErrPathNotAbs(containerRoot)
+		}
 	}
 
 	imageName := pufferpanel.ReplaceTokens(d.ImageName, data.Variables)
@@ -360,7 +362,7 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		containerConfig.Entrypoint = cmdSlice
 	}
 
-	if runtime.GOOS == "linux" {
+	if runtime.GOOS != "windows" {
 		containerConfig.User = fmt.Sprintf("%d:%d", os.Getuid(), os.Getgid())
 	}
 
@@ -430,15 +432,20 @@ func (d *Docker) SendCode(code int) error {
 
 func (d *Docker) handleClose(client *client.Client, callback func(int)) {
 	exitCode := -1
-	okChan, errChan := client.ContainerWait(context.Background(), d.ContainerId, container.WaitConditionRemoved)
+	okChan, errChan := client.ContainerWait(context.Background(), d.ContainerId, container.WaitConditionNotRunning)
 
-	if chanErr := <-errChan; chanErr != nil {
-		d.Log(logging.Error, "Error from error channel: %s\n", chanErr.Error())
-	} else {
-		info := <-okChan
-		exitCode = cast.ToInt(info.StatusCode)
-		if info.Error != nil {
-			d.Log(logging.Error, "Error from info channel: %s\n", info.Error.Message)
+	select {
+	case chanErr := <-errChan:
+		{
+			exitCode = -999
+			d.Log(logging.Error, "Error from error channel: %s\n", chanErr.Error())
+		}
+	case info := <-okChan:
+		{
+			exitCode = cast.ToInt(info.StatusCode)
+			if info.Error != nil {
+				d.Log(logging.Error, "Error from info channel: %s\n", info.Error.Message)
+			}
 		}
 	}
 
@@ -449,7 +456,7 @@ func (d *Docker) handleClose(client *client.Client, callback func(int)) {
 	msg := messages.Status{Running: false, Installing: d.IsInstalling()}
 	_ = d.StatusTracker.WriteMessage(msg)
 
-	_ = d.Console.Close()
+	_ = d.BaseEnvironment.Console.Close()
 
 	if callback != nil {
 		callback(exitCode)

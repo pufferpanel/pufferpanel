@@ -309,7 +309,7 @@ func main() {
 			existingContainers, err := docker.ContainerList(ctx, opts)
 			panicIf(err)
 			if len(existingContainers) > 0 {
-				err = docker.ContainerRemove(ctx, template.Name, types.ContainerRemoveOptions{
+				err = docker.ContainerRemove(ctx, scenario.Name, types.ContainerRemoveOptions{
 					Force: true,
 				})
 				panicIf(err)
