@@ -28,7 +28,11 @@ export default {
     app.provide('hotkeys', () => {
       const res = {}
       Object.keys(currentHotkeys).map(k => {
-        res[k] = Object.values(currentHotkeys[k]).flat()
+        res[k] =
+          currentHotkeys[k]
+            .filter(o => o.el.offsetWidth || o.el.offsetHeight || o.el.getClientRects().length)
+            .map(o => o.keys)
+            .flat()
       })
       return res
     })
@@ -36,9 +40,8 @@ export default {
       beforeMount(el, binding, vnode) {
         if (!binding.value) return
         const group = getGroup(binding.instance)
-        if (!currentHotkeys[group]) currentHotkeys[group] = {}
-        if (!currentHotkeys[group][el]) currentHotkeys[group][el] = []
-        currentHotkeys[group][el].push(binding.value)
+        if (!currentHotkeys[group]) currentHotkeys[group] = []
+        currentHotkeys[group].push({ el, keys: binding.value })
         if (typeof binding.value === 'string') {
           registerHotkey(el, binding.value, vnode)
         }
@@ -48,11 +51,14 @@ export default {
       },
       beforeUnmount(el, binding) {
         Object.keys(currentHotkeys).map(k => {
-          if (currentHotkeys[k][el]) {
-            currentHotkeys[k][el] = currentHotkeys[k][el].filter(e => e !== binding.value)
-            if (currentHotkeys[k][el].length === 0) delete currentHotkeys[k][el]
-            if (Object.keys(currentHotkeys[k]).length === 0) delete currentHotkeys[k]
+          for (let i = 0; i < currentHotkeys[k].length; i++) {
+            if (currentHotkeys[k][i].keys === binding.value) {
+              currentHotkeys[k][i].keys = []
+              break
+            }
           }
+          currentHotkeys[k] = currentHotkeys[k].filter(o => o.keys.length > 0)
+          if (currentHotkeys[k].length === 0) delete currentHotkeys[k]
         })
         uninstall(el)
       }
