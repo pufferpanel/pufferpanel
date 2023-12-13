@@ -432,7 +432,7 @@ func (d *Docker) SendCode(code int) error {
 
 func (d *Docker) handleClose(client *client.Client, callback func(int)) {
 	exitCode := -1
-	okChan, errChan := client.ContainerWait(context.Background(), d.ContainerId, container.WaitConditionNotRunning)
+	okChan, errChan := client.ContainerWait(context.Background(), d.ContainerId, container.WaitConditionRemoved)
 
 	select {
 	case chanErr := <-errChan:
