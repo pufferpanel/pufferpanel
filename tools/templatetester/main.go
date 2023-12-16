@@ -127,16 +127,18 @@ func main() {
 
 	//get all templates
 	if templateFolder == "" {
-		templateFolder = filepath.Join(workingDir, "templates")
-		err = os.MkdirAll(templateFolder, 0755)
-		panicIf(err)
+		if templateFolder = os.Getenv("TEMPLATE_PATH"); templateFolder == "" {
+			templateFolder = filepath.Join(workingDir, "templates")
+			err = os.MkdirAll(templateFolder, 0755)
+			panicIf(err)
 
-		log.Printf("Cloning template repo")
-		_, err = git.PlainClone(templateFolder, false, &git.CloneOptions{
-			URL:           "https://github.com/PufferPanel/templates",
-			ReferenceName: plumbing.ReferenceName(gitRef),
-		})
-		panicIf(err)
+			log.Printf("Cloning template repo")
+			_, err = git.PlainClone(templateFolder, false, &git.CloneOptions{
+				URL:           "https://github.com/PufferPanel/templates",
+				ReferenceName: plumbing.ReferenceName(gitRef),
+			})
+			panicIf(err)
+		}
 	}
 
 	var templateFolders []os.DirEntry
