@@ -30,6 +30,7 @@ type SteamGameDl struct {
 
 func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 	env.DisplayToConsole(true, "Downloading game from Steam")
+
 	rootBinaryFolder := config.BinariesFolder.Value()
 
 	err = downloadBinaries(rootBinaryFolder)
@@ -174,9 +175,6 @@ func downloadMetadata(env pufferpanel.Environment) error {
 		return err
 	}
 
-	for source, target := range RenameFolders {
-		_ = os.Rename(filepath.Join(env.GetRootDirectory(), ".steam", source), filepath.Join(env.GetRootDirectory(), ".steam", target))
-	}
 	return err
 }
 

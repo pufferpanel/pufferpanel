@@ -1,6 +1,7 @@
 package servers
 
 import (
+	"errors"
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/common/types"
 	"github.com/google/cel-go/common/types/ref"
@@ -39,6 +40,6 @@ func cel_file_exists(env pufferpanel.Environment) functions.UnaryOp {
 func cel_in_path(environment pufferpanel.Environment) functions.UnaryOp {
 	return func(fileName ref.Val) ref.Val {
 		_, err := exec.LookPath(fileName.Value().(string))
-		return types.Bool(err == nil)
+		return types.Bool(err == nil || errors.Is(err, exec.ErrDot))
 	}
 }
