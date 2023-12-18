@@ -632,7 +632,7 @@ func getServerUsers(c *gin.Context) {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Param email path string true "Email of user"
-// @Param body body models.PermissionView true "New permissions to apply"
+// @Param permissions body models.PermissionView true "New permissions to apply"
 // @Router /api/servers/{id}/users/{email} [put]
 // @Security OAuth2Application[server.users.edit]
 func editServerUser(c *gin.Context) {
@@ -713,9 +713,15 @@ func editServerUser(c *gin.Context) {
 	}
 
 	//update perms to match this "setup", but not stomp over what the user can't change
-	replacement := pufferpanel.UpdateScopesWhereGranted(existing.Scopes, perms.Scopes, currentPerms.Scopes)
+	if pufferpanel.ContainsScope(currentPerms.Scopes, pufferpanel.ScopeServerAdmin) {
+		existing.Scopes = perms.Scopes
+	} else {
+		allowedScopes := pufferpanel.Union(existing.Scopes, currentPerms.Scopes)
+		//update perms to match this "setup", but not stomp over what the user can't change
+		replacement := pufferpanel.UpdateScopesWhereGranted(existing.Scopes, allowedScopes, currentPerms.Scopes)
+		existing.Scopes = replacement
+	}
 
-	existing.Scopes = replacement
 	err = ps.UpdatePermissions(existing)
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
