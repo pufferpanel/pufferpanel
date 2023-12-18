@@ -661,6 +661,11 @@ func editServerUser(c *gin.Context) {
 		return
 	}
 
+	currentGlobalPerms, err := ps.GetForUserAndServer(currentUser.ID, nil)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
 	var registerToken string
 	var user *models.User
 	if email != "" {
@@ -713,7 +718,7 @@ func editServerUser(c *gin.Context) {
 	}
 
 	//update perms to match this "setup", but not stomp over what the user can't change
-	if pufferpanel.ContainsScope(currentPerms.Scopes, pufferpanel.ScopeServerAdmin) {
+	if pufferpanel.ContainsScope(currentPerms.Scopes, pufferpanel.ScopeServerAdmin) || pufferpanel.ContainsScope(currentGlobalPerms.Scopes, pufferpanel.ScopeServerAdmin) || pufferpanel.ContainsScope(currentGlobalPerms.Scopes, pufferpanel.ScopeAdmin) {
 		existing.Scopes = perms.Scopes
 	} else {
 		allowedScopes := pufferpanel.Union(existing.Scopes, currentPerms.Scopes)
