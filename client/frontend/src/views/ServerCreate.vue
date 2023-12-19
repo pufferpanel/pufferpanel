@@ -14,9 +14,9 @@ const environment = ref({})
 const users = ref([])
 const template = ref({})
 
-function envConfirmed(name, nodeId, nodeOs, nodeArch, envConfig, u) {
+function envConfirmed(name, nodeId, nodeOs, nodeArch, env, u) {
   users.value = u
-  environment.value = { name, nodeId, nodeOs, nodeArch, envConfig }
+  environment.value = { name, nodeId, nodeOs, nodeArch, env }
   step.value = 'template'
 }
 
@@ -36,12 +36,12 @@ function settingsBack() {
   step.value = 'template'
 }
 
-async function settingsConfirmed(settings) {
+async function settingsConfirmed(settings, envSettings) {
   // last step confirmed, create server
   const request = template.value
   request.name = environment.value.name
   request.node = environment.value.nodeId
-  request.environment = environment.value.envConfig
+  request.environment = envSettings
   request.users = users.value
   request.data = {}
   for (const setting in settings) {
@@ -76,7 +76,7 @@ async function settingsConfirmed(settings) {
       <Environment v-if="step === 'environment'" :nouser="!$api.auth.hasScope('users.info.search')" @confirm="envConfirmed" />
       <select-template
         v-if="step === 'template'"
-        :env="environment.envConfig.type"
+        :env="environment.env"
         :os="environment.nodeOs"
         :arch="environment.nodeArch"
         @back="templateBack()"
@@ -86,6 +86,7 @@ async function settingsConfirmed(settings) {
         v-if="step === 'settings'"
         :data="template.data"
         :groups="template.groups"
+        :env="template.supportedEnvironments.filter(e => e.type === environment.env)[0]"
         @back="settingsBack()"
         @confirm="settingsConfirmed"
       />

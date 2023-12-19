@@ -65,10 +65,11 @@ func (t *Template) GetAllFromRepo(repoId uint) ([]*models.Template, error) {
 			replacement[k] = &models.Template{
 				Name: v.Name,
 				Server: pufferpanel.Server{
-					Display:      v.Server.Display,
-					Type:         v.Server.Type,
-					Environment:  v.Server.Environment,
-					Requirements: v.Server.Requirements,
+					Display:               v.Server.Display,
+					Type:                  v.Server.Type,
+					Environment:           v.Server.Environment,
+					SupportedEnvironments: v.Server.SupportedEnvironments,
+					Requirements:          v.Server.Requirements,
 				},
 			}
 		}
@@ -124,10 +125,11 @@ func (t *Template) GetAllFromRepo(repoId uint) ([]*models.Template, error) {
 				templates = append(templates, &models.Template{
 					Name: name,
 					Server: pufferpanel.Server{
-						Display:      template.Server.Display,
-						Type:         template.Server.Type,
-						Environment:  template.Server.Environment,
-						Requirements: template.Server.Requirements,
+						Display:               template.Server.Display,
+						Type:                  template.Server.Type,
+						Environment:           template.Server.Environment,
+						SupportedEnvironments: template.Server.SupportedEnvironments,
+						Requirements:          template.Server.Requirements,
 					},
 				})
 			}

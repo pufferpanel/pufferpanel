@@ -5,7 +5,6 @@ import Multiselect from '@vueform/multiselect'
 import Btn from '@/components/ui/Btn.vue'
 import Icon from '@/components/ui/Icon.vue'
 import Dropdown from '@/components/ui/Dropdown.vue'
-import EnvironmentConfig from '@/components/ui/EnvironmentConfig.vue'
 import TextField from '@/components/ui/TextField.vue'
 
 const { t } = useI18n()
@@ -59,13 +58,13 @@ async function nodeChanged() {
     })
 
     availableEnvs.value = nodeFeatures.value.environments.map(env => {
-      return { value: { type: env }, label: t(`env.${env}.name`) }
+      return { value: env, label: t(`env.${env}.name`) }
     })
 
     if (availableEnvs.value.length > 0) {
       selectedEnv.value = availableEnvs.value[0].value
     } else {
-      msEnv.value.select({ value: { type: 'unsupported' }, label: '' })
+      msEnv.value.select({ value: 'unsupported', label: '' })
       envError.value = t('servers.NoSupportedEnvironmentOnSelectedNode')
     }
   } catch (e) {
@@ -73,22 +72,13 @@ async function nodeChanged() {
     // general error handling takes care of informing user
     // we just need to set a proper error state
     availableEnvs.value = []
-    msEnv.value.select({ value: { type: 'unsupported' }, label: '' })
+    msEnv.value.select({ value: 'unsupported', label: '' })
     envError.value = t('servers.CannotFetchNodeEnvironments')
   }
 }
 
-function updateEnvironment(event) {
-  const environment = availableEnvs.value.find(env => env.value.type === event.type)
-  // copy fields while keeping reference so multiselect does not get confused
-  for (let field in event) {
-     environment.value[field] = event[field]
-  }
-  msEnv.value.select(environment)
-}
-
 function validateEnvironment() {
-  return selectedEnv.value.type !== 'unsupported'
+  return selectedEnv.value !== 'unsupported'
 }
 
 function validateName() {
@@ -164,7 +154,6 @@ function confirm() {
     </div>
     <dropdown v-model="node" :options="nodes" :label="t('nodes.Node')" @change="nodeChanged()" />
     <dropdown ref="msEnv" v-model="selectedEnv" :options="availableEnvs" :label="t('servers.Environment')" :error="envError" />
-    <environment-config :model-value="selectedEnv" @update:modelValue="updateEnvironment" />
     <btn color="primary" :disabled="!canSubmit()" @click="confirm()"><icon name="check" />{{ t('common.Next') }}</btn>
   </div>
 </template>

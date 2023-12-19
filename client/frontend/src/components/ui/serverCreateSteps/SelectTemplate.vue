@@ -20,8 +20,11 @@ const props = defineProps({
 })
 
 function templateEnvMatches(template) {
-  if (!template.environment) return false
-  if (template.environment.type === props.env) return true
+  if (!Array.isArray(template.supportedEnvironments)) {
+    if (!template.environment) return false // neither supported nor default env defined, ignore
+    template.supportedEnvironments = [template.environment]
+  }
+  if (template.supportedEnvironments.filter(e => e.type === props.env).length > 0) return true
   return false
 }
 

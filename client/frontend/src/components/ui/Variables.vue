@@ -1,5 +1,6 @@
 <script setup>
 import { computed, inject } from 'vue'
+import { useI18n } from 'vue-i18n'
 import SettingInput from '@/components/ui/SettingInput.vue'
 
 const props = defineProps({
@@ -9,6 +10,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
+const { t } = useI18n()
 const conditions = inject('conditions')
 
 // ensure groups are sorted correctly
