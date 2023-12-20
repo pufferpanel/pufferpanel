@@ -1007,12 +1007,6 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   @include card;
 }
 
-.env-tag {
-  font-size: 0.85em;
-  border-radius: 0.75em;
-  padding: 0.1em 0.35em;
-}
-
 .templatelist .template {
   display: flex;
   flex-flow: row wrap;
@@ -1023,18 +1017,6 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   .subline {
     flex-grow: 1;
   }
-}
-
-.env-tag.docker {
-  background-color: #2496ed40;
-}
-
-.env-tag.host {
-  background-color: #4caf5040;
-}
-
-.env-tag.missing {
-  background-color: #dc313140;
 }
 
 .serverview {

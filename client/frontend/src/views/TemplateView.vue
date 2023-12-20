@@ -59,6 +59,7 @@ onMounted(async () => {
   const res = await api.template.get(route.params.repo, route.params.id)
   delete res.readme
   if (!res.environment) res.environment = {}
+  if (!res.supportedEnvironments) res.supportedEnvironments = []
   template.value = JSON.stringify(res, undefined, 4)
   setTimeout(() => {
     unmodified = template.value

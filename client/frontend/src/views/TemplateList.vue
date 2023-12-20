@@ -18,14 +18,7 @@ onMounted(async () => {
 async function loadTemplates() {
   templatesLoaded.value = false
   const templates = await api.template.listAllTemplates()
-  templatesByRepo.value = templates.map(repo => {
-    repo.templates = repo.templates.map(t => {
-      if (t.environment && (t.environment.type === 'standard' || t.environment.type === 'tty'))
-        t.environment.type = 'host'
-      return t
-    })
-    return repo
-  }).sort((a, b) => a.id > b.id)
+  templatesByRepo.value = templates.sort((a, b) => a.id > b.id)
   templatesLoaded.value = true
 }
 
@@ -49,12 +42,6 @@ function focusList() {
             <div class="template">
               <span class="title">{{template.display}}</span>
               <span class="subline">{{template.type}}</span>
-              <span v-if="template.environment" :class="['env-tag', template.environment.type]">
-                {{t(`env.${template.environment.type}.name`)}}
-              </span>
-              <span v-else class="env-tag missing">
-                {{t(`env.Missing`)}}
-              </span>
             </div>
           </router-link>
         </div>
