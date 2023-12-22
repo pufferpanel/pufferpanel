@@ -31,11 +31,11 @@ const perms = [
 	'server.users.create',
 	'server.users.edit',
 	'server.users.delete',
-	'server.tasks.view',
-	'server.tasks.run',
-	'server.tasks.create',
-	'server.tasks.delete',
-	'server.tasks.edit',
+	//'server.tasks.view',
+	//'server.tasks.run',
+	//'server.tasks.create',
+	//'server.tasks.delete',
+	//'server.tasks.edit',
 	'server.start',
 	'server.stop',
 	'server.kill',
@@ -68,11 +68,10 @@ async function sendInvite() {
   loadUsers()
 }
 
-async function togglePerm(user, perm) {
-  user[perm] = !user[perm]
+async function updatePerms(user) {
   const scopes = Object.keys(user.scopes).filter(p => user.scopes[p])
-  user.scopes = scopes
-  await props.server.updateUser(user)
+  const update = { ...user, scopes }
+  await props.server.updateUser(update)
   toast.success(t('users.UpdateSuccess'))
 }
 
@@ -83,14 +82,14 @@ async function deleteUser(user) {
 
 async function loadUsers() {
   const u = await props.server.getUsers()
-  u.map(user => {
+  users.value = u.map(user => {
     const scopes = {}
     perms.map(p => {
       scopes[p.name] = user.scopes.indexOf(p.name) > -1
-      user.scopes = scopes
     })
+    user.scopes = scopes
+    return user
   })
-  users.value = u
 }
 
 onMounted(async () => {
@@ -110,7 +109,7 @@ onMounted(async () => {
         :disabled="!server.hasScope('server.users.edit')"
         :label="perm.label"
         :hint="perm.hint"
-        @click="togglePerm(user, perm.name)"
+        @update:modelValue="updatePerms(user)"
       />
       <btn v-if="server.hasScope('server.users.delete')" color="error" @click="deleteUser(user)" v-text="t('users.Delete')" />
     </div>
