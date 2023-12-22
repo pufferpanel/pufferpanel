@@ -15,6 +15,7 @@ type ServerView struct {
 	IP           string           `json:"ip,omitempty"`
 	Port         uint16           `json:"port,omitempty"`
 	Type         string           `json:"type"`
+	Icon         string           `json:"icon,omitempty"`
 	CanGetStatus bool             `json:"canGetStatus,omitempty"`
 } //@name ServerInfo
 
@@ -31,6 +32,7 @@ func FromServer(server *Server) *ServerView {
 		IP:         server.IP,
 		Port:       server.Port,
 		Type:       server.Type,
+		Icon:       server.Icon,
 		Node:       FromNode(&server.Node),
 	}
 

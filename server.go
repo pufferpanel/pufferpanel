@@ -14,6 +14,7 @@ type Server struct {
 	Type
 	Identifier            string                    `json:"id,omitempty"`
 	Display               string                    `json:"display,omitempty"`
+	Icon                  string                    `json:"icon,omitempty"`
 	Variables             map[string]Variable       `json:"data,omitempty"`
 	Groups                []Group                   `json:"groups,omitempty"`
 	Installation          []ConditionalMetadataType `json:"install,omitempty"`

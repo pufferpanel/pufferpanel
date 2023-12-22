@@ -330,6 +330,7 @@ func createServer(c *gin.Context) {
 		IP:         cast.ToString(ip),
 		Port:       cast.ToUint16(port),
 		Type:       postBody.Type.Type,
+		Icon:       postBody.Icon,
 	}
 
 	users := make([]*models.User, len(postBody.Users))
@@ -471,6 +472,14 @@ func editServer(c *gin.Context) {
 
 	if postBody.Name != "" {
 		server.Name = postBody.Name
+	}
+
+	if postBody.Type.Type != "" {
+		server.Type = postBody.Type.Type
+	}
+
+	if postBody.Icon != "" {
+		server.Icon = postBody.Icon
 	}
 
 	err = ss.Update(server)

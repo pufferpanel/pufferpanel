@@ -19,6 +19,7 @@ type Server struct {
 	Port uint16 `gorm:"" json:"-" validate:"omitempty"`
 
 	Type string `gorm:"NOT NULL;default='generic'" json:"-" validate:"required,printascii"`
+	Icon string `gorm:"" json:"-"`
 
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
