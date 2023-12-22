@@ -595,7 +595,7 @@ func deleteServer(c *gin.Context) {
 }
 
 // @Summary Gets all users for a server
-// @Success 200 {object} []models.PermissionView
+// @Success 200 {object} []models.UserPermissionsView
 // @Param id path string true "Server ID"
 // @Param email path string true "Email"
 // @Router /api/servers/{id}/user [get]
