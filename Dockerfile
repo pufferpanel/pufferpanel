@@ -1,10 +1,13 @@
 ###
 # Builder container
 ###
-FROM node:18-alpine AS node
+FROM node:20-alpine AS node
 
 WORKDIR /build
 COPY client .
+
+RUN rm -rf /build/*/node_modules/ && \
+    rm -rf /build/*/dist/
 
 RUN yarn install && \
     yarn build

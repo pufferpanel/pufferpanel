@@ -19,3 +19,9 @@ func FromPermission(p *Permissions) *PermissionView {
 
 	return model
 }
+
+type UserPermissionsView struct {
+	Username string               `json:"username,omitempty"`
+	Email    string               `json:"email"`
+	Scopes   []*pufferpanel.Scope `json:"scopes"`
+}

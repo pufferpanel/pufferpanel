@@ -19,7 +19,7 @@ on:
 env:
   SWAG_VERSION: "1.16.2"
   GO_VERSION: "1.21"
-  NODE_VERSION: "18"
+  NODE_VERSION: "20"
   TINYGO_VERSION: "0.28.1"
   TAG: formatter
   REGISTRY: ghcr.io

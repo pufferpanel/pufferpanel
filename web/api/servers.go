@@ -597,7 +597,9 @@ func deleteServer(c *gin.Context) {
 // @Summary Gets all users for a server
 // @Success 200 {object} []models.PermissionView
 // @Param id path string true "Server ID"
+// @Param email path string true "Email"
 // @Router /api/servers/{id}/user [get]
+// @Router /api/servers/{id}/user/{email} [get]
 // @Security OAuth2Application[server.users.view]
 func getServerUsers(c *gin.Context) {
 	var err error
@@ -606,26 +608,67 @@ func getServerUsers(c *gin.Context) {
 
 	server := getServerFromGin(c)
 
-	perms, err := ps.GetForServer(server.Identifier)
+	email := c.Param("email")
+
+	var perms []*models.Permissions
+	if email != "" {
+		us := &services.User{DB: db}
+		var user *models.User
+		user, err = us.GetByEmail(email)
+		if user == nil || errors.Is(err, gorm.ErrRecordNotFound) {
+			response.HandleError(c, err, http.StatusNotFound)
+			return
+		}
+		var p *models.Permissions
+		p, err = ps.GetForUserAndServer(user.ID, &server.Identifier)
+		if p != nil {
+			perms = []*models.Permissions{p}
+		}
+	} else {
+		perms, err = ps.GetForServer(server.Identifier)
+	}
+
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	caller, _ := c.MustGet("user").(*models.User)
+	users := map[*models.User][]*pufferpanel.Scope{}
 
-	for i := 0; i < len(perms); i++ {
-		if *perms[i].UserId == caller.ID {
-			perms = append(perms[:i], perms[i+1:]...)
-			i--
+	for _, v := range perms {
+		p := make([]*pufferpanel.Scope, 0)
+		for z, r := range users {
+			if v.User.ID == z.ID {
+				//this is the user
+				p = r
+				break
+			}
+		}
+		p = append(p, v.Scopes...)
+
+		found := false
+		for z, _ := range users {
+			if v.User.ID == z.ID {
+				//this is the user
+				users[z] = p
+				found = true
+				break
+			}
+		}
+		if !found {
+			users[&v.User] = p
 		}
 	}
 
-	users := make([]*models.PermissionView, len(perms))
-	for k, v := range perms {
-		users[k] = models.FromPermission(v)
+	data := make([]*models.UserPermissionsView, 0)
+	for k, v := range users {
+		data = append(data, &models.UserPermissionsView{
+			Username: k.Username,
+			Email:    k.Email,
+			Scopes:   v,
+		})
 	}
 
-	c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, data)
 }
 
 // @Summary Edits access to a server

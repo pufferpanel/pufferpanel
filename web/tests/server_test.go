@@ -113,6 +113,47 @@ func TestServers(t *testing.T) {
 		}
 	}(c)
 
+	t.Run("AddSubUser", func(t *testing.T) {
+		var data = []byte(`{"scopes": ["server.view", "server.data.view"]}`)
+		response := CallAPIRaw("PUT", "/api/servers/"+serverId+"/user/"+loginNoLoginUser.Email, data, session)
+		if !assert.Equal(t, http.StatusNoContent, response.Code) {
+			return
+		}
+	})
+
+	t.Run("GetSubUsers", func(t *testing.T) {
+		response := CallAPIRaw("GET", "/api/servers/"+serverId+"/user", nil, session)
+		if !assert.Equal(t, http.StatusOK, response.Code) {
+			return
+		}
+		//TODO: Check to make sure our user above was added
+		var data []*models.UserPermissionsView
+		err = json.NewDecoder(response.Body).Decode(&data)
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		if assert.NotEmpty(t, data) {
+			return
+		}
+		found := false
+		for _, v := range data {
+			if v.Email == loginNoLoginUser.Email {
+				var expectedScopes = []*pufferpanel.Scope{
+					pufferpanel.ScopeServerView, pufferpanel.ScopeServerViewData,
+				}
+				if !assert.Equal(t, expectedScopes, v.Scopes) {
+					return
+				}
+				found = true
+			}
+		}
+
+		if !found {
+			assert.Fail(t, "Failed to locate user")
+		}
+	})
+
 	t.Run("UpdateVariable", func(t *testing.T) {
 		motd := "This is a changed MOTD"
 		var variables = []byte(`{"motd": "` + motd + `" }`)
