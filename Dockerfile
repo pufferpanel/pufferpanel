@@ -20,6 +20,7 @@ ARG sha=devel
 ARG swagversion=1.16.2
 
 ENV CGOENABLED=1
+ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
 
 RUN go version && \
     apk add --update --no-cache gcc musl-dev git curl make gcc g++ && \
