@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/braintree/manners"
 	"github.com/gin-contrib/sessions"
@@ -28,45 +29,25 @@ import (
 )
 
 var runCmd = &cobra.Command{
-	Use:   "run",
-	Short: "Runs the panel",
-	Run:   executeRun,
+	Use:    "run",
+	Short:  "Runs the panel",
+	Run:    executeRun,
+	Hidden: true,
 }
 
 var webService *manners.GracefulServer
 
 func executeRun(cmd *cobra.Command, args []string) {
-	term := make(chan bool, 10)
-
-	internalRun(term)
-	//wait for the termination signal, so we can shut down
+	term, _ := internalRun()
 	<-term
-
-	//shut down everything
-	//all of these can be closed regardless of what type of install this is, as they all check if they are even being
-	//used
-	logging.Debug.Printf("stopping http server")
-	if webService != nil {
-		webService.Close()
-	}
-
-	logging.Debug.Printf("stopping sftp server")
-	sftp.Stop()
-
-	logging.Debug.Printf("stopping servers")
-	servers.ShutdownService()
-	for _, p := range servers.GetAll() {
-		_ = p.Stop()
-		p.RunningEnvironment.WaitForMainProcessFor(time.Minute) //wait 60 seconds
-	}
-
-	logging.Debug.Printf("stopping database connections")
-	database.Close()
+	closePanel()
 }
 
-func internalRun(terminate chan bool) {
+func internalRun() (terminate chan bool, success bool) {
 	logging.Initialize(true)
 	signal.Ignore(syscall.SIGPIPE, syscall.SIGHUP)
+
+	terminate = make(chan bool, 2)
 
 	go func() {
 		quit := make(chan os.Signal, 1)
@@ -119,22 +100,49 @@ func internalRun(terminate chan bool) {
 
 	web.RegisterRoutes(router)
 
-	go func() {
-		l, err := net.Listen("tcp", config.WebHost.Value())
-		if err != nil {
-			logging.Error.Printf("error starting http server: %s", err.Error())
-			terminate <- true
-			return
-		}
+	l, err := net.Listen("tcp", config.WebHost.Value())
+	if err != nil {
+		logging.Error.Printf("error starting http server: %s", err.Error())
+		terminate <- true
+		return
+	}
 
-		logging.Info.Printf("Listening for HTTP requests on %s", l.Addr().String())
-		webService = manners.NewWithServer(&http.Server{Handler: router})
+	logging.Info.Printf("Listening for HTTP requests on %s", l.Addr().String())
+	webService = manners.NewWithServer(&http.Server{Handler: router})
+
+	go func() {
 		err = webService.Serve(l)
-		if err != nil && err != http.ErrServerClosed {
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logging.Error.Printf("error listening for http requests: %s", err.Error())
 			terminate <- true
 		}
 	}()
+
+	success = true
+	return
+}
+
+func closePanel() {
+	//shut down everything
+	//all of these can be closed regardless of what type of install this is, as they all check if they are even being
+	//used
+	logging.Debug.Printf("stopping http server")
+	if webService != nil {
+		webService.Close()
+	}
+
+	logging.Debug.Printf("stopping sftp server")
+	sftp.Stop()
+
+	logging.Debug.Printf("stopping servers")
+	servers.ShutdownService()
+	for _, p := range servers.GetAll() {
+		_ = p.Stop()
+		p.RunningEnvironment.WaitForMainProcessFor(time.Minute) //wait 60 seconds
+	}
+
+	logging.Debug.Printf("stopping database connections")
+	database.Close()
 }
 
 func panel() {

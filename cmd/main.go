@@ -48,7 +48,7 @@ func init() {
 		runCmd,
 		versionCmd,
 		userCmd,
-		shutdownCmd,
+		runServiceCmd,
 	)
 }
 
