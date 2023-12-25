@@ -320,6 +320,8 @@ jobs:
           after-purge: systemd/scripts/purge.sh
           user: pufferpanel
           group: pufferpanel
+          suggested-packages: |
+            lib32gcc1
 
       - name: Build Package RPM AMD64
         id: rpmamd64
@@ -350,6 +352,9 @@ jobs:
             RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
           config: |
             /etc/pufferpanel/config.json:noreplace
+          suggested-packages: |
+            glibc.i686
+            libstdc++.i686
 
       - name: Publish Artifacts
         uses: actions/upload-artifact@v3
@@ -457,6 +462,8 @@ jobs:
           after-purge: systemd/scripts/purge.sh
           user: pufferpanel
           group: pufferpanel
+          suggested-packages: |
+            lib32gcc1
 
       - name: Publish Artifacts
         uses: actions/upload-artifact@v3
