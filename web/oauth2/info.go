@@ -7,7 +7,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/oauth2"
-	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"gorm.io/gorm"
 	"net/http"
@@ -15,8 +14,8 @@ import (
 )
 
 func registerInfo(g *gin.RouterGroup) {
-	g.POST("/introspect", middleware.NeedsDatabase, handleInfoRequest)
-	g.OPTIONS("/introspect", response.CreateOptions("POST"))
+	//g.POST("/introspect", middleware.NeedsDatabase, handleInfoRequest)
+	//g.OPTIONS("/introspect", response.CreateOptions("POST"))
 }
 
 // @Summary Get info
@@ -65,19 +64,6 @@ func handleInfoRequest(c *gin.Context) {
 	serverId := c.DefaultPostForm("token_type_hint", "")
 
 	infoResponse := &oauth2.TokenInfoResponse{}
-
-	if serverId == "panel" {
-		//we are a token token, or at least, we should be
-		ps := &services.PanelService{}
-		if ps.IsValid(token) {
-			infoResponse.Active = true
-			infoResponse.Scope = "panel"
-		} else {
-			infoResponse.Active = false
-		}
-		c.JSON(http.StatusOK, infoResponse)
-		return
-	}
 
 	//this token can be one of two types, we need to work out which it is
 	session, err := sessionService.Validate(token)

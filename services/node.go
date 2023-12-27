@@ -156,11 +156,21 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 		request.Body = body
 	}
 
-	ts := &PanelService{}
+	ts, err := NewTokenService()
+	if err != nil {
+		return nil, err
+	}
+
+	//generate a new JWT token
+	token, err := ts.GenerateRequest()
+	if err != nil {
+		return nil, err
+	}
+
 	if request.Header == nil {
 		request.Header = http.Header{}
 	}
-	request.Header.Set("Authorization", "Bearer "+ts.GetActiveToken())
+	request.Header.Set("Authorization", "Bearer "+token)
 
 	if node.IsLocal() {
 		w := &httptest.ResponseRecorder{}
@@ -188,9 +198,17 @@ func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseW
 	u := fmt.Sprintf("%s://%s%s", scheme, addr, path)
 	logging.Debug.Printf("Proxying connection to %s", u)
 
-	ts := &PanelService{}
+	ts, err := NewTokenService()
+	if err != nil {
+		return err
+	}
+	token, err := ts.GenerateRequest()
+	if err != nil {
+		return err
+	}
+
 	header := http.Header{}
-	header.Set("Authorization", "Bearer "+ts.GetActiveToken())
+	header.Set("Authorization", "Bearer "+token)
 
 	c, _, err := websocket.DefaultDialer.Dial(u, header)
 	if err != nil {

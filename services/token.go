@@ -1,30 +1,26 @@
 package services
 
 import (
-	"bytes"
 	"context"
 	"crypto"
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/base64"
-	"encoding/json"
 	"github.com/MicahParks/jwkset"
 	"github.com/MicahParks/keyfunc/v3"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/response"
-	"io"
 	"net/http"
-	"strings"
 	"sync"
 )
 
 type TokenService interface {
 	GetKeyFunc() jwt.Keyfunc
 	GetTokenStore() jwkset.Storage
-	GenerateRequest(interface{}) (io.Reader, error)
-	DecryptRequest(io.Reader) (io.Reader, error)
+	GenerateRequest() (string, error)
+	ValidateRequest(string) error
 }
 
 type tokenService struct{}
@@ -122,38 +118,27 @@ func TokenServiceGetPublicKey(c *gin.Context) {
 	c.JSON(http.StatusOK, rawJWKS)
 }
 
-func (ts *tokenService) GenerateRequest(request interface{}) (io.Reader, error) {
+func (ts *tokenService) GenerateRequest() (string, error) {
 	token := jwt.New(jwt.SigningMethodEdDSA)
 	token.Header[jwkset.HeaderKID] = keyId
-	token.Claims = jwt.MapClaims{
-		"pufferpanel": request,
-	}
+	token.Claims = jwt.MapClaims{}
 
 	signed, err := token.SignedString(privateKey)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return strings.NewReader(signed), nil
+	return signed, nil
 }
 
-func (ts *tokenService) DecryptRequest(body io.Reader) (io.Reader, error) {
-	b := bytes.Buffer{}
-	_, err := b.ReadFrom(body)
+func (ts *tokenService) ValidateRequest(token string) error {
+	parsed, err := jwt.Parse(token, ts.GetKeyFunc())
 	if err != nil {
-		return nil, err
-	}
-	parsed, err := jwt.Parse(b.String(), ts.GetKeyFunc())
-	if err != nil {
-		return nil, err
+		return err
 	}
 	if !parsed.Valid {
-		return nil, jwt.ErrTokenSignatureInvalid
+		return jwt.ErrTokenSignatureInvalid
 	}
-
-	b.Reset()
-	claims := parsed.Claims.(jwt.MapClaims)
-	err = json.NewEncoder(&b).Encode(claims["pufferpanel"])
-	return &b, err
+	return nil
 }
 
 func (ts *tokenService) GetKeyFunc() jwt.Keyfunc {

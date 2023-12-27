@@ -4,10 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
-	"github.com/pufferpanel/pufferpanel/v3/oauth2"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -41,52 +39,6 @@ func Recover(c *gin.Context) {
 	}()
 
 	c.Next()
-}
-
-func IsPanelCaller(c *gin.Context) {
-	//option calls are permitted without auth
-	if c.Request.Method == "OPTIONS" {
-		return
-	}
-
-	actuallyFinished := false
-	defer func() {
-		if !actuallyFinished && !c.IsAborted() {
-			c.AbortWithStatus(http.StatusInternalServerError)
-		}
-	}()
-	if !config.DaemonEnabled.Value() {
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	token := GetToken(c)
-	if token == "" {
-		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-
-	//if we are the panel, we can... self-check
-	if config.PanelEnabled.Value() {
-		ps := &services.PanelService{}
-		if !ps.IsValid(token) {
-			c.AbortWithStatus(http.StatusForbidden)
-			return
-		}
-	} else {
-		//we need to ask the panel
-		info, err := oauth2.GetInfo(token, "panel")
-		if response.HandleError(c, err, http.StatusInternalServerError) {
-			return
-		}
-		if !pufferpanel.ScopePanel.Is(info.Scope) {
-			c.AbortWithStatus(http.StatusForbidden)
-			return
-		}
-	}
-
-	actuallyFinished = true
 }
 
 func RequiresPermission(perm *pufferpanel.Scope) gin.HandlerFunc {

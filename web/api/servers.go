@@ -561,12 +561,7 @@ func deleteServer(c *gin.Context) {
 
 	_, skipNode := c.GetQuery("skipNode")
 	if !skipNode {
-		ps := &services.PanelService{}
-
-		headers := http.Header{}
-		headers.Add("Authorization", "Bearer "+ps.GetActiveToken())
-
-		nodeRes, err := ns.CallNode(node, "DELETE", "/daemon/server/"+server.Identifier, nil, headers)
+		nodeRes, err := ns.CallNode(node, "DELETE", "/daemon/server/"+server.Identifier, nil, nil)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			//node didn't permit it, REVERT!
 			db.Rollback()
@@ -1000,8 +995,15 @@ func proxyServerRequest(c *gin.Context) {
 	server := c.MustGet("server").(*models.Server)
 	node := &server.Node
 
-	ps := &services.PanelService{}
-	token := ps.GetActiveToken()
+	ts, err := services.NewTokenService()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	token, err := ts.GenerateRequest()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
 
 	//switch to our token for auth
 	c.Request.Header.Set("Authorization", "Bearer "+token)

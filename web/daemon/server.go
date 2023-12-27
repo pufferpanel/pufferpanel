@@ -31,7 +31,7 @@ var wsupgrader = websocket.Upgrader{
 }
 
 func RegisterServerRoutes(e *gin.RouterGroup) {
-	l := e.Group("/server", middleware.DecryptPayload)
+	l := e.Group("/server", middleware.ValidateJWT)
 	{
 		l.PUT("/:serverId", createServer)
 		l.DELETE("/:serverId", middleware.ResolveServerNode, deleteServer)
