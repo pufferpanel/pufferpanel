@@ -29,6 +29,7 @@ var ThemeSettings = asString("panel.settings.themeSettings", "{}")
 var MasterUrl = asString("panel.settings.masterUrl", "http://localhost:8080")
 var SessionKey = asString("panel.sessionKey", "")
 var RegistrationEnabled = asBool("panel.registrationEnabled", true)
+var PrivateKey = asString("panel.token", "")
 
 var DaemonEnabled = asBool("daemon.enable", true)
 var ConsoleBuffer = asInt("daemon.console.buffer", 50)
@@ -42,9 +43,10 @@ var CacheFolder = asDataFolder("daemon.data.cache", "cache")
 var ServersFolder = asDataFolder("daemon.data.servers", "servers")
 var BinariesFolder = asDataFolder("daemon.data.binaries", "binaries")
 var CrashLimit = asInt("daemon.data.crashLimit", 3)
-var WebSocketFileLimit = asInt64("daemon.data.maxWSDownloadSize", 1024*1024*20)
 var CurseForgeKey = asString("daemon.curseforge.key", _hiddenCurseforgeKey)
 var DataRootFolder = asString("daemon.data.root", "")
+
+var TokenPublicUrl = asString("token.public", "")
 
 var _hiddenCurseforgeKey = ""
 
