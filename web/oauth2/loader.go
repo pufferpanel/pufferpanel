@@ -3,15 +3,17 @@ package oauth2
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/oauth2"
+	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/spf13/cast"
 	"net/http"
 )
 
 func RegisterRoutes(rg *gin.RouterGroup) {
-	rg.Use(setHeaders, recovery)
-	registerTokens(rg)
-	registerInfo(rg)
+	rg.POST("/token", setHeaders, recovery, middleware.NeedsDatabase, handleTokenRequest)
+	rg.OPTIONS("/token", response.CreateOptions("POST"))
+	rg.GET("openid-configuration", TokenServiceGetPublicKey)
 }
 
 func setHeaders(c *gin.Context) {

@@ -8,11 +8,8 @@ import (
 	"encoding/base64"
 	"github.com/MicahParks/jwkset"
 	"github.com/MicahParks/keyfunc/v3"
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/response"
-	"net/http"
 	"sync"
 )
 
@@ -96,7 +93,7 @@ func NewTokenService() (TokenService, error) {
 	} else {
 		if externalService == nil {
 			var err error
-			externalService, err = keyfunc.NewDefault([]string{})
+			externalService, err = keyfunc.NewDefault([]string{config.TokenPublicUrl.Value()})
 			if err != nil {
 				return nil, err
 			}
@@ -104,18 +101,6 @@ func NewTokenService() (TokenService, error) {
 	}
 
 	return &tokenService{}, nil
-}
-
-func TokenServiceGetPublicKey(c *gin.Context) {
-	ts, err := NewTokenService()
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-	rawJWKS, err := ts.GetTokenStore().JSONPublic(context.Background())
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-	c.JSON(http.StatusOK, rawJWKS)
 }
 
 func (ts *tokenService) GenerateRequest() (string, error) {

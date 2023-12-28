@@ -64,4 +64,11 @@ func TestOauth(t *testing.T) {
 		}
 		assert.True(t, found)
 	})
+
+	t.Run("GetJWKS", func(t *testing.T) {
+		response := CallAPI("GET", "/oauth2/openid-configuration", nil, "")
+		if !assert.Equal(t, http.StatusOK, response.Code) {
+			return
+		}
+	})
 }

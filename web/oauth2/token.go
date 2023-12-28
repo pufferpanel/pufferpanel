@@ -16,11 +16,6 @@ import (
 
 const expiresIn = int64(time.Hour / time.Second)
 
-func registerTokens(g *gin.RouterGroup) {
-	g.POST("/token", middleware.NeedsDatabase, handleTokenRequest)
-	g.OPTIONS("/token", response.CreateOptions("POST"))
-}
-
 // @Summary Authenticate
 // @Description Get a OAuth2 token to consume this API
 // @Param request body OAuth2TokenRequest true "OAuth2 token request"
