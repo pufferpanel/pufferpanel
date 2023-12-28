@@ -357,3 +357,14 @@ func TestReauth(t *testing.T) {
 		assert.Equal(t, http.StatusUnauthorized, writer.Code)
 	})
 }
+
+func TestMisc(t *testing.T) {
+	t.Parallel()
+	t.Run("GetJWKS", func(t *testing.T) {
+		t.Parallel()
+		response := CallAPI("GET", "/auth/publickey", nil, "")
+		if !assert.Equal(t, http.StatusOK, response.Code) {
+			return
+		}
+	})
+}
