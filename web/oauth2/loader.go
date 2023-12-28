@@ -13,7 +13,6 @@ import (
 func RegisterRoutes(rg *gin.RouterGroup) {
 	rg.POST("/token", setHeaders, recovery, middleware.NeedsDatabase, handleTokenRequest)
 	rg.OPTIONS("/token", response.CreateOptions("POST"))
-	rg.GET("openid-configuration", TokenServiceGetPublicKey)
 }
 
 func setHeaders(c *gin.Context) {
