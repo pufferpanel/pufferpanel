@@ -44,7 +44,7 @@ func (s *Server) BeforeSave(*gorm.DB) (err error) {
 }
 
 func (s *Server) AfterFind(*gorm.DB) (err error) {
-	if s.RawNodeID == nil || s.NodeID == LocalNode.ID {
+	if s.RawNodeID == nil || *s.RawNodeID == LocalNode.ID {
 		s.Node = *LocalNode
 	}
 	return
