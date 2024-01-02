@@ -1,4 +1,4 @@
-name: Build Tool - Tester
+name: Run Tool - Tester
 on:
   repository_dispatch:
     types:
