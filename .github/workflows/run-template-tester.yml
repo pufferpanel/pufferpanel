@@ -37,5 +37,5 @@ jobs:
       - name: Run
         run: |
           mkdir -p /tmp/pufferpanel-tester
-          chown -R 1000:$(getent group docker | cut -f3 -d:) /tmp/pufferpanel-tester
+          sudo chown -R 1000:$(getent group docker | cut -f3 -d:) /tmp/pufferpanel-tester
           docker run --rm --name templatetester-${{ matrix.template }} -v /tmp/pufferpanel-tester:/tmp/pufferpanel-tester -v /var/run/docker.sock:/var/run/docker.sock -u "1000:$(getent group docker | cut -f3 -d:)" ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --workDir=/tmp/pufferpanel-tester --skip=* --require=${{ matrix.template }}*
