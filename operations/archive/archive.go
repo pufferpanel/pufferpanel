@@ -10,6 +10,7 @@ type Archive struct {
 	Destination string
 }
 
-func (op Archive) Run(pufferpanel.Environment) error {
-	return archiver.Archive(op.Source, op.Destination)
+func (op Archive) Run(pufferpanel.Environment) pufferpanel.OperationResult {
+	err := archiver.Archive(op.Source, op.Destination)
+	return pufferpanel.OperationResult{Error: err}
 }

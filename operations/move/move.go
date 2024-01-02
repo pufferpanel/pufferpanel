@@ -12,12 +12,12 @@ type Move struct {
 	TargetFile string
 }
 
-func (m Move) Run(env pufferpanel.Environment) error {
+func (m Move) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	source := filepath.Join(env.GetRootDirectory(), m.SourceFile)
 	target := filepath.Join(env.GetRootDirectory(), m.TargetFile)
 	result, valid := validateMove(source, target)
 	if !valid {
-		return nil
+		return pufferpanel.OperationResult{Error: nil}
 	}
 
 	for k, v := range result {
@@ -25,10 +25,10 @@ func (m Move) Run(env pufferpanel.Environment) error {
 		env.DisplayToConsole(true, "Moving file from %s to %s\n", m.SourceFile, m.TargetFile)
 		err := os.Rename(k, v)
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 	}
-	return nil
+	return pufferpanel.OperationResult{Error: nil}
 }
 
 func validateMove(source string, target string) (result map[string]string, valid bool) {

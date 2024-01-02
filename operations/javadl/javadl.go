@@ -22,7 +22,7 @@ type JavaDl struct {
 	Version string
 }
 
-func (op JavaDl) Run(env pufferpanel.Environment) (err error) {
+func (op JavaDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	env.DisplayToConsole(true, "Downloading Java "+op.Version)
 
 	downloader.Lock()
@@ -32,22 +32,19 @@ func (op JavaDl) Run(env pufferpanel.Environment) (err error) {
 	mainCommand := filepath.Join(rootBinaryFolder, "java"+op.Version)
 	mainCCommand := filepath.Join(rootBinaryFolder, "javac"+op.Version)
 
-	_, err = exec.LookPath("java" + op.Version)
-	if err == nil {
-		_, err = exec.LookPath("java" + op.Version)
-	}
+	_, err := exec.LookPath("java" + op.Version)
 
 	if errors.Is(err, exec.ErrNotFound) {
 		var file File
 		file, err = op.callAdoptiumApi()
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 
 		//cleanup the existing dir
 		err = os.RemoveAll(filepath.Join(rootBinaryFolder, file.ReleaseName))
 		if err != nil {
-			return
+			return pufferpanel.OperationResult{Error: err}
 		}
 
 		url := file.Binaries[0].Package.Link
@@ -60,7 +57,7 @@ func (op JavaDl) Run(env pufferpanel.Environment) (err error) {
 		}
 
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 
 		_ = os.Remove(mainCommand)
@@ -69,17 +66,17 @@ func (op JavaDl) Run(env pufferpanel.Environment) (err error) {
 		logging.Debug.Printf("Adding to path: %s\n", mainCommand)
 		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "java"), mainCommand)
 		if err != nil {
-			return
+			return pufferpanel.OperationResult{Error: err}
 		}
 
 		logging.Debug.Printf("Adding to path: %s\n", mainCCommand)
 		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "javac"), mainCCommand)
 		if err != nil {
-			return
+			return pufferpanel.OperationResult{Error: err}
 		}
 	}
 
-	return err
+	return pufferpanel.OperationResult{Error: err}
 }
 
 func (op JavaDl) callAdoptiumApi() (File, error) {

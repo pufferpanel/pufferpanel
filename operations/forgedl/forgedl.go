@@ -31,13 +31,14 @@ type ForgeDl struct {
 	Version          string
 	Filename         string
 	MinecraftVersion string
+	OutputVariable   string
 }
 
-func (op ForgeDl) Run(env pufferpanel.Environment) error {
+func (op ForgeDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	if op.Version == "" {
 		version, err := getLatestForMCVersion(op.MinecraftVersion)
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 		op.Version = op.MinecraftVersion + "-" + version
 	}
@@ -46,11 +47,22 @@ func (op ForgeDl) Run(env pufferpanel.Environment) error {
 
 	localFile, err := pufferpanel.DownloadViaMaven(jarDownload, env)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	//copy from the cache
-	return pufferpanel.CopyFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
+	err = pufferpanel.CopyFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
+	if err != nil {
+		return pufferpanel.OperationResult{Error: err}
+	}
+
+	if op.OutputVariable == "" {
+		op.OutputVariable = "forgeDL"
+	}
+
+	return pufferpanel.OperationResult{VariableOverrides: map[string]interface{}{
+		op.OutputVariable: op.Version,
+	}}
 }
 
 func getLatestForMCVersion(minecraftVersion string) (string, error) {

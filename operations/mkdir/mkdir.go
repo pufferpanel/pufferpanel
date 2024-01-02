@@ -11,9 +11,10 @@ type Mkdir struct {
 	TargetFile string
 }
 
-func (m *Mkdir) Run(env pufferpanel.Environment) error {
+func (m *Mkdir) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	logging.Info.Printf("Making directory: %s\n", m.TargetFile)
 	env.DisplayToConsole(true, "Creating directory: %s\n", m.TargetFile)
 	target := filepath.Join(env.GetRootDirectory(), m.TargetFile)
-	return os.MkdirAll(target, 0755)
+	err := os.MkdirAll(target, 0755)
+	return pufferpanel.OperationResult{Error: err}
 }

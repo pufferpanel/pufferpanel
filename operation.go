@@ -1,7 +1,7 @@
 package pufferpanel
 
 type Operation interface {
-	Run(env Environment) error
+	Run(env Environment) OperationResult
 }
 
 type OperationFactory interface {
@@ -14,4 +14,9 @@ type CreateOperation struct {
 	OperationArgs        map[string]interface{}
 	EnvironmentVariables map[string]string
 	DataMap              map[string]interface{}
+}
+
+type OperationResult struct {
+	Error             error
+	VariableOverrides map[string]interface{}
 }

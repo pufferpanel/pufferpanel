@@ -22,7 +22,7 @@ type CurseForge struct {
 	JavaBinary string
 }
 
-func (c CurseForge) Run(env pufferpanel.Environment) error {
+func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	client := pufferpanel.Http()
 
 	var file *File
@@ -31,7 +31,7 @@ func (c CurseForge) Run(env pufferpanel.Environment) error {
 		//we need to get the latest file id to do our calls
 		files, err := c.getLatestFiles(client, c.ProjectId)
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 
 		for _, v := range files {
@@ -49,30 +49,31 @@ func (c CurseForge) Run(env pufferpanel.Environment) error {
 		}
 
 		if file == nil {
-			return errors.New("no files available on CurseForge")
+			err = errors.New("no files available on CurseForge")
+			return pufferpanel.OperationResult{Error: err}
 		}
 	} else {
 		file, err = c.getFileById(client, c.ProjectId, c.FileId)
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 	}
 
 	if !file.IsServerPack && file.ServerPackFileId != 0 {
 		file, err = c.getFileById(client, c.ProjectId, file.ServerPackFileId)
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 	}
 
 	err = pufferpanel.DownloadFile(file.DownloadUrl, "download.zip", env)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 	env.DisplayToConsole(true, "Extracting %s", filepath.Join(env.GetRootDirectory(), "download.zip"))
 	err = pufferpanel.ExtractZipIgnoreSingleDir(filepath.Join(env.GetRootDirectory(), "download.zip"), env.GetRootDirectory())
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	//err = os.Remove(filepath.Join(env.GetRootDirectory(), "download.zip"))
@@ -85,7 +86,7 @@ func (c CurseForge) Run(env pufferpanel.Environment) error {
 
 	entries, err := os.ReadDir(env.GetRootDirectory())
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	forgeInstallerRegex := regexp.MustCompile("forge-.*-installer.jar")
@@ -105,15 +106,16 @@ func (c CurseForge) Run(env pufferpanel.Environment) error {
 				},
 			})
 			if err != nil {
-				return err
+				return pufferpanel.OperationResult{Error: err}
 			}
 			if <-result != 0 {
-				return errors.New("failed to run forge installer")
+				err = errors.New("failed to run forge installer")
+				return pufferpanel.OperationResult{Error: err}
 			}
 		}
 	}
 
-	return nil
+	return pufferpanel.OperationResult{Error: nil}
 }
 
 func (c CurseForge) getLatestFiles(client *http.Client, projectId uint) ([]File, error) {

@@ -35,17 +35,18 @@ type SpongeApiV2Asset struct {
 	Extension   string
 }
 
-func (op SpongeDl) Run(env pufferpanel.Environment) error {
+func (op SpongeDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	//first, we need to get the build we need to get, if one isn't specified
 	if op.SpongeVersion == "" {
 		data, err := op.getLatestVersion(env)
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 
 		if len(data.Artifacts) == 0 {
 			env.DisplayToConsole(true, "No matching Sponge versions found")
-			return errors.New("no valid sponge versions found")
+			err = errors.New("no valid sponge versions found")
+			return pufferpanel.OperationResult{Error: err}
 		}
 
 		for k := range data.Artifacts {
@@ -63,7 +64,7 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 
 	data, err := op.getSpecificVersion(env, op.SpongeVersion)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	var url string
@@ -74,7 +75,8 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 	}
 
 	if url == "" {
-		return errors.New("no asset found to download")
+		err = errors.New("no asset found to download")
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	switch strings.ToLower(op.SpongeType) {
@@ -86,47 +88,48 @@ func (op SpongeDl) Run(env pufferpanel.Environment) error {
 			var forgeDlOp pufferpanel.Operation
 			forgeDlOp, err = forgedl.Factory.Create(pufferpanel.CreateOperation{OperationArgs: mapping})
 			if err != nil {
-				return err
+				return pufferpanel.OperationResult{Error: err}
 			}
 
-			err = forgeDlOp.Run(env)
-			if err != nil {
-				return err
+			res := forgeDlOp.Run(env)
+			if res.Error != nil {
+				return pufferpanel.OperationResult{Error: res.Error}
 			}
 
 			err = os.Mkdir(path.Join(env.GetRootDirectory(), "mods"), 0755)
 			if err != nil && !os.IsExist(err) {
-				return err
+				return pufferpanel.OperationResult{Error: err}
 			}
 
 			file, err := pufferpanel.DownloadViaMaven(url, env)
 			if err != nil {
-				return err
+				return pufferpanel.OperationResult{Error: err}
 			}
 
 			//going to stick the spongeforge rename in, to assist with those modpacks
 			err = pufferpanel.CopyFile(file, path.Join(env.GetRootDirectory(), "mods", "_aspongeforge.jar"))
 			if err != nil {
-				return err
+				return pufferpanel.OperationResult{Error: err}
 			}
 		}
 	case "spongevanilla":
 		{
 			file, err := pufferpanel.DownloadViaMaven(url, env)
 			if err != nil {
-				return err
+				return pufferpanel.OperationResult{Error: err}
 			}
 
 			err = pufferpanel.CopyFile(file, path.Join(env.GetRootDirectory(), "server.jar"))
 			if err != nil {
-				return err
+				return pufferpanel.OperationResult{Error: err}
 			}
 		}
 	default:
-		return errors.New("invalid sponge type")
+		err = errors.New("invalid sponge type")
+		return pufferpanel.OperationResult{Error: err}
 	}
 
-	return nil
+	return pufferpanel.OperationResult{Error: nil}
 }
 
 func (op SpongeDl) getLatestVersion(env pufferpanel.Environment) (SpongeApiV2Versions, error) {

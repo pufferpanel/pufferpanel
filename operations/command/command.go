@@ -14,7 +14,7 @@ type Command struct {
 	Variables map[string]interface{}
 }
 
-func (c Command) Run(env pufferpanel.Environment) error {
+func (c Command) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	for _, cmd := range c.Commands {
 		logging.Info.Printf("Executing command: %s", cmd)
 		env.DisplayToConsole(true, fmt.Sprintf("Executing: %s\n", cmd))
@@ -34,13 +34,13 @@ func (c Command) Run(env pufferpanel.Environment) error {
 			Variables:   c.Variables,
 		})
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 		err = <-ch
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 	}
 
-	return nil
+	return pufferpanel.OperationResult{Error: nil}
 }

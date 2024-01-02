@@ -12,9 +12,10 @@ type WriteFile struct {
 	Text       string
 }
 
-func (c WriteFile) Run(env pufferpanel.Environment) error {
+func (c WriteFile) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	logging.Info.Printf("Writing data to file: %s", c.TargetFile)
 	env.DisplayToConsole(true, "Writing some data to file: %s\n", c.TargetFile)
 	target := filepath.Join(env.GetRootDirectory(), c.TargetFile)
-	return os.WriteFile(target, []byte(c.Text), 0644)
+	err := os.WriteFile(target, []byte(c.Text), 0644)
+	return pufferpanel.OperationResult{Error: err}
 }

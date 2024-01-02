@@ -10,14 +10,14 @@ type Download struct {
 	Files []string
 }
 
-func (d Download) Run(env pufferpanel.Environment) error {
+func (d Download) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	for _, file := range d.Files {
 		logging.Info.Printf("Download file from %s to %s", file, env.GetRootDirectory())
 		env.DisplayToConsole(true, "Downloading file %s\n", file)
 		_, err := grab.Get(env.GetRootDirectory(), file)
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 	}
-	return nil
+	return pufferpanel.OperationResult{Error: nil}
 }

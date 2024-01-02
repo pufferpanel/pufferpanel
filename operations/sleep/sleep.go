@@ -9,7 +9,7 @@ type Sleep struct {
 	Duration time.Duration
 }
 
-func (d Sleep) Run(env pufferpanel.Environment) error {
+func (d Sleep) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	time.Sleep(d.Duration)
-	return nil
+	return pufferpanel.OperationResult{Error: nil}
 }

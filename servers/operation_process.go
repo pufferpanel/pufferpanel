@@ -122,17 +122,25 @@ func (p *OperationProcess) Run(server *Server) error {
 				return pufferpanel.ErrFactoryError(v.Type, err)
 			}
 
-			err = op.Run(server.RunningEnvironment)
-			if err != nil {
-				logging.Error.Printf("Error running command: %s", err.Error())
+			result := op.Run(server.RunningEnvironment)
+			if result.Error != nil {
+				logging.Error.Printf("Error running command: %s", result.Error.Error())
 				if firstError == nil {
-					firstError = err
+					firstError = result.Error
 					//TODO: Implement success checking more accurately here
-					return err
+					return result.Error
 				}
 				extraData[conditions.VariableSuccess] = false
 			} else {
 				extraData[conditions.VariableSuccess] = true
+			}
+
+			if result.VariableOverrides != nil {
+				for k, val := range result.VariableOverrides {
+					variable := server.Variables[k]
+					variable.Value = val
+					server.Variables[k] = variable
+				}
 			}
 		}
 	}

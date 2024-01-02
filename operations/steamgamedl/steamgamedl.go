@@ -28,19 +28,19 @@ type SteamGameDl struct {
 	ExtraArgs []string
 }
 
-func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
+func (c SteamGameDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	env.DisplayToConsole(true, "Downloading game from Steam")
 
 	rootBinaryFolder := config.BinariesFolder.Value()
 
-	err = downloadBinaries(rootBinaryFolder)
+	err := downloadBinaries(rootBinaryFolder)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	err = downloadMetadata(env)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	//generate a login id
@@ -71,11 +71,12 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 	}
 	err = env.Execute(steps)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 	exitCode := <-ch
 	if exitCode != 0 {
-		return fmt.Errorf("depotdownloader exited with non-zero code %d", exitCode)
+		err = fmt.Errorf("depotdownloader exited with non-zero code %d", exitCode)
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	//download game itself now
@@ -100,18 +101,19 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 	}
 	err = env.Execute(steps)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 	exitCode = <-ch
 	if exitCode != 0 {
-		return fmt.Errorf("depotdownloader exited with non-zero code %d", exitCode)
+		err = fmt.Errorf("depotdownloader exited with non-zero code %d", exitCode)
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	//for each file we download, we need to just... chmod +x the files
 	//we rely on the manifests for this
 	manifests, err := os.ReadDir(manifestFolder)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 	for _, manifest := range manifests {
 		if manifest.Type().IsDir() || !strings.HasSuffix(manifest.Name(), ".txt") {
@@ -119,11 +121,11 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 		}
 		err = walkManifest(env.GetRootDirectory(), manifest.Name())
 		if err != nil {
-			return err
+			return pufferpanel.OperationResult{Error: err}
 		}
 	}
 
-	return nil
+	return pufferpanel.OperationResult{Error: nil}
 }
 
 func downloadBinaries(rootBinaryFolder string) error {

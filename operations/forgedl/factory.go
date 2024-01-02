@@ -14,12 +14,13 @@ func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.O
 	minecraftVersion := cast.ToString(op.OperationArgs["minecraftVersion"])
 	version := cast.ToString(op.OperationArgs["version"])
 	filename := cast.ToString(op.OperationArgs["target"])
+	outputVariable := cast.ToString(op.OperationArgs["outputVariable"])
 
 	if version == "" && minecraftVersion == "" {
 		return nil, errors.New("missing version and minecraftVersion")
 	}
 
-	return ForgeDl{Version: version, Filename: filename, MinecraftVersion: minecraftVersion}, nil
+	return ForgeDl{Version: version, Filename: filename, MinecraftVersion: minecraftVersion, OutputVariable: outputVariable}, nil
 }
 
 func (of OperationFactory) Key() string {

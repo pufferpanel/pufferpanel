@@ -6,7 +6,7 @@ type Console struct {
 	Text string
 }
 
-func (d Console) Run(env pufferpanel.Environment) error {
+func (d Console) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	env.DisplayToConsole(true, "Message: %s \n", d.Text)
-	return nil
+	return pufferpanel.OperationResult{Error: nil}
 }

@@ -10,6 +10,7 @@ type Extract struct {
 	Destination string
 }
 
-func (op Extract) Run(pufferpanel.Environment) error {
-	return archiver.Unarchive(op.Source, op.Destination)
+func (op Extract) Run(pufferpanel.Environment) pufferpanel.OperationResult {
+	err := archiver.Unarchive(op.Source, op.Destination)
+	return pufferpanel.OperationResult{Error: err}
 }

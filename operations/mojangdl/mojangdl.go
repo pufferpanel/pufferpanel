@@ -15,20 +15,20 @@ type MojangDl struct {
 	Target  string
 }
 
-func (op MojangDl) Run(env pufferpanel.Environment) error {
+func (op MojangDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	response, err := pufferpanel.HttpGet(VersionJsonUrl)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	var data LauncherJson
 	err = json.NewDecoder(response.Body).Decode(&data)
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 	err = response.Body.Close()
 	if err != nil {
-		return err
+		return pufferpanel.OperationResult{Error: err}
 	}
 
 	var targetVersion string
@@ -48,13 +48,14 @@ func (op MojangDl) Run(env pufferpanel.Environment) error {
 			logging.Info.Printf("Version %s json located, downloading from %s", version.Id, version.Url)
 			env.DisplayToConsole(true, fmt.Sprintf("Version %s json located, downloading from %s\n", version.Id, version.Url))
 			//now, get the version json for this one...
-			return downloadServerFromJson(version.Url, op.Target, env)
+			err = downloadServerFromJson(version.Url, op.Target, env)
+			return pufferpanel.OperationResult{Error: err}
 		}
 	}
 
 	env.DisplayToConsole(true, "Could not locate version "+targetVersion+"\n")
-
-	return errors.New("Version not located: " + op.Version)
+	err = errors.New("Version not located: " + op.Version)
+	return pufferpanel.OperationResult{Error: err}
 }
 
 func downloadServerFromJson(url, target string, env pufferpanel.Environment) error {
