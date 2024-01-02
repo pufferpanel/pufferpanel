@@ -12,9 +12,8 @@ jobs:
     name: Build Tool
     runs-on: ubuntu-20.04
     permissions:
-      contents: read
+      contents: write
       packages: write
-      actions: write
     strategy:
       matrix:
         platform: [ "linux/amd64" ]
@@ -65,6 +64,7 @@ jobs:
 
       - name: Get templates
         run: |
+          cd templates
           FILES=$(ls -d */ | cut -f1 -d '/' | awk '{print "\""$0"\""}' | tr '\n' ',' | sed 's/,$/\n/')
           echo "TEMPLATES=$FILES" >> $GITHUB_ENV
 
