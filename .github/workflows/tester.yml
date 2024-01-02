@@ -1,23 +1,6 @@
 name: Build Tool - Tester
 on:
   workflow_dispatch:
-    inputs:
-      skip:
-        description: Templates to skip
-        required: false
-        default: ""
-      require:
-        description: Templates required to run
-        required: false
-        default: ""
-      files:
-        description: Specific JSON files to test
-        required: false
-        default: ""
-      gitRef:
-        description: Github reference to test
-        required: true
-        default: "refs/heads/v3"
 
 env:
   TAG: templatetester
@@ -72,26 +55,21 @@ jobs:
             version: ${{ env.VERSION }}
           platforms: ${{ matrix.platform }}
 
-  run-tester:
-    name: Run Tool
-    runs-on: template-tester
-    permissions:
-      packages: read
-
-    needs:
-      - build-tool
-
-    steps:
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          repository: "pufferpanel/templates"
+          sparse-checkout: .
+          path: templates
 
-      - name: Run image
+      - name: Get templates
         run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
-          docker rm -f templatetester || true
-          echo "::add-mask::${{ secrets.RUNNER_IP }}"
-          docker run --rm --name templatetester --network host -v /var/run/docker.sock:/var/run/docker.sock -u "1000:$(getent group docker | cut -f3 -d:)" ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --gitRef=${{ inputs.gitRef }} --workDir=/tmp/pufferpanel-tester --skip=${{ inputs.skip }} --require=${{ inputs.require }} --files=${{ inputs.files }}
+          FILES=$(ls -d */ | cut -f1 -d '/' | awk '{print "\""$0"\""}' | tr '\n' ',' | sed 's/,$/\n/')
+          echo "TEMPLATES=$FILES" >> $GITHUB_ENV
+
+      - name: Trigger tests
+        id: trigger
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: template-tester
+          client-payload: '{ "templates": [ ${{ env.TEMPLATES }} ] }'

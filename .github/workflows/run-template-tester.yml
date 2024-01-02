@@ -1,0 +1,39 @@
+name: Build Tool - Tester
+on:
+  repository_dispatch:
+    types:
+      - template-tester
+
+env:
+  TAG: templatetester
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  run-tester:
+    name: Run Tool
+    runs-on: template-tester
+    permissions:
+      packages: read
+
+    strategy:
+      matrix:
+        template: ${{ github.event.client_payload.templates }}
+
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          docker rm -f templatetester-${{ matrix.template }} || true
+          echo "::add-mask::${{ secrets.RUNNER_IP }}"
+
+      - name: Run
+        run: |
+          docker run --rm --name templatetester-${{ matrix.template }} -v /var/run/docker.sock:/var/run/docker.sock -u "1000:$(getent group docker | cut -f3 -d:)" ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --workDir=/tmp/pufferpanel-tester --skip=* --require=${{ matrix.template }}*
