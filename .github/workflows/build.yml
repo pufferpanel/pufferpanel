@@ -20,8 +20,6 @@ env:
   SWAG_VERSION: "1.16.2"
   GO_VERSION: "1.21"
   NODE_VERSION: "20"
-  TINYGO_VERSION: "0.28.1"
-  TAG: formatter
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
@@ -568,10 +566,10 @@ jobs:
       - build-windows-installer
       - build-linux-amd64-binaries
       - build-linux-arm64-binaries
-    if: "startsWith(github.ref, 'refs/tags/')"
+    if: "startsWith(github.ref, 'refs/tags/v')"
     permissions:
       contents: write
-    environment: ${{ startsWith(github.ref, 'refs/tags/') && 'Release' || 'Development' }}
+    environment: ${{ startsWith(github.ref, 'refs/tags/v') && 'Release' || 'Development' }}
 
     env:
       PACKAGECLOUD_REPO: pufferpanel/pufferpanel
