@@ -90,14 +90,6 @@ type BaseEnvironment struct {
 	Console           Console              `json:"-"`
 }
 
-type ConsoleConfiguration struct {
-	Type     string `json:"type,omitempty"`
-	File     string `json:"file,omitempty"`
-	IP       string `json:"ip,omitempty"`
-	Port     string `json:"port,omitempty"`
-	Password string `json:"password,omitempty"`
-}
-
 type ExecutionData struct {
 	Command          string
 	Arguments        []string

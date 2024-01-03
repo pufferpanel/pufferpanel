@@ -36,7 +36,7 @@ func reformatFile(path string, info fs.DirEntry, err error) error {
 	if strings.HasPrefix(nonAbsPath, ".") {
 		return nil
 	}
-	if info.Name() == "data.json" {
+	if info.Name() == "data.json" || info.Name() == "spec.json" {
 		return nil
 	}
 	if !strings.HasSuffix(info.Name(), ".json") {
@@ -46,12 +46,15 @@ func reformatFile(path string, info fs.DirEntry, err error) error {
 	fmt.Printf("Reformatting %s\n", nonAbsPath)
 
 	template, err := readFile(path)
+	if err != nil {
+		return err
+	}
 	return writeFile(path, template)
 }
 
 func readFile(path string) (*pufferpanel.Server, error) {
 	template := &pufferpanel.Server{}
-	file, err := os.OpenFile(path, os.O_RDWR, 0644)
+	file, err := os.OpenFile(path, os.O_RDONLY, 0644)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +65,7 @@ func readFile(path string) (*pufferpanel.Server, error) {
 }
 
 func writeFile(path string, template *pufferpanel.Server) error {
-	file, err := os.OpenFile(path, os.O_RDWR, 0644)
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
 	}

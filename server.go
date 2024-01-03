@@ -2,6 +2,8 @@ package pufferpanel
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/spf13/cast"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -19,29 +21,30 @@ type Server struct {
 	Groups                []Group                   `json:"groups,omitempty"`
 	Installation          []ConditionalMetadataType `json:"install,omitempty"`
 	Uninstallation        []ConditionalMetadataType `json:"uninstall,omitempty"`
-	Execution             Execution                 `json:"run,omitempty"`
-	Environment           MetadataType              `json:"environment,omitempty"`
+	Execution             Execution                 `json:"run"`
+	Environment           MetadataType              `json:"environment"`
 	SupportedEnvironments []MetadataType            `json:"supportedEnvironments,omitempty"`
 	Requirements          Requirements              `json:"requirements,omitempty"`
 } //@name ServerDefinition
 
 type Task struct {
 	Name         string                    `json:"name"`
-	CronSchedule string                    `json:"cronSchedule,omitempty"`
+	CronSchedule string                    `json:"cronSchedule"`
 	Description  string                    `json:"description,omitempty"`
 	Operations   []ConditionalMetadataType `json:"operations" binding:"required"`
 } //@name Task
 
 type Variable struct {
 	Type
-	Value        interface{}      `json:"value,omitempty"`
+	Value        interface{}      `json:"value"`
 	Display      string           `json:"display,omitempty"`
 	Description  string           `json:"desc,omitempty"`
-	Required     bool             `json:"required,omitempty"`
+	Required     bool             `json:"required"`
 	Internal     bool             `json:"internal,omitempty"`
-	UserEditable bool             `json:"userEdit,omitempty"`
+	UserEditable bool             `json:"userEdit"`
 	Options      []VariableOption `json:"options,omitempty"`
 } //@name Variable
+type variableAlias Variable
 
 type VariableOption struct {
 	Value   interface{} `json:"value"`
@@ -49,18 +52,17 @@ type VariableOption struct {
 } //@name VariableOption
 
 type Execution struct {
-	Command                 interface{}               `json:"command,omitempty"`
+	Command                 interface{}               `json:"command"`
 	StopCommand             string                    `json:"stop,omitempty"`
 	StopCode                int                       `json:"stopCode,omitempty"`
 	PreExecution            []ConditionalMetadataType `json:"pre,omitempty"`
 	PostExecution           []ConditionalMetadataType `json:"post,omitempty"`
 	EnvironmentVariables    map[string]string         `json:"environmentVars,omitempty"`
 	WorkingDirectory        string                    `json:"workingDirectory,omitempty"`
-	Stdin                   ConsoleConfiguration      `json:"stdin,omitempty"`
-	Stdout                  ConsoleConfiguration      `json:"stdout,omitempty"`
-	AutoStart               bool                      `json:"autostart,omitempty"`
-	AutoRestartFromCrash    bool                      `json:"autorecover,omitempty"`
-	AutoRestartFromGraceful bool                      `json:"autorestart,omitempty"`
+	Stdin                   StdinConsoleConfiguration `json:"stdin,omitempty"`
+	AutoStart               bool                      `json:"autostart"`
+	AutoRestartFromCrash    bool                      `json:"autorecover"`
+	AutoRestartFromGraceful bool                      `json:"autorestart"`
 	ExpectedExitCode        int                       `json:"expectedExitCode,omitempty"`
 } //@name Execution
 
@@ -69,10 +71,20 @@ type Name struct {
 } //@name Name
 
 type Command struct {
-	If      string               `json:"if,omitempty"`
-	Command string               `json:"command"`
-	StdIn   ConsoleConfiguration `json:"stdin"`
+	If      string                    `json:"if,omitempty"`
+	Command string                    `json:"command"`
+	StdIn   StdinConsoleConfiguration `json:"stdin"`
 } //@name Command
+
+type ConsoleConfiguration struct {
+	Type     string `json:"type,omitempty"`
+	File     string `json:"file,omitempty"`
+	IP       string `json:"ip,omitempty"`
+	Port     string `json:"port,omitempty"`
+	Password string `json:"password,omitempty"`
+} //@name ConsoleConfiguration
+
+type StdinConsoleConfiguration ConsoleConfiguration
 
 type Type struct {
 	Type string `json:"type"`
@@ -210,4 +222,51 @@ func (c ConsoleConfiguration) Replace(variables map[string]interface{}) ConsoleC
 		Port:     ReplaceTokens(c.Port, variables),
 		Password: ReplaceTokens(c.Password, variables),
 	}
+}
+
+func (v *Variable) UnmarshalJSON(data []byte) (err error) {
+	aux := variableAlias{
+		Type: Type{Type: "string"},
+	}
+	if err = json.Unmarshal(data, &aux); err != nil {
+		return
+	}
+	if aux.Type.Type == "" {
+		aux.Type = Type{Type: "string"}
+	}
+
+	//convert variable to correct typing
+	switch aux.Type.Type {
+	case "integer":
+		{
+			aux.Value, err = cast.ToIntE(aux.Value)
+			if err != nil {
+				var str string
+				if str, err = cast.ToStringE(aux.Value); err == nil {
+					if str == "" {
+						aux.Value = 0
+					}
+				}
+			}
+		}
+	case "boolean":
+		{
+			aux.Value, err = cast.ToBoolE(aux.Value)
+		}
+	}
+
+	*v = Variable(aux)
+	return
+}
+
+func (v *StdinConsoleConfiguration) UnmarshalJSON(data []byte) error {
+	aux := ConsoleConfiguration{}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	if aux.Type == "" {
+		aux.Type = "stdin"
+	}
+	*v = StdinConsoleConfiguration(aux)
+	return nil
 }

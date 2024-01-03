@@ -10,7 +10,6 @@ import (
 const FabricMetadataUrl = "https://meta.fabricmc.net/v2/versions/installer"
 
 type Fabricdl struct {
-	TargetFile string
 }
 
 type FabricMetadata struct {
