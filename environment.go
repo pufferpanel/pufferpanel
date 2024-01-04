@@ -97,7 +97,7 @@ type ExecutionData struct {
 	WorkingDirectory string
 	Variables        map[string]interface{}
 	Callback         func(exitCode int)
-	StdInConfig      ConsoleConfiguration
+	StdInConfig      StdinConsoleConfiguration
 }
 
 type ExecutionFunction func(steps ExecutionData) (err error)
@@ -126,7 +126,7 @@ func (e *BaseEnvironment) ExecuteAsync(steps ExecutionData) (err error) {
 	return e.ExecutionFunction(steps)
 }
 
-func (e *BaseEnvironment) CreateConsoleStdinProxy(config ConsoleConfiguration, base io.WriteCloser) {
+func (e *BaseEnvironment) CreateConsoleStdinProxy(config StdinConsoleConfiguration, base io.WriteCloser) {
 	if config.Type == "telnet" {
 		e.Console = &TelnetConnection{
 			IP:       config.IP,

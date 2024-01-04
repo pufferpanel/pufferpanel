@@ -76,15 +76,14 @@ type Command struct {
 	StdIn   StdinConsoleConfiguration `json:"stdin"`
 } //@name Command
 
-type ConsoleConfiguration struct {
+type StdinConsoleConfiguration struct {
 	Type     string `json:"type,omitempty"`
-	File     string `json:"file,omitempty"`
 	IP       string `json:"ip,omitempty"`
 	Port     string `json:"port,omitempty"`
 	Password string `json:"password,omitempty"`
-} //@name ConsoleConfiguration
+} //@name StdinConsoleConfiguration
 
-type StdinConsoleConfiguration ConsoleConfiguration
+type stdinConfigAlias StdinConsoleConfiguration
 
 type Type struct {
 	Type string `json:"type"`
@@ -214,10 +213,9 @@ func parseRequirementRow(str string) []string {
 	return d
 }
 
-func (c ConsoleConfiguration) Replace(variables map[string]interface{}) ConsoleConfiguration {
-	return ConsoleConfiguration{
+func (c *StdinConsoleConfiguration) Replace(variables map[string]interface{}) StdinConsoleConfiguration {
+	return StdinConsoleConfiguration{
 		Type:     c.Type,
-		File:     ReplaceTokens(c.File, variables),
 		IP:       ReplaceTokens(c.IP, variables),
 		Port:     ReplaceTokens(c.Port, variables),
 		Password: ReplaceTokens(c.Password, variables),
@@ -225,9 +223,7 @@ func (c ConsoleConfiguration) Replace(variables map[string]interface{}) ConsoleC
 }
 
 func (v *Variable) UnmarshalJSON(data []byte) (err error) {
-	aux := variableAlias{
-		Type: Type{Type: "string"},
-	}
+	aux := variableAlias{}
 	if err = json.Unmarshal(data, &aux); err != nil {
 		return
 	}
@@ -260,7 +256,7 @@ func (v *Variable) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (v *StdinConsoleConfiguration) UnmarshalJSON(data []byte) error {
-	aux := ConsoleConfiguration{}
+	aux := stdinConfigAlias{}
 	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
 	}

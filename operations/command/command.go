@@ -10,7 +10,7 @@ import (
 type Command struct {
 	Commands  []string
 	Env       map[string]string
-	StdIn     pufferpanel.ConsoleConfiguration
+	StdIn     pufferpanel.StdinConsoleConfiguration
 	Variables map[string]interface{}
 }
 

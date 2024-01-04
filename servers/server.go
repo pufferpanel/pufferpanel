@@ -265,24 +265,6 @@ func (p *Server) Start() error {
 		return err
 	}
 
-	//server started, now kick off our special "hook" for the console
-	consoleConfig := p.Execution.Stdout
-	switch consoleConfig.Type {
-	case "file":
-		{
-			go func() {
-				defer p.waitForConsole.Unlock()
-				p.waitForConsole.Lock()
-				//now... we need to wait for a file to exist
-				//once it's there, we read until we die
-				var file *os.File
-				for file, err = os.Open(consoleConfig.File); os.IsNotExist(err); {
-				}
-				_, _ = io.Copy(p.RunningEnvironment.GetWrapper(), file)
-			}()
-		}
-	}
-
 	return err
 }
 

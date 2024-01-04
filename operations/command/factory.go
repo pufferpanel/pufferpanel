@@ -12,7 +12,7 @@ type OperationFactory struct {
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	cmds := cast.ToStringSlice(op.OperationArgs["commands"])
 
-	var stdIn pufferpanel.ConsoleConfiguration
+	var stdIn pufferpanel.StdinConsoleConfiguration
 	if field, exists := op.OperationArgs["stdin"]; exists {
 		err := pufferpanel.UnmarshalTo(field, stdIn)
 		if err != nil {
