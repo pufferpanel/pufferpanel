@@ -19,6 +19,7 @@ jobs:
     strategy:
       matrix:
         template: ${{ github.event.client_payload.templates }}
+      fail-fast: false
 
     steps:
       - name: Login to GitHub Container Registry
