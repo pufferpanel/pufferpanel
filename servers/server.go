@@ -170,9 +170,7 @@ func (p *Server) Start() error {
 	p.Log(logging.Info, "Starting server %s", p.Id())
 	p.RunningEnvironment.DisplayToConsole(true, "Starting server\n")
 
-	data := p.DataToMap()
-
-	process, err := GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, data, p.Execution.EnvironmentVariables)
+	process, err := GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
 		p.Log(logging.Error, "Error generating pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
@@ -235,6 +233,8 @@ func (p *Server) Start() error {
 	if command.StdIn.Type == "" {
 		command.StdIn = p.Execution.Stdin
 	}
+
+	data := p.DataToMap()
 
 	commandLine := pufferpanel.ReplaceTokens(command.Command, data)
 	if p.Execution.WorkingDirectory == "${rootDir}" {

@@ -1,4 +1,4 @@
-package forgedl
+package resolveforgeversion
 
 import (
 	"errors"
@@ -13,7 +13,6 @@ type OperationFactory struct {
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	minecraftVersion := cast.ToString(op.OperationArgs["minecraftVersion"])
 	version := cast.ToString(op.OperationArgs["version"])
-	filename := cast.ToString(op.OperationArgs["target"])
 	outputVariable := cast.ToString(op.OperationArgs["outputVariable"])
 
 	if version == "" && minecraftVersion == "" {
@@ -24,11 +23,11 @@ func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.O
 		outputVariable = "opForgeVersion"
 	}
 
-	return ForgeDl{Version: version, Filename: filename, MinecraftVersion: minecraftVersion, OutputVariable: outputVariable}, nil
+	return ResolveForgeVersion{Version: version, MinecraftVersion: minecraftVersion, OutputVariable: outputVariable}, nil
 }
 
 func (of OperationFactory) Key() string {
-	return "forgedl"
+	return "resolveforgeversion"
 }
 
 var Factory OperationFactory

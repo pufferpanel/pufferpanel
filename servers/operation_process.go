@@ -18,6 +18,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v3/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/move"
+	"github.com/pufferpanel/pufferpanel/v3/operations/resolveforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/operations/sleep"
 	"github.com/pufferpanel/pufferpanel/v3/operations/spongedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/steamgamedl"
@@ -25,12 +26,33 @@ import (
 	"github.com/spf13/cast"
 )
 
-var commandMapping map[string]pufferpanel.OperationFactory
+var commandMapping = make(map[string]pufferpanel.OperationFactory)
+var factories = []pufferpanel.OperationFactory{
+	alterfile.Factory,
+	archive.Factory,
+	command.Factory,
+	console.Factory,
+	curseforge.Factory,
+	dockerpull.Factory,
+	download.Factory,
+	extract.Factory,
+	fabricdl.Factory,
+	forgedl.Factory,
+	javadl.Factory,
+	mkdir.Factory,
+	mojangdl.Factory,
+	move.Factory,
+	resolveforgeversion.Factory,
+	sleep.Factory,
+	spongedl.Factory,
+	steamgamedl.Factory,
+	writefile.Factory,
+}
 
 func init() {
-	commandMapping = make(map[string]pufferpanel.OperationFactory)
-
-	loadCoreModules()
+	for _, v := range factories {
+		commandMapping[v.Key()] = v
+	}
 }
 
 func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, environment pufferpanel.Environment, dataMapping map[string]interface{}, env map[string]string) (OperationProcess, error) {
@@ -145,61 +167,4 @@ func (p *OperationProcess) Run(server *Server) error {
 		}
 	}
 	return firstError
-}
-
-func loadCoreModules() {
-	commandFactory := command.Factory
-	commandMapping[commandFactory.Key()] = commandFactory
-
-	downloadFactory := download.Factory
-	commandMapping[downloadFactory.Key()] = downloadFactory
-
-	mkdirFactory := mkdir.Factory
-	commandMapping[mkdirFactory.Key()] = mkdirFactory
-
-	moveFactory := move.Factory
-	commandMapping[moveFactory.Key()] = moveFactory
-
-	alterFileFactory := alterfile.Factory
-	commandMapping[alterFileFactory.Key()] = alterFileFactory
-
-	writeFileFactory := writefile.Factory
-	commandMapping[writeFileFactory.Key()] = writeFileFactory
-
-	mojangFactory := mojangdl.Factory
-	commandMapping[mojangFactory.Key()] = mojangFactory
-
-	forgeDlFactory := forgedl.Factory
-	commandMapping[forgeDlFactory.Key()] = forgeDlFactory
-
-	fabricDlFactory := fabricdl.Factory
-	commandMapping[fabricDlFactory.Key()] = fabricDlFactory
-
-	sleepFactory := sleep.Factory
-	commandMapping[sleepFactory.Key()] = sleepFactory
-
-	consoleFactory := console.Factory
-	commandMapping[consoleFactory.Key()] = consoleFactory
-
-	archiveFactory := archive.Factory
-	commandMapping[archiveFactory.Key()] = archiveFactory
-
-	extractFactory := extract.Factory
-	commandMapping[extractFactory.Key()] = extractFactory
-
-	steamgamedlFactory := steamgamedl.Factory
-	commandMapping[steamgamedlFactory.Key()] = steamgamedlFactory
-
-	javadlFactory := javadl.Factory
-	commandMapping[javadlFactory.Key()] = javadlFactory
-
-	curseforgeFactory := curseforge.Factory
-	commandMapping[curseforgeFactory.Key()] = curseforgeFactory
-
-	spongedlFactory := spongedl.Factory
-	commandMapping[spongedlFactory.Key()] = spongedlFactory
-
-	dockerpullFactory := dockerpull.Factory
-	commandMapping[dockerpullFactory.Key()] = dockerpullFactory
-
 }

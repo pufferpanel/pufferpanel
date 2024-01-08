@@ -56,10 +56,6 @@ func (op ForgeDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 		return pufferpanel.OperationResult{Error: err}
 	}
 
-	if op.OutputVariable == "" {
-		op.OutputVariable = "forgeDL"
-	}
-
 	return pufferpanel.OperationResult{VariableOverrides: map[string]interface{}{
 		op.OutputVariable: op.Version,
 	}}
