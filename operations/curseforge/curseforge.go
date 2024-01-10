@@ -96,7 +96,7 @@ func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
-		switch strings.ToLower(data["loader"]) {
+		switch strings.ToLower(data["MODLOADER"]) {
 		case "fabric":
 			{
 				err = installFabric(env, client, data, c.JavaBinary)
@@ -240,6 +240,7 @@ func installForgeViaJar(env pufferpanel.Environment, jarFile string, javaBinary 
 
 	//delete installer now
 	err = os.Remove(filepath.Join(env.GetRootDirectory(), jarFile))
+	err = os.Remove(filepath.Join(env.GetRootDirectory(), jarFile+".log"))
 	if err != nil {
 		env.DisplayToConsole(true, "Failed to delete installer")
 	}

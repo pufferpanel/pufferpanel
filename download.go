@@ -19,7 +19,6 @@ func DownloadFile(url, fileName string, env Environment) error {
 		return err
 	}
 
-	logging.Info.Printf("Downloading: %s", url)
 	env.DisplayToConsole(true, "Downloading: "+url+"\n")
 
 	response, err := HttpGet(url)

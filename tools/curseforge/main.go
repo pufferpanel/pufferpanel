@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/operations/curseforge"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"os"
@@ -25,11 +26,18 @@ var tests = []curseforge.CurseForge{
 		ProjectId: 285109,
 		FileId:    4612990,
 	},
+	{
+		//Better MC [FABRIC] https://www.curseforge.com/minecraft/modpacks/better-mc-fabric-bmc1/files/4883129
+		ProjectId: 452013,
+		FileId:    4883129,
+	},
 }
 
 func main() {
 	_ = config.CurseForgeKey.Set(os.Getenv("CURSEFORGE_KEY"), false)
 	_ = config.ConsoleForward.Set(true, false)
+
+	logging.OriginalStdOut = os.Stdout
 
 	for _, test := range tests {
 		fmt.Printf("Testing %d\n", test.ProjectId)
