@@ -14,26 +14,26 @@ import (
 )
 
 var tests = []curseforge.CurseForge{
-	//{
-	//	//All the Mods 9 https://www.curseforge.com/minecraft/modpacks/all-the-mods-9/files/5016170
-	//	ProjectId: 715572,
-	//	FileId:    5016170,
-	//},
-	//{
-	//	//Pixelmon https://www.curseforge.com/minecraft/modpacks/the-pixelmon-modpack/files/4966924
-	//	ProjectId: 389615,
-	//	FileId:    4966924,
-	//},
+	{
+		//All the Mods 9 https://www.curseforge.com/minecraft/modpacks/all-the-mods-9/files/5016170
+		ProjectId: 715572,
+		FileId:    5016170,
+	},
+	{
+		//Pixelmon https://www.curseforge.com/minecraft/modpacks/the-pixelmon-modpack/files/4966924
+		ProjectId: 389615,
+		FileId:    4966924,
+	},
 	{
 		//RLCraft https://www.curseforge.com/minecraft/modpacks/rlcraft/files/4612990
 		ProjectId: 285109,
 		FileId:    4612990,
 	},
-	//{
-	//	//Better MC [FABRIC] https://www.curseforge.com/minecraft/modpacks/better-mc-fabric-bmc1/files/4883129
-	//	ProjectId: 452013,
-	//	FileId:    4883129,
-	//},
+	{
+		//Better MC [FABRIC] https://www.curseforge.com/minecraft/modpacks/better-mc-fabric-bmc1/files/4883129
+		ProjectId: 452013,
+		FileId:    4883129,
+	},
 }
 
 func main() {
