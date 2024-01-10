@@ -23,6 +23,11 @@ type CurseForge struct {
 }
 
 var forgeInstallerRegex = regexp.MustCompile("forge-.*-installer.jar")
+var errNoFile = errors.New("status code 404")
+
+var FabricInstallerUrl = "https://maven.fabricmc.net/net/fabricmc/fabric-installer/${FABRIC_INSTALLER_VERSION}/fabric-installer-${FABRIC_INSTALLER_VERSION}.jar"
+var ImprovedFabricInstallerUrl = "https://meta.fabricmc.net/v2/versions/loader/${MINECRAFT_VERSION}/${MODLOADER_VERSION}/${FABRIC_INSTALLER_VERSION}/server/jar"
+var ForgeInstallerUrl = "ttps://maven.minecraftforge.net/net/minecraftforge/forge/${MINECRAFT_VERSION}-${MODLOADER_VERSION}/forge-${MINECRAFT_VERSION}-${MODLOADER_VERSION}-installer.jar"
 
 func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	client := pufferpanel.Http()
@@ -68,28 +73,26 @@ func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult
 		}
 	}
 
+	downloadZip := filepath.Join(env.GetRootDirectory(), "download.zip")
 	err = pufferpanel.DownloadFile(file.DownloadUrl, "download.zip", env)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
-	env.DisplayToConsole(true, "Extracting %s", filepath.Join(env.GetRootDirectory(), "download.zip"))
-	err = pufferpanel.ExtractZipIgnoreSingleDir(filepath.Join(env.GetRootDirectory(), "download.zip"), env.GetRootDirectory())
+	env.DisplayToConsole(true, "Extracting %s", downloadZip)
+	err = pufferpanel.ExtractZipIgnoreSingleDir(downloadZip, env.GetRootDirectory())
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
 
-	//err = os.Remove(filepath.Join(env.GetRootDirectory(), "download.zip"))
-	//if err != nil {
-	//	return err
-	//}
-
-	//now... set up the mod launcher in the event it's not there
-	//use the file to work out what we need to do, because it's going to be a mess of a thing
+	_ = os.Remove(downloadZip)
 
 	//some mod packs use a variables.txt that contains the relevant data. If it exists, we'll pull that and do what we want
+	//others just provide the forge installer directly... so we can find and run it
+	//otherwise.... give up
 	if fi, err := os.Lstat(filepath.Join(env.GetRootDirectory(), "variables.txt")); err == nil && !fi.IsDir() {
 		//read file, we need to pull data from it
-		data, err := readVariableFile(filepath.Join(env.GetRootDirectory(), "variables.txt"))
+		var data map[string]string
+		data, err = readVariableFile(filepath.Join(env.GetRootDirectory(), "variables.txt"))
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
@@ -101,11 +104,29 @@ func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult
 					return pufferpanel.OperationResult{Error: err}
 				}
 			}
+		case "forge":
+			{
+				forgeUrl := replaceTokens(ForgeInstallerUrl, data)
+				forgeInstaller := replaceTokens("forge-${MINECRAFT_VERSION}-${MODLOADER_VERSION}-installer.jar", data)
+
+				err = downloadFile(client, forgeUrl, forgeInstaller)
+				if err != nil {
+					return pufferpanel.OperationResult{Error: err}
+				}
+
+				err = installForgeViaJar(env, forgeInstaller, c.JavaBinary)
+				if err != nil {
+					return pufferpanel.OperationResult{Error: err}
+				}
+			}
 		default:
 			env.DisplayToConsole(true, "Unknown server type. Could not prepare server for actual execution")
 		}
-	} else if err = installForgeViaJar(env, c.JavaBinary); err == nil {
-
+	} else if forgeInstaller, err := findForgeInstallerJar(env); err == nil && forgeInstaller != "" {
+		err = installForgeViaJar(env, forgeInstaller, c.JavaBinary)
+		if err != nil {
+			return pufferpanel.OperationResult{Error: err}
+		}
 	} else {
 		env.DisplayToConsole(true, "Unknown server type. Could not prepare server for actual execution")
 	}
@@ -182,10 +203,10 @@ func callCurseForge(client *http.Client, u string) (*http.Response, error) {
 	return response, err
 }
 
-func installForgeViaJar(env pufferpanel.Environment, javaBinary string) error {
+func findForgeInstallerJar(env pufferpanel.Environment) (string, error) {
 	entries, err := os.ReadDir(env.GetRootDirectory())
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	for _, v := range entries {
@@ -193,52 +214,55 @@ func installForgeViaJar(env pufferpanel.Environment, javaBinary string) error {
 			continue
 		}
 		if forgeInstallerRegex.MatchString(v.Name()) {
-			//forge installer found, we will run this one
-			result := make(chan int, 1)
-			err = env.Execute(pufferpanel.ExecutionData{
-				Command:   javaBinary,
-				Arguments: []string{"-jar", v.Name(), "--installServer"},
-				Callback: func(exitCode int) {
-					result <- exitCode
-					env.DisplayToConsole(true, "Installer exit code: %d", exitCode)
-				},
-			})
+			return v.Name(), nil
+		}
+	}
+	return "", os.ErrNotExist
+}
+
+func installForgeViaJar(env pufferpanel.Environment, jarFile string, javaBinary string) error {
+	//forge installer found, we will run this one
+	result := make(chan int, 1)
+	err := env.Execute(pufferpanel.ExecutionData{
+		Command:   javaBinary,
+		Arguments: []string{"-jar", jarFile, "--installServer"},
+		Callback: func(exitCode int) {
+			result <- exitCode
+			env.DisplayToConsole(true, "Installer exit code: %d", exitCode)
+		},
+	})
+	if err != nil {
+		return err
+	}
+	if <-result != 0 {
+		return errors.New("failed to run forge installer")
+	}
+
+	//delete installer now
+	err = os.Remove(filepath.Join(env.GetRootDirectory(), jarFile))
+	if err != nil {
+		env.DisplayToConsole(true, "Failed to delete installer")
+	}
+
+	//if this is before 1.16, we have a root jar
+	//or if there's a shim
+	possibleRenames := []string{
+		strings.Replace(jarFile, "-installer", "", 1),      //pre 1.17 forge
+		strings.Replace(jarFile, "-installer", "-shim", 1), //forge shim
+	}
+
+	var fi os.FileInfo
+	for _, f := range possibleRenames {
+		if fi, err = os.Lstat(filepath.Join(env.GetRootDirectory(), f)); err == nil && !fi.IsDir() {
+			err = os.Rename(filepath.Join(env.GetRootDirectory(), f), filepath.Join(env.GetRootDirectory(), "server.jar"))
 			if err != nil {
 				return err
 			}
-			if <-result != 0 {
-				return errors.New("failed to run forge installer")
-			}
-
-			//delete installer now
-			err = os.Remove(filepath.Join(env.GetRootDirectory(), v.Name()))
+		} else if fi, err = os.Lstat(filepath.Join(env.GetRootDirectory(), f)); err == nil && !fi.IsDir() {
+			err = os.Rename(filepath.Join(env.GetRootDirectory(), f), filepath.Join(env.GetRootDirectory(), "server.jar"))
 			if err != nil {
-				env.DisplayToConsole(true, "Failed to delete installer")
+				return err
 			}
-
-			//if this is before 1.16, we have a root jar
-			//or if there's a shim
-			possibleRenames := []string{
-				strings.Replace(v.Name(), "-installer", "", 1),      //pre 1.17 forge
-				strings.Replace(v.Name(), "-installer", "-shim", 1), //forge shim
-			}
-
-			var fi os.FileInfo
-			for _, f := range possibleRenames {
-				if fi, err = os.Lstat(filepath.Join(env.GetRootDirectory(), f)); err == nil && !fi.IsDir() {
-					err = os.Rename(filepath.Join(env.GetRootDirectory(), f), filepath.Join(env.GetRootDirectory(), "server.jar"))
-					if err != nil {
-						return err
-					}
-				} else if fi, err = os.Lstat(filepath.Join(env.GetRootDirectory(), f)); err == nil && !fi.IsDir() {
-					err = os.Rename(filepath.Join(env.GetRootDirectory(), f), filepath.Join(env.GetRootDirectory(), "server.jar"))
-					if err != nil {
-						return err
-					}
-				}
-			}
-
-			break
 		}
 	}
 	return nil
@@ -261,9 +285,6 @@ func readVariableFile(path string) (map[string]string, error) {
 	}
 	return data, scanner.Err()
 }
-
-var FabricInstallerUrl = "https://maven.fabricmc.net/net/fabricmc/fabric-installer/${FABRIC_INSTALLER_VERSION}/fabric-installer-${FABRIC_INSTALLER_VERSION}.jar"
-var ImprovedFabricInstallerUrl = "https://meta.fabricmc.net/v2/versions/loader/${MINECRAFT_VERSION}/${MODLOADER_VERSION}/${FABRIC_INSTALLER_VERSION}/server/jar"
 
 func installFabric(env pufferpanel.Environment, client *http.Client, data map[string]string, javaBinary string) error {
 	//this is a mess
@@ -324,7 +345,7 @@ func installFabric(env pufferpanel.Environment, client *http.Client, data map[st
 }
 
 func downloadFile(client *http.Client, url, target string) error {
-	file, err := os.OpenFile(target, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0655)
+	file, err := os.Create(target)
 	if err != nil {
 		return err
 	}
@@ -348,5 +369,3 @@ func replaceTokens(msg string, data map[string]string) string {
 	}
 	return result
 }
-
-var errNoFile = errors.New("status code 404")
