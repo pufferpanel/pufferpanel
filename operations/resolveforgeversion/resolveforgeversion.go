@@ -48,6 +48,11 @@ func (op ResolveForgeVersion) Run(env pufferpanel.Environment) pufferpanel.Opera
 			//look for folders
 			if v.IsDir() {
 				folderName := v.Name()
+				//look for the unix file to accurately confirm this to be supported
+				desiredFile := filepath.Join(dir, folderName, "unix_args.txt")
+				if _, err = os.Lstat(desiredFile); err != nil {
+					continue
+				}
 				if op.Version == "" {
 					op.Version = v.Name()
 					ver, _ = version.NewVersion(op.Version)
