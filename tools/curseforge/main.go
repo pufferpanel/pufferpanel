@@ -38,6 +38,7 @@ var tests = []curseforge.CurseForge{
 
 func main() {
 	_ = config.CurseForgeKey.Set(os.Getenv("CURSEFORGE_KEY"), false)
+	_ = config.CacheFolder.Set(".", false)
 	_ = config.ConsoleForward.Set(true, false)
 
 	logging.OriginalStdOut = os.Stdout
@@ -61,7 +62,7 @@ func main() {
 		}
 		result := test.Run(env)
 		if result.Error != nil {
-			results[test.ProjectId] = err
+			results[test.ProjectId] = result.Error
 			continue
 		}
 		var fi os.FileInfo
@@ -70,11 +71,11 @@ func main() {
 		} else {
 			op := resolveforgeversion.ResolveForgeVersion{OutputVariable: "result"}
 			result = op.Run(env)
-			if result.Error != nil {
+			if result.Error != nil && !os.IsNotExist(err) {
 				results[test.ProjectId] = result.Error
 				continue
 			}
-			if result.VariableOverrides["result"] == "" {
+			if result.VariableOverrides == nil || result.VariableOverrides["result"] == "" {
 				results[test.ProjectId] = errors.New("failed to resolve to specific MC Forge version based on unix_args.txt")
 			} else {
 				results[test.ProjectId] = nil

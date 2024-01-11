@@ -97,7 +97,22 @@ func ExtractZip(name, directory string) error {
 	}
 	defer Close(file)
 	for _, f := range file.File {
-		err = unzipFile(f, directory, false)
+		err = unzipFile(f, directory, false, "")
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func ExtractFileFromZip(name, directory, targetFile string) error {
+	file, err := zip.OpenReader(name)
+	if err != nil {
+		return err
+	}
+	defer Close(file)
+	for _, f := range file.File {
+		err = unzipFile(f, directory, false, targetFile)
 		if err != nil {
 			return err
 		}
@@ -141,7 +156,7 @@ func ExtractZipIgnoreSingleDir(name, directory string) error {
 	}
 
 	for _, f := range file.File {
-		err = unzipFile(f, directory, isSingleDir)
+		err = unzipFile(f, directory, isSingleDir, "")
 		if err != nil {
 			return err
 		}
@@ -149,10 +164,13 @@ func ExtractZipIgnoreSingleDir(name, directory string) error {
 	return nil
 }
 
-func unzipFile(f *zip.File, destination string, skipLevel bool) error {
+func unzipFile(f *zip.File, destination string, skipLevel bool, filter string) error {
 	// 4. Check if file paths are not vulnerable to Zip Slip
 
 	fileName := f.Name
+	if filter != "" && fileName != filter {
+		return nil
+	}
 	if skipLevel {
 		parts := strings.SplitN(fileName, "/", 2)
 		if len(parts) != 2 {

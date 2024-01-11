@@ -12,20 +12,21 @@ type Addon struct {
 }
 
 type File struct {
-	Id               uint
-	IsAvailable      bool
-	DisplayName      string
-	FileName         string
-	ReleaseType      int
-	FileStatus       int
-	FileDate         time.Time
-	FileLength       uint64
-	DownloadCount    uint
-	DownloadUrl      string
-	AlternateFileId  uint
-	GameVersions     []string
-	IsServerPack     bool
-	ServerPackFileId uint
+	Id                  uint
+	IsAvailable         bool
+	DisplayName         string
+	FileName            string
+	ReleaseType         int
+	FileStatus          int
+	FileDate            time.Time
+	FileLength          uint64
+	DownloadCount       uint
+	DownloadUrl         string
+	AlternateFileId     uint
+	GameVersions        []string
+	IsServerPack        bool
+	ServerPackFileId    uint
+	ParentProjectFileId uint
 }
 
 type Category struct {
@@ -47,19 +48,6 @@ type Pagination struct {
 	PageSize    int
 	ResultCount int
 	TotalCount  int
-}
-
-func GetReleaseType(i int) string {
-	switch i {
-	case 1:
-		return "release"
-	case 2:
-		return "beta"
-	case 3:
-		return "alpha"
-	default:
-		return "unknown"
-	}
 }
 
 func IsAllowedFile(i int) bool {
@@ -91,4 +79,18 @@ type FileResponse struct {
 
 type AddonResponse struct {
 	Data Addon
+}
+
+type Manifest struct {
+	Minecraft MinecraftManifest
+}
+
+type MinecraftManifest struct {
+	Version    string
+	ModLoaders []ModLoaderManifest
+}
+
+type ModLoaderManifest struct {
+	Id      string
+	Primary bool
 }
