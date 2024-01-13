@@ -1,7 +1,6 @@
 package resolveforgeversion
 
 import (
-	"errors"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/spf13/cast"
 )
@@ -14,10 +13,6 @@ func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.O
 	minecraftVersion := cast.ToString(op.OperationArgs["minecraftVersion"])
 	version := cast.ToString(op.OperationArgs["version"])
 	outputVariable := cast.ToString(op.OperationArgs["outputVariable"])
-
-	if version == "" && minecraftVersion == "" {
-		return nil, errors.New("missing version and minecraftVersion")
-	}
 
 	if outputVariable == "" {
 		outputVariable = "opForgeVersion"

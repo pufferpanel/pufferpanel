@@ -16,7 +16,7 @@ type File struct {
 	IsAvailable         bool
 	DisplayName         string
 	FileName            string
-	ReleaseType         int
+	ReleaseType         ReleaseType
 	FileStatus          int
 	FileDate            time.Time
 	FileLength          uint64
@@ -94,3 +94,9 @@ type ModLoaderManifest struct {
 	Id      string
 	Primary bool
 }
+
+type ReleaseType int
+
+var ReleaseFileType = ReleaseType(1)
+var BetaFileType = ReleaseType(2)
+var AlphaFileType = ReleaseType(3)

@@ -169,7 +169,7 @@ jobs:
 
       - name: Build Windows
         run: |
-          go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config._hiddenCurseforgeKey=${{ secrets.CURSEFORGE_KEY }}' -X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
         env:
           GOOS: windows
           GOARCH: amd64
@@ -279,7 +279,7 @@ jobs:
 
       - name: Build Linux
         run: |
-          go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config._hiddenCurseforgeKey=${{ secrets.CURSEFORGE_KEY }} -X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
           go test -v ./...
         env:
           GOOS: linux
@@ -421,7 +421,7 @@ jobs:
 
       - name: Build ARM64
         run: |
-          go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config._hiddenCurseforgeKey=${{ secrets.CURSEFORGE_KEY }} -X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
         env:
           GOOS: linux
           GOARCH: arm64
@@ -555,6 +555,7 @@ jobs:
           build-args: |
             sha: ${{ github.sha }}
             version: ${{ env.VERSION }}
+            curseforgeKey: ${{ secrets.CURSEFORGE_KEY }}
           platforms: ${{ matrix.platform }}
 
   release:

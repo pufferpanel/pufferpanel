@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-func downloadModpack(file *File) error {
+func downloadModpack(file File) error {
 	var cacheZipFolder = getCacheFolderForFile(file)
 	var cacheZipFileLocation = getCacheFilePath(file)
 
@@ -55,15 +55,18 @@ func downloadModpack(file *File) error {
 	return nil
 }
 
-func getCacheFolderForFile(file *File) string {
+func getCacheFolderForFile(file File) string {
 	return filepath.Join(config.CacheFolder.Value(), "curseforge", fmt.Sprintf("%d", file.Id))
 }
 
-func getCacheFilePath(file *File) string {
+func getCacheFilePath(file File) string {
 	return filepath.Join(getCacheFolderForFile(file), "download.zip")
 }
 
-func getManifest(clientFile *File) (Manifest, error) {
+func getManifest(clientFile File) (Manifest, error) {
+	if clientFile.Id == 0 {
+		return Manifest{}, os.ErrNotExist
+	}
 	manifestFile, err := extractFile(getCacheFilePath(clientFile), "manifest.json")
 	defer pufferpanel.Close(manifestFile)
 
@@ -91,7 +94,7 @@ func extractFile(zipFile, fileName string) (*os.File, error) {
 	return file, err
 }
 
-func readVariableFile(serverFile *File) (map[string]string, error) {
+func readVariableFile(serverFile File) (map[string]string, error) {
 	varFile, err := extractFile(getCacheFilePath(serverFile), "variables.txt")
 	defer pufferpanel.Close(varFile)
 

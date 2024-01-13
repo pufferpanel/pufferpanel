@@ -1,10 +1,7 @@
 FROM ubuntu:20.04 as go
 
 ARG aptproxy=""
-ARG GOPROXY=""
-ENV CGOENABLED=1
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH="$PATH:/usr/local/go/bin"
 
 WORKDIR /home/pufferpanel/build
 
@@ -16,17 +13,21 @@ RUN if [ -n "${aptproxy}" ]; then echo "Acquire::http::Proxy \"http://${aptproxy
     apt-get clean && \
     rm -rf /var/cache/apt/archives
 
+ENV CGOENABLED=1
+ENV PATH="$PATH:/usr/local/go/bin"
+
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY . .
 
-RUN go build -v -buildvcs=false -o /home/pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/tools/templatetester
+ARG GOPROXY=""
+ARG curseforgeKey=""
+RUN go build -v -buildvcs=false -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config._hiddenCurseforgeKey=$curseforgeKey'" -o /home/pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/tools/templatetester
 
 FROM ubuntu:20.04 AS final
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH="$PATH:/usr/local/go/bin"
 ENV NODE_MAJOR=20
 
 ARG aptproxy=""

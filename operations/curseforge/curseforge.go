@@ -3,6 +3,7 @@ package curseforge
 import (
 	"errors"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
 	"net/http"
 	"os"
@@ -49,7 +50,7 @@ var ForgeInstallerUrl = "https://maven.minecraftforge.net/net/minecraftforge/for
 var ForgeInstallerName = "forge-${mcVersion}-${version}-installer.jar"
 
 func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
-	var clientFile, serverFile *File
+	var clientFile, serverFile File
 	var err error
 	if c.FileId == 0 {
 		//we need to get the latest file id to do our calls
@@ -62,17 +63,16 @@ func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult
 			if !IsAllowedFile(v.FileStatus) {
 				continue
 			}
-			if clientFile == nil {
-				clientFile = &v
+			if v.ReleaseType != ReleaseFileType {
 				continue
 			}
-			if clientFile.FileDate.Before(v.FileDate) {
-				clientFile = &v
+			if serverFile.FileDate.Before(v.FileDate) {
+				serverFile = v
 				continue
 			}
 		}
 
-		if clientFile == nil {
+		if serverFile.Id == 0 {
 			err = errors.New("no files available on CurseForge")
 			return pufferpanel.OperationResult{Error: err}
 		}
@@ -91,20 +91,28 @@ func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult
 		}
 	}
 
-	if clientFile == nil && serverFile.ParentProjectFileId != 0 {
+	if clientFile.Id == 0 && serverFile.ParentProjectFileId != 0 {
 		clientFile, err = getFileById(c.ProjectId, serverFile.ParentProjectFileId)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
 	}
 
+	if !serverFile.IsServerPack {
+		logging.Debug.Printf("File ID %d is not marked as a server pack, will not install\n", serverFile.Id)
+		env.DisplayToConsole(true, "File ID %d is not marked as a server pack, will not install\n", serverFile.Id)
+		return pufferpanel.OperationResult{Error: errors.New("not server pack")}
+	}
+
+	logging.Debug.Printf("Downloading modpack from %s\n", serverFile.DownloadUrl)
 	env.DisplayToConsole(true, "Downloading modpack from %s", serverFile.DownloadUrl)
 	err = downloadModpack(serverFile)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
 
-	if clientFile != nil {
+	if clientFile.Id != 0 {
+		logging.Debug.Printf("Downloading client modpack from %s\n", serverFile.DownloadUrl)
 		env.DisplayToConsole(true, "Downloading client modpack from %s", serverFile.DownloadUrl)
 		err = downloadModpack(clientFile)
 		if err != nil {
@@ -113,6 +121,7 @@ func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult
 	}
 
 	serverZipPath := getCacheFilePath(serverFile)
+	logging.Debug.Printf("Extracting modpack from %s\n", serverZipPath)
 	env.DisplayToConsole(true, "Extracting modpack from %s", serverZipPath)
 	err = pufferpanel.ExtractZipIgnoreSingleDir(serverZipPath, env.GetRootDirectory())
 	if err != nil {

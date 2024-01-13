@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
 	"net/http"
 	"net/url"
@@ -40,26 +41,26 @@ func getLatestFiles(projectId uint) ([]File, error) {
 	return addon.Data.LatestFiles, err
 }
 
-func getFileById(projectId, fileId uint) (*File, error) {
+func getFileById(projectId, fileId uint) (File, error) {
 	u := fmt.Sprintf("https://api.curseforge.com/v1/mods/%d/files/%d", projectId, fileId)
 
 	response, err := callCurseForge(u)
 	if err != nil {
-		return nil, err
+		return File{}, err
 	}
 	defer pufferpanel.CloseResponse(response)
 
 	if response.StatusCode == http.StatusNotFound {
-		return nil, fmt.Errorf("file id %d not found", fileId)
+		return File{}, fmt.Errorf("file id %d not found", fileId)
 	}
 
 	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
+		return File{}, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
 	}
 
 	var res FileResponse
 	err = json.NewDecoder(response.Body).Decode(&res)
-	return &res.Data, err
+	return res.Data, err
 }
 
 func callCurseForge(u string) (*http.Response, error) {
@@ -75,6 +76,7 @@ func callCurseForge(u string) (*http.Response, error) {
 	}
 	request.Header.Add("x-api-key", config.CurseForgeKey.Value())
 
+	logging.Debug.Printf("Calling %s\n", request.URL.String())
 	response, err := pufferpanel.Http().Do(request)
 	return response, err
 }
