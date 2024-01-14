@@ -53,6 +53,7 @@ jobs:
           build-args: |
             sha: ${{ github.sha }}
             version: ${{ env.VERSION }}
+            curseforgeKey: ${{ secrets.CURSEFORGE_KEY }}
           platforms: ${{ matrix.platform }}
 
       - name: Checkout repository
