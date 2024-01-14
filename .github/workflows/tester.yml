@@ -39,6 +39,13 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: type=raw,${{ env.TAG }}
 
+      - name: Prep
+        env:
+          secret_set: ${{ secrets.CURSEFORGE_CODE != '' }}
+        if: ${{ env.secret_set }}
+        run: |
+          echo '${{ secrets.CURSEFORGE_CODE }}' > config/curseforge.go
+
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v5

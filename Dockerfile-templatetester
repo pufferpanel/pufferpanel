@@ -22,8 +22,7 @@ RUN go mod download && go mod verify
 COPY . .
 
 ARG GOPROXY=""
-ARG curseforgeKey=""
-RUN go build -v -buildvcs=false -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config._hiddenCurseforgeKey=$curseforgeKey'" -o /home/pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/tools/templatetester
+RUN go build -v -buildvcs=false -o /home/pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/tools/templatetester
 
 FROM ubuntu:20.04 AS final
 

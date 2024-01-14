@@ -167,9 +167,16 @@ jobs:
         run: |
           sudo apt-get install -y gcc-mingw-w64
 
-      - name: Build Windows
+      - name: Prep
+        env:
+          secret_set: ${{ secrets.CURSEFORGE_CODE != '' }}
+        if: ${{ env.secret_set }}
         run: |
-          go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config._hiddenCurseforgeKey=${{ secrets.CURSEFORGE_KEY }}' -X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+          echo '${{ secrets.CURSEFORGE_CODE }}' > config/curseforge.go
+
+      - name: Build Windows
+        run: |          
+          go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
         env:
           GOOS: windows
           GOARCH: amd64
@@ -277,9 +284,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-${{ env.GO_VERSION }}
 
+      - name: Prep
+        env:
+          secret_set: ${{ secrets.CURSEFORGE_CODE != '' }}
+        if: ${{ env.secret_set }}
+        run: |
+          echo '${{ secrets.CURSEFORGE_CODE }}' > config/curseforge.go
+
       - name: Build Linux
         run: |
-          go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config._hiddenCurseforgeKey=${{ secrets.CURSEFORGE_KEY }}' -X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
           go test -v ./...
         env:
           GOOS: linux
@@ -419,9 +433,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-${{ env.GO_VERSION }}
 
+      - name: Prep
+        env:
+          secret_set: ${{ secrets.CURSEFORGE_CODE != '' }}
+        if: ${{ env.secret_set }}
+        run: |
+          echo '${{ secrets.CURSEFORGE_CODE }}' > config/curseforge.go
+
       - name: Build ARM64
         run: |
-          go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config._hiddenCurseforgeKey=${{ secrets.CURSEFORGE_KEY }}' -X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
         env:
           GOOS: linux
           GOARCH: arm64

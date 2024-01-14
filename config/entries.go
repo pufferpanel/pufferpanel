@@ -43,12 +43,10 @@ var CacheFolder = asDataFolder("daemon.data.cache", "cache")
 var ServersFolder = asDataFolder("daemon.data.servers", "servers")
 var BinariesFolder = asDataFolder("daemon.data.binaries", "binaries")
 var CrashLimit = asInt("daemon.data.crashLimit", 3)
-var CurseForgeKey = asString("daemon.curseforge.key", _hiddenCurseforgeKey)
+var CurseForgeKey = asString("daemon.curseforge.key", curseforgeKey)
 var DataRootFolder = asString("daemon.data.root", "")
 
 var TokenPublicUrl = asString("token.public", "")
-
-var _hiddenCurseforgeKey = ""
 
 type entry[T ValueType] struct {
 	key string
