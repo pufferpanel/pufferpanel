@@ -1,13 +1,20 @@
-package services
+package email
 
 import (
-	"github.com/mailjet/mailjet-apiv3-go/v3"
+	"github.com/mailjet/mailjet-apiv3-go/v4"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
 
-func SendEmailViaMailjet(to, subject, body string, async bool) error {
+type mailjetProvider struct {
+	Provider
+}
+
+func init() {
+	providers["mailjet"] = mailjetProvider{}
+}
+
+func (mailjetProvider) Send(to, subject, body string) error {
 	domain := config.EmailDomain.Value()
 	if domain == "" {
 		return pufferpanel.ErrSettingNotConfigured(config.EmailDomain.Key())
@@ -41,16 +48,6 @@ func SendEmailViaMailjet(to, subject, body string, async bool) error {
 	}
 	message := mailjet.MessagesV31{Info: messagesInfo}
 
-	if async {
-		go func(mgI *mailjet.Client, messageI *mailjet.MessagesV31) {
-			_, err := m.SendMailV31(messageI)
-			if err != nil {
-				logging.Error.Printf("Error sending email: %s", err)
-			}
-		}(m, &message)
-		return nil
-	} else {
-		_, err := m.SendMailV31(&message)
-		return err
-	}
+	_, err := m.SendMailV31(&message)
+	return err
 }
