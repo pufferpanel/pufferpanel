@@ -1,10 +1,12 @@
 package conditions
 
 import (
-	"errors"
+	"fmt"
 	"github.com/google/cel-go/cel"
-	"github.com/spf13/cast"
+	"reflect"
+	"regexp"
 	"runtime"
+	"strings"
 )
 
 var GlobalConstantValues = map[string]interface{}{
@@ -12,21 +14,17 @@ var GlobalConstantValues = map[string]interface{}{
 	VariableArch: runtime.GOARCH,
 }
 
-func ResolveIf(condition interface{}, data map[string]interface{}, extraCels []cel.EnvOption) (bool, error) {
-	if str, ok := condition.(string); condition == nil || (ok && str == "") {
-		if success, exists := data[VariableSuccess]; exists {
-			return cast.ToBoolE(success)
-		}
+func ResolveIf(condition string, data map[string]interface{}, extraCels []cel.EnvOption) (bool, error) {
+	if condition == "" {
 		return true, nil
 	}
+	return Run[bool](condition, data, extraCels)
+}
 
-	var cond string
-	var ok bool
-	if cond, ok = condition.(string); !ok {
-		return false, errors.New("unknown type for condition")
-	}
+func Run[T interface{}](statement string, data map[string]interface{}, extras []cel.EnvOption) (T, error) {
+	var res T
 
-	celVars := extraCels
+	celVars := extras
 	if celVars == nil {
 		celVars = make([]cel.EnvOption, 0)
 	}
@@ -45,22 +43,44 @@ func ResolveIf(condition interface{}, data map[string]interface{}, extraCels []c
 
 	celEnv, err := cel.NewEnv(celVars...)
 	if err != nil {
-		return false, err
+		return res, err
 	}
 
-	ast, issues := celEnv.Compile(cond)
+	ast, issues := celEnv.Compile(statement)
 	if issues != nil && issues.Err() != nil {
-		return false, issues.Err()
+		return res, issues.Err()
 	}
 
 	prg, err := celEnv.Program(ast)
 	if err != nil {
-		return false, err
+		return res, err
 	}
 
 	out, _, err := prg.Eval(inputData)
 	if err != nil {
-		return false, err
+		return res, err
 	}
-	return out.Value().(bool), nil
+	if cast, ok := out.Value().(T); ok {
+		return cast, nil
+	} else {
+		return res, fmt.Errorf("invalid return type, expected %s, got %s", reflect.TypeOf(res), reflect.TypeOf(cast))
+	}
+}
+
+var conditionalStatementRegex = regexp.MustCompile("{{.*?}}")
+
+func ReplaceInString(str string, data map[string]interface{}, extras []cel.EnvOption) (string, error) {
+	var err error
+
+	result := conditionalStatementRegex.ReplaceAllStringFunc(str, func(part string) string {
+		part = strings.TrimSuffix(strings.TrimPrefix(part, "{{"), "}}")
+		result, innErr := Run[string](part, data, extras)
+		if innErr != nil {
+			err = innErr
+			return err.Error()
+		}
+		return result
+	})
+
+	return result, err
 }

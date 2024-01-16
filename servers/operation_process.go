@@ -114,7 +114,7 @@ type OperationProcess []*OperationTask
 
 type OperationTask struct {
 	Operation pufferpanel.CreateOperation
-	Condition interface{}
+	Condition string
 	Type      string
 }
 

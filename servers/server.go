@@ -689,7 +689,7 @@ func (p *Server) Log(l *log.Logger, format string, obj ...interface{}) {
 	l.Printf(msg, obj...)
 }
 
-func (p *Server) RunCondition(condition interface{}, extraData map[string]interface{}) (bool, error) {
+func (p *Server) RunCondition(condition string, extraData map[string]interface{}) (bool, error) {
 	data := map[string]interface{}{
 		conditions.VariableEnv:      p.RunningEnvironment.GetBase().Type,
 		conditions.VariableServerId: p.Id(),
