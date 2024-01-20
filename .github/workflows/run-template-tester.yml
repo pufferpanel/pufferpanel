@@ -12,7 +12,7 @@ env:
 jobs:
   run-tester:
     name: Run Tool
-    runs-on: template-tester
+    runs-on: ubuntu-20.04
     permissions:
       packages: read
 
