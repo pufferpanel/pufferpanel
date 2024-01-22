@@ -95,7 +95,7 @@ function focusList() {
       <div v-for="server in servers" :key="server.id" class="list-item">
         <router-link :ref="setFirstEntry" :to="{ name: 'ServerView', params: { id: server.id } }">
           <div
-            :class="['server', 'server-' + server.type]"
+            :class="['server', `server-${(server.icon || 'none')}`]"
             :data-online="server.online"
           >
             <span class="title" :title="server.name">{{server.name}}</span>

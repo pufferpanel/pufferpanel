@@ -40,7 +40,22 @@
   }
 }
 
-$serverTypes: ('7days', 'ark', 'csgo', 'css', 'dontstarvetogether', 'factorio', 'minecraft-bedrock', 'minecraft-java', 'terraria');
+$serverTypes: (
+  '7days2die',
+  'ark',
+  'arma3',
+  'csgo',
+  'css',
+  'dontstarvetogether',
+  'eco',
+  'factorio',
+  'gmod',
+  'minecraft-bedrock',
+  'minecraft-java',
+  'rust',
+  'starbound',
+  'terraria'
+);
 
 .server-type-icon .server {
   position: relative;
