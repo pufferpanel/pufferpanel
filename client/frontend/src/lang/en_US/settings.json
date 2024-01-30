@@ -5,7 +5,7 @@
   "EmailSettings": "Email Settings",
   "SaveEmailSettings": "Save Email Settings",
   "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
+  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8008",
   "CompanyName": "Company Name",
   "DefaultTheme": "Default Theme",
   "RegistrationEnabled": "Allow users to register themselves",

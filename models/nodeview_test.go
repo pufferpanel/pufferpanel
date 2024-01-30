@@ -16,7 +16,7 @@ func TestFromNodes(t *testing.T) {
 		Name:        "node",
 		PublicHost:  "localhost",
 		PrivateHost: "127.0.0.1",
-		PublicPort:  8080,
+		PublicPort:  8008,
 		PrivatePort: 5658,
 		SFTPPort:    5657,
 		Secret:      "somesecret",

@@ -15,9 +15,9 @@ const router = useRouter()
 const withPrivateHost = ref(false)
 const name = ref('')
 const publicHost = ref('')
-const publicPort = ref('8080')
+const publicPort = ref('8008')
 const privateHost = ref('')
-const privatePort = ref('8080')
+const privatePort = ref('8008')
 const sftpPort = ref('5657')
 
 function canCreate() {

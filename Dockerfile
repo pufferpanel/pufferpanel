@@ -49,7 +49,7 @@ RUN go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpan
 
 FROM alpine
 
-EXPOSE 8080 5657
+EXPOSE 8008 5657
 RUN mkdir -p /etc/pufferpanel && \
     mkdir -p /var/lib/pufferpanel && \
     mkdir -p /var/log/pufferpanel && \

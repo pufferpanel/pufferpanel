@@ -14,8 +14,8 @@ type Node struct {
 	Name        string `gorm:"size:100;UNIQUE;NOT NULL" json:"-" validate:"required,printascii"`
 	PublicHost  string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|fqdn"`
 	PrivateHost string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|fqdn"`
-	PublicPort  uint16 `gorm:"DEFAULT:8080;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
-	PrivatePort uint16 `gorm:"DEFAULT:8080;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
+	PublicPort  uint16 `gorm:"DEFAULT:8008;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
+	PrivatePort uint16 `gorm:"DEFAULT:8008;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
 	SFTPPort    uint16 `gorm:"DEFAULT:5657;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=PublicPort,nefield=PrivatePort"`
 
 	Secret string `gorm:"size=36;NOT NULL" json:"-" validate:"required"`
@@ -46,8 +46,8 @@ var LocalNode = &Node{
 	Name:        "LocalNode",
 	PublicHost:  "127.0.0.1",
 	PrivateHost: "127.0.0.1",
-	PublicPort:  8080,
-	PrivatePort: 8080,
+	PublicPort:  8008,
+	PrivatePort: 8008,
 	SFTPPort:    5657,
 }
 
