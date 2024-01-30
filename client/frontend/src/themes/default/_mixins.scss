@@ -81,6 +81,14 @@ $breakpoints: (
       color: var(--text);
     }
 
+    .text, .title, .subline {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      display: block;
+    }
+
     .subline {
       font-size: 0.85em;
       color: var(--text-disabled);

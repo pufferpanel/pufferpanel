@@ -88,15 +88,6 @@ function removeEnv(index) {
   if (template.value.environment.type === env.type) template.value.environment = template.value.supportedEnvironments[0]
   update()
 }
-
-function isDefaultEnv(index) {
-  return template.value.environment.type === template.value.supportedEnvironments[index].type
-}
-
-function setDefaultEnv(index) {
-  template.value.environment = template.value.supportedEnvironments[index]
-  update()
-}
 </script>
 
 <template>
@@ -105,7 +96,6 @@ function setDefaultEnv(index) {
       <li v-for="(env, index) in template.supportedEnvironments" :key="env.type" class="list-item clickable">
         <div class="list-item-content" @click="editEnv(index)">
           <span v-text="t(`env.${env.type}.name`)" />
-          <btn :class="isDefaultEnv(index) ? 'active' : ''" variant="icon" @click.stop="setDefaultEnv(index)"><icon name="default" /></btn>
           <btn :disabled="template.supportedEnvironments.length < 2" variant="icon" @click.stop="removeEnv(index)"><icon name="remove" /></btn>
         </div>
       </li>

@@ -292,6 +292,14 @@ hr {
   }
 }
 
+.templateview .overlay, .templatecreate .overlay {
+  min-width: 50vw;
+}
+
+.serverview #admin .server-definition .overlay {
+  width: 85vw;
+}
+
 // Server Components
 .status {
   @include icon;
@@ -427,6 +435,10 @@ html[dir="rtl"] .menu.open {
       font-size: 2rem;
     }
   }
+}
+
+.serverview .server-name .overlay {
+  min-width: 25vw;
 }
 
 
@@ -824,6 +836,10 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   @include card;
 }
 
+.nodeview .overlay{
+  width: 85vw;
+}
+
 .servercreate {
   @include cols(12);
   @include card;
@@ -1076,6 +1092,7 @@ html[dir="rtl"] .settings .panel .master-url .icon {
 
   .file-editor {
     height: 70vh;
+    width: 80vw;
   }
 
   .file-viewer {

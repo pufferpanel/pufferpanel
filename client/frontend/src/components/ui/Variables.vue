@@ -57,7 +57,13 @@ function visibleGroups() {
 
 function filtered(group) {
   return group.variables.filter(v => {
-    return props.modelValue.data[v]
+    return props.modelValue.data[v] && !props.modelValue.data[v].internal
+  })
+}
+
+function grouplessVarsFiltered() {
+  return grouplessVars.value.filter(v => {
+    return props.modelValue.data[v] && !props.modelValue.data[v].internal
   })
 }
 </script>
@@ -75,11 +81,11 @@ function filtered(group) {
         <setting-input :model-value="modelValue.data[name]" :disabled="disabled" @update:modelValue="updateValue(name, $event)" />
       </div>
     </div>
-    <div v-if="grouplessVars.length > 0">
+    <div v-if="grouplessVarsFiltered().length > 0">
       <div class="group-header">
         <h3 class="title" v-text="t('templates.NoGroup')" />
       </div>
-      <div v-for="name in grouplessVars" :key="name">
+      <div v-for="name in grouplessVarsFiltered()" :key="name">
         <setting-input :model-value="modelValue.data[name]" :disabled="disabled" @update:modelValue="updateValue(name, $event)" />
       </div>
     </div>

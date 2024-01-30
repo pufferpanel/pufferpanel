@@ -28,7 +28,7 @@ async function updateName() {
     <span class="name">{{ server.name }}<btn v-if="server.hasScope('server.name.edit')" variant="icon" @click="edit = !edit"><icon name="edit" /></btn></span>
     <controls :server="server" />
   </h1>
-  <overlay v-model="edit" :title="t('common.Name')" closable>
+  <overlay v-model="edit" :title="t('common.Name')" closable class="server-name">
     <text-field v-model="name" />
     <btn color="primary" @click="updateName()"><icon name="save" />{{ t('common.Save') }}</btn>
   </overlay>

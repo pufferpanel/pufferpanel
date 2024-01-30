@@ -74,7 +74,10 @@ function remove(i) {
     <ul class="list">
       <li v-for="(step, index) in model" :key="index" class="list-item clickable">
         <div class="list-item-content" @click="startEdit(index)">
-          <span v-text="generateOperatorLabel(t, step)" />
+          <div class="text">
+            <span class="title" v-text="generateOperatorLabel(t, step)" />
+            <span v-if="step.if" class="subline" v-text="step.if" />
+          </div>
           <btn :disabled="index === 0" variant="icon" @click.stop="swap(index, index-1)"><icon name="up" /></btn>
           <btn :disabled="index === model.length - 1" variant="icon" @click.stop="swap(index, index+1)"><icon name="down" /></btn>
           <btn variant="icon" @click.stop="remove(index)"><icon name="remove" /></btn>

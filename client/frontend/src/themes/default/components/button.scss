@@ -81,6 +81,7 @@ html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
 }
 
 .button.icon {
+  min-width: 48px;
   width: 48px;
   padding: 9px;
   margin: 0;

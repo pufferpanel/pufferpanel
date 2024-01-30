@@ -134,7 +134,10 @@ onUpdated(() => {
     <ul v-if="Array.isArray(template.run.command)" class="list">
       <li v-for="(cmd, index) in template.run.command" :key="index" class="list-item clickable">
         <div class="list-item-content" @click="startEdit(index)">
-          <span v-text="cmd.command" />
+          <div class="text">
+            <span class="title" v-text="cmd.command" />
+            <span v-if="cmd.if" class="subline" v-text="cmd.if" />
+          </div>
           <btn :disabled="index === 0" variant="icon" @click.stop="swap(index, index-1)"><icon name="up" /></btn>
           <btn :disabled="index === template.run.command.length - 1" variant="icon" @click.stop="swap(index, index+1)"><icon name="down" /></btn>
           <btn variant="icon" @click.stop="remove(index)"><icon name="remove" /></btn>

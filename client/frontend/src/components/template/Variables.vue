@@ -61,6 +61,7 @@ function add(group) {
     desc: '',
     type: 'string',
     value: '',
+    internal: false,
     required: false,
     userEdit: false,
     options: {},
@@ -95,6 +96,7 @@ function startEdit(name) {
   if (!edit.value.desc) edit.value.desc = ''
   if (!edit.value.type) edit.value.type = 'string'
   if (!edit.value.value) edit.value.value = ''
+  if (!edit.value.internal) edit.value.internal = false
   if (!edit.value.required) edit.value.required = false
   if (!edit.value.userEdit) edit.value.userEdit = false
   if (!edit.value.options) {
@@ -343,6 +345,7 @@ const supportsOptions = {
       <text-field v-model="edit.desc" :label="t('templates.variables.Description')" />
       <dropdown v-model="edit.type" :label="t('templates.variables.Type')" :options="types" />
       <text-field v-model="edit.value" :label="t('templates.variables.Value')" />
+      <toggle v-model="edit.internal" :label="t('templates.variables.Internal')" />
       <toggle v-model="edit.required" :label="t('templates.variables.Required')" />
       <toggle v-model="edit.userEdit" :label="t('templates.variables.UserEdit')" />
       <key-value-input v-if="supportsOptions[edit.type]" v-model="edit.options" :label="t('templates.variables.Options')" />

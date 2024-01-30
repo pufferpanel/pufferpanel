@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, inject } from 'vue'
+import { ref, onMounted, onUnmounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
 import Icon from '@/components/ui/Icon.vue'
@@ -20,7 +20,7 @@ const allowDirectoryUpload = 'webkitdirectory' in document.createElement('input'
 const canEdit = props.server.hasScope('server.files.edit')
 
 const fileEls = ref([])
-const files = ref([])
+const files = ref(null)
 const file = ref(null)
 const fileSizeWarn = ref(false)
 const fileSizeWarnSubject = ref(null)
@@ -31,12 +31,27 @@ const createFileOpen = ref(false)
 const createFolderOpen = ref(false)
 const newItemName = ref('')
 
-onMounted(async () => {
-  await refresh()
+let task
+let unbindEvent
+onMounted(() => {
+  refresh()
+
+  unbindEvent = props.server.on('status', () => {
+    refresh()
+  })
+
+  task = props.server.startTask(() => {
+    refresh()
+  }, 5 * 60 * 1000)
+})
+
+onUnmounted(async () => {
+  if (unbindEvent) unbindEvent()
+  if (task) props.server.stopTask(task)
 })
 
 async function refresh(manual = false) {
-  if (manual) files.value = [] // cause visual feedback on manual refresh
+  if (manual) files.value = null // cause visual feedback on manual refresh
   const res = await props.server.getFile(getCurrentPath())
   files.value = res.sort(sortFiles)
 }
@@ -251,8 +266,9 @@ function trackFileEl(index) {
       <btn v-hotkey="'f r'" variant="icon" @click="refresh(true)"><icon name="reload" /></btn>
     </div>
     <div v-hotkey="'f l'" class="file-list" @hotkey="fileListHotkey">
+      <loader v-if="!Array.isArray(files)" />
       <!-- eslint-disable-next-line vue/no-template-shadow -->
-      <a v-for="(file, index) in files" :key="file.name" :ref="trackFileEl(index)" tabindex="0" class="file" @click="openFile(file)" @keydown.enter="openFile(file)">
+      <a v-for="(file, index) in files" v-else :key="file.name" :ref="trackFileEl(index)" tabindex="0" class="file" @click="openFile(file)" @keydown.enter="openFile(file)">
         <icon class="file-icon" :name="getIcon(file)" />
         <div class="details">
           <div class="name">{{ file.name }}</div>

@@ -39,7 +39,7 @@ function updateSettings(event) {
 
 function canSubmit() {
   for (let key in settings.value) {
-    if (settings.value[key].required && settings.value[key].type !== 'boolean') {
+    if (settings.value[key].required && !settings.value[key].internal && settings.value[key].type !== 'boolean') {
       if (!settings.value[key].value) return false
     }
   }
