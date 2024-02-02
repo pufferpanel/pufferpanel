@@ -25,7 +25,7 @@ function getAvatarLink() {
     <div :data-name="name" class="name">
       {{ name }}
     </div>
-    <panel-search />
+    <panel-search v-if="props.user" />
     <router-link v-if="props.user" v-hotkey="'g a'" :to="{ name: 'Self' }"><img class="avatar" :src="getAvatarLink()" /></router-link>
   </header>
 </template>
