@@ -531,11 +531,7 @@ func deleteServer(c *gin.Context) {
 
 	server := getServerFromGin(c)
 
-	node, err := ns.Get(server.NodeID)
-	if err != nil {
-		response.HandleError(c, err, http.StatusInternalServerError)
-		return
-	}
+	node := &server.Node
 
 	//we need to know what users are impacted by a server being deleted
 	ps := services.Permission{DB: db}
