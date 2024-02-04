@@ -39,7 +39,10 @@ function updateSettings(event) {
 
 function canSubmit() {
   for (let key in settings.value) {
-    if (settings.value[key].required && !settings.value[key].internal && settings.value[key].type !== 'boolean') {
+    if (settings.value[key].required) {
+      if (settings.value[key].internal) continue // we don't care about internal values here.
+      if (settings.value[key].type === 'boolean') continue // booleans are already forced true or false
+      if (settings.value[key].type === 'integer' && settings.value[key].value === 0) continue // js 0 is falsey, but it's a valid number for us
       if (!settings.value[key].value) return false
     }
   }

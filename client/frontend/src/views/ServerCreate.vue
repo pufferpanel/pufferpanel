@@ -27,6 +27,7 @@ function templateBack() {
 }
 
 function templateSelected(selected) {
+  if (!Array.isArray(selected.supportedEnvironments)) selected.supportedEnvironments = [selected.environment]
   template.value = selected
   step.value = 'settings'
 }

@@ -18,7 +18,7 @@ const nodes = ref([])
 const node = ref(undefined)
 const nodeFeatures = ref({})
 
-const selectedEnv = ref({ type: 'unsupported' })
+const selectedEnv = ref('unsupported')
 const availableEnvs = ref([])
 const envError = ref(null)
 const msEnv = ref(null)
@@ -37,12 +37,13 @@ onMounted(async () => {
   })
 
   nodes.value = (await api.node.list()).map(n => { return { value: n.id, label: n.name } })
-  node.value = nodes.value[0] ? nodes.value[0].value : null
+  node.value = nodes.value.length === 1 ? nodes.value[0].value : null
 
   nodeChanged()
 })
 
 async function nodeChanged() {
+  if (node.value === null || node.value === undefined) return
   try {
     envError.value = null
     nodeFeatures.value = await api.node.features(node.value)
@@ -78,7 +79,7 @@ async function nodeChanged() {
 }
 
 function validateEnvironment() {
-  return selectedEnv.value !== 'unsupported'
+  return selectedEnv.value && selectedEnv.value !== 'unsupported'
 }
 
 function validateName() {
