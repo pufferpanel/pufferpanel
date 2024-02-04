@@ -49,7 +49,7 @@ function deleteServer() {
       icon: 'remove',
       color: 'error',
       action: async () => {
-        props.server.delete()
+        await props.server.delete()
         toast.success(t('servers.Deleted'))
         // delay 500ms to prevent running into sqlite dbs still being locked
         setTimeout(() => {router.push({ name: 'ServerList' })}, 500)
