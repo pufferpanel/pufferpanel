@@ -42,21 +42,41 @@ func SplitArguments(source string) (cmd string, arguments []string) {
 		if skip {
 			skip = false
 			results[len(results)-1] += string(v)
-		} else if v == '\\' {
-			skip = true
-		} else if v == '"' {
-			inQuote = !inQuote
-			results[len(results)-1] += "\""
-		} else if v == ' ' && !inQuote {
-			results = append(results, "")
-		} else {
+			continue
+		}
+		switch v {
+		case '\\':
+			{
+				skip = true
+			}
+		case '"':
+			{
+				inQuote = !inQuote
+				results[len(results)-1] += "\""
+			}
+		case ' ':
+			{
+				if inQuote {
+					results[len(results)-1] += string(v)
+				} else {
+					results = append(results, "")
+				}
+			}
+		default:
 			results[len(results)-1] += string(v)
 		}
 	}
 
-	if results[len(results)-1] == "" {
-		results = results[:len(results)-1]
+	//remove any "empty" items
+	i := 0 // output index
+	for _, x := range results {
+		if x != "" {
+
+			results[i] = x
+			i++
+		}
 	}
+	results = results[:i]
 
 	cmd = results[0]
 	arguments = results[1:]

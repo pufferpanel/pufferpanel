@@ -76,3 +76,44 @@ func TestSplitArguments(t *testing.T) {
 		})
 	}
 }
+
+func TestSplitArguments1(t *testing.T) {
+	tests := []struct {
+		name          string
+		args          string
+		wantCmd       string
+		wantArguments []string
+	}{
+		{
+			name:          "cmd only",
+			args:          "java",
+			wantCmd:       "java",
+			wantArguments: []string{},
+		},
+		{
+			name:          "with some args",
+			args:          "java -jar server.jar",
+			wantCmd:       "java",
+			wantArguments: []string{"-jar", "server.jar"},
+		},
+		{
+			name:          "with some args and extra spaces",
+			args:          "java -jar  server.jar",
+			wantCmd:       "java",
+			wantArguments: []string{"-jar", "server.jar"},
+		},
+		{
+			name:          "with some args and extra spaces and padding",
+			args:          "java -jar      server.jar    ",
+			wantCmd:       "java",
+			wantArguments: []string{"-jar", "server.jar"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotCmd, gotArguments := SplitArguments(tt.args)
+			assert.Equalf(t, tt.wantCmd, gotCmd, "SplitArguments(%v)", tt.args)
+			assert.Equalf(t, tt.wantArguments, gotArguments, "SplitArguments(%v)", tt.args)
+		})
+	}
+}
