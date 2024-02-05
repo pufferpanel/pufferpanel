@@ -14,7 +14,6 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"path"
 	"strings"
 	"syscall"
 	"time"
@@ -29,7 +28,7 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	t.Wait.Add(1)
 
 	pr := exec.Command(steps.Command, steps.Arguments...)
-	pr.Dir = path.Join(t.GetRootDirectory(), steps.WorkingDirectory)
+	pr.Dir = t.GetRootDirectory()
 	for _, v := range os.Environ() {
 		if !strings.HasPrefix(v, "PUFFER_") {
 			pr.Env = append(pr.Env, v)

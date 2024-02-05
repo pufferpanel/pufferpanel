@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/cast"
 	"os"
 	"os/exec"
-	"path"
 	"runtime"
 	"strings"
 	"syscall"
@@ -25,7 +24,7 @@ type standard struct {
 func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	s.Wait.Add(1)
 	s.mainProcess = exec.Command(steps.Command, steps.Arguments...)
-	s.mainProcess.Dir = path.Join(s.GetRootDirectory(), steps.WorkingDirectory)
+	s.mainProcess.Dir = s.GetRootDirectory()
 
 	for _, v := range os.Environ() {
 		if !strings.HasPrefix(v, "PUFFER_") {

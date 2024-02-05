@@ -313,11 +313,6 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		newEnv = append(newEnv, fmt.Sprintf("%s=%s", k, v))
 	}
 
-	workDir := data.WorkingDirectory
-	if workDir == "" {
-		workDir = containerRoot
-	}
-
 	binaryFolder := config.BinariesFolder.Value()
 	if !filepath.IsAbs(binaryFolder) {
 		var ef error
@@ -353,7 +348,7 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		OpenStdin:       true,
 		NetworkDisabled: false,
 		Image:           imageName,
-		WorkingDir:      workDir,
+		WorkingDir:      containerRoot,
 		Env:             newEnv,
 		Labels:          labels,
 	}
