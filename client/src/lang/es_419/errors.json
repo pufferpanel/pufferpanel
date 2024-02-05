@@ -40,8 +40,8 @@
   "ErrDuplicateServerName": "Ya existe un servidor con este nombre",
   "ErrDuplicateNodeName": "Ya existe un nodo con este nombre",
   "ErrDirectoryUploadNotSupported": "No es posible subir carpetas",
-  "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
-  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
+  "ErrDockerNotSupported": "Docker no está soportado en este nodo",
+  "ErrMissingBinary": "Falta el binario: {expected}",
+  "ErrUnsupportedOS": "Sistema operativo ({actual}) no soportado. Sistemas soportados: {expected}",
+  "ErrUnsupportedArch": "Arquitectura {actual} no soportada. Arquitecturas soportadas: {expected}"
 }
