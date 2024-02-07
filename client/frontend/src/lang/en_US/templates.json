@@ -33,6 +33,11 @@
   "Command": "Command",
   "StopCommand": "Stop Command",
   "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
   "signals": {
     "1": "SIGHUP",
     "2": "SIGINT (CTRL+C)",
@@ -51,7 +56,9 @@
     "Value": "Default Value",
     "Required": "This variable is required",
     "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
     "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
     "types": {
       "String": "String",
       "Boolean": "Boolean",

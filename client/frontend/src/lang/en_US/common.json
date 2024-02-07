@@ -5,6 +5,7 @@
   "Offline": "Offline",
   "Unknown": "Unknown",
   "Loading": "Loading...",
+  "Description": "Description",
   "Save": "Save",
   "Cancel": "Cancel",
   "Close": "Close",
@@ -21,12 +22,15 @@
   "Protocol": "Protocol",
   "Add": "Add",
   "Apply": "Apply",
+  "Confirm": "Confirm",
+  "Condition": "Condition",
   "theme": {
     "Theme": "Theme",
     "Mode": "Mode",
     "mode": {
       "Light": "Light",
-      "Dark": "Dark"
+      "Dark": "Dark",
+      "Auto": "Auto"
     },
     "BaseColor": "Base Color",
     "ServerTypeDisplay": "Server Type Display",
