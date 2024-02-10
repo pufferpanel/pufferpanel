@@ -200,7 +200,7 @@ function link(index, to) {
         <h3 v-text="t('servers.Servers')" />
         <div v-for="(server, i) in servers" :key="server.id" :ref="setRef(serverIndex(i))" :class="['result', currIndex === serverIndex(i) ? 'selected' : '' ]">
           <router-link :to="link(serverIndex(i), { name: 'ServerView', params: { id: server.id } })">
-            <div :class="['server', `server-${server.type}`]">
+            <div :class="['server', `server-${(server.icon || 'none')}`]">
               <div class="title">{{ server.name }}</div>
               <div class="subline">{{ getServerAddress(server) }} @ {{ server.node.name }}</div>
             </div>
