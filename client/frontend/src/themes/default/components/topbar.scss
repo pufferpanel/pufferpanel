@@ -41,6 +41,9 @@
         cursor: pointer;
         transform-origin: center;
       }
+      .icon:before {
+        color: var(--text-primary)
+      }
     }
     &:focus-within {
       flex-grow: 2;
