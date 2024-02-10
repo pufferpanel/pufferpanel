@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onUpdated } from 'vue'
+import { ref, onMounted, onUpdated } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
 import Dropdown from '@/components/ui/Dropdown.vue'
@@ -107,12 +107,20 @@ function confirmEdit() {
 function validate() {
   commandInvalid.value = false
 
-  if (!template.value.run.command || template.value.run.command.trim() === '') {
+  if (!template.value.run.command) {
+    commandInvalid.value = true
+  } else if (Array.isArray(template.value.run.command) && template.value.run.command.length === 0) {
+    commandInvalid.value = true
+  } else if (!Array.isArray(template.value.run.command) && template.value.run.command.trim() === '') {
     commandInvalid.value = true
   }
 
   emit('valid', !commandInvalid.value)
 }
+
+onMounted(() => {
+  validate()
+})
 
 onUpdated(() => {
   try {
