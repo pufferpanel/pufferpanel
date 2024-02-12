@@ -1,111 +1,88 @@
 {
   "Templates": "Modelli",
-  "NoTemplates": "Non ci sono ancora modelli qui",
+  "Save": "Salva modello",
+  "Saved": "Modello salvato",
+  "Delete": "Elimina modello",
+  "ConfirmDelete": "Vuoi davvero eliminare il modello {name}?",
   "Deleted": "Modello eliminato",
   "New": "Crea nuovo modello",
-  "Edit": "Modifica modello",
-  "Editor": "Editor",
+  "EditLocalOnly": "È possibile salvare solo le modifiche apportate ai modelli locali",
+  "CreateLocalCopy": "Crea copia locale",
+  "ConfirmOverwrite": "Esiste già un modello con questo nome. Sovrascriverlo?",
+  "Overwrite": "Sovrascrivere",
   "Json": "JSON",
   "Display": "Mostra Nome",
   "Type": "Tipo",
-  "Variables": "Variabili",
-  "Install": "Installa",
-  "AddInstallStep": "Aggiungi Fase di Installazione",
-  "DeleteInstallStep": "Elimina Fase di Installazione",
-  "Description": "Descrizione",
-  "DataType": "Tipo di Dati",
-  "DefaultValue": "Valore Predefinito",
-  "Required": "Obbligatorio",
-  "UserEditable": "Gli utenti possono modificare",
-  "Value": "Valore",
-  "AddOption": "Aggiungi un'opzione",
-  "AddCommand": "Aggiungi comando",
-  "Filename": "Nome del file",
-  "Content": "Contenuto",
-  "Source": "Fonte",
-  "Target": "Obiettivo",
-  "Version": "Versione",
-  "ReleaseType": "Tipo di Versione",
-  "AddFile": "Aggiungi file",
   "AddVariable": "Aggiungi variabile",
+  "Variables": "Variabili",
+  "AddInstallStep": "Aggiungi Fase di Installazione",
+  "Install": "Installa",
+  "Filename": "Nome del file",
+  "Version": "Versione",
   "Environment": "Ambiente",
-  "Environments": "Ambienti",
-  "AddEnvironment": "Aggiungi ambiente",
-  "DefaultEnvironment": "Ambiente predefinito",
+  "EnvEnabled": "Ambiente Abilitato",
   "AddEnvVar": "Aggiungi variabile d'ambiente",
   "EnvVars": "Variabili ambientali",
   "DockerImage": "Immagine Docker",
-  "SaveSuccess": "Modello Salvato",
-  "VarNameNoSpaces": "Un nome della variabile non può essere vuoto o contenere spazi",
-  "SupportedEnvironments": "Ambienti Supportati",
   "RunConfig": "Esegui Configurazione",
-  "PreHook": "Hook Pre Esecuzione",
-  "PostHook": "Hook Post Esecuzione",
   "AddPreStep": "Aggiungi Fase Pre-Esecuzione",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Aggiungi Fase Post-Esecuzione",
-  "DeletePreStep": "Elimina Fase Pre-Esecuzione",
-  "DeletePostStep": "Elimina Fase Post-Esecuzione",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Spegnimento",
   "Command": "Comando",
-  "WorkingDirectory": "Directory Di Lavoro",
-  "Arguments": "Argomenti",
-  "AddArgument": "Aggiungi un argomento",
-  "Convert": "Converti",
-  "OfferV1Convert": "Questo modello json sembra un modello per PufferPanel 1.x, vuoi convertirlo automaticamente in un modello per PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "Questi modelli sono stati realizzati dalla community e sono disponibili senza alcuna garanzia",
-    "OverrideWarning": "AVVISO: I modelli importati SOVRASCRIVERANNO i modelli esistenti con lo stesso ID",
-    "Import": "Importa modelli",
-    "Tooltip": "Importa modelli dalla repository ufficiale",
-    "Select": "Seleziona modelli da importare",
-    "Started": "Impostazione modelli, si prega di attendere un momento",
-    "Successful": "Modello {template} importato correttamente",
-    "NoTemplatesTitle": "Vuoi importare i modelli?",
-    "NoTemplatesContent": "Attualmente non hai alcun modello. I modelli sono necessari per creare i server.<br/>Vuoi importare alcuni modelli dalla repository dei modelli ufficiale di PufferPanel adesso?"
+  "StopCommand": "Ferma Comando",
+  "StopSignal": "Segnale Di Interruzione",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Comando",
-    "Signal": "Segnale"
+  "errors": {
+    "NameInvalid": "Il nome di un modello non può essere vuoto e non può contenere spazi o caratteri speciali",
+    "DisplayInvalid": "Il nome visualizzato non può essere vuoto",
+    "TypeInvalid": "Il tipo non può essere vuoto",
+    "CommandInvalid": "Il comando non può essere vuoto"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Scarica",
-      "files": "File"
-    },
-    "command": {
-      "ProcessorName": "Esegui un comando",
-      "commands": "Comandi"
-    },
-    "alterfile": {
-      "ProcessorName": "Cambia file",
-      "regex": "Considera la ricerca come RegEx",
-      "search": "Testo da cercare",
-      "replace": "Sostituisci con"
-    },
-    "writefile": {
-      "ProcessorName": "Scrivi su file",
-      "text": "Contenuto"
-    },
-    "move": {
-      "ProcessorName": "Sposta il file",
-      "source": "Fonte",
-      "target": "Destinazione"
-    },
-    "mkdir": {
-      "ProcessorName": "Crea una cartella"
-    },
-    "mojangdl": {
-      "ProcessorName": "Scarica Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Scarica Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Scarica Minecraft SpongeForge",
-      "releaseType": "Tipo di Versione"
-    },
-    "fabricdl": {
-      "ProcessorName": "Scarica Minecraft Fabric"
+  "variables": {
+    "Description": "Descrizione",
+    "Type": "Tipo",
+    "Value": "Valore Predefinito",
+    "Required": "Questa variabile è richiesta",
+    "UserEdit": "Gli utenti non-admin possono modificare questa variabile",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Opzioni",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "Stringa",
+      "Boolean": "Boolean",
+      "Number": "Numero",
+      "Options": "Opzioni"
     }
+  },
+  "description": {
+    "Name": "Questo nome è usato come identificatore per il modello",
+    "Display": "Questo è il nome che verrà visualizzato agli utenti, ad esempio durante la creazione del server",
+    "Type": "Questo è usato per raggruppare diversi modelli e per decidere quale icona visualizzare nella lista dei server",
+    "Variables": "Le variabili saranno mostrate agli utenti come impostazioni su un server, sono utili, ad esempio, per consentire all'utente di definire quale versione usare o definire alcune impostazioni come la porta da usare",
+    "Install": "Qui si definiscono quali passi verranno eseguiti quando un utente colpisce il pulsante di installazione di un server creato da questo modello",
+    "Command": "Questo è il comando che verrà eseguito per avviare il server",
+    "StopCommand": "Scrivi un comando sulla console server quando un utente colpisce il pulsante di arresto di srvers",
+    "StopSignal": "Invia un segnale al server quando un utente colpisce il pulsante di arresto srvers, questo può ad esempio essere usato per emulare colpendo CTRL+C",
+    "PreRunHook": "Qui puoi definire alcuni passaggi da eseguire ogni volta prima dell'avvio del server",
+    "PostRunHook": "Qui puoi definire alcuni passaggi da eseguire ogni volta prima dell'avvio del server"
+  },
+  "WorkingDirectory": "Directory Di Lavoro",
+  "General": "Generale",
+  "Hooks": "Ganci",
+  "Import": "Importa modello",
+  "import": {
+    "CommunityWarning": "Questi modelli sono stati realizzati dalla community e sono disponibili senza alcuna garanzia"
   }
 }
