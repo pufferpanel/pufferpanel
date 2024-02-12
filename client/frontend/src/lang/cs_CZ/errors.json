@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Heslo musí být nejméně 8 znaků dlouhé",
   "ErrUsernameRequirements": "Uživatelské jméno musí mít alespoň 3 znaky a obsahovat pouze alfanumerické znaky, _, nebo -",
   "ErrPasswordsNotIdentical": "Hesla nejsou stejná",
+  "ErrEmailInvalid": "Neplatný email",
   "ErrSessionTimedOut": "Vypršel časový limit relace, přihlaste se prosím znovu",
   "ErrMissingScope": "Nemáte oprávnění k provedení této akce",
   "ErrInvalidJson": "Data json jsou neplatná",
@@ -41,7 +42,8 @@
   "ErrDuplicateNodeName": "Uzel s tímto názvem již existuje",
   "ErrDirectoryUploadNotSupported": "Nelze nahrát složky",
   "ErrDockerNotSupported": "Docker není v tomto uzlu podporován",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrMissingBinary": "Chybějící binární soubor: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) není podporován. Doporučený OS: ${expected}",
+  "ErrUnsupportedArch": "Architektura ${actual} není podporována. Podporované architektury: ${expected}",
+  "ErrNoCommand": "Žádný příkaz nemohl být určen k použití pro tento server"
 }
