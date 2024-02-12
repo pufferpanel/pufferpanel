@@ -3,8 +3,33 @@
   "Nodes": "节点",
   "Edit": "编辑节点",
   "Add": "添加节点",
+  "Create": "Create Node",
   "Update": "更新节点",
   "Delete": "删除节点",
+  "ConfirmDelete": "Do you really want to delete the node {name}?",
+  "Created": "Created Node",
+  "Updated": "Updated Node",
+  "Deleted": "Deleted Node",
+  "Reachable": "This node is correctly set up and running",
+  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "features": {
+    "os": {
+      "label": "Operating System",
+      "linux": "Linux",
+      "windows": "Windows"
+    },
+    "arch": {
+      "label": "CPU Architecture",
+      "amd64": "x86 64bit",
+      "arm": "ARM 32bit",
+      "arm64": "ARM 64bit"
+    },
+    "docker": {
+      "true": "Docker available",
+      "false": "Docker not available"
+    },
+    "envs": "Available Environments"
+  },
   "PublicHost": "公共主机",
   "PublicPort": "公共端口",
   "PrivateHost": "私有主机",
@@ -12,9 +37,14 @@
   "SftpPort": "SFTP 端口",
   "WithPrivateAddress": "服务器通信使用不同的主机/端口",
   "WithPrivateAddressHint": "当主节点需要与新节点通信时，使用这个单独地址。 例如当节点位于同一个网络中时。",
-  "SaveConfig": "保存配置",
-  "SavePublicKey": "保存公钥",
-  "DeploymentInstruction": "要部署节点，请在新服务器上安装 PufferPanel 并将配置文件放置于 `/etc/pufferpanel/`<br/>之后请重启新服务器上的 PufferPanel。",
-  "UpdateSuccess": "已成功更新节点",
-  "UpdateError": "更新节点时出错"
+  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
+  "Deploy": "Deploy Node",
+  "deploy": {
+    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
+    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Your new node is now set up and ready to go"
+  },
+  "DeploymentInstruction": "要部署节点，请在新服务器上安装 PufferPanel 并将配置文件放置于 `/etc/pufferpanel/`<br/>之后请重启新服务器上的 PufferPanel。"
 }
