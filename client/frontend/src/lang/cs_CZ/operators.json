@@ -1,0 +1,64 @@
+{
+  "ConditionHint": "Only execute this step if this condition is met",
+  "mojangdl": {
+    "generic": "Stáhnout Minecraft",
+    "formatted": "Stáhnout Minecraft"
+  },
+  "writefile": {
+    "generic": "Zapsat do souboru",
+    "formatted": "Zapsat do souboru {target}"
+  },
+  "resolveforgeversion": {
+    "generic": "Resolve Minecraft Forge Version",
+    "formatted": "Resolve Minecraft Forge Version"
+  },
+  "download": {
+    "generic": "Stáhnout soubor(y)",
+    "formatted": "Stáhnout {file} | Stáhnout {n} soubory",
+    "files": "Soubory"
+  },
+  "command": {
+    "generic": "Spustit příkaz(y)",
+    "formatted": "Spustit {command} | Spustit {n} příkazy",
+    "commands": "Příkazy"
+  },
+  "alterfile": {
+    "generic": "Upravit soubor",
+    "formatted": "Upravit soubor {target}",
+    "regex": "Považovat vyhledávací řetězec za regulární výraz",
+    "search": "Vyhledat",
+    "replace": "Nahradit shody"
+  },
+  "move": {
+    "generic": "Přesunout nebo přejmenovat soubor",
+    "formatted": "Přesunout soubor {source} do {target}",
+    "source": "Zdrojová cesta",
+    "target": "Cílová cesta"
+  },
+  "mkdir": {
+    "generic": "Vytvořit adresář",
+    "formatted": "Vytvořit adresář {target}"
+  },
+  "steamgamedl": {
+    "generic": "Instalovat ze Steamu",
+    "formatted": "Nainstalujte Steam App ID {appId}",
+    "appId": "ID aplikace Steam"
+  },
+  "javadl": {
+    "generic": "Instalovat Javu",
+    "formatted": "Instalovat Javu {version}"
+  },
+  "forgedl": {
+    "generic": "Stáhnout Minecraft Forge",
+    "formatted": "Stáhnout Minecraft Forge"
+  },
+  "spongeforgedl": {
+    "generic": "Stáhnout Minecraft SpongeForge",
+    "formatted": "Stáhnout Minecraft SpongeForge",
+    "releaseType": "Typ vydání"
+  },
+  "fabricdl": {
+    "generic": "Stáhnout Minecraft Fabric",
+    "formatted": "Stáhnout Minecraft Fabric"
+  }
+}
