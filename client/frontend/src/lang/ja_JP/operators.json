@@ -1,0 +1,64 @@
+{
+  "ConditionHint": "Only execute this step if this condition is met",
+  "mojangdl": {
+    "generic": "Minecraftをダウンロード",
+    "formatted": "Minecraftをダウンロード"
+  },
+  "writefile": {
+    "generic": "ファイルに書き込み",
+    "formatted": "{target} に書き込み"
+  },
+  "resolveforgeversion": {
+    "generic": "Resolve Minecraft Forge Version",
+    "formatted": "Resolve Minecraft Forge Version"
+  },
+  "download": {
+    "generic": "ファイルをダウンロード",
+    "formatted": "ダウンロード {file} | {n} ファイルをダウンロード中",
+    "files": "ファイル"
+  },
+  "command": {
+    "generic": "コマンドを実行",
+    "formatted": "Run {command} | Run {n} commands",
+    "commands": "コマンド"
+  },
+  "alterfile": {
+    "generic": "ファイルの変更",
+    "formatted": "{target}を修正",
+    "regex": "検索文字列を正規表現として扱います",
+    "search": "検索",
+    "replace": "一致する文字列を置換:"
+  },
+  "move": {
+    "generic": "ファイルを移動または名前変更",
+    "formatted": "{source} を {target} に移動する",
+    "source": "ソースのパス",
+    "target": "ターゲットのパス"
+  },
+  "mkdir": {
+    "generic": "ディレクトリを作成",
+    "formatted": "{target}を作成"
+  },
+  "steamgamedl": {
+    "generic": "Steamからインストール",
+    "formatted": "SteamからアプリID {appId}をインストール",
+    "appId": "Steam アプリID"
+  },
+  "javadl": {
+    "generic": "Java のインストール",
+    "formatted": "Java {version} をインストール"
+  },
+  "forgedl": {
+    "generic": "Minecraft Forgeをダウンロード",
+    "formatted": "Minecraft Forgeをダウンロード"
+  },
+  "spongeforgedl": {
+    "generic": "Minecraft SpongeForgeをダウンロード",
+    "formatted": "Minecraft SpongeForgeをダウンロード",
+    "releaseType": "リリースの種類"
+  },
+  "fabricdl": {
+    "generic": "Minecraft Fabricをダウンロード",
+    "formatted": "Minecraft Fabricをダウンロード"
+  }
+}

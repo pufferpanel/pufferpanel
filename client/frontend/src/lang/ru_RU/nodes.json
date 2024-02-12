@@ -3,8 +3,33 @@
   "Nodes": "Хосты",
   "Edit": "Редактировать хост",
   "Add": "Добавить хост",
+  "Create": "Создать хост",
   "Update": "Обновить хост",
   "Delete": "Удалить хост",
+  "ConfirmDelete": "Вы действительно хотите удалить хост {name}?",
+  "Created": "Хост создан",
+  "Updated": "Хост обновлён",
+  "Deleted": "Хост удалён",
+  "Reachable": "This node is correctly set up and running",
+  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "features": {
+    "os": {
+      "label": "Operating System",
+      "linux": "Linux",
+      "windows": "Windows"
+    },
+    "arch": {
+      "label": "CPU Architecture",
+      "amd64": "x86 64bit",
+      "arm": "ARM 32bit",
+      "arm64": "ARM 64bit"
+    },
+    "docker": {
+      "true": "Docker available",
+      "false": "Docker not available"
+    },
+    "envs": "Available Environments"
+  },
   "PublicHost": "Публичный хост",
   "PublicPort": "Публичный порт",
   "PrivateHost": "Приватный хост",
@@ -12,9 +37,14 @@
   "SftpPort": "SFTP-порт",
   "WithPrivateAddress": "Используйте другой хост / порт для связи между сервером",
   "WithPrivateAddressHint": "Этот отдельный адрес используется, когда главному узлу необходимо связаться с новым узлом. Полезно, например, когда узлы находятся в одной сети за NAT.",
-  "SaveConfig": "Сохранить настройки",
-  "SavePublicKey": "Сохранить публичный ключ",
-  "DeploymentInstruction": "Чтобы развернуть хост, установите PufferPanel на новый сервер и поместите конфигурационный файл в `/etc/pufferpanel/`<br/>После, перезагрузите PufferPanel на сервере.",
-  "UpdateSuccess": "Хост успешно обновлен",
-  "UpdateError": "Ошибка при обновлении хоста"
+  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
+  "Deploy": "Развернуть хост",
+  "deploy": {
+    "Step1": "## Шаг 1\n\nУстановите PufferPanel на новом сервере, [подробности см. в документации](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Шаг 2\n\nОстановите службу PufferPanel на новом сервере, если она была запущена во время установки, выполнив команду `sudo systemctl stop pufferpanel`",
+    "Step3": "## Шаг 3\n\nЗамените содержимое конфигурационного файла PufferPanel на новом сервере кодом, приведенным ниже\n\nКонфигурационный файл обычно находится по адресу `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Шаг 4\n\nВключите и (пере)запустите службу PufferPanel на новом сервере, выполнив команду `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Ваш новый хост теперь настроен и готов к работе"
+  },
+  "DeploymentInstruction": "Чтобы развернуть хост, установите PufferPanel на новый сервер и поместите конфигурационный файл в `/etc/pufferpanel/`<br/>После, перезагрузите PufferPanel на сервере."
 }

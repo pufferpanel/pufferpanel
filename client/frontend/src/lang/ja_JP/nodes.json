@@ -3,18 +3,48 @@
   "Nodes": "ノード",
   "Edit": "ノードを編集",
   "Add": "ノードを追加する",
+  "Create": "ノードを作成",
   "Update": "ノードを更新",
   "Delete": "ノードを削除",
+  "ConfirmDelete": "本当にこのノードを削除しますか？",
+  "Created": "作成したノード",
+  "Updated": "更新されたノード",
+  "Deleted": "削除したノード",
+  "Reachable": "このノードは正しく設定され実行されています",
+  "Unreachable": "このノードは正しく設定されていないか、現在利用できません",
+  "features": {
+    "os": {
+      "label": "OS",
+      "linux": "Linux",
+      "windows": "Windows"
+    },
+    "arch": {
+      "label": "CPU構成",
+      "amd64": "x86 64bit",
+      "arm": "ARM 32bit",
+      "arm64": "ARM 64bit"
+    },
+    "docker": {
+      "true": "Dockerが利用可能です",
+      "false": "Dockerが利用できません"
+    },
+    "envs": "利用可能な環境"
+  },
   "PublicHost": "公開ホスト",
   "PublicPort": "公開ポート",
   "PrivateHost": "プライベートホスト",
   "PrivatePort": "プライベートポート",
   "SftpPort": "SFTP ポート",
-  "WithPrivateAddress": "Use a different host/port for server to server communication",
-  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
-  "SaveConfig": "設定を保存",
-  "SavePublicKey": "公開鍵を保存",
-  "DeploymentInstruction": "ノードをデプロイするには、新しいサーバに PufferPanel をインストールし、`/etc/pufferpanel/` にconfig ファイルを配置します。<br/>その後、新しいサーバで PufferPanel を再起動します。",
-  "UpdateSuccess": "ノードは正常に更新されました",
-  "UpdateError": "ノードの更新中にエラーが発生しました"
+  "WithPrivateAddress": "サーバーとの通信に別のホスト/ポートを使用する",
+  "WithPrivateAddressHint": "この別のアドレスは、メインノードが新しいノードと通信する必要がある場合使用されます。例えば、NATの後ろでノードが同じネットワークにある場合便利です。",
+  "LocalNodeEdit": "ローカルノードには編集可能な設定がありません。\n\nこのノードでホストされているサーバで表示されるホストを変更するには、パネル設定でパネルマスターURLを調整します。",
+  "Deploy": "ノードをデプロイ",
+  "deploy": {
+    "Step1": "## 手順 1\n\n新しいサーバーに PufferPanel をインストールします。[詳細はドキュメント(英語)](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## ステップ 2\n\n`sudo systemctl stop pufferpanel` を実行してインストール中に起動した場合、新しいサーバーの PufferPanel サービスを停止します。",
+    "Step3": "## ステップ3\n\n新しいサーバのPufferPanelの設定ファイルの内容を以下のコードで置き換えます。\n\n設定ファイルは通常 `/etc/pufferpanel/config.json` にあります。\n\n```\n{config}\n```",
+    "Step4": "## ステップ4\n\n`sudo systemctl enable --now pufferpanel`を実行して、新しいサーバーでPufferPanelサービスを有効にして再起動します。",
+    "Step5": "### 新しいノードの設定が完了しました。"
+  },
+  "DeploymentInstruction": "ノードをデプロイするには、新しいサーバに PufferPanel をインストールし、`/etc/pufferpanel/` にconfig ファイルを配置します。<br/>その後、新しいサーバで PufferPanel を再起動します。"
 }

@@ -1,14 +1,15 @@
 {
   "Settings": "Beállítások",
   "PanelSettings": "Panel Beállítások",
+  "SavePanelSettings": "Save Panel Settings",
   "EmailSettings": "Email Beállítások",
+  "SaveEmailSettings": "Save Email Settings",
   "MasterUrl": "Fő URL",
   "MasterUrlHint": "Az alap URL, amin a http://localhost:8080 formában lehet elérni a panelt",
   "CompanyName": "Vállakozás Neve",
   "DefaultTheme": "Alapértelmezett Téma",
   "RegistrationEnabled": "A felhasználók maguk regisztrálhatnak",
-  "RegistrationEnabledHint1": "A magukat regisztrált felhasználók nem csinálhatnak semmit, ameddig arra jogot nem kapnak",
-  "RegistrationEnabledHint2": "Ennek a kikapcsolása csak a közvetlen regisztrálást akadályozza meg, a szerverre való meghívásra és a Felhasználók lapra nincs hatással",
+  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "Email Szolgáltató",
   "emailProviders": {
     "none": "Ezek közül egyik sem",
@@ -16,12 +17,12 @@
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
-  "emailFields": {
-    "from": "A feladó címe",
+  "email": {
+    "from": "Sender Address",
     "domain": "Domain",
-    "key": "API kulcs",
-    "host": "Kiszolgáló",
-    "username": "Felhasználónév",
-    "password": "Jelszó"
+    "key": "API Key",
+    "host": "Host",
+    "username": "Username",
+    "password": "Password"
   }
 }

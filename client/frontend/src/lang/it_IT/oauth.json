@@ -1,15 +1,13 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
+  "Credentials": "Credenziali Client OAuth2",
+  "ClientId": "ID Client",
   "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
+  "NewClientWarning": "Nota il segreto del client, dopo aver chiuso questa finestra di dialogo non verrà più mostrato. Perdere o dimenticarlo renderà questo client completamente inutilizzabile.",
+  "Create": "Crea un nuovo Client OAuth2",
+  "UnnamedClient": "Client OAuth2 Senza Nome",
+  "Docs": "Trova qui la documentazione API",
+  "Clients": "Client OAuth2",
   "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
+  "AccountDescription": "I client OAuth2 elencati qui ereditano tutti i permessi dei tuoi account"
 }

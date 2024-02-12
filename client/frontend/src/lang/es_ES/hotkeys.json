@@ -1,0 +1,75 @@
+{
+  "Title": "Atajos de teclado",
+  "Global": {
+    "Title": "Global",
+    "g a": "Ir a la cuenta",
+    "g c": "Ir a la Configuración del Panel",
+    "g n": "Ir a los Nodos",
+    "g s": "Ir a los servidores",
+    "g t": "Ir a las plantillas",
+    "g u": "Ir a los usuarios"
+  },
+  "Self": {
+    "Title": "Cuenta",
+    "t 2": "Ir a la pestaña de Verificación en dos pasos",
+    "t a": "Ir a la pestaña Detalles de la cuenta",
+    "t o": "Ir a la pestaña OAuth",
+    "t p": "Ir a la pestaña de Contraseña",
+    "t s": "Ir a la pestaña de Configuración"
+  },
+  "ServerList": {
+    "Title": "Servidores",
+    "c": "Crear un nuevo Servidor",
+    "l": "Enfocar el primer servidor en la lista"
+  },
+  "ServerView": {
+    "Title": "Servidor",
+    "t c": "Ir a la pestaña de Consola",
+    "t i": "Ir a la pestaña de Estadísticas",
+    "t f": "Ir a la pestaña de Archivos",
+    "t s": "Ir a la pestaña de Configuración",
+    "t u": "Ir a la pestaña de Usuarios",
+    "t 6": "Ir a la pestaña de SFTP",
+    "t 7": "Ir a la pestaña de Api",
+    "t a": "Ir a la pestaña de Administración",
+    "c c": "Limpiar Consola",
+    "r r": "Iniciar Servidor",
+    "r s": "Detener Servidor",
+    "r k": "Finalizar Servidor",
+    "r i": "Instalar Servidor",
+    "f a": "Archivar el contenido del directorio actual",
+    "f c d": "Crear nuevo directorio",
+    "f c f": "Crear nuevo archivo",
+    "f d": "Subir directorio",
+    "f l": "Enfocar el primer archivo/carpeta de la lista",
+    "f r": "Recargar lista de archivos",
+    "f u": "Subir archivos",
+    "a e": "Editar Configuración del Servidor",
+    "a r": "Recargar la Configuración del Servidor desde el disco"
+  },
+  "NodeList": {
+    "Title": "Nodos",
+    "c": "Crear un nuevo nodo",
+    "l": "Seleccionar el primer nodo de la lista"
+  },
+  "UserList": {
+    "Title": "Usuarios",
+    "c": "Crear un nuevo usuario",
+    "l": "Seleccionar al primer usuario de la lista"
+  },
+  "TemplateList": {
+    "Title": "Plantillas",
+    "c": "Crear una nueva plantilla",
+    "l": "Seleccionar la primera plantilla de la lista"
+  },
+  "Template": {
+    "Title": "Editor de plantillas",
+    "t e": "Ir a la pestaña de Entorno",
+    "t g": "Ir a la pestaña General",
+    "t h": "Ir a la pestaña de Hooks",
+    "t i": "Ir a la pestaña de Instalación",
+    "t j": "Ir a la pestaña JSON",
+    "t r": "Ir a la pestaña de Configuración de Ejecución",
+    "t v": "Ir a la pestaña de Variables"
+  }
+}

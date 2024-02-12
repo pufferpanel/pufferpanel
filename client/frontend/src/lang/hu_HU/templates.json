@@ -1,111 +1,88 @@
 {
   "Templates": "Sablonok",
-  "NoTemplates": "Még nincsenek itt sablonok",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Sablon törölve",
   "New": "Új sablon",
-  "Edit": "Sablon szerkesztése",
-  "Editor": "Szerkesztő",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Megjelenítendő név",
   "Type": "Típus",
-  "Variables": "Mezők",
-  "Install": "Telepítés",
-  "AddInstallStep": "Telepítési lépés hozzáadása",
-  "DeleteInstallStep": "Telepítési lépés törlése",
-  "Description": "Leírás",
-  "DataType": "Adattípus",
-  "DefaultValue": "Alapérték",
-  "Required": "Kötelező",
-  "UserEditable": "Felhasználók változtathatják",
-  "Value": "Érték",
-  "AddOption": "Opció hozzáadása",
-  "AddCommand": "Parancs hozzáadása",
-  "Filename": "Fájlnév",
-  "Content": "Tartalom",
-  "Source": "Forrás",
-  "Target": "Célpont",
-  "Version": "Verzió",
-  "ReleaseType": "A kiadás típusa",
-  "AddFile": "Fájl hozzáadása",
   "AddVariable": "Mező hozzáadása",
+  "Variables": "Mezők",
+  "AddInstallStep": "Telepítési lépés hozzáadása",
+  "Install": "Telepítés",
+  "Filename": "Fájlnév",
+  "Version": "Verzió",
   "Environment": "Környezet",
-  "Environments": "Környezetek",
-  "AddEnvironment": "Környezet hozzáadása",
-  "DefaultEnvironment": "Alapértelmezett Környezet",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Új környezeti változó hozzáadása",
   "EnvVars": "Környezeti változók",
   "DockerImage": "Docker kép",
-  "SaveSuccess": "Sablon elmentve",
-  "VarNameNoSpaces": "A mező neve nem lehet üres és nem tartalmazhat szóközöket",
-  "SupportedEnvironments": "Támogatott környezetek",
   "RunConfig": "Konfiguráció futtatása",
-  "PreHook": "Elődleges beavatkozási rutinok",
-  "PostHook": "Utólagos beavatkozási rutinok",
   "AddPreStep": "Elődleges beavatkozási rutin hozzáadása",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Utólagos beavatkozási rutin hozzáadása",
-  "DeletePreStep": "Elődleges beavatkozási rutin törlése",
-  "DeletePostStep": "Utólagos beavatkozási rutin törlése",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Leállítás",
   "Command": "Parancs",
-  "WorkingDirectory": "Munkafelület",
-  "Arguments": "Argumentumok",
-  "AddArgument": "Argumentum hozzáadása",
-  "Convert": "Konvertálás",
-  "OfferV1Convert": "Ez a json sablon úgy néz ki, hogy a PufferPanel 1.x-es verziójához készült. Szeretnéd, hogy átkonvertáljuk ezt PufferPanel 2.x-es verzióra?",
-  "import": {
-    "CommunityWarning": "Ezeket a sablonokat a közösség készítette, és mindenféle garancia nélkül bocsátja rendelkezésre",
-    "OverrideWarning": "FIGYELEM: Az importált sablonok ÁTÍRNAK minden létező sablont, aminek egyező IDje van",
-    "Import": "Sablonok importálása",
-    "Tooltip": "Sablonok importálása a hivatalos adattárból",
-    "Select": "Válassza ki az importálandó sablonokat",
-    "Started": "Sablonok importálása, egy pillanat...",
-    "Successful": "A(z) {template} sablon sikeresen importálva",
-    "NoTemplatesTitle": "Szeretne sablonokat importálni?",
-    "NoTemplatesContent": "Jelenleg nincsen egy sablonja se. A szerverek felállításához viszont szükségesek.<br/>Szeretne a PufferPanel officiális adattárából egy pár sablont importálni?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Parancs",
-    "Signal": "Jel"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Letöltés",
-      "files": "Fájlok"
-    },
-    "command": {
-      "ProcessorName": "Parancs Futtatása",
-      "commands": "Parancsok"
-    },
-    "alterfile": {
-      "ProcessorName": "Fájl megváltoztatása",
-      "regex": "Keresés alkalmazása, mint RegEx",
-      "search": "Keresendő szöveg",
-      "replace": "Csere erre"
-    },
-    "writefile": {
-      "ProcessorName": "Fájlba írás",
-      "text": "Tartalom"
-    },
-    "move": {
-      "ProcessorName": "Fájl áthelyezése",
-      "source": "Forrás",
-      "target": "Cél"
-    },
-    "mkdir": {
-      "ProcessorName": "Mappa létrehozása"
-    },
-    "mojangdl": {
-      "ProcessorName": "Minecraft Letöltése"
-    },
-    "forgedl": {
-      "ProcessorName": "Minecraft Forge Letöltése"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Minecraft SpongeForge Letöltése",
-      "releaseType": "Kiadás Típusa"
-    },
-    "fabricdl": {
-      "ProcessorName": "Minecraft Fabric Letöltése"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Munkafelület",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "Ezeket a sablonokat a közösség készítette, és mindenféle garancia nélkül bocsátja rendelkezésre"
   }
 }

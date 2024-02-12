@@ -1,111 +1,88 @@
 {
   "Templates": "Plantillas",
-  "NoTemplates": "Todavía no hay plantillas",
+  "Save": "Guardar Plantilla",
+  "Saved": "Plantilla guardada",
+  "Delete": "Eliminar Plantilla",
+  "ConfirmDelete": "¿Realmente deseas eliminar la plantilla {name}?",
   "Deleted": "Plantilla eliminada",
   "New": "Crear nueva plantilla",
-  "Edit": "Editar plantilla",
-  "Editor": "Editor",
+  "EditLocalOnly": "Solo puedes guardar cambios realizados en plantillas locales",
+  "CreateLocalCopy": "Crear copia local",
+  "ConfirmOverwrite": "Ya existe una plantilla con este nombre. ¿Quieres sobrescribirla?",
+  "Overwrite": "Sobrescribir",
   "Json": "JSON",
   "Display": "Nombre para mostrar",
   "Type": "Tipo",
-  "Variables": "Variables",
-  "Install": "Instalar",
-  "AddInstallStep": "Añadir paso de instalación",
-  "DeleteInstallStep": "Eliminar paso de instalación",
-  "Description": "Descripción",
-  "DataType": "Tipo de Dato",
-  "DefaultValue": "Valor por defecto",
-  "Required": "Necesario",
-  "UserEditable": "Usuarios pueden editar",
-  "Value": "Valor",
-  "AddOption": "Añadir una opción",
-  "AddCommand": "Añadir comando",
-  "Filename": "Nombre de archivo",
-  "Content": "Contenido",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Versión",
-  "ReleaseType": "Tipo de lanzamiento",
-  "AddFile": "Añadir archivo",
   "AddVariable": "Añadir variable",
+  "Variables": "Variables",
+  "AddInstallStep": "Añadir paso de instalación",
+  "Install": "Instalar",
+  "Filename": "Nombre de archivo",
+  "Version": "Versión",
   "Environment": "Entorno",
-  "Environments": "Entornos",
-  "AddEnvironment": "Añadir entorno",
-  "DefaultEnvironment": "Entorno por defecto",
+  "EnvEnabled": "Entorno Activado",
   "AddEnvVar": "Añadir variable env",
   "EnvVars": "Variables de entorno",
   "DockerImage": "Imagen de Docker",
-  "SaveSuccess": "Plantilla guardada",
-  "VarNameNoSpaces": "Un nombre de variable no puede estar vacío o contener espacios",
-  "SupportedEnvironments": "Entornos soportados",
   "RunConfig": "Ejecutar configuración",
-  "PreHook": "Hook Pre Ejecución",
-  "PostHook": "Hook Post Ejecución",
   "AddPreStep": "Añadir paso Pre Ejecución",
+  "PreRunHook": "Hook previo a la ejecución",
   "AddPostStep": "Añadir paso Post Ejecución",
-  "DeletePreStep": "Eliminar paso Pre Ejecución",
-  "DeletePostStep": "Eliminar paso Post Ejecución",
+  "PostRunHook": "Hook posterior a la ejecución",
   "Shutdown": "Apagado",
   "Command": "Comando",
-  "WorkingDirectory": "Directorio de Trabajo",
-  "Arguments": "Argumentos",
-  "AddArgument": "Añadir un argumento",
-  "Convert": "Convertir",
-  "OfferV1Convert": "Esta plantilla json se ve como una plantilla para PufferPanel 1.x, ¿deseas convertir automaticamente esta plantilla a una plantilla para PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "ADVERTENCIA: Las plantillas importadas sobrescribirán las plantillas existentes con el mismo ID",
-    "Import": "Importar plantillas",
-    "Tooltip": "Importar plantillas del repositorio oficial",
-    "Select": "Seleccionar plantillas a importar",
-    "Started": "Importando plantillas, por favor espere un momento",
-    "Successful": "Plantilla {template} importada correctamente",
-    "NoTemplatesTitle": "¿Quieres importar plantillas?",
-    "NoTemplatesContent": "Actualmente no tiene ninguna plantilla. Las plantillas son necesarias para crear servidores.<br/>¿Desea importar algunas plantillas desde el repositorio oficial de plantillas de PufferPanel ahora?"
+  "StopCommand": "Comando de Detención",
+  "StopSignal": "Señal de Detención",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Comando",
-    "Signal": "Señal"
+  "errors": {
+    "NameInvalid": "El nombre de una plantilla no puede estar en blanco ni contener espacios o caracteres especiales",
+    "DisplayInvalid": "El nombre para mostrar no puede estar en blanco",
+    "TypeInvalid": "El tipo no puede estar en blanco",
+    "CommandInvalid": "El comando no puede estar en blanco"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Descargar",
-      "files": "Archivos"
-    },
-    "command": {
-      "ProcessorName": "Ejecutar comando",
-      "commands": "Comandos"
-    },
-    "alterfile": {
-      "ProcessorName": "Cambiar archivo",
-      "regex": "Tratar búsqueda como RegEx",
-      "search": "Buscar texto",
-      "replace": "Reemplazar con"
-    },
-    "writefile": {
-      "ProcessorName": "Escribir a archivo",
-      "text": "Contenido"
-    },
-    "move": {
-      "ProcessorName": "Mover archivo",
-      "source": "Fuente",
-      "target": "Objetivo"
-    },
-    "mkdir": {
-      "ProcessorName": "Crear directorio"
-    },
-    "mojangdl": {
-      "ProcessorName": "Descargar Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Descargar Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Descargar Minecraft SpongeForge",
-      "releaseType": "Tipo de lanzamiento"
-    },
-    "fabricdl": {
-      "ProcessorName": "Descargar Minecraft Fabric"
+  "variables": {
+    "Description": "Descripción",
+    "Type": "Tipo",
+    "Value": "Valor por defecto",
+    "Required": "Es necesario definir esta variable",
+    "UserEdit": "Los usuarios no administradores pueden editar esta variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Opciones",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "Cadena",
+      "Boolean": "Booleano",
+      "Number": "Numero",
+      "Options": "Opciones"
     }
+  },
+  "description": {
+    "Name": "Este nombre se utiliza como identificador para la plantilla",
+    "Display": "Este es el nombre que se mostrará a los usuarios, por ejemplo, durante la creación del servidor",
+    "Type": "Se utiliza para agrupar diferentes plantillas y decidir qué icono mostrar en la lista de servidores",
+    "Variables": "Las variables se mostrarán a los usuarios como configuraciones en un servidor. Son útiles, por ejemplo, para permitir al usuario definir qué versión usar o configurar algunos ajustes como el puerto a utilizar",
+    "Install": "Aquí defines qué pasos se ejecutarán cuando un usuario presiona el botón de instalación en un servidor creado a partir de esta plantilla",
+    "Command": "Este es el comando que se ejecutará para iniciar el servidor",
+    "StopCommand": "Escribe un comando en la consola del servidor cuando un usuario presiona el botón de detener el servidor",
+    "StopSignal": "Envía una señal al servidor cuando un usuario presiona el botón de detener el servidor. Esto podría usarse, por ejemplo, para emular la acción de presionar CTRL+C",
+    "PreRunHook": "Aquí puedes definir algunos pasos que se ejecutarán cada vez justo antes de que el servidor se inicie",
+    "PostRunHook": "Aquí puedes definir algunos pasos que se ejecutarán cada vez después de que el servidor se detenga"
+  },
+  "WorkingDirectory": "Directorio de Trabajo",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Importar plantilla",
+  "import": {
+    "CommunityWarning": "Estas plantillas son creadas por la comunidad y se proporcionan sin ninguna garantía"
   }
 }

@@ -6,10 +6,8 @@
   "Create": "Skapa ny OAuth2-klient",
   "UnnamedClient": "Namnlös OAuth2-klient",
   "Docs": "Hitta API-dokumentation här",
-  "DeleteWarning": "Att ta bort en OAuth2-klient kan inte ångras och inte heller kan en ny klient skapas med samma uppgifter. Alla integrationer som fortfarande använder denna klient kommer att brytas efter dess borttagning.",
-  "ConfirmDelete": "Jag är medveten om effekterna av att ta bort den här OAuth2-klienten och jag vill fortsätta.",
-  "Delete": "Ta bort {clientName}?",
   "Clients": "OAuth2 klienter",
-  "AccountDescription": "OAuth2-klienter som listas här ärver alla dina kontobehörigheter",
-  "ServerDescription": "OAuth2-klienter som listas här ärver endast dina kontobehörigheter på denna server"
+  "Delete": "Ta bort {clientName}?",
+  "ConfirmDelete": "Jag är medveten om effekterna av att ta bort den här OAuth2-klienten och jag vill fortsätta.",
+  "AccountDescription": "OAuth2-klienter som listas här ärver alla dina kontobehörigheter"
 }

@@ -1,20 +1,50 @@
 {
-  "Node": "Node",
-  "Nodes": "Nodes",
-  "Edit": "تعديل ال Nodes",
-  "Add": "إضافة Node",
-  "Update": "تحديث ال Node",
-  "Delete": "حذف ال Node",
+  "Node": "نود",
+  "Nodes": "النودات",
+  "Edit": "تعديل النود",
+  "Add": "إضافة نود",
+  "Create": "أنشاء نود",
+  "Update": "تحديث النود",
+  "Delete": "حذف النود",
+  "ConfirmDelete": "هل تريد حقًا حذف النود \"{name}\"؟",
+  "Created": "تم انشاء النود",
+  "Updated": "تم تحديث النود",
+  "Deleted": "تم حذف النود",
+  "Reachable": "تم إعداد هذا النود وتشغيله بشكل صحيح",
+  "Unreachable": "هذا النود إما لم يتم إعداده بشكل صحيح أو غير متوفر حاليا",
+  "features": {
+    "os": {
+      "label": "نظام التشغيل",
+      "linux": "لينكس",
+      "windows": "ويندوز"
+    },
+    "arch": {
+      "label": "بنية وحدة المعالجة المركزية",
+      "amd64": "x86 64bit",
+      "arm": "ARM 32bit",
+      "arm64": "ARM 64bit"
+    },
+    "docker": {
+      "true": "Docker available",
+      "false": "Docker not available"
+    },
+    "envs": "البيئات المتاحة"
+  },
   "PublicHost": "مضيف عام",
   "PublicPort": "منفذ عام",
   "PrivateHost": "مضيف خاص",
   "PrivatePort": "منفذ خاص",
   "SftpPort": "منفذ SFTP",
-  "WithPrivateAddress": "Use a different host/port for server to server communication",
-  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
-  "SaveConfig": "حفظ الاعدادات",
-  "SavePublicKey": "حفظ المفتاح العام",
-  "DeploymentInstruction": "لنشر ال Node ، قم بتثبيت لوحة تحكم بافر بانل على الخادم الجديد و ضع ملف الإعدادات في\n`/etc/pufferpanel/` <br/> قم بإعادة تشغيل لوحة تحكم بافر بنل على الخادم الجديد بعد ذلك.",
-  "UpdateSuccess": "تم تحديث ال Node بنجاح",
-  "UpdateError": "حدث خطأ أثناء تحديث ال Node"
+  "WithPrivateAddress": "استخدام مضيف/منفذ مختلف لاتصالات خادم بخادم",
+  "WithPrivateAddressHint": "هذا العنوان المنفصل يستخدم عندما النود الرئيسي يحتاج للتحدث النود الجديد. مفيدة على سبيل المثال عندما النود يوجد في نفس الشبكة خلف NAT.",
+  "LocalNodeEdit": "النودة المحلية ليس لديها أي إعدادات قابلة للتعديل\n\nلتغيير المضيف المعروض مع خوادم مستضافة على هذه العقدة اضبط رابط اللوحات الرئيسي في إعدادات اللوحة",
+  "Deploy": "Deploy Node",
+  "deploy": {
+    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
+    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Your new node is now set up and ready to go"
+  },
+  "DeploymentInstruction": "لنشر ال Node ، قم بتثبيت لوحة تحكم بافر بانل على الخادم الجديد و ضع ملف الإعدادات في\n`/etc/pufferpanel/` <br/> قم بإعادة تشغيل لوحة تحكم بافر بنل على الخادم الجديد بعد ذلك."
 }

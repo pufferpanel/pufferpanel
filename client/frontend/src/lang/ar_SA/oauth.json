@@ -1,15 +1,13 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Credentials": "بيانات دخول عميل OAuth2",
+  "ClientId": "رمز العميل",
+  "ClientSecret": "سر العميل",
+  "NewClientWarning": "سجل واحفظ سر العميل, بعد اغلاق مربع الحوار هذا لن يتم عرضه مجددًا. اضاعه او نسيانه سيبطل عمل العميل.",
+  "Create": "أنشاء عميل OAuth2 جديد",
+  "UnnamedClient": "عميل OAuth2 غير مسمى",
+  "Docs": "العثور على وثائق API هنا",
+  "Clients": "عملاء OAuth2",
+  "Delete": "حذف {clientName}",
+  "ConfirmDelete": "هل تيقنت على حذف العميل {name}؟ لن تستطيع انشاءه مرةً أُخرى بنفس بيانات الدخول!",
+  "AccountDescription": "عملاء OAuth2 المورودون هنا يرثون جميع صلاحيات حساباتك"
 }

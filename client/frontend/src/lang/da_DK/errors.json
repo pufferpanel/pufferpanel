@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Adgangskoden skal være mindst 8 tegn",
   "ErrUsernameRequirements": "Brugernavn skal være mindst 3 tegn og kun indeholde alfanumeriske oplysninger, _, eller -",
   "ErrPasswordsNotIdentical": "Adgangskoder matcher ikke",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "Din session er udløbet. Log venligst ind igen",
   "ErrMissingScope": "Du har ikke tilladelse til at udføre denne handling",
   "ErrInvalidJson": "JSON-dataen er ugyldigt",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Docker is not supported on this node",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }

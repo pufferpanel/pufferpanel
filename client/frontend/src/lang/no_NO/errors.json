@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Passordet må inneholde minst 8 tegn",
   "ErrUsernameRequirements": "Brukernavnet må være minst 3 tegn og bare inneholde alfanumeriske, _, eller -",
   "ErrPasswordsNotIdentical": "Passord er ikke det samme",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "Økten ble tidsavbrutt, vennligst logg inn igjen",
   "ErrMissingScope": "Du har ikke tilgang til å utføre denne handlingen",
   "ErrInvalidJson": "Json data er ugyldig",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Docker is not supported on this node",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }

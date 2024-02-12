@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Salasanan pitää olla vähintään 8 merkkiä pitkä",
   "ErrUsernameRequirements": "Käyttäjänimen pitää olla vähintään 3 kirjainta ja sisältää vain kirjaimia, _ tai -",
   "ErrPasswordsNotIdentical": "Salasanat eivät täsmää",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "Istuntosi aikakatkaistiin. Ole hyvä ja kirjaudu uudelleen",
   "ErrMissingScope": "Tiliäsi ei ole varmennettu tämän toiminnon suorittamiseen",
   "ErrInvalidJson": "Json-tieto on virheellinen",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Docker ei ole tuettu tällä noodilla",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }

@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Пароль должен состоять из как минимум {min} символов",
   "ErrUsernameRequirements": "Имя пользователя должно быть не менее {min} символов и содержать только буквы, _, или -",
   "ErrPasswordsNotIdentical": "Пароли не совпадают",
+  "ErrEmailInvalid": "Недействительный email",
   "ErrSessionTimedOut": "Время сессии истекло, пожалуйста, повторите вход",
   "ErrMissingScope": "У вас нет прав для совершения данного действия",
   "ErrInvalidJson": "Json данные недействительны",
@@ -41,7 +42,8 @@
   "ErrDuplicateNodeName": "Узел с таким именем уже существует",
   "ErrDirectoryUploadNotSupported": "Не удается загрузить папки",
   "ErrDockerNotSupported": "Docker не поддерживается на этом хосте",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrMissingBinary": "Отсутствует библиотека: ${expected}",
+  "ErrUnsupportedOS": "ОС (${actual}) не поддерживается. Поддерживаемая ОС: ${expected}",
+  "ErrUnsupportedArch": "Архитектура ${actual} не поддерживается. Поддерживаемые архитектуры: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }

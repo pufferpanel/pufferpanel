@@ -1,0 +1,75 @@
+{
+  "Title": "Comenzi rapide de tastatură",
+  "Global": {
+    "Title": "Global",
+    "g a": "Mergi la cont",
+    "g c": "Du-te la configurarea panel-ului",
+    "g n": "Mergi la Node-uri",
+    "g s": "Mergi la servere",
+    "g t": "Mergi la șabloane",
+    "g u": "Mergi la Utilizatori"
+  },
+  "Self": {
+    "Title": "Cont",
+    "t 2": "Mergi la fila 2-Factor-Auth",
+    "t a": "Mergi la fila Detalii Cont",
+    "t o": "Du-te la fila OAuth",
+    "t p": "Du-te la fila Parola",
+    "t s": "Mergeți la fila Preferințe"
+  },
+  "ServerList": {
+    "Title": "Servere",
+    "c": "Creează un server nou",
+    "l": "Focalizează primul server din listă"
+  },
+  "ServerView": {
+    "Title": "Server",
+    "t c": "Mergi la fila Consolă",
+    "t i": "Mergi la fila Statistici",
+    "t f": "Mergi la fila Fișiere",
+    "t s": "Mergi la fila Setări",
+    "t u": "Mergi la fila Utilizatori",
+    "t 6": "Mergi la fila SFTP",
+    "t 7": "Mergi la fila Api",
+    "t a": "Mergi la fila Admin",
+    "c c": "Curăţă consola",
+    "r r": "Porneste serverul",
+    "r s": "Oprește serverul",
+    "r k": "Omoară serverul",
+    "r i": "Instalează serverul",
+    "f a": "Arhivați conținutul curent al folderului",
+    "f c d": "Crează un folder nou",
+    "f c f": "Crează un fișier nou",
+    "f d": "Incarcă un folder",
+    "f l": "Evidențiază primul fişier/dosar în listă",
+    "f r": "Reîncarcă lista de fișiere",
+    "f u": "Încarcă fişiere",
+    "a e": "Editează Definiția Serverului",
+    "a r": "Reîncarcă datele serverului de pe disc"
+  },
+  "NodeList": {
+    "Title": "Node-uri",
+    "c": "Creează un node nou",
+    "l": "Evidențiaza primul node in listă"
+  },
+  "UserList": {
+    "Title": "Utilizatori",
+    "c": "Creează un utilizator nou",
+    "l": "Evidențiază primul utilizator in listă"
+  },
+  "TemplateList": {
+    "Title": "Șabloane",
+    "c": "Crează un șablon nou",
+    "l": "Evidențiaza primul șablon in listă"
+  },
+  "Template": {
+    "Title": "Editor de șabloane",
+    "t e": "Go to Environment tab",
+    "t g": "Go to General tab",
+    "t h": "Go to Hooks tab",
+    "t i": "Go to Install tab",
+    "t j": "Go to JSON tab",
+    "t r": "Go to Run Configuration tab",
+    "t v": "Go to Variables tab"
+  }
+}

@@ -1,111 +1,88 @@
 {
   "Templates": "القوالب",
-  "NoTemplates": "لا توجد قوالب هنا حتى الآن",
+  "Save": "حفظ النموذج",
+  "Saved": "تم حفظ النموذج",
+  "Delete": "حذف النموذج",
+  "ConfirmDelete": "هل تريد حقًا في حذف النموذج {name}؟",
   "Deleted": "تم حذف القالب",
   "New": "إنشاء قالب جديد",
-  "Edit": "تحرير قالب",
-  "Editor": "المحرر",
+  "EditLocalOnly": "يمكنك فقط حفظ التغييرات التي أجريتها على النماذج المحلية",
+  "CreateLocalCopy": "إنشاء نسخة محلية",
+  "ConfirmOverwrite": "يوجد نموذج سابق بنفس الاسم. هل تريد استبداله؟",
+  "Overwrite": "إستبدال",
   "Json": "JSON",
   "Display": "الإسم الظاهر",
   "Type": "نوع",
-  "Variables": "المتغيرات",
-  "Install": "تثبيت",
-  "AddInstallStep": "إضافة خطوة التثبيت",
-  "DeleteInstallStep": "حذف خطوة التثبيت",
-  "Description": "الوصف",
-  "DataType": "نوع البيانات",
-  "DefaultValue": "القيمة الافتراضية",
-  "Required": "مطلوب",
-  "UserEditable": "يمكن للمستخدمين التعديل",
-  "Value": "القيمة",
-  "AddOption": "إضافة خيار",
-  "AddCommand": "إضافة أمر",
-  "Filename": "اسم الملفّ",
-  "Content": "المحتوى",
-  "Source": "المصدر",
-  "Target": "الهدف",
-  "Version": "الإصدار",
-  "ReleaseType": "Release Type",
-  "AddFile": "إضافة ملف",
   "AddVariable": "إضافة متغير",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
+  "Variables": "المتغيرات",
+  "AddInstallStep": "إضافة خطوة التثبيت",
+  "Install": "تثبيت",
+  "Filename": "اسم الملفّ",
+  "Version": "الإصدار",
+  "Environment": "البيئة",
+  "EnvEnabled": "البيئة مفعلة",
   "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "اسم المتغير لا يمكن أن يكون فارغاً أو يحتوي على مسافات",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+  "EnvVars": "متغيرات البيئة",
+  "DockerImage": "صورة الدوكر",
+  "RunConfig": "تشغيل الإعداد",
+  "AddPreStep": "إضافة خطوة ما قبل التشغيل",
+  "PreRunHook": "دوال ما قبل التشغيل",
+  "AddPostStep": "إضافة خطوة ما بعد التشغيل",
+  "PostRunHook": "دوال مابعد التشغيل",
+  "Shutdown": "إيقاف التشغيل",
+  "Command": "الأمر",
+  "StopCommand": "إيقاف الأمر",
+  "StopSignal": "إشارة التوقف",
+  "NoGroup": "بدون مجموعة",
+  "AddVariableGroup": "إضافة مجموعة متغيرات",
+  "CommandConditionHint": "استخدم هذا الأمر فقط إذا تم الوفاء بهذا الشرط",
+  "AddCommand": "اضافة امر",
+  "AddEnvironment": "إضافة بيئة",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+  "errors": {
+    "NameInvalid": "لا يمكن أن يكون اسم النموذج فارغاً ولا يمكن أن يحتوي على مسافات أو أحرف خاصة",
+    "DisplayInvalid": "لا يمكن أن يكون اسم العرض فارغاً",
+    "TypeInvalid": "لا يمكن أن يكون النوع فارغاً",
+    "CommandInvalid": "الأمر لا يمكن أن يكون فارغاً"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "تحميل",
-      "files": "الملفات"
-    },
-    "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
-    },
-    "alterfile": {
-      "ProcessorName": "تغيير الملف",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "استبدل بـ"
-    },
-    "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "محتوى"
-    },
-    "move": {
-      "ProcessorName": "نقل الملف",
-      "source": "المصدر",
-      "target": "الهدف"
-    },
-    "mkdir": {
-      "ProcessorName": "Create Directory"
-    },
-    "mojangdl": {
-      "ProcessorName": "تحميل Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
-    },
-    "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+  "variables": {
+    "Description": "الوصف",
+    "Type": "النوع",
+    "Value": "القيمة الافتراضية",
+    "Required": "هذه القيمة المطلوبة",
+    "UserEdit": "يمكن للمستخدمين غير الإداريين تعديل هذا المتغير",
+    "Internal": "داخلي (لا يظهر أبداً للمستخدمين أو المشرفين)",
+    "Options": "الخيارات",
+    "ConditionHint": "إظهار هذه المجموعة فقط إذا تم الوفاء بهذا الشرط",
+    "types": {
+      "String": "نص",
+      "Boolean": "شرط",
+      "Number": "رقم",
+      "Options": "الخيارات"
     }
+  },
+  "description": {
+    "Name": "يستخدم هذا الاسم كمعرف للنموذج",
+    "Display": "هذا هو الاسم الذي سيتم عرضه للمستخدمين على سبيل المثال أثناء إنشاء الخادم",
+    "Type": "يتم استخدام هذا لتجميع نماذج مختلفة وتحديد أيقونة لعرضها في قائمة الخوادم",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Working Directory",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }

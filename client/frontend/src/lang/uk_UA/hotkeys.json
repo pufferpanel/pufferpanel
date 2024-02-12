@@ -1,0 +1,75 @@
+{
+  "Title": "Комбінації клавіш",
+  "Global": {
+    "Title": "Загальний",
+    "g a": "Перейти до облікового запису",
+    "g c": "Перейти до налаштування панелі",
+    "g n": "Перейти до вузлів",
+    "g s": "Перейти до серверів",
+    "g t": "Перейти до шаблонів",
+    "g u": "Перейти до користувачів"
+  },
+  "Self": {
+    "Title": "Обліковий запис",
+    "t 2": "Перейти до двофакторного входу",
+    "t a": "Перейти до подробиць облікового запису",
+    "t o": "Перейти до OAuth",
+    "t p": "Перейти до вкладки Пароль",
+    "t s": "Перейти до налаштувань"
+  },
+  "ServerList": {
+    "Title": "Сервери",
+    "c": "Створити новий сервер",
+    "l": "Сфокусуватися на першому сервері у списку"
+  },
+  "ServerView": {
+    "Title": "Сервер",
+    "t c": "Перейти до консолі",
+    "t i": "Перейти до статистики",
+    "t f": "Перейти до файлів",
+    "t s": "Перейти до налаштувань",
+    "t u": "Перейти до користувачів",
+    "t 6": "Перейти до налаштувань SFTP",
+    "t 7": "Go to Api tab",
+    "t a": "Go to Admin tab",
+    "c c": "Clear Console",
+    "r r": "Start Server",
+    "r s": "Stop Server",
+    "r k": "Kill Server",
+    "r i": "Install Server",
+    "f a": "Archive current directory contents",
+    "f c d": "Create new directory",
+    "f c f": "Create new file",
+    "f d": "Upload directory",
+    "f l": "Focus first file/folder in the list",
+    "f r": "Reload file list",
+    "f u": "Upload files",
+    "a e": "Edit Server Definition",
+    "a r": "Reload Server Definiton from disk"
+  },
+  "NodeList": {
+    "Title": "Nodes",
+    "c": "Create a new node",
+    "l": "Focus the first node in the list"
+  },
+  "UserList": {
+    "Title": "Users",
+    "c": "Create a new user",
+    "l": "Focus the first user in the list"
+  },
+  "TemplateList": {
+    "Title": "Templates",
+    "c": "Create a new template",
+    "l": "Focus the first template in the list"
+  },
+  "Template": {
+    "Title": "Template Editor",
+    "t e": "Go to Environment tab",
+    "t g": "Go to General tab",
+    "t h": "Go to Hooks tab",
+    "t i": "Go to Install tab",
+    "t j": "Go to JSON tab",
+    "t r": "Go to Run Configuration tab",
+    "t v": "Go to Variables tab"
+  }
+}

@@ -1,14 +1,15 @@
 {
   "Settings": "Paramètres",
   "PanelSettings": "Paramètres panel",
+  "SavePanelSettings": "Enregistrer les paramètres du panel",
   "EmailSettings": "Paramètres e-mail",
+  "SaveEmailSettings": "Enregistrer les paramètres d'E-mail",
   "MasterUrl": "URL principale",
   "MasterUrlHint": "L'URL de base du panel est accessible sous le format http://localhost:8080",
   "CompanyName": "Nom de la compagnie",
   "DefaultTheme": "Thème par défaut",
   "RegistrationEnabled": "Autoriser les utilisateurs à s'inscrire en autonomie",
-  "RegistrationEnabledHint1": "Les utilisateurs qui se sont inscris eux-même ne peuvent rien faire sans permissions",
-  "RegistrationEnabledHint2": "Désactiver ceci n'empêche que l'enregistrement direct, les invitations à un serveur et la page des utilisateurs ne sont pas affectées",
+  "RegistrationEnabledHint": "Les utilisateurs enregistrés ne peuvent rien faire tant qu'ils n'ont pas les permissions\n\nLa désactivation de cette option empêche l'enregistrement direct, l'invitation à un serveur et la page Utilisateurs ne sont pas affectées",
   "EmailProvider": "Fournisseur d'e-mail",
   "emailProviders": {
     "none": "Aucun",
@@ -16,7 +17,7 @@
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
-  "emailFields": {
+  "email": {
     "from": "Adresse de l'expéditeur",
     "domain": "Domaine",
     "key": "Clé API",

@@ -1,14 +1,15 @@
 {
   "Settings": "Einstellungen",
   "PanelSettings": "Panel Einstellungen",
+  "SavePanelSettings": "Save Panel Settings",
   "EmailSettings": "Email Einstellungen",
+  "SaveEmailSettings": "Save Email Settings",
   "MasterUrl": "Haupt URL",
   "MasterUrlHint": "Die Haupt URL des Panels kann unter http://localhost:8080 erreicht werden",
   "CompanyName": "Firmenname",
   "DefaultTheme": "Standarddesign",
   "RegistrationEnabled": "Benutzern erlauben, sich zu registrieren",
-  "RegistrationEnabledHint1": "Selbst registrierte Benutzer können nichts tun bis die Berechtigungen gegeben wurden",
-  "RegistrationEnabledHint2": "Das Deaktivieren verhindert nur die direkte Registrierung, die Einladung zu einem Server und die Benutzerseite ist nicht betroffen",
+  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "E-Mail-Anbieter",
   "emailProviders": {
     "none": "Kein(e)",
@@ -16,12 +17,12 @@
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
-  "emailFields": {
-    "from": "Absender Adresse",
+  "email": {
+    "from": "Sender Address",
     "domain": "Domain",
-    "key": "API Schlüssel",
+    "key": "API Key",
     "host": "Host",
-    "username": "Benutzername",
-    "password": "Passwort"
+    "username": "Username",
+    "password": "Password"
   }
 }

@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Kata sandi minimal harus sepanjang {min} karakter",
   "ErrUsernameRequirements": "Nama penguna harus sepanjang {min} karakter",
   "ErrPasswordsNotIdentical": "Kata sandi tidak sama",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "Sesi anda telah habis, silahkan masuk kembali",
   "ErrMissingScope": "Anda tidak di ijinkan melakukan aksi ini",
   "ErrInvalidJson": "Data json tidak valid",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Docker is not supported on this node",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }

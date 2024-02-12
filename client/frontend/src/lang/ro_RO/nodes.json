@@ -1,20 +1,50 @@
 {
   "Node": "Node",
-  "Nodes": "Nodes",
+  "Nodes": "Node-uri",
   "Edit": "Editare modul",
   "Add": "Adaugă modul",
+  "Create": "Crează Node",
   "Update": "Actualizare modul",
   "Delete": "Șterge modul",
+  "ConfirmDelete": "Eşti sigur că vrei să ştergi node-ul {name}?",
+  "Created": "Node creat",
+  "Updated": "Node actualizat",
+  "Deleted": "Node șters",
+  "Reachable": "This node is correctly set up and running",
+  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "features": {
+    "os": {
+      "label": "Operating System",
+      "linux": "Linux",
+      "windows": "Windows"
+    },
+    "arch": {
+      "label": "CPU Architecture",
+      "amd64": "x86 64bit",
+      "arm": "ARM 32bit",
+      "arm64": "ARM 64bit"
+    },
+    "docker": {
+      "true": "Docker available",
+      "false": "Docker not available"
+    },
+    "envs": "Available Environments"
+  },
   "PublicHost": "Host Public",
   "PublicPort": "Port Public",
   "PrivateHost": "Host Privat",
   "PrivatePort": "Port privat",
   "SftpPort": "Port SFTP",
-  "WithPrivateAddress": "Use a different host/port for server to server communication",
-  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
-  "SaveConfig": "Salvează configurația",
-  "SavePublicKey": "Salvează cheia publică",
-  "DeploymentInstruction": "Pentru a implementa acest modul, instalati PufferPanel pe noul server si plasati fisierul de configurare in `/etc/pufferpanel/`<br/>Reporniţi PufferPanel pe noul server dupa.",
-  "UpdateSuccess": "Actualizare reusita",
-  "UpdateError": "Eroare la actualizarea nodeului"
+  "WithPrivateAddress": "Folosește un host/port diferit pentru comunicarea dintre servere",
+  "WithPrivateAddressHint": "Acestă adresă separată este folosită atunci când node-ul principal comunică cu node-ul nou. Folositor, de exemplu, pentru node-uri care se află în aceeași rețea în spatele unui NAT.",
+  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
+  "Deploy": "Deploy Node",
+  "deploy": {
+    "Step1": "## Pasul 1\n\nInstalează PufferPanel pe noul server, [vezi documentația pentru detalii](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Pasul 2\n\nOpriți serviciul PufferPanel pe noul server dacă a fost pornit în timpul instalării executând `sudo systemctl stop pufferpanel`",
+    "Step3": "## Pasul 3\n\nÎnlocuieşte conţinutul fişierului de configurare PufferPanel pe noul server cu codul de mai jos\n\nFișierul de configurare este găsit de obicei la `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Pasul 4\n\nActivează şi (re)porneşte serviciul PufferPanel pe noul server prin rularea `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Noul dvs. node este acum configurat"
+  },
+  "DeploymentInstruction": "Pentru a implementa acest modul, instalati PufferPanel pe noul server si plasati fisierul de configurare in `/etc/pufferpanel/`<br/>Reporniţi PufferPanel pe noul server dupa."
 }

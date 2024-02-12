@@ -3,8 +3,33 @@
   "Nodes": "Uzly",
   "Edit": "Upravit uzel",
   "Add": "Přidat uzel",
+  "Create": "Vytvořit uzel",
   "Update": "Aktualizovat uzel",
   "Delete": "Smazat uzel",
+  "ConfirmDelete": "Opravdu chcete odstranit uzel {name}?",
+  "Created": "Vytvořený uzel",
+  "Updated": "Aktualizovaný uzel",
+  "Deleted": "Odstraněný uzel",
+  "Reachable": "Tento uzel je správně nastaven a spuštěn",
+  "Unreachable": "Tento uzel není nastaven správně, nebo je momentálně nedostupný",
+  "features": {
+    "os": {
+      "label": "Operační systém",
+      "linux": "Linux",
+      "windows": "Windows"
+    },
+    "arch": {
+      "label": "CPU architektura",
+      "amd64": "x86 64bit",
+      "arm": "ARM 32bit",
+      "arm64": "ARM 64bit"
+    },
+    "docker": {
+      "true": "Dostupný Docker",
+      "false": "Docker není k dispozici"
+    },
+    "envs": "Dostupná prostředí"
+  },
   "PublicHost": "Veřejný hostitel",
   "PublicPort": "Veřejný port",
   "PrivateHost": "Soukromý hostitel",
@@ -12,9 +37,14 @@
   "SftpPort": "SFTP port",
   "WithPrivateAddress": "Použít jiný host/port pro komunikaci se serverem",
   "WithPrivateAddressHint": "Tato oddělená adresa se již používá, když hlavní uzel potřebuje komunikovat s novým uzlem. Užitečné například, když jsou uzly ve stejné síti NAT.",
-  "SaveConfig": "Uložit konfiguraci",
-  "SavePublicKey": "Uložit veřejný klíč",
-  "DeploymentInstruction": "Pro nasazení uzlu nainstalujte PufferPanel na nový server a umístěte konfigurační soubor do `/etc/pufferpanel/`<br/>Poté restartujte PufferPanel na novém serveru.",
-  "UpdateSuccess": "Uzel byl úspěšně aktualizován",
-  "UpdateError": "Chyba při aktualizaci uzlu"
+  "LocalNodeEdit": "Místní uzel nemá žádné editovatelné nastavení\n\nPro změnu zobrazeného hostitele se servery hostovanými v tomto uzlu upravte hlavní url panelů v nastavení panelu",
+  "Deploy": "Nasadit uzel",
+  "deploy": {
+    "Step1": "## Krok 1\n\nNainstalujte PufferPanel na nový server, [viz dokumentace pro detaily](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Krok 2\n\nZastavte službu PufferPanel na novém serveru, pokud byl spuštěn během instalace spuštěním `sudo systemctl stop pufferpanel`",
+    "Step3": "## Krok 3\n\nNahradit obsah konfiguračního souboru PufferPanel na novém serveru kódem pod\n\nKonfigurační soubor je obvykle nalezen v `/etc/pufferpanel/config. son`\n\n```\n{config}\n```",
+    "Step4": "## Krok 4\n\nPovolit a (re)spusťte službu PufferPanel na novém serveru spuštěním `sudo systemctl povolit --now pufferpanel`",
+    "Step5": "### Váš nový uzel je nyní nastaven a připraven k přechodu"
+  },
+  "DeploymentInstruction": "Pro nasazení uzlu nainstalujte PufferPanel na nový server a umístěte konfigurační soubor do `/etc/pufferpanel/`<br/>Poté restartujte PufferPanel na novém serveru."
 }

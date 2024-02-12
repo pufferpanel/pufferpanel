@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Wachtwoord moet ten minste 8 tekens bevatten",
   "ErrUsernameRequirements": "Gebruikersnaam moet ten minste 3 tekens bevatten en mag alleen _, - of alfanumerieke tekens bevatten",
   "ErrPasswordsNotIdentical": "Wachtwoorden komen niet overeen",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "Je sessie is verlopen, log opnieuw in",
   "ErrMissingScope": "Je bent niet bevoegd om deze actie uit te voeren",
   "ErrInvalidJson": "De json gegevens zijn ongeldig",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Docker wordt niet ondersteund op deze node",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }

@@ -1,111 +1,88 @@
 {
   "Templates": "テンプレート一覧",
-  "NoTemplates": "テンプレートがありません．",
-  "Deleted": "Template deleted",
+  "Save": "テンプレートを保存",
+  "Saved": "テンプレートを保存しました",
+  "Delete": "テンプレートの削除",
+  "ConfirmDelete": "このテンプレートを削除してもよろしいですか？",
+  "Deleted": "テンプレートを削除しました",
   "New": "新規テンプレート",
-  "Edit": "テンプレートを編集",
-  "Editor": "編集者",
+  "EditLocalOnly": "ローカルテンプレートに加えられた変更のみ保存できます",
+  "CreateLocalCopy": "ローカルコピーを作成",
+  "ConfirmOverwrite": "この名前のテンプレートは既に存在します。上書きしますか？",
+  "Overwrite": "上書き",
   "Json": "JSON",
   "Display": "表示名",
   "Type": "種類",
-  "Variables": "変数",
-  "Install": "インストール",
-  "AddInstallStep": "インストール手順を追加",
-  "DeleteInstallStep": "インストールステップを削除",
-  "Description": "説明",
-  "DataType": "データ型",
-  "DefaultValue": "初期値",
-  "Required": "入力必要項目",
-  "UserEditable": "ユーザーが編集できる",
-  "Value": "値",
-  "AddOption": "オプションを追加",
-  "AddCommand": "コマンドを追加",
-  "Filename": "ファイル名",
-  "Content": "内容",
-  "Source": "ソース",
-  "Target": "ターゲット",
-  "Version": "バージョン",
-  "ReleaseType": "リリースの種類",
-  "AddFile": "ファイルを追加",
   "AddVariable": "変数を追加",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "使用環境の追加",
-  "DefaultEnvironment": "Default environment",
+  "Variables": "変数",
+  "AddInstallStep": "インストール手順を追加",
+  "Install": "インストール",
+  "Filename": "ファイル名",
+  "Version": "バージョン",
+  "Environment": "環境",
+  "EnvEnabled": "環境は有効です",
   "AddEnvVar": "新規変数を追加",
   "EnvVars": "環境変数",
   "DockerImage": "Docker イメージ",
-  "SaveSuccess": "保存されたテンプレート",
-  "VarNameNoSpaces": "変数名に空白またはスペースを含めることはできません",
-  "SupportedEnvironments": "サポートされている環境",
   "RunConfig": "設定を実行",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
   "AddPreStep": "事前実行ステップを追加",
+  "PreRunHook": "実行前フック",
   "AddPostStep": "ポストランステップを追加",
-  "DeletePreStep": "前の実行ステップを削除",
-  "DeletePostStep": "ポストランステップを削除",
+  "PostRunHook": "実行後のフック",
   "Shutdown": "シャットダウン",
   "Command": "コマンド",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "引数",
-  "AddArgument": "引数を追加",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "警告: インポートされたテンプレートは、同じIDの既存のテンプレートに上書きされます",
-    "Import": "テンプレートをインポートします",
-    "Tooltip": "公式リポジトリからテンプレートをインポートします",
-    "Select": "インポートするテンプレートを選択してください",
-    "Started": "テンプレートをインポートしています。しばらくお待ちください。",
-    "Successful": "テンプレート {template} を正常にインポートしました",
-    "NoTemplatesTitle": "テンプレートをインポートしますか？",
-    "NoTemplatesContent": "現在テンプレートがありません。テンプレートはサーバーを作成するために必要です。<br/>PufferPanel公式テンプレートリポジトリからテンプレートをインポートしますか？"
+  "StopCommand": "コマンドを停止",
+  "StopSignal": "停止信号",
+  "NoGroup": "グループなし",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "コマンドを追加",
+  "AddEnvironment": "環境を追加",
+  "signals": {
+    "1": "登録",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "コマンド",
-    "Signal": "シグナル"
+  "errors": {
+    "NameInvalid": "テンプレート名は空白にできず、スペースや特殊文字を含めることはできません",
+    "DisplayInvalid": "表示名は空白にできません",
+    "TypeInvalid": "タイプを空白にすることはできません。",
+    "CommandInvalid": "このコマンドは空白にできません"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
-    },
-    "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
-    },
-    "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
-    },
-    "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
-    },
-    "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
-    },
-    "mkdir": {
-      "ProcessorName": "Create Directory"
-    },
-    "mojangdl": {
-      "ProcessorName": "Download Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
-    },
-    "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+  "variables": {
+    "Description": "説明",
+    "Type": "種類",
+    "Value": "デフォルト値",
+    "Required": "この変数は必須です",
+    "UserEdit": "管理者以外のユーザーがこの変数を編集できます",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "オプション",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "文字列型",
+      "Boolean": "ブール型",
+      "Number": "数値",
+      "Options": "オプション"
     }
+  },
+  "description": {
+    "Name": "この名前はテンプレートの識別子として使用されます",
+    "Display": "サーバー作成時などにユーザーに表示される名前",
+    "Type": "これは、異なるテンプレートをグループ化し、サーバーリストに表示するアイコンを決定するために使用されます",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "サーバーを起動するために実行されるコマンド",
+    "StopCommand": "ユーザーが停止ボタンを押したときにサーバーコンソールにコマンドを書く。",
+    "StopSignal": "ユーザーがsrversの停止ボタンに当たったときにサーバーに信号を送信します。これは例えばCTRL+Cを押すことをエミュレートするために使用できます。",
+    "PreRunHook": "ここで、サーバー停止後に毎回実行するステップを定義することができます。",
+    "PostRunHook": "ここで、サーバー停止後に毎回実行するステップを定義することができます。"
+  },
+  "WorkingDirectory": "作業ディレクトリ",
+  "General": "一般",
+  "Hooks": "フック",
+  "Import": "テンプレートをインポート",
+  "import": {
+    "CommunityWarning": "これらのテンプレートはコミュニティによって作られ、いかなる保証もなく提供されます"
   }
 }

@@ -1,111 +1,88 @@
 {
   "Templates": "Modèles",
-  "NoTemplates": "Il n'y a pas encore de modèle ici",
+  "Save": "Enregistrer le modèle",
+  "Saved": "Modèle enregistré",
+  "Delete": "Supprimer le modèle",
+  "ConfirmDelete": "Voulez-vous vraiment supprimer ce modèle {name} ?",
   "Deleted": "Modèle supprimé",
   "New": "Créer un nouveau modèle",
-  "Edit": "Éditer le modèle",
-  "Editor": "Éditeur",
+  "EditLocalOnly": "Vous pouvez seulement enregistrer les modifications apportées aux modèles locaux",
+  "CreateLocalCopy": "Enregistrez une copie locale",
+  "ConfirmOverwrite": "Un modèle avec ce nom existe déjà. Voulez-vous l'écraser ?",
+  "Overwrite": "Écraser",
   "Json": "JSON",
   "Display": "Nom",
   "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Installer",
-  "AddInstallStep": "Ajouter une étape d'Installation",
-  "DeleteInstallStep": "Supprimer l'étape d'Installation",
-  "Description": "Description",
-  "DataType": "Type de données",
-  "DefaultValue": "Valeur par défaut",
-  "Required": "Obligatoire",
-  "UserEditable": "Les utilisateurs peuvent modifier",
-  "Value": "Valeur",
-  "AddOption": "Ajouter une option",
-  "AddCommand": "Ajouter une commande",
-  "Filename": "Nom du fichier",
-  "Content": "Contenu",
-  "Source": "Source",
-  "Target": "Destination",
-  "Version": "Version",
-  "ReleaseType": "Type de version",
-  "AddFile": "Ajouter un fichier",
   "AddVariable": "Ajouter une variable",
+  "Variables": "Variables",
+  "AddInstallStep": "Ajouter une étape d'Installation",
+  "Install": "Installer",
+  "Filename": "Nom du fichier",
+  "Version": "Version",
   "Environment": "Environnement",
-  "Environments": "Environnements",
-  "AddEnvironment": "Ajouter un environnement",
-  "DefaultEnvironment": "Environnement par défaut",
+  "EnvEnabled": "Environnement activé",
   "AddEnvVar": "Ajouter une nouvelle variable d'environnement",
   "EnvVars": "Variables d'environnement",
   "DockerImage": "Image Docker",
-  "SaveSuccess": "Modèles enregistrés",
-  "VarNameNoSpaces": "Un nom de variable ne peut pas être vide ou contenir des espaces",
-  "SupportedEnvironments": "Environnements supportés",
   "RunConfig": "Configuration d'Exécution",
-  "PreHook": "Avant-exécution",
-  "PostHook": "Après-exécution",
   "AddPreStep": "Ajouter une étape de pré-exécution",
+  "PreRunHook": "Avant-exécution",
   "AddPostStep": "Ajouter une étape d'après-exécution",
-  "DeletePreStep": "Supprimer l'étape d'avant-exécution",
-  "DeletePostStep": "Supprimer l'étape d'après-exécution",
+  "PostRunHook": "Après-exécution",
   "Shutdown": "Arrêter",
   "Command": "Commande",
-  "WorkingDirectory": "Dossier de travail",
-  "Arguments": "Arguments",
-  "AddArgument": "Ajouter un argument",
-  "Convert": "Convertir",
-  "OfferV1Convert": "Ce modèle json ressemble à un modèle pour PufferPanel 1.x, voulez-vous le convertir automatiquement en un modèle pour PufferPanel 2.x ?",
-  "import": {
-    "CommunityWarning": "Ces modèles sont réalisés par la communauté et sont fournis sans garantie",
-    "OverrideWarning": "AVERTISSEMENT : Les modèles importés VONT remplacer les modèles existants avec le même identifiant",
-    "Import": "Importer des modèles",
-    "Tooltip": "Importer des modèles depuis le dépôt officiel",
-    "Select": "Sélectionner les modèles à importer",
-    "Started": "Importation des modèles, merci de patienter un moment",
-    "Successful": "Modèle importé avec succès {template}",
-    "NoTemplatesTitle": "Souhaitez-vous importer des modèles ?",
-    "NoTemplatesContent": "Vous n'avez actuellement aucun modèle. Les modèles sont nécessaires pour créer des serveurs.<br/>Souhaitez-vous importer des modèles depuis le dépôt officiel des modèles de PufferPanel maintenant ?"
+  "StopCommand": "Commande d'arrêt",
+  "StopSignal": "Arrêter le signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "INSCRIPTION",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Commande",
-    "Signal": "Signal"
+  "errors": {
+    "NameInvalid": "Un nom de modèle ne peut pas être vide et ne peut pas contenir d'espaces ou de caractères spéciaux",
+    "DisplayInvalid": "Ne nom affiché ne peut pas être vide",
+    "TypeInvalid": "Le type ne peut pas être vide",
+    "CommandInvalid": "La commande ne peut pas être vide"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Télécharger",
-      "files": "Fichiers"
-    },
-    "command": {
-      "ProcessorName": "Commande d’exécution",
-      "commands": "Commandes"
-    },
-    "alterfile": {
-      "ProcessorName": "Changer le fichier",
-      "regex": "Traiter la recherche comme RegEx",
-      "search": "Texte à rechercher",
-      "replace": "Remplacer par"
-    },
-    "writefile": {
-      "ProcessorName": "Écrire dans un fichier",
-      "text": "Contenus"
-    },
-    "move": {
-      "ProcessorName": "Déplacer un fichier",
-      "source": "Source",
-      "target": "Cible"
-    },
-    "mkdir": {
-      "ProcessorName": "Créer un répertoire"
-    },
-    "mojangdl": {
-      "ProcessorName": "Télécharger Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Télécharger Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Télécharger Minecraft SpongeForge",
-      "releaseType": "Type de version"
-    },
-    "fabricdl": {
-      "ProcessorName": "Télécharger Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "Ce nom est utilisé comme identifiant pour le modèle",
+    "Display": "Il s'agit du nom qui sera affiché aux utilisateurs comme exemple durant la création de serveurs",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Dossier de travail",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "Ces modèles sont réalisés par la communauté et sont fournis sans garantie"
   }
 }

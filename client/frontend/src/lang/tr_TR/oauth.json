@@ -6,10 +6,8 @@
   "Create": "Yeni iki aşamalı doğrulama oluştur",
   "UnnamedClient": "İsimsiz iki aşamalı doğrulama",
   "Docs": "API dökümantasyonlarını görüntüle",
-  "DeleteWarning": "İki aşamalı doğrulamanın silinmesi geri alınamaz ve aynı bilgilerle başka bir doğrulama oluşturulamaz. Hâlâ bu doğrulamayı kullanan tüm entegrasyonlar, silindikten sonra bozulacak.",
-  "ConfirmDelete": "Bu iki aşamalı doğrulamanın silinmesinden kaynaklanabilecek sorunların farkındayım ve devam etmek istiyorum.",
-  "Delete": "{clientName} silinsin mi?",
   "Clients": "İki aşamalı doğrulama",
-  "AccountDescription": "Burada listelenen iki aşamalı doğrulama tüm hesap izinlerini devralır",
-  "ServerDescription": "Burada listelenen iki aşamalı doğrulama yalnızca bu sunucudaki hesap izinlerini devralır"
+  "Delete": "{clientName} silinsin mi?",
+  "ConfirmDelete": "Bu iki aşamalı doğrulamanın silinmesinden kaynaklanabilecek sorunların farkındayım ve devam etmek istiyorum.",
+  "AccountDescription": "Burada listelenen iki aşamalı doğrulama tüm hesap izinlerini devralır"
 }

@@ -1,111 +1,88 @@
 {
   "Templates": "Šablony",
-  "NoTemplates": "Zatím zde nejsou žádné šablony",
+  "Save": "Uložit šablonu",
+  "Saved": "Šablona byla uložena",
+  "Delete": "Odstranit šablonu",
+  "ConfirmDelete": "Opravdu chcete odstranit šablonu {templateName}?",
   "Deleted": "Šablona odstraněna",
   "New": "Vytvořit novou šablonu",
-  "Edit": "Upravit šablonu",
-  "Editor": "Editor",
+  "EditLocalOnly": "Změny provedené v místních šablonách můžete uložit pouze",
+  "CreateLocalCopy": "Vytvořit místní kopii",
+  "ConfirmOverwrite": "Šablona s tímto názvem již existuje. Přepsat?",
+  "Overwrite": "Přepsat",
   "Json": "JSON",
   "Display": "Zobrazované jméno",
   "Type": "Typ",
-  "Variables": "Proměnné",
-  "Install": "Instalovat",
-  "AddInstallStep": "Přidat instalační krok",
-  "DeleteInstallStep": "Odstranit instalační krok",
-  "Description": "Popis",
-  "DataType": "Datový typ",
-  "DefaultValue": "Výchozí hodnota",
-  "Required": "Povinné",
-  "UserEditable": "Uživatelé mohou upravovat",
-  "Value": "Hodnota",
-  "AddOption": "Přidat volbu",
-  "AddCommand": "Přidat příkaz",
-  "Filename": "Název souboru",
-  "Content": "Obsah",
-  "Source": "Zdroj",
-  "Target": "Cíl",
-  "Version": "Verze",
-  "ReleaseType": "Typ vydání",
-  "AddFile": "Přidat soubor",
   "AddVariable": "Přidat proměnnou",
+  "Variables": "Proměnné",
+  "AddInstallStep": "Přidat instalační krok",
+  "Install": "Instalovat",
+  "Filename": "Název souboru",
+  "Version": "Verze",
   "Environment": "Prostředí",
-  "Environments": "Prostředí",
-  "AddEnvironment": "Přidat prostředí",
-  "DefaultEnvironment": "Výchozí prostředí",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Přidat proměnnou prostředí",
   "EnvVars": "Proměnné prostředí",
   "DockerImage": "Docker obrazy",
-  "SaveSuccess": "Uložené šablony",
-  "VarNameNoSpaces": "Název proměnné nemůže být prázdný nebo obsahovat mezery",
-  "SupportedEnvironments": "Podporované prostředí",
   "RunConfig": "Spustit konfiguraci",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Pre Run Hook",
   "AddPreStep": "Přidat krok před spuštěním",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Přidat krok po spuštění",
-  "DeletePreStep": "Odstranit krok před spuštěním",
-  "DeletePostStep": "Přidat krok po spuštění",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Vypnout",
   "Command": "Příkaz",
-  "WorkingDirectory": "Pracovní adresář",
-  "Arguments": "Parametry",
-  "AddArgument": "Přidat parametr",
-  "Convert": "Převést",
-  "OfferV1Convert": "Tato šablona json vypadá jako šablona pro PufferPanel 1.x, chcete automaticky převést tuto šablonu na šablonu pro PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "Tyto šablony jsou vytvořeny komunitou a poskytnuty bez jakýchkoliv záruk",
-    "OverrideWarning": "VAROVÁNÍ: Importované šablony přepisují existující šablony se stejným ID",
-    "Import": "Importovat šablonu",
-    "Tooltip": "Importovat šablony z oficiálního úložiště",
-    "Select": "Vyberte položky k importování",
-    "Started": "Importuji šablony, počkejte prosím chvíli",
-    "Successful": "Šablona {template} byla úspěšně importována",
-    "NoTemplatesTitle": "Chcete importovat šablony?",
-    "NoTemplatesContent": "Momentálně nemáte žádné šablony. Šablony jsou nutné pro vytvoření serverů.<br/>Chcete nyní importovat některé šablony z oficiálního úložiště šablon Pufferpanelu?"
+  "StopCommand": "Příkaz pro zastavení",
+  "StopSignal": "Zastavit signál",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Příkaz",
-    "Signal": "Signál"
+  "errors": {
+    "NameInvalid": "Název šablony nemůže být prázdný a nesmí obsahovat mezery nebo speciální znaky",
+    "DisplayInvalid": "Zobrazovaný název nemůže být prázdný",
+    "TypeInvalid": "Typ nemůže být prázdný",
+    "CommandInvalid": "Příkaz nemůže být prázdný"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Stáhnout",
-      "files": "Soubory"
-    },
-    "command": {
-      "ProcessorName": "Spustit příkaz",
-      "commands": "Příkazy"
-    },
-    "alterfile": {
-      "ProcessorName": "Změnit soubor",
-      "regex": "Hledat jako RegEx",
-      "search": "Text na vyhledávání",
-      "replace": "Nahradit za"
-    },
-    "writefile": {
-      "ProcessorName": "Zapsat do souboru",
-      "text": "Obsah"
-    },
-    "move": {
-      "ProcessorName": "Přesunout soubor",
-      "source": "Zdroj",
-      "target": "Cíl"
-    },
-    "mkdir": {
-      "ProcessorName": "Vytvořit složku"
-    },
-    "mojangdl": {
-      "ProcessorName": "Stáhnout Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Stáhnout Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Stáhnout Minecraft SpongeForge",
-      "releaseType": "Typ vydání"
-    },
-    "fabricdl": {
-      "ProcessorName": "Stáhnout Minecraft Fabric"
+  "variables": {
+    "Description": "Popis",
+    "Type": "Typ",
+    "Value": "Výchozí hodnota",
+    "Required": "Tato proměnná je povinná",
+    "UserEdit": "Uživatelé, kteří nejsou správci, mohou upravit tuto proměnnou",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Možnosti",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "Text",
+      "Boolean": "Boolean",
+      "Number": "Číslo",
+      "Options": "Možnosti"
     }
+  },
+  "description": {
+    "Name": "Tento název se používá jako identifikátor šablony",
+    "Display": "Toto je název, který se zobrazí uživatelům například při vytváření serveru",
+    "Type": "Používá se ke sdružování různých šablon a k rozhodnutí, jakou ikonu zobrazit v seznamu serverů",
+    "Variables": "Proměnné budou zobrazeny uživatelům jako nastavení na serveru, jsou užitečné například pro to, aby uživatel definoval, jakou verzi použije, nebo aby definoval některá nastavení, jako je port",
+    "Install": "Zde můžete definovat, jaké kroky budou spuštěny, když uživatel zasáhne instalační tlačítko serveru vytvořeného z této šablony",
+    "Command": "Toto je příkaz, který bude spuštěn pro spuštění serveru",
+    "StopCommand": "Zapsat příkaz do konzole serverů, když uživatelé zasáhnou tlačítko srvers stop",
+    "StopSignal": "Odeslat signál na server, když uživatel zasáhne tlačítko srvers zastavení, může to být například použito k emulaci zásahu CTRL+C",
+    "PreRunHook": "Zde můžete definovat některé kroky ke spuštění pokaždé, než server začne",
+    "PostRunHook": "Zde můžete definovat některé kroky ke spuštění pokaždé, když server přestane"
+  },
+  "WorkingDirectory": "Pracovní adresář",
+  "General": "Obecné",
+  "Hooks": "Háčky",
+  "Import": "Importovat šablonu",
+  "import": {
+    "CommunityWarning": "Tyto šablony jsou vytvořeny komunitou a poskytnuty bez jakýchkoliv záruk"
   }
 }

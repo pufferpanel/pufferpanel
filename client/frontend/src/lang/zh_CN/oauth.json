@@ -6,10 +6,8 @@
   "Create": "创建新的 OAuth2 客户端",
   "UnnamedClient": "未命名的 OAuth2 客户端",
   "Docs": "在这里将找到该API的文档",
-  "DeleteWarning": "删除OAuth2 客户端后不能撤消，也不能创建相同凭据的新客户端。 所有正在在使用此客户端的程序将在删除后不可用。",
-  "ConfirmDelete": "我知道删除此 OAuth2 客户端将会产生的后果，并希望继续进行删除。",
-  "Delete": "确定删除 {clientName} 吗？",
   "Clients": "OAuth2 客户端",
-  "AccountDescription": "在此列出的 OAuth2 客户端可使用您帐户的所有权限",
-  "ServerDescription": "在此列出的 OAuth2 客户端仅可使用您在此服务器上的帐户权限"
+  "Delete": "确定删除 {clientName} 吗？",
+  "ConfirmDelete": "我知道删除此 OAuth2 客户端将会产生的后果，并希望继续进行删除。",
+  "AccountDescription": "在此列出的 OAuth2 客户端可使用您帐户的所有权限"
 }

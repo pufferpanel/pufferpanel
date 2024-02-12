@@ -6,10 +6,8 @@
   "Create": "creer",
   "UnnamedClient": "client sans nom",
   "Docs": "documentations",
-  "DeleteWarning": "attention supprimation",
-  "ConfirmDelete": "confirmer la supprimation \n",
-  "Delete": "Supprimer {clientName}?",
   "Clients": "Clients",
-  "AccountDescription": "description du compte\n",
-  "ServerDescription": "description du serveur"
+  "Delete": "Supprimer {clientName}?",
+  "ConfirmDelete": "confirmer la supprimation \n",
+  "AccountDescription": "description du compte\n"
 }

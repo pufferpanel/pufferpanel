@@ -1,14 +1,15 @@
 {
   "Settings": "Cài Đặt",
   "PanelSettings": "Cài đặt Panel",
+  "SavePanelSettings": "Save Panel Settings",
   "EmailSettings": "Cài đặt email",
+  "SaveEmailSettings": "Save Email Settings",
   "MasterUrl": "Chủ URL",
   "MasterUrlHint": "URL gốc mà có thể kết nối tới, dưới dạng http://localhost:8080",
   "CompanyName": "Tên công ty",
   "DefaultTheme": "Giao diện Mặc định",
   "RegistrationEnabled": "Cho Phép Người Dùng Tự Đăng Kí",
-  "RegistrationEnabledHint1": "Người dùng tự đăng kí không thể làm gì cho đến khi được trao quyền",
-  "RegistrationEnabledHint2": "Tắt tính năng này chỉ ngăn chặn đăng kí trực tiếp, còn lời mời vào máy chủ và trang Người dùng sẽ không bị ảnh hưởng",
+  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "Email của nhà cung cấp",
   "emailProviders": {
     "none": "Không có",
@@ -16,12 +17,12 @@
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
-  "emailFields": {
-    "from": "Địa chỉ người gửi",
-    "domain": "Tên miền",
-    "key": "Khóa API",
-    "host": "Máy chủ",
-    "username": "Tên đăng nhập",
-    "password": "Mật khẩu"
+  "email": {
+    "from": "Sender Address",
+    "domain": "Domain",
+    "key": "API Key",
+    "host": "Host",
+    "username": "Username",
+    "password": "Password"
   }
 }

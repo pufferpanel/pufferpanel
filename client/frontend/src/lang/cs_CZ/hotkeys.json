@@ -1,0 +1,75 @@
+{
+  "Title": "Klávesové zkratky",
+  "Global": {
+    "Title": "Globální",
+    "g a": "Přejít na účet",
+    "g c": "Přejít na nastavení panelu",
+    "g n": "Přejít na uzly",
+    "g s": "Přejít na servery",
+    "g t": "Přejít na šablony",
+    "g u": "Přejít na Uživatele"
+  },
+  "Self": {
+    "Title": "Účet",
+    "t 2": "Přejít na záložku 2-Factor-Auth",
+    "t a": "Přejít na kartu Podrobnosti účtu",
+    "t o": "Přejít na kartu OAuth",
+    "t p": "Přejít na záložku Hesla",
+    "t s": "Přejít na záložku Nastavení"
+  },
+  "ServerList": {
+    "Title": "Servery",
+    "c": "Vytvořit nový server",
+    "l": "Zaměřit první server na seznam"
+  },
+  "ServerView": {
+    "Title": "Server",
+    "t c": "Přejít na kartu konzole",
+    "t i": "Přejít na kartu Statistiky",
+    "t f": "Přejít na záložku Soubory",
+    "t s": "Přejít na záložku Nastavení",
+    "t u": "Přejít na záložku Uživatelé",
+    "t 6": "Přejít na SFTP záložku",
+    "t 7": "Přejít na záložku API",
+    "t a": "Přejít na záložku Administrace",
+    "c c": "Vyčistit konzoli",
+    "r r": "Spustit Server",
+    "r s": "Zastavit server",
+    "r k": "Zabít server",
+    "r i": "Nainstalovat server",
+    "f a": "Archivovat aktuální obsah adresáře",
+    "f c d": "Vytvořit nový adresář",
+    "f c f": "Vytvořit nový soubor",
+    "f d": "Adresář pro nahrávání",
+    "f l": "Zaměřit první soubor/složku v seznamu",
+    "f r": "Obnovit seznam souborů",
+    "f u": "Nahrát soubory",
+    "a e": "Upravit definici serveru",
+    "a r": "Znovu načíst Definici serveru z disku"
+  },
+  "NodeList": {
+    "Title": "Uzly",
+    "c": "Vytvořit nový uzel",
+    "l": "Zaměřit první uzel v seznamu"
+  },
+  "UserList": {
+    "Title": "Uživatelé",
+    "c": "Vytvořit nového uživatele",
+    "l": "Zaměřit prvního uživatele na seznam"
+  },
+  "TemplateList": {
+    "Title": "Šablony",
+    "c": "Vytvořit novou šablonu",
+    "l": "Zaměřit první šablonu v seznamu"
+  },
+  "Template": {
+    "Title": "Editor šablon",
+    "t e": "Přejít na kartu Prostředí",
+    "t g": "Přejít na hlavní kartu",
+    "t h": "Přejít na záložku Hooks",
+    "t i": "Přejít na záložku instalace",
+    "t j": "Přejít na kartu JSON",
+    "t r": "Přejít na kartu Konfigurace",
+    "t v": "Přejít na kartu Proměnné"
+  }
+}

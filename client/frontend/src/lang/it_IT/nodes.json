@@ -3,18 +3,48 @@
   "Nodes": "Nodi",
   "Edit": "Modifica Nodo",
   "Add": "Aggiungi Nodo",
+  "Create": "Crea Nodo",
   "Update": "Aggiorna Nodo",
   "Delete": "Elimina Nodo",
+  "ConfirmDelete": "Sei sicuro di voler eliminare il ruolo \"{name}\"?",
+  "Created": "Nodo Creato",
+  "Updated": "Nodo Aggiornato",
+  "Deleted": "Nodo Eliminato",
+  "Reachable": "Questo nodo è correttamente impostato e in esecuzione",
+  "Unreachable": "Questo nodo non è configurato correttamente o non è attualmente disponibile",
+  "features": {
+    "os": {
+      "label": "Sistema Operativo",
+      "linux": "Linux",
+      "windows": "Windows"
+    },
+    "arch": {
+      "label": "Architettura CPU",
+      "amd64": "x86 64bit",
+      "arm": "ARM 32bit",
+      "arm64": "ARM 64bit"
+    },
+    "docker": {
+      "true": "Docker disponibile",
+      "false": "Docker non disponibile"
+    },
+    "envs": "Ambienti Disponibili"
+  },
   "PublicHost": "Host Pubblico",
   "PublicPort": "Porta Pubblica",
   "PrivateHost": "Host Privato",
   "PrivatePort": "Porta Privata",
   "SftpPort": "Porta SFTP",
-  "WithPrivateAddress": "Use a different host/port for server to server communication",
-  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
-  "SaveConfig": "Salva Configurazione",
-  "SavePublicKey": "Salva Chiave Pubblica",
-  "DeploymentInstruction": "Per distribuire il nodo, installa PufferPanel sul nuovo server e metti il file di configurazione in '/etc/pufferpanel/'<br/>Riavvia PufferPanel sul serve successivamente.",
-  "UpdateSuccess": "Nodo aggiornato con successo",
-  "UpdateError": "Errore durante l'aggiornamento del nodo"
+  "WithPrivateAddress": "Usa un host/porta diverso per il server per la comunicazione del server",
+  "WithPrivateAddressHint": "Questo indirizzo separato viene utilizzato quando il nodo principale deve parlare con il nuovo nodo. Utile per esempio quando i nodi sono nella stessa rete dietro NAT.",
+  "LocalNodeEdit": "Il nodo locale non ha alcuna impostazione modificabile\n\nPer modificare l'host visualizzato con i server ospitati su questo nodo regolare l'url principale dei pannelli nelle impostazioni del pannello",
+  "Deploy": "Dispiega Nodo",
+  "deploy": {
+    "Step1": "## Passo 1\n\nInstalla PufferPanel sul nuovo server, [vedi i documenti per i dettagli](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Passo 2\n\nFerma il servizio PufferPanel sul nuovo server se è stato avviato durante l'installazione eseguendo `sudo systemctl stop pufferpanel`",
+    "Step3": "## Passo 3\n\nSostituire il contenuto del file di configurazione del Pannello Pufferg sul nuovo server con il codice sotto\n\nIl file di configurazione si trova solitamente in `/etc/pufferpanel/config. son`\n\n```\n{config}\n```",
+    "Step4": "## Passo 4\n\nAbilita e (ri)avvia il servizio PufferPanel sul nuovo server eseguendo `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Il tuo nuovo nodo è ora configurato e pronto per andare"
+  },
+  "DeploymentInstruction": "Per distribuire il nodo, installa PufferPanel sul nuovo server e metti il file di configurazione in '/etc/pufferpanel/'<br/>Riavvia PufferPanel sul serve successivamente."
 }

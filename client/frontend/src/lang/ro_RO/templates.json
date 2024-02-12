@@ -1,111 +1,88 @@
 {
   "Templates": "Template-uri",
-  "NoTemplates": "Nu există încă template-uri aici",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Template-ul a fost șters",
   "New": "Creaza un template nou",
-  "Edit": "Editare template",
-  "Editor": "Editor",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Nume afişat",
   "Type": "Tip",
-  "Variables": "Variabile",
-  "Install": "Instalare",
-  "AddInstallStep": "Adaugă Pas de Instalare",
-  "DeleteInstallStep": "Ştergeţi pasul de instalare",
-  "Description": "Descriere",
-  "DataType": "Tip date",
-  "DefaultValue": "Valoare implicită",
-  "Required": "Obligatoriu",
-  "UserEditable": "Utilizatorii pot edita",
-  "Value": "Valoare",
-  "AddOption": "Adaugă o opțiune",
-  "AddCommand": "Adăugare comandă",
-  "Filename": "Nume fișier",
-  "Content": "Conţinut",
-  "Source": "Sursa",
-  "Target": "Destinație",
-  "Version": "Versiune",
-  "ReleaseType": "Tip lansare",
-  "AddFile": "Adauga fisier",
   "AddVariable": "Adaugă variabilă",
+  "Variables": "Variabile",
+  "AddInstallStep": "Adaugă Pas de Instalare",
+  "Install": "Instalare",
+  "Filename": "Nume fișier",
+  "Version": "Versiune",
   "Environment": "Environment",
-  "Environments": "Environment",
-  "AddEnvironment": "Adaugă environment",
-  "DefaultEnvironment": "Mediu implicit",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Adaugă variabilă",
   "EnvVars": "Variabile de mediu",
   "DockerImage": "Imagine Docker",
-  "SaveSuccess": "Vezi template-uri",
-  "VarNameNoSpaces": "Un nume de variabilă nu poate fi gol sau conține spații",
-  "SupportedEnvironments": "Medii suportate",
   "RunConfig": "Rulează configurația",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
   "AddPreStep": "Adaugă Pre Rulează Pasul",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Adaugă Post Run Pas",
-  "DeletePreStep": "Șterge Pre Rulează Pasul",
-  "DeletePostStep": "Ştergeţi pasul de instalare",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Oprește",
   "Command": "Comandă",
-  "WorkingDirectory": "Directorul de lucru",
-  "Arguments": "Argumente",
-  "AddArgument": "Adaugă un argument",
-  "Convert": "Transformă",
-  "OfferV1Convert": "Acest template json arată ca un template pentru PufferPanel 1.x, doriţi să convertiţi automat acest template într-un template pentru PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "AVERTISMENT: Template-urile importate vor suprascrie template-urile existente cu același ID",
-    "Import": "Importă template-uri",
-    "Tooltip": "Importați template-uri din repository",
-    "Select": "Selectați template-uri de importat",
-    "Started": "Se importa template-urile, va rugam asteptati un moment",
-    "Successful": "Template importat cu succes {template}",
-    "NoTemplatesTitle": "Doriți să importați template-uri?",
-    "NoTemplatesContent": "În prezent nu aveți nici un template. Template-urile sunt necesare pentru a crea servere.<br/>Doriţi să importaţi câteva template-uri din PufferPanel acum?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Comandă",
-    "Signal": "Semnal"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Descarcă",
-      "files": "Fişiere"
-    },
-    "command": {
-      "ProcessorName": "Rulează comanda",
-      "commands": "Comenzi"
-    },
-    "alterfile": {
-      "ProcessorName": "Schimbă fişierul",
-      "regex": "Tratează căutarea ca RegEx",
-      "search": "Text căutare",
-      "replace": "Înlocuiește cu"
-    },
-    "writefile": {
-      "ProcessorName": "Scrie în fișier",
-      "text": "Conţinut"
-    },
-    "move": {
-      "ProcessorName": "Muta fisier",
-      "source": "Sursă",
-      "target": "Destinație"
-    },
-    "mkdir": {
-      "ProcessorName": "Crează director"
-    },
-    "mojangdl": {
-      "ProcessorName": "Descarcă Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Descarcă Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Descarcă Minecraft SpongeForge",
-      "releaseType": "Tip versiune"
-    },
-    "fabricdl": {
-      "ProcessorName": "Descarcă Tesatura Minecraft"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Directorul de lucru",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }

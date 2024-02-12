@@ -1,0 +1,64 @@
+{
+  "ConditionHint": "Only execute this step if this condition is met",
+  "mojangdl": {
+    "generic": "Descarcă Minecraft",
+    "formatted": "Descarcă Minecraft"
+  },
+  "writefile": {
+    "generic": "Scrie în fișier",
+    "formatted": "Scrie în fişierul {target}"
+  },
+  "resolveforgeversion": {
+    "generic": "Resolve Minecraft Forge Version",
+    "formatted": "Resolve Minecraft Forge Version"
+  },
+  "download": {
+    "generic": "Descărcare fişier(ele)",
+    "formatted": "Descarcă {file} | Descarcă {n} fișiere",
+    "files": "Fişiere"
+  },
+  "command": {
+    "generic": "Rulează comanda/comenzile",
+    "formatted": "Rulează {command} | Rulează comenzile {n}",
+    "commands": "Comenzi"
+  },
+  "alterfile": {
+    "generic": "Modifică un fișier",
+    "formatted": "Modifică fișierul {target}",
+    "regex": "Treat search string as regular expression",
+    "search": "Căutare",
+    "replace": "Replace matches with"
+  },
+  "move": {
+    "generic": "Mută sau redenumește un fișier",
+    "formatted": "Mută fișierul {source} în {target}",
+    "source": "Cale sursă",
+    "target": "Cale țintă"
+  },
+  "mkdir": {
+    "generic": "Crează un folder nou",
+    "formatted": "Crează folderul {target}"
+  },
+  "steamgamedl": {
+    "generic": "Instalați de pe Steam",
+    "formatted": "Instalează Steam App ID {appId}",
+    "appId": "Steam App ID"
+  },
+  "javadl": {
+    "generic": "Instalează Java",
+    "formatted": "Instalează Java {version}"
+  },
+  "forgedl": {
+    "generic": "Descarcă Minecraft Forge",
+    "formatted": "Descarcă Minecraft Forge"
+  },
+  "spongeforgedl": {
+    "generic": "Descarcă Minecraft SpongeForge",
+    "formatted": "Descarcă Minecraft SpongeForge",
+    "releaseType": "Tip versiune"
+  },
+  "fabricdl": {
+    "generic": "Descarcă Minecraft Fabric",
+    "formatted": "Descarcă Minecraft Fabric"
+  }
+}

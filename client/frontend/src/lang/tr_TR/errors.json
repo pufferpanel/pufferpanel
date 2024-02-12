@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Şifre en az 8 karakterden oluşmalıdır",
   "ErrUsernameRequirements": "Kullanıcı adı en az 3 karakter olmalıdır. (Sadece Sayı, _, - içerebilir)",
   "ErrPasswordsNotIdentical": "Şifreler aynı değil",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "Oturumunuzun süresi doldu, lütfen tekrar giriş yapın",
   "ErrMissingScope": "Bu işlemi gerçekleştirmek için yetkiniz yok",
   "ErrInvalidJson": "Json verisi geçersiz",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Bu düğümde Docker desteklenmiyor",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }

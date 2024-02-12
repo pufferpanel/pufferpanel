@@ -1,111 +1,88 @@
 {
   "Templates": "Шаблоны",
-  "NoTemplates": "Нет шаблонов",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Шаблон удалён",
   "New": "Создать новый шаблон",
-  "Edit": "Редактировать шаблон",
-  "Editor": "Редактор",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Отображаемое имя",
   "Type": "Тип",
-  "Variables": "Переменные",
-  "Install": "Установить",
-  "AddInstallStep": "Добавить шаг установки",
-  "DeleteInstallStep": "Удалить шаг установки",
-  "Description": "Описание",
-  "DataType": "Тип данных",
-  "DefaultValue": "Значение по умолчанию",
-  "Required": "Обязательно",
-  "UserEditable": "Пользователи могут редактировать",
-  "Value": "Значение",
-  "AddOption": "Добавить свойство",
-  "AddCommand": "Добавить команду",
-  "Filename": "Имя файла",
-  "Content": "Содержимое",
-  "Source": "Источник",
-  "Target": "Цель",
-  "Version": "Версия",
-  "ReleaseType": "Тип выпуска",
-  "AddFile": "Добавить файл",
   "AddVariable": "Добавить переменную",
+  "Variables": "Переменные",
+  "AddInstallStep": "Добавить шаг установки",
+  "Install": "Установить",
+  "Filename": "Имя файла",
+  "Version": "Версия",
   "Environment": "Окружение",
-  "Environments": "Окружения",
-  "AddEnvironment": "Добавить окружение",
-  "DefaultEnvironment": "Стандартное окружение",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Добавить переменную окружения",
   "EnvVars": "Переменные окружения",
   "DockerImage": "Снимок Docker",
-  "SaveSuccess": "Шаблон сохранён",
-  "VarNameNoSpaces": "Имя переменной не может быть пустым или содержать пробелы",
-  "SupportedEnvironments": "Поддерживаемые окружения",
   "RunConfig": "Запустить конфигурацию",
-  "PreHook": "Предварительный крючок",
-  "PostHook": "Крюк после пробежки",
   "AddPreStep": "Добавить шаг перед запуском",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Добавить шаг после запуска",
-  "DeletePreStep": "Удалить шаг перед запуском",
-  "DeletePostStep": "Удалить шаг после запуска",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Выключить",
   "Command": "Команда",
-  "WorkingDirectory": "Рабочий каталог",
-  "Arguments": "Аргументы",
-  "AddArgument": "Добавить аргумент",
-  "Convert": "Перерабатывать",
-  "OfferV1Convert": "Этот шаблон json выглядит как шаблон для PufferPanel 1.x, хотите ли вы автоматически преобразовать его в шаблон для PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "ВНИМАНИЕ: Импортированные шаблоны БУДУТ перезаписывать существующие шаблоны с тем же ID",
-    "Import": "Импорт шаблонов",
-    "Tooltip": "Импорт шаблонов из официального репозитория",
-    "Select": "Выбрать шаблон для импорта",
-    "Started": "Импорт шаблонов, подождите минутку",
-    "Successful": "Шаблон {template} успешно импортирован",
-    "NoTemplatesTitle": "Вы хотите импортировать шаблон?",
-    "NoTemplatesContent": "В настоящее время у вас нет шаблонов. Шаблоны необходимы для создания серверов.<br/>Вы хотите импортировать шаблон из официального хранилища шаблонов PufferPanel?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Команда",
-    "Signal": "Сигнал"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Скачать",
-      "files": "Файлы"
-    },
-    "command": {
-      "ProcessorName": "Выполнить команду",
-      "commands": "Команды"
-    },
-    "alterfile": {
-      "ProcessorName": "Сменить файл",
-      "regex": "Рассматривать поиск как RegEx",
-      "search": "Текст для поиска",
-      "replace": "Заменить"
-    },
-    "writefile": {
-      "ProcessorName": "Записать в файл",
-      "text": "Содержание"
-    },
-    "move": {
-      "ProcessorName": "Переместить файл",
-      "source": "Источник",
-      "target": "Цель"
-    },
-    "mkdir": {
-      "ProcessorName": "Создать директорию"
-    },
-    "mojangdl": {
-      "ProcessorName": "Загрузить Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Скачать Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Скачать Minecraft SpongeForge",
-      "releaseType": "Тип релиза"
-    },
-    "fabricdl": {
-      "ProcessorName": "Скачать Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Рабочий каталог",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }
