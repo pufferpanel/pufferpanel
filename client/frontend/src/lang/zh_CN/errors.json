@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "密码长度应至少为 8 个字符",
   "ErrUsernameRequirements": "用户名只能包含字母、 _、 或 -，且长度需大于 3 个字符",
   "ErrPasswordsNotIdentical": "密码不一致",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "会话超时，请重新登录",
   "ErrMissingScope": "您不被允许执行此操作",
   "ErrInvalidJson": "JSON 数据无效",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Docker is not supported on this node",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }
