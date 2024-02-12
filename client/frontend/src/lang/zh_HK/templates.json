@@ -1,111 +1,88 @@
 {
   "Templates": "範本",
-  "NoTemplates": "這裡沒有可用範本",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "範本已刪除",
   "New": "創建新範本",
-  "Edit": "編輯範本",
-  "Editor": "編輯器",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "顯示名稱",
   "Type": "類型",
-  "Variables": "變數",
-  "Install": "安裝",
-  "AddInstallStep": "添加安裝步驟",
-  "DeleteInstallStep": "刪除安裝步驟",
-  "Description": "描述",
-  "DataType": "數據類型",
-  "DefaultValue": "預設值",
-  "Required": "必填項目",
-  "UserEditable": "用戶可編輯",
-  "Value": "值",
-  "AddOption": "添加選項",
-  "AddCommand": "添加指令",
-  "Filename": "檔案名稱",
-  "Content": "內容",
-  "Source": "來源",
-  "Target": "目標",
-  "Version": "版本",
-  "ReleaseType": "發佈類型",
-  "AddFile": "添加檔案",
   "AddVariable": "添加變數",
+  "Variables": "變數",
+  "AddInstallStep": "添加安裝步驟",
+  "Install": "安裝",
+  "Filename": "檔案名稱",
+  "Version": "版本",
   "Environment": "Environment",
-  "Environments": "環境",
-  "AddEnvironment": "添加環境",
-  "DefaultEnvironment": "預設環境",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "添加環境變數",
   "EnvVars": "環境變數",
   "DockerImage": "Docker 映像",
-  "SaveSuccess": "已儲存範本",
-  "VarNameNoSpaces": "環境變數不能為空或包含空格",
-  "SupportedEnvironments": "支持的環境",
   "RunConfig": "執行配置",
-  "PreHook": "運行前的Hook",
-  "PostHook": "運行後的Hook",
   "AddPreStep": "添加運行前的步驟",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "添加運行後的步驟",
-  "DeletePreStep": "刪除運行前的步驟",
-  "DeletePostStep": "刪除運行後的步驟",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "關機",
   "Command": "指令",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "參數",
-  "AddArgument": "添加參數",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "警告：匯入的範本將覆蓋現有具相同ID的範本",
-    "Import": "匯入範本",
-    "Tooltip": "從官方代碼資料庫匯入範本",
-    "Select": "選擇要導入的範本",
-    "Started": "匯入範本中，請稍候",
-    "Successful": "已成功匯入範本{template}",
-    "NoTemplatesTitle": "你想匯入範本嗎?",
-    "NoTemplatesContent": "您目前沒有任何範本，而創建伺服器時，範本是必需的。<br/>是否要立即從官方PufferPanel的範本資料庫中匯入一些範本？"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "指令",
-    "Signal": "信號"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "下載",
-      "files": "檔案"
-    },
-    "command": {
-      "ProcessorName": "執行指令",
-      "commands": "指令"
-    },
-    "alterfile": {
-      "ProcessorName": "變更檔案",
-      "regex": "以正則表達式搜索",
-      "search": "搜尋文字",
-      "replace": "用於取替"
-    },
-    "writefile": {
-      "ProcessorName": "寫入檔案",
-      "text": "內容"
-    },
-    "move": {
-      "ProcessorName": "移動檔案",
-      "source": "來源",
-      "target": "目標"
-    },
-    "mkdir": {
-      "ProcessorName": "創建目錄"
-    },
-    "mojangdl": {
-      "ProcessorName": "下載Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "下載Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "下載Minecraft SpongeForge",
-      "releaseType": "發佈類型"
-    },
-    "fabricdl": {
-      "ProcessorName": "下載Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Working Directory",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }
