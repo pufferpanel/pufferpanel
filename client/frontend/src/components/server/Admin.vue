@@ -101,7 +101,7 @@ onMounted(async () => {
       </tabs>
       <div class="actions">
         <btn v-hotkey="'Escape'" color="error" @click="cancelEdit()"><icon name="close" />{{ t('common.Cancel') }}</btn>
-        <btn :disabled="server.hasScope('server.definition.edit')" color="primary" @click="saveDefinition()"><icon name="save" />{{ t('common.Save') }}</btn>
+        <btn :disabled="!server.hasScope('server.definition.edit')" color="primary" @click="saveDefinition()"><icon name="save" />{{ t('common.Save') }}</btn>
       </div>
     </overlay>
   </div>
