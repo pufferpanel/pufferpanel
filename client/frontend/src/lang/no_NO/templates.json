@@ -1,111 +1,88 @@
 {
   "Templates": "Maler",
-  "NoTemplates": "Det er ingen maler her ennå",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Malen er slettet",
   "New": "Opprett ny mal",
-  "Edit": "Rediger mal",
-  "Editor": "Redigering",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Visningsnavn",
   "Type": "Type",
-  "Variables": "Variabler",
-  "Install": "Installer",
-  "AddInstallStep": "Legg til installasjonstrinn",
-  "DeleteInstallStep": "Slett installasjonstrinn",
-  "Description": "Beskrivelse",
-  "DataType": "Data Type",
-  "DefaultValue": "Standardverdi",
-  "Required": "Påkrevd",
-  "UserEditable": "Brukere kan redigere",
-  "Value": "Verdi",
-  "AddOption": "Legge til et alternativ",
-  "AddCommand": "Legg til kommando",
-  "Filename": "Filnavn",
-  "Content": "Innhold",
-  "Source": "Kilde",
-  "Target": "Mål",
-  "Version": "Versjon",
-  "ReleaseType": "Release Type",
-  "AddFile": "Legg til fil",
   "AddVariable": "Legg til variabel",
+  "Variables": "Variabler",
+  "AddInstallStep": "Legg til installasjonstrinn",
+  "Install": "Installer",
+  "Filename": "Filnavn",
+  "Version": "Versjon",
   "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Add env variable",
   "EnvVars": "Environment variables",
   "DockerImage": "Docker Image",
-  "SaveSuccess": "Lagret mal",
-  "VarNameNoSpaces": "Et variabelnavn kan ikke være tomt eller inneholde mellomrom",
-  "SupportedEnvironments": "Støttede miljøer",
   "RunConfig": "Kjøre konfigurasjon",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
   "AddPreStep": "Add Pre Run Step",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Avslutt",
   "Command": "Kommando",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Argumenter",
-  "AddArgument": "Legg til argument",
-  "Convert": "Konverter",
-  "OfferV1Convert": "Denne malen av json ser ut som en mal for PufferPanel 1.x, vil du automatisk konvertere denne til en mal for PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "Advarsel: Importerte maler VIL overskrive eksisterende maler med samme ID",
-    "Import": "Importere maler",
-    "Tooltip": "Importer maler fra det offisielle arkivet",
-    "Select": "Velg maler som skal importeres",
-    "Started": "Importerer maler, vennligst vent et øyeblikk",
-    "Successful": "Velykket importert mal {template}",
-    "NoTemplatesTitle": "Vil du importere maler?",
-    "NoTemplatesContent": "Du har for øyeblikket ikke noen maler. Maler er nødvendige for å opprette servere.<br/>Vil du importere noen maler fra de offisielle PufferPanel arkivet nå?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Kommando",
-    "Signal": "Signal"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Last ned",
-      "files": "Filer"
-    },
-    "command": {
-      "ProcessorName": "Kjør kommando",
-      "commands": "Kommandoer"
-    },
-    "alterfile": {
-      "ProcessorName": "Endre fil",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Erstatt med"
-    },
-    "writefile": {
-      "ProcessorName": "Skriv til fil",
-      "text": "Innhold"
-    },
-    "move": {
-      "ProcessorName": "Flytt fil",
-      "source": "Kilde",
-      "target": "Target"
-    },
-    "mkdir": {
-      "ProcessorName": "Opprett mappe"
-    },
-    "mojangdl": {
-      "ProcessorName": "Last ned Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Last ned Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Last ned Minecraft SpongeForge",
-      "releaseType": "Utgivelsestype"
-    },
-    "fabricdl": {
-      "ProcessorName": "Last ned Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Working Directory",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }
