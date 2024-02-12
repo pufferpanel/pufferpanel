@@ -1,111 +1,88 @@
 {
   "Templates": "Templates",
-  "NoTemplates": "Er zijn nog geen templates",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Template verwijderd",
   "New": "Maak nieuw template",
-  "Edit": "Bewerkt template",
-  "Editor": "Bewerker",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Naam",
   "Type": "Type",
-  "Variables": "Variabelen",
-  "Install": "Installeren",
-  "AddInstallStep": "Installeer stap toevoegen",
-  "DeleteInstallStep": "Verwijder installeer stap",
-  "Description": "Beschrijving",
-  "DataType": "Gevenstype",
-  "DefaultValue": "Standaard waarde",
-  "Required": "Verplicht",
-  "UserEditable": "Gebruikers kunnen dit bewerken",
-  "Value": "Waarde",
-  "AddOption": "Voeg een optie toe",
-  "AddCommand": "Voeg een commando toe",
-  "Filename": "Bestands naam",
-  "Content": "Inhoud",
-  "Source": "Bron",
-  "Target": "Doel",
-  "Version": "Versie",
-  "ReleaseType": "Versietype",
-  "AddFile": "Bestand toevoegen",
   "AddVariable": "Variabele toevoegen",
+  "Variables": "Variabelen",
+  "AddInstallStep": "Installeer stap toevoegen",
+  "Install": "Installeren",
+  "Filename": "Bestands naam",
+  "Version": "Versie",
   "Environment": "Omgeving",
-  "Environments": "Omgeving",
-  "AddEnvironment": "Omgeving toevoegen",
-  "DefaultEnvironment": "Standaard omgeving",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Voeg nieuwe variabele",
   "EnvVars": "Omgevingsvariabelen",
   "DockerImage": "Docker afbeelding",
-  "SaveSuccess": "Opgeslagen Templates",
-  "VarNameNoSpaces": "Een variabelenaam mag niet leeg zijn of spaties bevatten",
-  "SupportedEnvironments": "Ondersteunde Omgevingen",
   "RunConfig": "Configuratie starten",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Laad Run Hook",
   "AddPreStep": "Voeg Pre Run Stap toe",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Voeg post-run-stap toe",
-  "DeletePreStep": "Verwijder Pre Run Stap",
-  "DeletePostStep": "Verwijder post-run-stap",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Afsluiten",
   "Command": "Commando",
-  "WorkingDirectory": "Werkmap",
-  "Arguments": "Parameters",
-  "AddArgument": "Argument toevoegen",
-  "Convert": "Converteer",
-  "OfferV1Convert": "Deze template json ziet eruit als een template voor PufferPanel 1.x, wilt u dit automatisch omzetten naar een template voor PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "WAARSCHUWING: Geimporteerde templates overschrijven bestaande sjablonen met dezelfde ID",
-    "Import": "Sjabloon importeren",
-    "Tooltip": "Sjablonen importeren uit de officiële repository",
-    "Select": "Selecteer sjablonen om te importeren",
-    "Started": "Sjablonen importeren, even geduld a.u.b",
-    "Successful": "Sjabloon {template} succesvol geïmporteerd",
-    "NoTemplatesTitle": "Wilt u templates importeren?",
-    "NoTemplatesContent": "U heeft momenteel geen sjablonen. Sjablonen zijn noodzakelijk om servers aan te maken.<br/>Wilt u nu enkele sjablonen importeren uit de officiële PufferPanel templates?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Commando",
-    "Signal": "Signaal"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Downloaden",
-      "files": "Bestanden"
-    },
-    "command": {
-      "ProcessorName": "Opdrachten uitvoeren",
-      "commands": "Commando‘s"
-    },
-    "alterfile": {
-      "ProcessorName": "Bestand wijzigen",
-      "regex": "Behandel zoeken als RegEx",
-      "search": "Tekst zoeken",
-      "replace": "Vervangen door"
-    },
-    "writefile": {
-      "ProcessorName": "Schrijf naar bestand",
-      "text": "Inhoud"
-    },
-    "move": {
-      "ProcessorName": "Bestanden verplaatsen",
-      "source": "Bron",
-      "target": "Doel"
-    },
-    "mkdir": {
-      "ProcessorName": "Map aanmaken"
-    },
-    "mojangdl": {
-      "ProcessorName": "Download Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Versietype"
-    },
-    "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Werkmap",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }
