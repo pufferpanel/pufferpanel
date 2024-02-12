@@ -3,8 +3,33 @@
   "Nodes": "Nodes",
   "Edit": "Node Bewerken",
   "Add": "Node Toevoegen",
+  "Create": "Create Node",
   "Update": "Node Bijwerken",
   "Delete": "Node Verwijderen",
+  "ConfirmDelete": "Do you really want to delete the node {name}?",
+  "Created": "Created Node",
+  "Updated": "Updated Node",
+  "Deleted": "Deleted Node",
+  "Reachable": "This node is correctly set up and running",
+  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "features": {
+    "os": {
+      "label": "Operating System",
+      "linux": "Linux",
+      "windows": "Windows"
+    },
+    "arch": {
+      "label": "CPU Architecture",
+      "amd64": "x86 64bit",
+      "arm": "ARM 32bit",
+      "arm64": "ARM 64bit"
+    },
+    "docker": {
+      "true": "Docker available",
+      "false": "Docker not available"
+    },
+    "envs": "Available Environments"
+  },
   "PublicHost": "Openbare Host",
   "PublicPort": "Openbare poort",
   "PrivateHost": "Privé host",
@@ -12,9 +37,14 @@
   "SftpPort": "SFTP Poort",
   "WithPrivateAddress": "Gebruik een andere host/poort voor server communicatie",
   "WithPrivateAddressHint": "Dit aparte adres wordt gebruikt wanneer het hoofdknooppunt met het nieuwe knooppunt moet praten. Nuttig als bijvoorbeeld de knooppunten in hetzelfde netwerk achter de NAVO zitten.",
-  "SaveConfig": "Configuratie Opslaan",
-  "SavePublicKey": "Publieke Sleutel Opslaan",
-  "DeploymentInstruction": "Op deze node te deployen, installeer PufferPanel op de nieuwe server en plaats het config bestand in `/etc/pufferpanel`<br/>Herstart PufferPanel op de nieuwe server daarna.",
-  "UpdateSuccess": "Node succesvol geüpdatet",
-  "UpdateError": "Fout bij het updaten van de node"
+  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
+  "Deploy": "Deploy Node",
+  "deploy": {
+    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
+    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Your new node is now set up and ready to go"
+  },
+  "DeploymentInstruction": "Op deze node te deployen, installeer PufferPanel op de nieuwe server en plaats het config bestand in `/etc/pufferpanel`<br/>Herstart PufferPanel op de nieuwe server daarna."
 }
