@@ -1,111 +1,88 @@
 {
   "Templates": "模板",
-  "NoTemplates": "此处暂无模板",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "已删除模板",
   "New": "创建新模板",
-  "Edit": "编辑模板",
-  "Editor": "编辑器",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "显示名称",
   "Type": "类型",
-  "Variables": "变量",
-  "Install": "安装",
-  "AddInstallStep": "添加安装步骤",
-  "DeleteInstallStep": "删除安装步骤",
-  "Description": "描述",
-  "DataType": "数据类型",
-  "DefaultValue": "默认值",
-  "Required": "必填",
-  "UserEditable": "用户可编辑",
-  "Value": "值",
-  "AddOption": "添加选项",
-  "AddCommand": "添加命令",
-  "Filename": "文件名",
-  "Content": "内容",
-  "Source": "源",
-  "Target": "目标",
-  "Version": "版本",
-  "ReleaseType": "版本类型",
-  "AddFile": "添加文件",
   "AddVariable": "添加变量",
+  "Variables": "变量",
+  "AddInstallStep": "添加安装步骤",
+  "Install": "安装",
+  "Filename": "文件名",
+  "Version": "版本",
   "Environment": "环境",
-  "Environments": "环境",
-  "AddEnvironment": "添加环境",
-  "DefaultEnvironment": "默认环境",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "添加环境变量",
   "EnvVars": "环境变量",
   "DockerImage": "Docker 镜像",
-  "SaveSuccess": "已保存的模板",
-  "VarNameNoSpaces": "变量名称不可为空或包含空格",
-  "SupportedEnvironments": "支持环境",
   "RunConfig": "运行配置",
-  "PreHook": "运行前 Hook",
-  "PostHook": "运行后 Hook",
   "AddPreStep": "添加运行前步骤",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "添加运行后步骤",
-  "DeletePreStep": "删除运行前步骤",
-  "DeletePostStep": "删除运行后步骤",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "关闭",
   "Command": "命令",
-  "WorkingDirectory": "工作目录",
-  "Arguments": "参数",
-  "AddArgument": "添加参数",
-  "Convert": "转换",
-  "OfferV1Convert": "此模板似乎为 PufferPanel 1.x 格式的模板，您想要将其自动更新为 2.x 版本的模板吗？",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "警告：导入模板将覆盖相同 ID 的现有模板",
-    "Import": "导入模板",
-    "Tooltip": "从官方仓库导入模板",
-    "Select": "选择要导入的模板",
-    "Started": "正在导入模板，请稍候",
-    "Successful": "已成功导入模板 {template}",
-    "NoTemplatesTitle": "您想要导入模板吗？",
-    "NoTemplatesContent": "您当前没有模板，需要模板才能创建服务器。<br/>您想要从 PufferPanel 官方模板仓库导入一些模板吗？"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "命令",
-    "Signal": "信号"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "下载",
-      "files": "文件"
-    },
-    "command": {
-      "ProcessorName": "运行命令",
-      "commands": "命令"
-    },
-    "alterfile": {
-      "ProcessorName": "更改文件",
-      "regex": "将搜索视为正则表达式",
-      "search": "要搜索的文本",
-      "replace": "替换为"
-    },
-    "writefile": {
-      "ProcessorName": "写入至文件",
-      "text": "内容"
-    },
-    "move": {
-      "ProcessorName": "移动文件",
-      "source": "源",
-      "target": "目标"
-    },
-    "mkdir": {
-      "ProcessorName": "创建目录"
-    },
-    "mojangdl": {
-      "ProcessorName": "下载 Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "下载 Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "下载 Minecraft SpongeForge",
-      "releaseType": "版本类型"
-    },
-    "fabricdl": {
-      "ProcessorName": "下载 Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "工作目录",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }
