@@ -1,0 +1,75 @@
+{
+  "Title": "Scorciatoie tastiera",
+  "Global": {
+    "Title": "Globale",
+    "g a": "Vai su account",
+    "g c": "Vai alla configurazione del pannello",
+    "g n": "Vai ai nodi",
+    "g s": "Vai ai server",
+    "g t": "Vai ai modelli",
+    "g u": "Vai agli utenti"
+  },
+  "Self": {
+    "Title": "Account",
+    "t 2": "Vai alla scheda 2-Factor-Auth",
+    "t a": "Vai alla scheda Dettagli account",
+    "t o": "Vai alla scheda OAuth",
+    "t p": "Vai alla scheda Password",
+    "t s": "Vai alla scheda Preferenze"
+  },
+  "ServerList": {
+    "Title": "Server",
+    "c": "Crea un nuovo server",
+    "l": "Focalizza il primo server nella lista"
+  },
+  "ServerView": {
+    "Title": "Server",
+    "t c": "Vai alla scheda Console",
+    "t i": "Vai alla scheda Statistiche",
+    "t f": "Vai alla scheda File",
+    "t s": "Vai alla scheda Impostazioni",
+    "t u": "Vai alla scheda Utenti",
+    "t 6": "Vai sulla scheda SFTP",
+    "t 7": "Vai alla scheda API",
+    "t a": "Vai alla scheda Admin",
+    "c c": "Pulisci Console",
+    "r r": "Avvia Server",
+    "r s": "Ferma Server",
+    "r k": "Termina Server",
+    "r i": "Installa Server",
+    "f a": "Archivia i contenuti della directory corrente",
+    "f c d": "Crea una nuova directori",
+    "f c f": "Crea nuovo file",
+    "f d": "Directory di caricamento",
+    "f l": "Focalizza il primo file/cartella nell'elenco",
+    "f r": "Ricarica l'elenco dei file",
+    "f u": "Carica file",
+    "a e": "Modifica Definizione Server",
+    "a r": "Ricarica Definiton Server dal disco"
+  },
+  "NodeList": {
+    "Title": "Nodi",
+    "c": "Crea un nuovo nodo",
+    "l": "Focalizza il primo nodo nella lista"
+  },
+  "UserList": {
+    "Title": "Utenti",
+    "c": "Crea un nuovo utente",
+    "l": "Focalizza il primo utente nella lista"
+  },
+  "TemplateList": {
+    "Title": "Modelli",
+    "c": "Crea un nuovo modello",
+    "l": "Focalizza il primo modello nella lista"
+  },
+  "Template": {
+    "Title": "Editor Di Modelli",
+    "t e": "Vai alla scheda Ambiente",
+    "t g": "Vai alla scheda Generale",
+    "t h": "Vai alla scheda Ganci",
+    "t i": "Vai alla scheda Installa",
+    "t j": "Vai alla scheda JSON",
+    "t r": "Vai alla scheda Esegui configurazione",
+    "t v": "Vai alla scheda Variabili"
+  }
+}
