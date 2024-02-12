@@ -1,0 +1,64 @@
+{
+  "ConditionHint": "Only execute this step if this condition is met",
+  "mojangdl": {
+    "generic": "Download Minecraft",
+    "formatted": "Download Minecraft"
+  },
+  "writefile": {
+    "generic": "Write to file",
+    "formatted": "Write to file {target}"
+  },
+  "resolveforgeversion": {
+    "generic": "Resolve Minecraft Forge Version",
+    "formatted": "Resolve Minecraft Forge Version"
+  },
+  "download": {
+    "generic": "Download file(s)",
+    "formatted": "Download {file} | Download {n} files",
+    "files": "Files"
+  },
+  "command": {
+    "generic": "Run command(s)",
+    "formatted": "Run {command} | Run {n} commands",
+    "commands": "Commands"
+  },
+  "alterfile": {
+    "generic": "Modify a file",
+    "formatted": "Modify file {target}",
+    "regex": "Treat search string as regular expression",
+    "search": "Search",
+    "replace": "Replace matches with"
+  },
+  "move": {
+    "generic": "Move or rename a file",
+    "formatted": "Move file {source} to {target}",
+    "source": "Source Path",
+    "target": "Target Path"
+  },
+  "mkdir": {
+    "generic": "Create a directory",
+    "formatted": "Create directory {target}"
+  },
+  "steamgamedl": {
+    "generic": "Install from Steam",
+    "formatted": "Install Steam App ID {appId}",
+    "appId": "Steam App ID"
+  },
+  "javadl": {
+    "generic": "Install Java",
+    "formatted": "Install Java {version}"
+  },
+  "forgedl": {
+    "generic": "Download Minecraft Forge",
+    "formatted": "Download Minecraft Forge"
+  },
+  "spongeforgedl": {
+    "generic": "Download Minecraft SpongeForge",
+    "formatted": "Download Minecraft SpongeForge",
+    "releaseType": "Release Type"
+  },
+  "fabricdl": {
+    "generic": "Скачать Minecraft Fabric",
+    "formatted": "Download Minecraft Fabric"
+  }
+}
