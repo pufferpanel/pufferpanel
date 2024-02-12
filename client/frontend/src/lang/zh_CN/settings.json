@@ -1,14 +1,15 @@
 {
   "Settings": "设置",
   "PanelSettings": "面板设置",
+  "SavePanelSettings": "Save Panel Settings",
   "EmailSettings": "邮件设置",
+  "SaveEmailSettings": "Save Email Settings",
   "MasterUrl": "主 URL",
   "MasterUrlHint": "面板的基准地址，如 http://localhost:8080",
   "CompanyName": "企业名称",
   "DefaultTheme": "默认主题",
   "RegistrationEnabled": "允许用户自行注册",
-  "RegistrationEnabledHint1": "在开通权限之前，自行注册的用户不能做任何事情。",
-  "RegistrationEnabledHint2": "禁用此选项用户则不能自行注册，邀请服务器和用户页面不受影响",
+  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "邮件供应商",
   "emailProviders": {
     "none": "无",
@@ -16,12 +17,12 @@
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
-  "emailFields": {
-    "from": "发送地址",
-    "domain": "域名",
-    "key": "API密钥",
-    "host": "主机",
-    "username": "用户名",
-    "password": "密码"
+  "email": {
+    "from": "Sender Address",
+    "domain": "Domain",
+    "key": "API Key",
+    "host": "Host",
+    "username": "Username",
+    "password": "Password"
   }
 }
