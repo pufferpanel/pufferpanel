@@ -6,10 +6,8 @@
   "Create": "Utwórz nowego klienta OAuth2",
   "UnnamedClient": "Klient OAuth2 bez nazwy",
   "Docs": "Zobacz dokumentację API",
-  "DeleteWarning": "Usunięcie klienta OAuth2 nie może zostać cofnięte i nie da się utworzyć nowego klienta z tymi samymi danymi uwierzytelniającymi. Wszystkie integracje nadal używające tego klienta zostaną przerwane po jego usunięciu.",
-  "ConfirmDelete": "Zdaję sobie sprawę z efektów, jakie będzie miało usunięcie tego klienta OAuth2 i chcę kontynuować.",
-  "Delete": "Usunąć {clientName}?",
   "Clients": "Klienci OAuth2",
-  "AccountDescription": "Klienci OAuth2 wymienieni tutaj dziedziczą wszystkie uprawnienia twoich kont",
-  "ServerDescription": "Klienci OAuth2 wymienieni tutaj tylko dziedziczą uprawnienia twoich kont na tym serwerze"
+  "Delete": "Usunąć {clientName}?",
+  "ConfirmDelete": "Zdaję sobie sprawę z efektów, jakie będzie miało usunięcie tego klienta OAuth2 i chcę kontynuować.",
+  "AccountDescription": "Klienci OAuth2 wymienieni tutaj dziedziczą wszystkie uprawnienia twoich kont"
 }
