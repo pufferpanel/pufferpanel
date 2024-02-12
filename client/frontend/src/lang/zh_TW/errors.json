@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "密碼必須至少有 8 個字元",
   "ErrUsernameRequirements": "使用者名稱必須至少有 3 字元且只能包含英文、數字、底線與減號",
   "ErrPasswordsNotIdentical": "密碼不相同",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "您的登入階段已過期，請重新登入",
   "ErrMissingScope": "您無權執行此操作",
   "ErrInvalidJson": "無效的 JSON 檔案",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Docker is not supported on this node",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }
