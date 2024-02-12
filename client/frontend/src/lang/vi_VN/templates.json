@@ -1,111 +1,88 @@
 {
   "Templates": "Các mẫu",
-  "NoTemplates": "Chưa có mẫu nào ở đây",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Mẫu đã xoá",
   "New": "Tạo mẫu mới",
-  "Edit": "Chỉnh sửa mẫu",
-  "Editor": "Trình chỉnh sửa",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Tên hiển thị",
   "Type": "Loại",
-  "Variables": "Các tham số",
-  "Install": "Cài đặt",
-  "AddInstallStep": "Thêm bước cài đặt",
-  "DeleteInstallStep": "Xoá bước cài đặt",
-  "Description": "Mô tả",
-  "DataType": "Kiểu dữ liệu",
-  "DefaultValue": "Giá trị mặc định",
-  "Required": "Bắt buộc",
-  "UserEditable": "Người dùng có thể chỉnh sửa",
-  "Value": "Giá trị",
-  "AddOption": "Thêm tùy chọn",
-  "AddCommand": "Thêm lệnh",
-  "Filename": "Tên tập tin",
-  "Content": "Nội dung",
-  "Source": "Nguồn",
-  "Target": "Đích",
-  "Version": "Phiên bản",
-  "ReleaseType": "Loại phiên bản",
-  "AddFile": "Thêm tập tin",
   "AddVariable": "Thêm Tham số",
+  "Variables": "Các tham số",
+  "AddInstallStep": "Thêm bước cài đặt",
+  "Install": "Cài đặt",
+  "Filename": "Tên tập tin",
+  "Version": "Phiên bản",
   "Environment": "Môi trường",
-  "Environments": "Các môi trường",
-  "AddEnvironment": "Thêm môi trường",
-  "DefaultEnvironment": "Môi trường mặc định",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Thêm một biến môi trường mới",
   "EnvVars": "Các biến môi trường",
   "DockerImage": "Ảnh Docker",
-  "SaveSuccess": "Mẫu đã lưu",
-  "VarNameNoSpaces": "Tên biến không thể để trống hoặc chứa khoảng trắng",
-  "SupportedEnvironments": "Các môi trường được hỗ trợ",
   "RunConfig": "Chạy cấu hình",
-  "PreHook": "Hook trước khởi chạy",
-  "PostHook": "Hook sau khởi chạy",
   "AddPreStep": "Thêm bước trước khởi chạy",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Thêm bước sau khởi chạy",
-  "DeletePreStep": "Xoá bước trước khởi chạy",
-  "DeletePostStep": "Xoá bước sau khởi chạy",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Tắt",
   "Command": "Lệnh",
-  "WorkingDirectory": "Thư mục làm việc",
-  "Arguments": "Tham số",
-  "AddArgument": "Thêm tham số",
-  "Convert": "Chuyển đổi",
-  "OfferV1Convert": "Mẫu json này giống như mẫu dành cho PufferPanel 1.x, bạn có muốn tự động chuyển đổi thành mẫu dành cho PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "CẢNH BÁO: Các mẫu được nhập SẼ ghi đè mẫu có sẵn mà trùng với ID ban đầu",
-    "Import": "Nhập mẫu",
-    "Tooltip": "Nhập mẫu từ kho lưu trữ chính thức",
-    "Select": "Chọn mẫu để nhập vào",
-    "Started": "Đang nhập mẫu, xin hãy chờ đợi",
-    "Successful": "Đã nhập mẫu {template} thành công",
-    "NoTemplatesTitle": "Bạn có muốn nhập các mẫu này không?",
-    "NoTemplatesContent": "Hiện giờ bạn chưa có mẫu nào. Cần có các mẫu để tạo máy chủ.<br/>Bạn có muốn nhập mẫu từ kho lưu trữ PufferPanel chính thức không?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Lệnh",
-    "Signal": "Tín hiệu"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Tải xuống",
-      "files": "Tập tin"
-    },
-    "command": {
-      "ProcessorName": "Chạy lệnh",
-      "commands": "Các lệnh"
-    },
-    "alterfile": {
-      "ProcessorName": "Thay đổi tập tin",
-      "regex": "Coi văn bản tìm kiếm là Biểu thức Chính quy (RegEx)",
-      "search": "Tìm kiếm văn bản",
-      "replace": "Thay thế bởi"
-    },
-    "writefile": {
-      "ProcessorName": "Ghi dữ liệu vào tệp tin",
-      "text": "Nội dung"
-    },
-    "move": {
-      "ProcessorName": "Di chuyển tập tin",
-      "source": "Nguồn",
-      "target": "Đích"
-    },
-    "mkdir": {
-      "ProcessorName": "Tạo thư mục mới"
-    },
-    "mojangdl": {
-      "ProcessorName": "Tải Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Tải Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Tải Minecraft SpongeForge",
-      "releaseType": "Loại phiên bản"
-    },
-    "fabricdl": {
-      "ProcessorName": "Tải Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Thư mục làm việc",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }
