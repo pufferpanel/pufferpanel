@@ -6,10 +6,8 @@
   "Create": "Új OAuth2 Ügyfél létrehozása",
   "UnnamedClient": "Névtelen OAuth2 Ügyfél",
   "Docs": "Itt találod az API dokumentációját",
-  "DeleteWarning": "Egy OAuth2-kliens törlése nem vonható vissza, és új kliens sem hozható létre ugyanazokkal a hitelesítő adatokkal. A törlés után a klienset még mindig használó összes integráció megszakad.",
-  "ConfirmDelete": "Tisztában vagyok az OAuth2-kliens törlésének hatásaival, és folytatni kívánom.",
-  "Delete": "Valóban törlöd a(z) {clientName} adatait?",
   "Clients": "OAuth2 Ügyfelek",
-  "AccountDescription": "Az itt szereplő OAuth2 Ügyfelek öröklik az összes jogod",
-  "ServerDescription": "Az itt szereplő OAuth2 Ügyfelek csak a fiókod jogaid öröklik"
+  "Delete": "Valóban törlöd a(z) {clientName} adatait?",
+  "ConfirmDelete": "Tisztában vagyok az OAuth2-kliens törlésének hatásaival, és folytatni kívánom.",
+  "AccountDescription": "Az itt szereplő OAuth2 Ügyfelek öröklik az összes jogod"
 }
