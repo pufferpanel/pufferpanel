@@ -1,14 +1,15 @@
 {
   "Settings": "Ayarlar",
   "PanelSettings": "Panel ayarları",
+  "SavePanelSettings": "Save Panel Settings",
   "EmailSettings": "E-posta ayarları",
+  "SaveEmailSettings": "Save Email Settings",
   "MasterUrl": "Ana URL",
   "MasterUrlHint": "Panelin altında ulaşılabilen temel URL, http://localhost:8080 biçimindedir",
   "CompanyName": "Şirket adı",
   "DefaultTheme": "Varsayılan tema",
   "RegistrationEnabled": "Kullanıcıların kayıt olmasına izin ver",
-  "RegistrationEnabledHint1": "Kendi kayıt olan kullanıcılar izin verilene kadar hiçbir şey yapamazlar",
-  "RegistrationEnabledHint2": "Bunu devre dışı bırakmak yalnızca doğrudan kaydı engeller, bir sunucuya davet edilir ve kullanıcılar sayfası etkilenmez",
+  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "E-Posta sağlayıcısı",
   "emailProviders": {
     "none": "Hiçbiri",
@@ -16,12 +17,12 @@
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
-  "emailFields": {
-    "from": "Gönderen adresi",
-    "domain": "Alan adı",
-    "key": "API Anahtarı",
-    "host": "Sunucu",
-    "username": "Kullanıcı adı",
-    "password": "Parola"
+  "email": {
+    "from": "Sender Address",
+    "domain": "Domain",
+    "key": "API Key",
+    "host": "Host",
+    "username": "Username",
+    "password": "Password"
   }
 }
