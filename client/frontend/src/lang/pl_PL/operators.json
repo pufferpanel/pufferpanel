@@ -1,0 +1,64 @@
+{
+  "ConditionHint": "Only execute this step if this condition is met",
+  "mojangdl": {
+    "generic": "Pobierz Minecraft",
+    "formatted": "Pobierz Minecraft"
+  },
+  "writefile": {
+    "generic": "Zapisz do pliku",
+    "formatted": "Zapisz do pliku {target}"
+  },
+  "resolveforgeversion": {
+    "generic": "Resolve Minecraft Forge Version",
+    "formatted": "Resolve Minecraft Forge Version"
+  },
+  "download": {
+    "generic": "Pobierz plik(i)",
+    "formatted": "Pobierz {file} | Pobierz {n} plików",
+    "files": "Pliki"
+  },
+  "command": {
+    "generic": "Uruchom polecenie(a)",
+    "formatted": "Uruchom {command} | Uruchom {n} poleceń",
+    "commands": "Polecenia"
+  },
+  "alterfile": {
+    "generic": "Modyfikuj plik",
+    "formatted": "Modyfikuj plik {target}",
+    "regex": "Traktuj wyszukiwany ciąg jako wyrażenie regularne",
+    "search": "Szukaj",
+    "replace": "Zastąp dopasowania na"
+  },
+  "move": {
+    "generic": "Przenieś lub zmień nazwę pliku",
+    "formatted": "Przenieś plik {source} do {target}",
+    "source": "Ścieżka źródłowa",
+    "target": "Ścieżka docelowa"
+  },
+  "mkdir": {
+    "generic": "Utwórz katalog",
+    "formatted": "Utwórz katalog {target}"
+  },
+  "steamgamedl": {
+    "generic": "Zainstaluj ze Steam",
+    "formatted": "Zainstaluj aplikację Steam o identyfikatorze {appId}",
+    "appId": "Identyfikator aplikacji Steam"
+  },
+  "javadl": {
+    "generic": "Zainstaluj Javę",
+    "formatted": "Zainstaluj Javę {version}"
+  },
+  "forgedl": {
+    "generic": "Pobierz Minecraft Forge",
+    "formatted": "Pobierz Minecraft Forge"
+  },
+  "spongeforgedl": {
+    "generic": "Pobierz Minecraft SpongeForge",
+    "formatted": "Pobierz Minecraft SpongeForge",
+    "releaseType": "Typ wydania"
+  },
+  "fabricdl": {
+    "generic": "Pobierz Minecraft Fabric",
+    "formatted": "Pobierz Minecraft Fabric"
+  }
+}
