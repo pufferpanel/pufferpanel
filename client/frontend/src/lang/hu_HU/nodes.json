@@ -3,8 +3,33 @@
   "Nodes": "Csomópontok",
   "Edit": "Csomópont szerkesztése",
   "Add": "Új csomópont",
+  "Create": "Create Node",
   "Update": "Csomópont frissítése",
   "Delete": "Csomópont törlése",
+  "ConfirmDelete": "Do you really want to delete the node {name}?",
+  "Created": "Created Node",
+  "Updated": "Updated Node",
+  "Deleted": "Deleted Node",
+  "Reachable": "This node is correctly set up and running",
+  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "features": {
+    "os": {
+      "label": "Operating System",
+      "linux": "Linux",
+      "windows": "Windows"
+    },
+    "arch": {
+      "label": "CPU Architecture",
+      "amd64": "x86 64bit",
+      "arm": "ARM 32bit",
+      "arm64": "ARM 64bit"
+    },
+    "docker": {
+      "true": "Docker available",
+      "false": "Docker not available"
+    },
+    "envs": "Available Environments"
+  },
   "PublicHost": "Nyilvános kiszolgáló",
   "PublicPort": "Nyilvános port",
   "PrivateHost": "Privát kiszolgáló",
@@ -12,9 +37,14 @@
   "SftpPort": "SFTP port",
   "WithPrivateAddress": "Használj másik ip/portot a két szerver közötti kommunikációhoz",
   "WithPrivateAddressHint": "Ez a külön cím akkor használatos, amikor a főcsomópont kommunikál az új csomóponttal. Olyan esetekben hasznos, mint pl.: a csomópontok azonos hálózaton vannak NAT mögött.",
-  "SaveConfig": "Konfiguráció mentése",
-  "SavePublicKey": "Nyílvános kulcs mentése",
-  "DeploymentInstruction": "A csomópont berendezéséhez telepítse a PufferPanelt az új szerveren és helyezze a konfigurációs fájlt a következő helyre: `/etc/pufferpanel/`<br/>Majd indítsa újra a PufferPanelt az új szerveren.",
-  "UpdateSuccess": "Csomópont sikeresen frissítve",
-  "UpdateError": "Hiba történt a csomópont frissítése közben"
+  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
+  "Deploy": "Deploy Node",
+  "deploy": {
+    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
+    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Your new node is now set up and ready to go"
+  },
+  "DeploymentInstruction": "A csomópont berendezéséhez telepítse a PufferPanelt az új szerveren és helyezze a konfigurációs fájlt a következő helyre: `/etc/pufferpanel/`<br/>Majd indítsa újra a PufferPanelt az új szerveren."
 }
