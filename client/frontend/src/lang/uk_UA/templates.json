@@ -1,111 +1,88 @@
 {
   "Templates": "Шаблони",
-  "NoTemplates": "Тут ще немає шаблонів",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Шаблон видалено",
   "New": "Створити новий шаблон",
-  "Edit": "Редагувати шаблон",
-  "Editor": "Редактор",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Відображення імені",
   "Type": "Тип",
-  "Variables": "Змінні",
-  "Install": "Установити",
-  "AddInstallStep": "Додати крок встановлення",
-  "DeleteInstallStep": "Видалити крок встановлення",
-  "Description": "Опис",
-  "DataType": "Тип даних",
-  "DefaultValue": "Стандартне значення",
-  "Required": "Необхідний",
-  "UserEditable": "Користувачі можуть редагувати",
-  "Value": "Значення",
-  "AddOption": "Додати параметр",
-  "AddCommand": "Додати команду",
-  "Filename": "Назва файлу",
-  "Content": "Контент",
-  "Source": "Джерело",
-  "Target": "Ціль",
-  "Version": "Версія",
-  "ReleaseType": "Тип релізу",
-  "AddFile": "Додати файл",
   "AddVariable": "Додати змінну",
+  "Variables": "Змінні",
+  "AddInstallStep": "Додати крок встановлення",
+  "Install": "Установити",
+  "Filename": "Назва файлу",
+  "Version": "Версія",
   "Environment": "Середовище",
-  "Environments": "Середовища",
-  "AddEnvironment": "Додати середовище",
-  "DefaultEnvironment": "Середовище за замовчуванням",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Додати змінну середовища",
   "EnvVars": "Змінні середовища",
   "DockerImage": "Образ Docker",
-  "SaveSuccess": "Збережені шаблони",
-  "VarNameNoSpaces": "Ім'я змінної не може бути пустим або містити пробіли",
-  "SupportedEnvironments": "Підтримувані середовища",
   "RunConfig": "Конфігурація запуску",
-  "PreHook": "До запуску перемінна",
-  "PostHook": "Післа запуска перемінна",
   "AddPreStep": "Додати крок для запуску",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Додати крок для запуску",
-  "DeletePreStep": "Видалити крок попереднього запуску",
-  "DeletePostStep": "Видалити крок попереднього запуску",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Вимкнути",
   "Command": "Команда",
-  "WorkingDirectory": "Робочий каталог",
-  "Arguments": "Аргументи",
-  "AddArgument": "Додати аргумент",
-  "Convert": "Конвертувати",
-  "OfferV1Convert": "Цей шаблон json виглядає як шаблон для PufferPanel 1.x, ви хочете автоматично перетворити це в шаблон для PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "ПОПЕРЕДЖЕННЯ: імпортовані шаблони WILL перезаписувати існуючі шаблони з тим же ID",
-    "Import": "імпортувати шаблони",
-    "Tooltip": "Імпортувати шаблони з офіційного репозиторію",
-    "Select": "Виберіть шаблони для імпорту",
-    "Started": "Імпортування шаблонів, будь ласка, зачекайте трохи",
-    "Successful": "Шаблон {template} успішно імпортовано",
-    "NoTemplatesTitle": "Ви хочете імпортувати шаблони?",
-    "NoTemplatesContent": "В даний час у вас немає жодного шаблону. Шаблони необхідні для створення серверів.<br/>Імпортувати деякі шаблони з офіційного сховища PufferPanel шаблонів зараз?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Команда",
-    "Signal": "Сигнал"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Завантажити",
-      "files": "Файли"
-    },
-    "command": {
-      "ProcessorName": "Команди запуску",
-      "commands": "Команди"
-    },
-    "alterfile": {
-      "ProcessorName": "Змінити файл",
-      "regex": "Розглядати пошук як RegEx",
-      "search": "Текст, за яким шукати",
-      "replace": "Заміняти на"
-    },
-    "writefile": {
-      "ProcessorName": "Запис у файл",
-      "text": "Контент"
-    },
-    "move": {
-      "ProcessorName": "Перемістити файл",
-      "source": "Джерело",
-      "target": "Ціль"
-    },
-    "mkdir": {
-      "ProcessorName": "Створити каталог"
-    },
-    "mojangdl": {
-      "ProcessorName": "Завантажити Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Завантажити Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Завантажити Minecraft SpongeForge",
-      "releaseType": "Тип релізу"
-    },
-    "fabricdl": {
-      "ProcessorName": "Завантажити Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Робочий каталог",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }
