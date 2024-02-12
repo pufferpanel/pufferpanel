@@ -1,111 +1,88 @@
 {
   "Templates": "Mallar",
-  "NoTemplates": "Det finns inga mallar här än",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Mall borttagen",
   "New": "Skapa ny mall",
-  "Edit": "Redigera mall",
-  "Editor": "Redigerare",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Visningsnamn",
   "Type": "Typ",
-  "Variables": "Variabler",
-  "Install": "Installera",
-  "AddInstallStep": "Lägg till installationssteg",
-  "DeleteInstallStep": "Ta bort installationssteg",
-  "Description": "Beskrivning",
-  "DataType": "Typ av data",
-  "DefaultValue": "Förvalt värde",
-  "Required": "Krävs",
-  "UserEditable": "Användare kan redigera",
-  "Value": "Värde",
-  "AddOption": "Lägg till ett alternativ",
-  "AddCommand": "Lägg till kommando",
-  "Filename": "Filnamn",
-  "Content": "Innehåll",
-  "Source": "Källa",
-  "Target": "Mål",
-  "Version": "Version",
-  "ReleaseType": "Utgivningstyp",
-  "AddFile": "Lägg till fil",
   "AddVariable": "Lägg till variabel",
+  "Variables": "Variabler",
+  "AddInstallStep": "Lägg till installationssteg",
+  "Install": "Installera",
+  "Filename": "Filnamn",
+  "Version": "Version",
   "Environment": "Miljö",
-  "Environments": "Miljöer",
-  "AddEnvironment": "Lägg till miljö",
-  "DefaultEnvironment": "Förvald miljö",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Lägg till miljövariabel",
   "EnvVars": "Miljövariabler",
   "DockerImage": "Docker bild",
-  "SaveSuccess": "Sparade mallar",
-  "VarNameNoSpaces": "Ett variabelnamn kan inte vara tomt eller innehålla mellanslag",
-  "SupportedEnvironments": "Stödda miljöer",
   "RunConfig": "Kör konfiguration",
-  "PreHook": "Innan körning hook",
-  "PostHook": "Efter körning hook",
   "AddPreStep": "Lägg till steg innan körning",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Lägg till steg efter körning",
-  "DeletePreStep": "Ta bort steg innan körning",
-  "DeletePostStep": "Ta bort steg efter körning",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Stäng av",
   "Command": "Kommando",
-  "WorkingDirectory": "Arbetskatalog",
-  "Arguments": "Argument",
-  "AddArgument": "Lägg till ett argument",
-  "Convert": "Konvertera",
-  "OfferV1Convert": "Denna mall json ser ut som en mall för PufferPanel 1.x, vill du automatiskt konvertera detta till en mall för PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "VARNING: Importerade mallar skriver över befintliga mallar med samma ID",
-    "Import": "Importera mallar",
-    "Tooltip": "Importera mallar från det officiella arkivet",
-    "Select": "Välj mallar att importera",
-    "Started": "Importerar mallar, vänligen vänta en stund",
-    "Successful": "Mallen {template} har importerats",
-    "NoTemplatesTitle": "Vill du importera mallar?",
-    "NoTemplatesContent": "Du har för närvarande inga mallar. Mallar är nödvändiga för att skapa servrar.<br/>Vill du importera några mallar från den officiella PufferPanelens utvecklingskatalog nu?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Kommando",
-    "Signal": "Signal"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Ladda ned",
-      "files": "Filer"
-    },
-    "command": {
-      "ProcessorName": "Kör kommando",
-      "commands": "Kommandon"
-    },
-    "alterfile": {
-      "ProcessorName": "Ändra fil",
-      "regex": "Behandla sökning som RegEx",
-      "search": "Text att söka efter",
-      "replace": "Ersätt med"
-    },
-    "writefile": {
-      "ProcessorName": "Skriv till fil",
-      "text": "Innehåll"
-    },
-    "move": {
-      "ProcessorName": "Flytta fil",
-      "source": "Källa",
-      "target": "Mål"
-    },
-    "mkdir": {
-      "ProcessorName": "Skapa katalog"
-    },
-    "mojangdl": {
-      "ProcessorName": "Ladda ner Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Ladda ner Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Ladda ner Minecraft Forge",
-      "releaseType": "Utgivningstyp"
-    },
-    "fabricdl": {
-      "ProcessorName": "Ladda ner Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Arbetskatalog",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }
