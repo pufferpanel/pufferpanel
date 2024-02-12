@@ -1,14 +1,15 @@
 {
   "Settings": "설정",
   "PanelSettings": "패널 설정",
+  "SavePanelSettings": "Save Panel Settings",
   "EmailSettings": "이메일 설정",
+  "SaveEmailSettings": "Save Email Settings",
   "MasterUrl": "Master URL",
   "MasterUrlHint": "패널에 접속할수 있는 기본 URL",
   "CompanyName": "회사 이름",
   "DefaultTheme": "기본 테마",
   "RegistrationEnabled": "사용자가 직접 등록할 수 있도록 허용",
-  "RegistrationEnabledHint1": "직접 등록된 계정은 권한이 부여될 때까지 아무것도 할 수 없습니다.",
-  "RegistrationEnabledHint2": "이것을 비활성화하면 직접 등록, 서버 초대 및 사용자 페이지가 영향을 받지 않습니다.",
+  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "이메일 제공 업체",
   "emailProviders": {
     "none": "None",
@@ -16,12 +17,12 @@
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
-  "emailFields": {
-    "from": "발신자 주소",
-    "domain": "도메인",
-    "key": "API 키",
-    "host": "호스트",
+  "email": {
+    "from": "Sender Address",
+    "domain": "Domain",
+    "key": "API Key",
+    "host": "Host",
     "username": "Username",
-    "password": "비밀번호"
+    "password": "Password"
   }
 }
