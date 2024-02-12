@@ -1,14 +1,15 @@
 {
   "Settings": "Nastavení",
   "PanelSettings": "Nastavení panelu",
+  "SavePanelSettings": "Uložit nastavení panelu",
   "EmailSettings": "Nastavení e-mailu",
+  "SaveEmailSettings": "Uložit nastavení e-mailu",
   "MasterUrl": "Hlavní URL",
   "MasterUrlHint": "Základní URL adresa, na které může být dostupný panel ve formátu http://localhost:8080",
   "CompanyName": "Název společnosti",
   "DefaultTheme": "Výchozí vzhled",
   "RegistrationEnabled": "Povolit uživatelům registraci",
-  "RegistrationEnabledHint1": "Registrovaní uživatelé nemohou nic dokud nemají povolení",
-  "RegistrationEnabledHint2": "Vypnutí zabraňuje pouze přímé registraci, pozvání na server a uživetelská stránka není ovlivněna",
+  "RegistrationEnabledHint": "Vlastní registrovaní uživatelé nemohou nic dělat, dokud nebudou udělena oprávnění\n\nZakázání pouze přímé registrace, pozvánka na server a uživatelskou stránku není ovlivněna",
   "EmailProvider": "Poskytovatel e-mailu",
   "emailProviders": {
     "none": "Není",
@@ -16,7 +17,7 @@
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
-  "emailFields": {
+  "email": {
     "from": "Adresa odesílatele",
     "domain": "Doména",
     "key": "API klíč",
