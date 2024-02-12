@@ -1,111 +1,88 @@
 {
   "Templates": "Modelos",
-  "NoTemplates": "Não há modelos disponíveis",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Template deleted",
   "New": "Criar novo modelo",
-  "Edit": "Editar modelo",
-  "Editor": "Editor",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Exibir nome",
   "Type": "Tipo",
-  "Variables": "Variáveis",
-  "Install": "Instalar",
-  "AddInstallStep": "Adicionar passo de instalação",
-  "DeleteInstallStep": "Remover passo de instalação",
-  "Description": "Descrição",
-  "DataType": "Tipos do Dado",
-  "DefaultValue": "Valor padrão",
-  "Required": "Obrigatório",
-  "UserEditable": "Usuários podem editar",
-  "Value": "Valor",
-  "AddOption": "Adicionar uma opção",
-  "AddCommand": "Adicionar comando",
-  "Filename": "Nome do arquivo",
-  "Content": "Conteúdo",
-  "Source": "Fonte",
-  "Target": "Destino",
-  "Version": "Versão",
-  "ReleaseType": "Tipo de lançamento",
-  "AddFile": "Adicionar arquivo",
   "AddVariable": "Adicionar variável",
+  "Variables": "Variáveis",
+  "AddInstallStep": "Adicionar passo de instalação",
+  "Install": "Instalar",
+  "Filename": "Nome do arquivo",
+  "Version": "Versão",
   "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Adicionar ambiente",
-  "DefaultEnvironment": "Default environment",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Adicionar variável de ambiente",
   "EnvVars": "Variáveis de ambiente",
   "DockerImage": "Imagem Docker",
-  "SaveSuccess": "Template Salvo",
-  "VarNameNoSpaces": "O nome da variável não pode estar em branco ou conter espaços",
-  "SupportedEnvironments": "Ambientes Suportados",
   "RunConfig": "Rodar configuração",
-  "PreHook": "Pré-executar Hook",
-  "PostHook": "Pós-executar Hook",
   "AddPreStep": "Adicionar etapa de pré-execução",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Adicionar etapa de pós-execução",
-  "DeletePreStep": "Excluir etapa de pré-execução",
-  "DeletePostStep": "Excluir etapa de pré-execução",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Desligar",
   "Command": "Comando",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Argumentos",
-  "AddArgument": "Adicionar argumento",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "AVISO: Modelos importados substituirão modelos existentes com o mesmo ID",
-    "Import": "Importar modelos",
-    "Tooltip": "Importar modelos do repositório oficial",
-    "Select": "Selecionar modelos para importar",
-    "Started": "Importando modelos, por favor, aguarde um momento",
-    "Successful": "O modelo {template} foi importado com sucesso",
-    "NoTemplatesTitle": "Você quer importar esses modelos?",
-    "NoTemplatesContent": "Atualmente, você não tem nenhum modelo. Modelos são necessários para criar servidores.<br/>Você deseja importar alguns templates do repositório oficial do PufferPanel?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Comando",
-    "Signal": "Sinal"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
-    },
-    "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
-    },
-    "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
-    },
-    "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
-    },
-    "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
-    },
-    "mkdir": {
-      "ProcessorName": "Create Directory"
-    },
-    "mojangdl": {
-      "ProcessorName": "Download Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
-    },
-    "fabricdl": {
-      "ProcessorName": "Baixar Minecraft Fabric"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Working Directory",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties"
   }
 }
