@@ -6,10 +6,8 @@
   "Create": "Crear nuevo cliente OAuth2",
   "UnnamedClient": "Cliente OAuth2 sin nombre",
   "Docs": "Encontrar documentación API aquí",
-  "DeleteWarning": "La eliminación de un cliente OAuth2 no se puede deshacer, ni se puede crear un nuevo cliente con las mismas credenciales. Todas las integraciones que todavía utilizan este cliente se romperán después de su eliminación.",
-  "ConfirmDelete": "Soy consciente de los efectos que la eliminación de este cliente OAuth2 tendrá y desea continuar.",
-  "Delete": "¿Eliminar {clientName}?",
   "Clients": "Clientes de OAuth2",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Delete": "¿Eliminar {clientName}?",
+  "ConfirmDelete": "Soy consciente de los efectos que la eliminación de este cliente OAuth2 tendrá y desea continuar.",
+  "AccountDescription": "Los clientes de OAuth2 listados aquí heredan todos los permisos de sus cuentas"
 }
