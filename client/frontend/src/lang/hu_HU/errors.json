@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "A jelszónak minimum 8 karakternek kell lennie",
   "ErrUsernameRequirements": "A felhasználónév legalább 3 karakternek kell lenni, és csak alfanumerikus számokat, _, vagy - karaktert tartalmazhat",
   "ErrPasswordsNotIdentical": "A jelszavak nem egyeznek",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "Lejárt a munkamenet, kérünk lépj be újra",
   "ErrMissingScope": "Nincs jogod a művelet végrehajtásához",
   "ErrInvalidJson": "A json adat érvénytelen",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "A Docker nem támogatott ezen a csomóponton",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }
