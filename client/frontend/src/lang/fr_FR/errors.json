@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Le mot de passe doit contenir au moins 8 caractères",
   "ErrUsernameRequirements": "Le nom d'utilisateur doit comporter au moins 3 caractères et ne contenir que des caractères alphanumériques, _ ou -",
   "ErrPasswordsNotIdentical": "Les mot de passe ne sont pas identiques",
+  "ErrEmailInvalid": "Email invalide",
   "ErrSessionTimedOut": "Session expirée, merci de vous reconnecter",
   "ErrMissingScope": "Vous n'êtes pas autorisé à effectuer cette action",
   "ErrInvalidJson": "Les données JSON sont invalides",
@@ -41,7 +42,8 @@
   "ErrDuplicateNodeName": "Un nœud avec ce nom existe déjà",
   "ErrDirectoryUploadNotSupported": "Impossible d'envoyer des dossiers",
   "ErrDockerNotSupported": "Docker n'est pas pris en charge sur ce nœud",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrMissingBinary": "Binaire manquant : ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) n'est pas supporté. Les OS supportés: ${expected}",
+  "ErrUnsupportedArch": "L'architecture ${actual} n'est pas supportée. Les architectures supportées sont : ${expected}",
+  "ErrNoCommand": "Aucune commande n'a pu être déterminée à être utilisée pour ce serveur"
 }
