@@ -6,10 +6,8 @@
   "Create": "Vytvořit nového OAuth2 klienta",
   "UnnamedClient": "Nepojmenovaný OAuth2 klient",
   "Docs": "Zde naleznete API dokumentaci",
-  "DeleteWarning": "Smazání OAuth2 klienta nelze vrátit zpět ani vytvořit nového klienta se stejnými pověřeními. Všechny integrace, které stále používají tohoto klienta, se po jeho smazání přeruší.",
-  "ConfirmDelete": "Jsem si vědom důsledků, které odstranění tohoto klienta OAuth2 bude mít a bude chtít pokračovat.",
-  "Delete": "Smazat {clientName}?",
   "Clients": "OAuth2 klienty",
-  "AccountDescription": "OAuth2 klienti zde zdědí všechna oprávnění vašich účtů",
-  "ServerDescription": "OAuth2 klienti zde uvedení pouze dědí vaše účty na tomto serveru"
+  "Delete": "Smazat {clientName}?",
+  "ConfirmDelete": "Jsem si vědom důsledků, které odstranění tohoto klienta OAuth2 bude mít a bude chtít pokračovat.",
+  "AccountDescription": "OAuth2 klienti zde zdědí všechna oprávnění vašich účtů"
 }
