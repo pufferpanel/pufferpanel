@@ -1,111 +1,88 @@
 {
   "Templates": "Şablonlar",
-  "NoTemplates": "Burada henüz şablon yok",
+  "Save": "Save Template",
+  "Saved": "Template saved",
+  "Delete": "Delete Template",
+  "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Şablon silindi",
   "New": "Yeni şablon oluştur",
-  "Edit": "Şablon düzenle",
-  "Editor": "Düzenleyici",
+  "EditLocalOnly": "You can only save changes made to local templates",
+  "CreateLocalCopy": "Create local copy",
+  "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
+  "Overwrite": "Overwrite",
   "Json": "JSON",
   "Display": "Görüntülenen İsim",
   "Type": "Tür",
-  "Variables": "Değişkenler",
-  "Install": "Kurulum",
-  "AddInstallStep": "Kurulum aşaması ekle",
-  "DeleteInstallStep": "Kurulum aşaması sil",
-  "Description": "Açıklama",
-  "DataType": "Veri Tipi",
-  "DefaultValue": "Varsayılan Değer",
-  "Required": "Gerekli",
-  "UserEditable": "Kullanıcılar düzenleyebilir",
-  "Value": "Değer",
-  "AddOption": "Bir seçenek ekle",
-  "AddCommand": "Komut Ekle",
-  "Filename": "Dosya Adı",
-  "Content": "İçerik",
-  "Source": "Kaynak",
-  "Target": "Hedef",
-  "Version": "Versiyon",
-  "ReleaseType": "Yayın Türü",
-  "AddFile": "Dosya ekle",
   "AddVariable": "Değişken ekle",
+  "Variables": "Değişkenler",
+  "AddInstallStep": "Kurulum aşaması ekle",
+  "Install": "Kurulum",
+  "Filename": "Dosya Adı",
+  "Version": "Versiyon",
   "Environment": "Ortam",
-  "Environments": "Ortamlar",
-  "AddEnvironment": "Ortam ekle",
-  "DefaultEnvironment": "Varsayılan Ortam",
+  "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Bir ortam değişkeni ekle",
   "EnvVars": "Ortam Değişkenleri",
   "DockerImage": "Docker Görüntüsü",
-  "SaveSuccess": "Şablon Kaydedildi",
-  "VarNameNoSpaces": "Değişken adı boş olamaz veya boşluk içeremez",
-  "SupportedEnvironments": "Desteklenen Ortamlar",
   "RunConfig": "Yapılandırmayı Çalıştır",
-  "PreHook": "Ön çalıştırma kancası",
-  "PostHook": "Çalıştırma sonrası kancası",
   "AddPreStep": "Ön çalıştırma adımı ekle",
+  "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Çalıştırma sonrası adımı ekle",
-  "DeletePreStep": "Ön çalıştırma adımı sil",
-  "DeletePostStep": "Çalıştırma sonrası adımı sil",
+  "PostRunHook": "Post Run Hook",
   "Shutdown": "Kapat",
   "Command": "Komut",
-  "WorkingDirectory": "Çalışma dizini",
-  "Arguments": "Argümanlar",
-  "AddArgument": "Argüman Ekle",
-  "Convert": "Dönüştür",
-  "OfferV1Convert": "Bu JSON şablonu PufferPanel 1.x şablonuna benziyor, bunu PufferPanel 2.x sürümüne çevirmek ister misin?",
-  "import": {
-    "CommunityWarning": "Bu şablonlar topluluk tarafından yapılır ve herhangi bir garanti olmaksızın sağlanır",
-    "OverrideWarning": "UYARI: İçe aktarılan şablonlar, Mevcut şablonların üzerine YAZILACAK",
-    "Import": "Şablonları içe aktar",
-    "Tooltip": "Resmi depodan şablonları içe aktarın",
-    "Select": "İçe aktarılacak şablonları seçin",
-    "Started": "Şablonlar içe aktarılıyor, lütfen biraz bekleyin",
-    "Successful": "Şablon başarıyla içe aktarıldı {template}",
-    "NoTemplatesTitle": "Şablonları içe aktarmak istiyor musunuz?",
-    "NoTemplatesContent": "Şu anda herhangi bir şablonunuz yok. Sunucu oluşturmak için şablonlar gereklidir.<br/>Resmi PufferPanel şablonlar deposundan bazı şablonları şimdi içe aktarmak istiyor musunuz?"
+  "StopCommand": "Stop Command",
+  "StopSignal": "Stop Signal",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Komut",
-    "Signal": "Sinyal"
+  "errors": {
+    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
+    "DisplayInvalid": "The display name cannot be blank",
+    "TypeInvalid": "The type cannot be blank",
+    "CommandInvalid": "The command cannot be blank"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "İndir",
-      "files": "Dosyalar"
-    },
-    "command": {
-      "ProcessorName": "Komut Çalıştır",
-      "commands": "Komutlar"
-    },
-    "alterfile": {
-      "ProcessorName": "Dosyayı değiştir",
-      "regex": "Aramayı RegEx olarak al",
-      "search": "Aranacak metin",
-      "replace": "Şununla değiştir"
-    },
-    "writefile": {
-      "ProcessorName": "Dosyaya Yaz",
-      "text": "İçerik"
-    },
-    "move": {
-      "ProcessorName": "Dosya Taşı",
-      "source": "Kaynak",
-      "target": "Hedef"
-    },
-    "mkdir": {
-      "ProcessorName": "Dizin Oluştur"
-    },
-    "mojangdl": {
-      "ProcessorName": "Minecraft İndir"
-    },
-    "forgedl": {
-      "ProcessorName": "Minecraft Forge İndir"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Minecraft SpongeForge İndir",
-      "releaseType": "Yayın türü"
-    },
-    "fabricdl": {
-      "ProcessorName": "Minecraft Fabric İndir"
+  "variables": {
+    "Description": "Description",
+    "Type": "Type",
+    "Value": "Default Value",
+    "Required": "This variable is required",
+    "UserEdit": "Non-admin users can edit this variable",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Options",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "String",
+      "Boolean": "Boolean",
+      "Number": "Number",
+      "Options": "Options"
     }
+  },
+  "description": {
+    "Name": "This name is used as an identifier for the template",
+    "Display": "This is the name that will be displayed to users for example during server creation",
+    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
+    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
+    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
+    "Command": "This is the command that will be executed to start the server",
+    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
+    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
+    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
+    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+  },
+  "WorkingDirectory": "Çalışma dizini",
+  "General": "General",
+  "Hooks": "Hooks",
+  "Import": "Import template",
+  "import": {
+    "CommunityWarning": "Bu şablonlar topluluk tarafından yapılır ve herhangi bir garanti olmaksızın sağlanır"
   }
 }
