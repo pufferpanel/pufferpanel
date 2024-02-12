@@ -1,0 +1,75 @@
+{
+  "Title": "Skróty klawiszowe",
+  "Global": {
+    "Title": "Globalne",
+    "g a": "Przejdź do Konta",
+    "g c": "Przejdź do panelu konfiguracyjnego",
+    "g n": "Przejdź do węzłów",
+    "g s": "Przejdź do serwerów",
+    "g t": "Przejdź do szablonów",
+    "g u": "Przejdź do użytkowników"
+  },
+  "Self": {
+    "Title": "Konto",
+    "t 2": "Przejdź do zakładki 2FA",
+    "t a": "Przejdź do zakładki Szczegóły Konta",
+    "t o": "Przejdź do zakładki OAuth",
+    "t p": "Przejdź do zakładki Hasło",
+    "t s": "Przejdź do zakładki Preferencje"
+  },
+  "ServerList": {
+    "Title": "Serwery",
+    "c": "Utwórz nowy serwer",
+    "l": "Skup się na pierwszym serwer na liście"
+  },
+  "ServerView": {
+    "Title": "Serwer",
+    "t c": "Przejdź do zakładki Konsola",
+    "t i": "Przejdź do zakładki Statystyki",
+    "t f": "Przejdź do zakładki Pliki",
+    "t s": "Przejdź do zakładki Ustawienia",
+    "t u": "Przejdź do zakładki Użytkownicy",
+    "t 6": "Przejdź do zakładki SFTP",
+    "t 7": "Przejdź do zakładki API",
+    "t a": "Przejdź do zakładki Administrator",
+    "c c": "Wyczyść konsolę",
+    "r r": "Uruchom serwer",
+    "r s": "Zatrzymaj serwer",
+    "r k": "Zabij serwer",
+    "r i": "Zainstaluj serwer",
+    "f a": "Zarchiwizuj zawartość bieżącego katalogu",
+    "f c d": "Stwórz nowy folder",
+    "f c f": "Stwórz nowy plik",
+    "f d": "Prześlij katalog",
+    "f l": "Przejdź do pierwszego pliku/folderu na liście",
+    "f r": "Przeładuj listę",
+    "f u": "Prześlij pliki",
+    "a e": "Edytuj definicję serwera",
+    "a r": "Załaduj ponownie dane serwera"
+  },
+  "NodeList": {
+    "Title": "Węzły",
+    "c": "Stwórz nowy węzeł",
+    "l": "Skup się na pierwszym węźle na liście"
+  },
+  "UserList": {
+    "Title": "Użytkownicy",
+    "c": "Stwórz nowego użytkownika",
+    "l": "Skup się na pierwszym użytkowniku na liście"
+  },
+  "TemplateList": {
+    "Title": "Szablony",
+    "c": "Stwórz nowy szablon",
+    "l": "Skup się na pierwszym szablonie na liście"
+  },
+  "Template": {
+    "Title": "Edytor szablonów",
+    "t e": "Przejdź do zakładki Środowisko",
+    "t g": "Przejdź do zakładki ogólnej",
+    "t h": "Przejdź do zakładki Hooks",
+    "t i": "Przejdź do zakładki Instalacja",
+    "t j": "Przejdź do zakładki JSON",
+    "t r": "Przejdź do zakładki Uruchom konfigurację",
+    "t v": "Przejdź do zakładki Zmienne"
+  }
+}
