@@ -3,8 +3,33 @@
   "Nodes": "Nœuds",
   "Edit": "Éditer le Nœud",
   "Add": "Ajouter un Nœud",
+  "Create": "Créer un noeud",
   "Update": "Mettre à jour le Nœud",
   "Delete": "Supprimer le Nœud",
+  "ConfirmDelete": "Voulez-vous vraiment supprimer le nœud {name} ?",
+  "Created": "Créer un noeud",
+  "Updated": "Mettre à jour le Nœud",
+  "Deleted": "Supprimer le Nœud",
+  "Reachable": "Ce nœud est correctement configuré et exécuté",
+  "Unreachable": "Ce noeud est soit mal configurée ou actuellement indisponible",
+  "features": {
+    "os": {
+      "label": "Système d'exploitation",
+      "linux": "Linux",
+      "windows": "Windows"
+    },
+    "arch": {
+      "label": "Architecture du CPU",
+      "amd64": "x86 64bits",
+      "arm": "ARM 32bits",
+      "arm64": "ARM 64bits"
+    },
+    "docker": {
+      "true": "Docker disponible",
+      "false": "Docker indisponible"
+    },
+    "envs": "Environnements disponibles"
+  },
   "PublicHost": "Hôte Public",
   "PublicPort": "Port Public",
   "PrivateHost": "Hôte Privé",
@@ -12,9 +37,14 @@
   "SftpPort": "Port SFTP",
   "WithPrivateAddress": "avec adresse priver",
   "WithPrivateAddressHint": "avec astuce d adresse priver",
-  "SaveConfig": "Sauvegarder la configuration",
-  "SavePublicKey": "Sauvegarder la clé publique",
-  "DeploymentInstruction": "Pour déployer le nœud, installez PufferPanel sur le nouveau serveur et placez le fichier de configuration dans `/etc/pufferpanel`<br/>Redémarrez PufferPanel sur le nouveau serveur une fois terminé.",
-  "UpdateSuccess": "Nœud mis à jour avec succès",
-  "UpdateError": "Erreur lors de la mise à jour du nœud"
+  "LocalNodeEdit": "Le nœeud local n'a pas de paramètres modifiables.\nPour changer l'IP affichée sur les serveurs hébergés sur ce nœud, modifiez l'adresse principale du panel dans les paramètres",
+  "Deploy": "Déployer le Nœud",
+  "deploy": {
+    "Step1": "## Étape 1\n\nInstallez PufferPanel sur le nouveau serveur, [voir la documentation pour plus de détails](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Étape 2\n\nArrêtez le service PufferPanel sur le nouveau serveur s'il a été démarré pendant l'installation en exécutant `sudo systemctl stop pufferpanel`",
+    "Step3": "## Étape 3\n\nRemplacez le contenu du fichier de configuration de PufferPanel sur le nouveau serveur par le code ci-dessous\n\nLe fichier de configuration se trouve généralement dans `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Étape 4\n\nActivez et (re)démarrez le service PufferPanel sur le nouveau serveur en exécutant `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Votre nouveau nœud est maintenant configuré et prêt à être utilisé"
+  },
+  "DeploymentInstruction": "Pour déployer le nœud, installez PufferPanel sur le nouveau serveur et placez le fichier de configuration dans `/etc/pufferpanel`<br/>Redémarrez PufferPanel sur le nouveau serveur une fois terminé."
 }
