@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Lösenord måste vara minst 8 tecken",
   "ErrUsernameRequirements": "Användarnamn måste vara minst 3 tecken och innehålla alfanumeriska tecken, _, eller -",
   "ErrPasswordsNotIdentical": "Lösenorden är inte likadana",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "Din session har gått ut, vänligen logga in igen",
   "ErrMissingScope": "Du har inte behörighet att utföra denna åtgärd",
   "ErrInvalidJson": "Json-datan är ogiltiga",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Docker is not supported on this node",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }
