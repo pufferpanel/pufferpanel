@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον 8 χαρακτήρες",
   "ErrUsernameRequirements": "Το όνομα χρήστη πρέπει να είναι τουλάχιστον 3 χαρακτήρες και να περιέχει μόνο αλφαριθμητικά, _, ή -",
   "ErrPasswordsNotIdentical": "Οι κωδικοί πρόσβασης δεν ταιριάζουν",
+  "ErrEmailInvalid": "Not a valid email",
   "ErrSessionTimedOut": "Έχει λήξει η συνεδρία σας. Παρακαλούμε συνδεθείτε ξανά",
   "ErrMissingScope": "Δεν είστε εξουσιοδοτημένοι να εκτελέσετε αυτή την ενέργεια",
   "ErrInvalidJson": "Τα δεδομένα json δεν είναι έγκυρα",
@@ -43,5 +44,6 @@
   "ErrDockerNotSupported": "Docker is not supported on this node",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }
