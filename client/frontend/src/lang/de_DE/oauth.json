@@ -6,10 +6,8 @@
   "Create": "Neuen OAuth2-Client erstellen",
   "UnnamedClient": "Unbenannter OAuth2-Client",
   "Docs": "API-Dokumentation finden Sie hier",
-  "DeleteWarning": "Das Löschen eines OAuth2-Clients kann weder rückgängig gemacht noch ein neuer Client mit den gleichen Zugangsdaten erstellt werden. Alle Integrationen, die diesen Client noch verwenden, werden nach dem Löschen unterbrochen.",
-  "ConfirmDelete": "Ich bin mir der Auswirkungen bewusst, die das Löschen dieses OAuth2-Clients haben wird und möchte fortfahren.",
-  "Delete": "{clientName} löschen?",
   "Clients": "OAuth2 Clients",
-  "AccountDescription": "Die hier aufgelisteten OAuth2-Clients erben alle Ihre Account-Berechtigungen",
-  "ServerDescription": "Die hier aufgelisteten OAuth2-Clients erben nur Ihre Berechtigungen auf diesem Server"
+  "Delete": "{clientName} löschen?",
+  "ConfirmDelete": "Ich bin mir der Auswirkungen bewusst, die das Löschen dieses OAuth2-Clients haben wird und möchte fortfahren.",
+  "AccountDescription": "Die hier aufgelisteten OAuth2-Clients erben alle Ihre Account-Berechtigungen"
 }
