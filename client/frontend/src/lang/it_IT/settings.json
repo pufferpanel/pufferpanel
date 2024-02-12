@@ -1,14 +1,15 @@
 {
   "Settings": "Impostazioni",
   "PanelSettings": "Impostazioni Pannello",
+  "SavePanelSettings": "Salva Impostazioni Pannello",
   "EmailSettings": "Impostazioni Email",
+  "SaveEmailSettings": "Salva Impostazioni Email",
   "MasterUrl": "URL Principale",
   "MasterUrlHint": "L'URL di base che il pannello può essere raggiunto nel formato http://localhost:8080",
   "CompanyName": "Nome Azienda",
   "DefaultTheme": "Tema Predefinito",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabled": "Consenti agli utenti di registrarsi",
+  "RegistrationEnabledHint": "Gli utenti registrati non possono fare nulla fino a quando non sono stati concessi i permessi\n\nDisabilitare questo impedisce solo la registrazione diretta, invito a un server e la pagina Utenti non sono interessati",
   "EmailProvider": "Provider Email",
   "emailProviders": {
     "none": "Nessuno",
@@ -16,10 +17,10 @@
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
-  "emailFields": {
-    "from": "Sender Adress",
+  "email": {
+    "from": "Indirizzo Mittente",
     "domain": "Dominio",
-    "key": "API Key",
+    "key": "Chiave API",
     "host": "Host",
     "username": "Nome utente",
     "password": "Password"
