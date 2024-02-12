@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "Пароль має складатися хоча б з {min} символів",
   "ErrUsernameRequirements": "Ім'я користувача повинно містити не менше {min} символів і містити лише букви, літери, _, або -",
   "ErrPasswordsNotIdentical": "Паролі не співпадають",
+  "ErrEmailInvalid": "Недопустима адреса електронної пошти",
   "ErrSessionTimedOut": "Ваш сеанс минув, будь ласка, увійдіть знову",
   "ErrMissingScope": "Ви не маєте прав на виконання цієї дії",
   "ErrInvalidJson": "Неприпустимі дані json",
@@ -40,8 +41,9 @@
   "ErrDuplicateServerName": "Сервер з таким ім'ям вже існує",
   "ErrDuplicateNodeName": "Вузол з таким ім'ям вже існує",
   "ErrDirectoryUploadNotSupported": "Неможливо завантажити папки",
-  "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrDockerNotSupported": "Docker не підтримується на цьому вузлі",
+  "ErrMissingBinary": "Відсутній бінарний файл: ${expected}",
+  "ErrUnsupportedOS": "ОС (${actual}) не підтримується. Підтримувані ОС: ${expected}",
+  "ErrUnsupportedArch": "Архітектура ${actual} не підтримується. Підтримуються наступні архітектури: ${expected}",
+  "ErrNoCommand": "No command could be determined to be used for this server"
 }
