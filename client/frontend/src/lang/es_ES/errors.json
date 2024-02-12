@@ -31,6 +31,7 @@
   "ErrPasswordRequirements": "La contraseña debe tener al menos {min} caracteres",
   "ErrUsernameRequirements": "El nombre de usuario debe tener al menos {min} caracteres y solo contener caracteres alfanuméricos, _, o -",
   "ErrPasswordsNotIdentical": "Las contraseñas no coinciden",
+  "ErrEmailInvalid": "Correo electrónico no válido",
   "ErrSessionTimedOut": "Tu sesión ha expirado. Por favor, ingresa nuevamente",
   "ErrMissingScope": "No tienes permiso para realizar esta acción",
   "ErrInvalidJson": "Los datos del json son inválidos",
@@ -40,8 +41,9 @@
   "ErrDuplicateServerName": "Ya existe un servidor con este nombre",
   "ErrDuplicateNodeName": "Ya existe un nodo con este nombre",
   "ErrDirectoryUploadNotSupported": "No es posible subir carpetas",
-  "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrDockerNotSupported": "Docker no está soportado en este nodo",
+  "ErrMissingBinary": "Falta el archivo binario: ${expected}",
+  "ErrUnsupportedOS": "Sistema operativo (${actual}) no soportado. Sistemas soportados: ${expected}",
+  "ErrUnsupportedArch": "Arquitectura ${actual} no soportada. Arquitecturas soportadas: ${expected}",
+  "ErrNoCommand": "No se pudo determinar ningún comando para usar en este servidor"
 }
