@@ -6,10 +6,8 @@
   "Create": "Tee uus OAuth2 Klient",
   "UnnamedClient": "Nimeta OAuth2 Klient",
   "Docs": "Leia API dokumentatsioon siin",
-  "DeleteWarning": "OAuth2 kliendi kustutamist ei saa tagasi võtta ega luua uut klienti samade mandaatidega. Kõik seda klienti veel kasutavad integratsioonid katkevad pärast selle kustutamist.",
-  "ConfirmDelete": "Olen teadlik selle OAuth2 kliendi kustutamise tagajärgedest ja soovin jätkata.",
-  "Delete": "Kustuta {clientName}?",
   "Clients": "OAuth2 Kliendid",
-  "AccountDescription": "Siin loetletud OAuth2 kliendid pärivad kõik teie konto load",
-  "ServerDescription": "Siin loetletud OAuth2 kliendid pärivad ainult teie kontode õigused selles serveris"
+  "Delete": "Kustuta {clientName}?",
+  "ConfirmDelete": "Olen teadlik selle OAuth2 kliendi kustutamise tagajärgedest ja soovin jätkata.",
+  "AccountDescription": "Siin loetletud OAuth2 kliendid pärivad kõik teie konto load"
 }
