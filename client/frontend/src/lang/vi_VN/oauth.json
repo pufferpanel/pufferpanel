@@ -6,10 +6,8 @@
   "Create": "Tạo Client OAuth2",
   "UnnamedClient": "Client OAuth2 khuyết danh",
   "Docs": "Tham khảo API ở đây",
-  "DeleteWarning": "Khi xoá Client OAuth2 thì bạn không thể quay lại hoặc tạo lại Client cùng thông tin. Sau khi xoá thì tất cả Intergration sử dụng Client này sẽ không hoạt động được.",
-  "ConfirmDelete": "Tôi biết tác động của việc xoá Client OAuth2 này và tôi xin tiến hành.",
-  "Delete": "Xoá {clientName}?",
   "Clients": "Các Client OAuth2",
-  "AccountDescription": "Các Client OAuth2 được liệt kê ở đây thừa hưởng tất cả quyền từ tài khoản của bạn",
-  "ServerDescription": "Các Client OAuth2 được liệt kê ở đây chỉ thừa hưởng quyền từ tài khoản của bạn chỉ trên máy chủ này"
+  "Delete": "Xoá {clientName}?",
+  "ConfirmDelete": "Tôi biết tác động của việc xoá Client OAuth2 này và tôi xin tiến hành.",
+  "AccountDescription": "Các Client OAuth2 được liệt kê ở đây thừa hưởng tất cả quyền từ tài khoản của bạn"
 }
