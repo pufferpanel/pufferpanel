@@ -1,111 +1,88 @@
 {
   "Templates": "Szablony",
-  "NoTemplates": "Brak szablonów",
+  "Save": "Zapisz szablon",
+  "Saved": "Szablon został zapisany",
+  "Delete": "Usuń szablon",
+  "ConfirmDelete": "Czy na pewno chcesz usunąć szablon {name}?",
   "Deleted": "Szablon został usunięty",
   "New": "Utwórz nowy szablon",
-  "Edit": "Edytuj szablon",
-  "Editor": "Edytor",
+  "EditLocalOnly": "Możesz zapisać tylko zmiany dokonane w lokalnych szablonach",
+  "CreateLocalCopy": "Utwórz kopię lokalną",
+  "ConfirmOverwrite": "Szablon o tej nazwie już istnieje. Zastąpić go?",
+  "Overwrite": "Zastąp",
   "Json": "JSON",
   "Display": "Wyświetlana nazwa",
   "Type": "Typ",
-  "Variables": "Zmienne",
-  "Install": "Zainstaluj",
-  "AddInstallStep": "Dodaj krok instalacji",
-  "DeleteInstallStep": "Usuń krok instalacji",
-  "Description": "Opis",
-  "DataType": "Typ Danych",
-  "DefaultValue": "Wartość domyślna",
-  "Required": "Wymagane?",
-  "UserEditable": "Użytkownicy mogą edytować",
-  "Value": "Wartość",
-  "AddOption": "Dodaj Opcję",
-  "AddCommand": "Dodaj polecenie",
-  "Filename": "Nazwa pliku",
-  "Content": "Zawartość",
-  "Source": "Źródło",
-  "Target": "Cel",
-  "Version": "Wersja",
-  "ReleaseType": "Typ wydania",
-  "AddFile": "Dodaj plik",
   "AddVariable": "Dodaj zmienną",
+  "Variables": "Zmienne",
+  "AddInstallStep": "Dodaj krok instalacji",
+  "Install": "Zainstaluj",
+  "Filename": "Nazwa pliku",
+  "Version": "Wersja",
   "Environment": "Środowisko",
-  "Environments": "Środowisko",
-  "AddEnvironment": "Dodaj środowisko",
-  "DefaultEnvironment": "Domyślne środowisko",
+  "EnvEnabled": "Środowisko włączone",
   "AddEnvVar": "Dodaj zmienną",
   "EnvVars": "Zmienne środowiskowe",
   "DockerImage": "Obrazy Dokera",
-  "SaveSuccess": "Zapisane szablony",
-  "VarNameNoSpaces": "Nazwa zmiennej nie może być pusta ani zawierać spacji",
-  "SupportedEnvironments": "Wspierane środowisko",
   "RunConfig": "Uruchom konfigurację",
-  "PreHook": "Hak Przed Uruchomieniem",
-  "PostHook": "Hak Po Uruchomieniu",
   "AddPreStep": "Dodaj Hak Przed Uruchomieniem",
+  "PreRunHook": "Akcje przed uruchomieniem",
   "AddPostStep": "Dodaj Hak Po Uruchomieniu",
-  "DeletePreStep": "Usuń krok instalacji",
-  "DeletePostStep": "Usuń krok instalacji",
+  "PostRunHook": "Akcje po uruchomieniu",
   "Shutdown": "Zamknij",
   "Command": "Komenda",
-  "WorkingDirectory": "Katalog Roboczy",
-  "Arguments": "Argumenty",
-  "AddArgument": "Dodaj argument",
-  "Convert": "Konwertuj",
-  "OfferV1Convert": "Ten szablon json wygląda jak szablon wersji PufferPanel 1.x, czy chcesz go automatycznie przekonwertować na szablon wersji PufferPanel 2.x?",
-  "import": {
-    "CommunityWarning": "Te szablony są tworzone przez społeczność i dostarczane bez żadnych gwarancji",
-    "OverrideWarning": "OSTRZEŻENIE: Zaimportowane szablony zostaną nadpiszą istniejące szablony o tym samym ID",
-    "Import": "Importuj szablony",
-    "Tooltip": "Importuj szablony z oficjalnego repozytorium",
-    "Select": "Wybierz szablony do importowania",
-    "Started": "Importowanie szablonów, proszę poczekać chwilę",
-    "Successful": "Pomyślnie zaimportowano szablon {template}",
-    "NoTemplatesTitle": "Czy chcesz zaimportować szablony?",
-    "NoTemplatesContent": "Obecnie nie masz żadnych szablonów. Szablony są niezbędne do tworzenia serwerów.<br/>Czy chcesz zaimportować niektóre szablony z oficjalnego repozytorium PufferPanel szablonów?"
+  "StopCommand": "Komenda stop",
+  "StopSignal": "Sygnał zatrzymania",
+  "NoGroup": "No Group",
+  "AddVariableGroup": "Add Variable Group",
+  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddCommand": "Add Command",
+  "AddEnvironment": "Add Environment",
+  "signals": {
+    "1": "SIGHUP",
+    "2": "SIGINT (CTRL+C)",
+    "9": "SIGKILL",
+    "15": "SIGTERM"
   },
-  "stop": {
-    "Command": "Komenda",
-    "Signal": "Sygnał"
+  "errors": {
+    "NameInvalid": "Nazwa szablonu nie może być pusta i nie może zawierać spacji ani znaków specjalnych",
+    "DisplayInvalid": "Nazwa wyświetlana nie może być pusta",
+    "TypeInvalid": "Typ nie może być pusty",
+    "CommandInvalid": "Polecenie nie może być puste"
   },
-  "processors": {
-    "download": {
-      "ProcessorName": "Pobierz",
-      "files": "Pliki"
-    },
-    "command": {
-      "ProcessorName": "Uruchom polecenie",
-      "commands": "Polecenia"
-    },
-    "alterfile": {
-      "ProcessorName": "Zmień plik",
-      "regex": "Traktuj wyszukiwanie jako RegEx",
-      "search": "Tekst do wyszukania",
-      "replace": "Zamień na"
-    },
-    "writefile": {
-      "ProcessorName": "Zapisz do pliku",
-      "text": "Zawartość"
-    },
-    "move": {
-      "ProcessorName": "Przenieś plik",
-      "source": "Źródło",
-      "target": "Cel"
-    },
-    "mkdir": {
-      "ProcessorName": "Utwórz katalog"
-    },
-    "mojangdl": {
-      "ProcessorName": "Pobierz Minecraft"
-    },
-    "forgedl": {
-      "ProcessorName": "Pobierz Minecraft Forge"
-    },
-    "spongeforgedl": {
-      "ProcessorName": "Pobierz Minecraft SpongeForge",
-      "releaseType": "Typ wydania"
-    },
-    "fabricdl": {
-      "ProcessorName": "Pobierz Minecraft Fabric"
+  "variables": {
+    "Description": "Opis",
+    "Type": "Typ",
+    "Value": "Wartość domyślna",
+    "Required": "Ta zmienna jest wymagana",
+    "UserEdit": "Użytkownicy bez uprawnień administracyjnych mogą edytować tę zmienną",
+    "Internal": "Internal (never shown to users or admins)",
+    "Options": "Opcje",
+    "ConditionHint": "Only show this group if this condition is met",
+    "types": {
+      "String": "Ciąg znaków",
+      "Boolean": "Typ logiczny",
+      "Number": "Liczba",
+      "Options": "Opcje"
     }
+  },
+  "description": {
+    "Name": "Ta nazwa używana jest jako identyfikator dla szablonu",
+    "Display": "To jest nazwa, która będzie wyświetlana użytkownikom na przykład podczas tworzenia serwera",
+    "Type": "To jest używane do grupowania różnych szablonów i decydowania, jaka ikona ma być wyświetlana na liście serwerów",
+    "Variables": "Zmienne będą wyświetlane użytkownikom jako ustawienia serwera. Są one przydatne, na przykład, aby umożliwić użytkownikowi zdefiniowanie wersji lub niektórych ustawień, takich jak port do użycia",
+    "Install": "Tu określasz, jakie akcje zostaną uruchomione, gdy użytkownik naciśnie przycisk instalacji serwera utworzonego z tego szablonu",
+    "Command": "To jest polecenie, które zostanie wykonane, aby uruchomić serwer",
+    "StopCommand": "Wprowadź polecenie przekazywane do konsoli serwera, gdy użytkownik naciśnie przycisk \"Stop\"",
+    "StopSignal": "Wyślij sygnał do procesu, gdy użytkownik naciśnie przycisk \"Stop\". Może zostać wykorzystane, aby na przykład zasymulować wciśnięcie CTRL+C",
+    "PreRunHook": "Tutaj możesz zdefiniować akcje do wykonania przed uruchomieniem serwera",
+    "PostRunHook": "Tutaj możesz zdefiniować akcje do wykonania po zatrzymaniu serwera"
+  },
+  "WorkingDirectory": "Katalog Roboczy",
+  "General": "Ogólne",
+  "Hooks": "Akcje",
+  "Import": "Importuj szablon",
+  "import": {
+    "CommunityWarning": "Te szablony są tworzone przez społeczność i dostarczane bez żadnych gwarancji"
   }
 }
