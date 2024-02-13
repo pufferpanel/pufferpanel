@@ -555,8 +555,9 @@ jobs:
           images: |
             name=${{ env.REGISTRY != '' && format('{0}/', env.REGISTRY) || '' }}${{ env.IMAGE_NAME }},enable=${{ env.REGISTRY != '' }}
             name=${{ env.IMAGE_NAME }},enable=${{ env.REGISTRY == '' }}
-          tags: |
+          flavor: |
             latest=false
+          tags: |
             type=ref,prefix=branch-,event=branch
             type=semver,pattern={{version}}
 
