@@ -21,6 +21,7 @@
   "Admin": "Admin",
   "Settings": "Sätted",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Kustuta Server",
   "ConfirmDelete": "Kas soovid kindlasti kustutada seda serverit? (seda ei saa tagasi võtta)",
