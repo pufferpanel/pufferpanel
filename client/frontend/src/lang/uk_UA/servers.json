@@ -21,6 +21,7 @@
   "Admin": "Адміністратор",
   "Settings": "Налаштування",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Видалити сервер",
   "ConfirmDelete": "Ви дійсно бажаєте видалити цей сервер? (це не можна скасувати)",
