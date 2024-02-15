@@ -21,6 +21,7 @@
   "Admin": "Admin",
   "Settings": "Settings",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Delete Server",
   "ConfirmDelete": "Do you really want to delete this server? (this cannot be undone)",
