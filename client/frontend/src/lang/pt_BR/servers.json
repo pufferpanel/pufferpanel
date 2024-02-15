@@ -21,6 +21,7 @@
   "Admin": "Admin",
   "Settings": "Configurações",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Excluir servidor",
   "ConfirmDelete": "Você quer mesmo excluir esse servidor? (isso não pode ser desfeito)",
