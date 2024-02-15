@@ -21,6 +21,7 @@
   "Admin": "Yönetici",
   "Settings": "Ayarlar",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Sunucuyu Sil",
   "ConfirmDelete": "Sunucuyu cidden silmek istiyor musun? (geri getiremezsin)",
