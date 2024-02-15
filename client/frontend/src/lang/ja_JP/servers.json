@@ -21,6 +21,7 @@
   "Admin": "管理者",
   "Settings": "設定",
   "SaveSettings": "設定を保存",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "このサーバーには変更できる設定がありません",
   "Delete": "サーバーを削除",
   "ConfirmDelete": "このコメントを削除してもよろしいですか? この操作は元に戻すことができません。",
