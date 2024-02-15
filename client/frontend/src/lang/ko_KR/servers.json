@@ -21,6 +21,7 @@
   "Admin": "Admin",
   "Settings": "설정",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "서버 삭제",
   "ConfirmDelete": "이 서버를 삭제할까요?(되돌릴 수 없습니다.)",
