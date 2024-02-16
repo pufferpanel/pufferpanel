@@ -1,13 +1,13 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "Clients": "OAuth2 Clients",
-  "Delete": "Delete OAuth2 Client",
-  "ConfirmDelete": "Do you really want to delete the OAuth2 client {name}? You will not be able to recreate it with the same credentials!",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions"
+  "Credentials": "„OAuth2“ aplikacijos duomenys",
+  "ClientId": "Aplikacijos Id",
+  "ClientSecret": "Aplikacijos paslaptis",
+  "NewClientWarning": "Nusirašykite aplikacijos paslaptį, uždarius šį dialogą ji niekados nebe pasirodys. Jos praradimas ar užmiršimas padarys šią aplikaciją visiškai nebenaudojamą.",
+  "Create": "Sukurti naują „OAuth2“ aplikaciją",
+  "UnnamedClient": "Nepavadinta „OAuth2“ aplikacija",
+  "Docs": "API dokumentaciją galite rasti čia",
+  "Clients": "„OAuth2“ aplikacijos",
+  "Delete": "Ištrinti „OAuth2“ aplikaciją",
+  "ConfirmDelete": "Ar tikrai norite ištrinti „OAuth2“ aplikaciją {name}? Jūs negalėsite perkurti ją su tais pačiais duomenimis!",
+  "AccountDescription": "„OAuth2“ aplikacijos išvardytos čia paveldi visas jūsų paskyros leidimus"
 }
