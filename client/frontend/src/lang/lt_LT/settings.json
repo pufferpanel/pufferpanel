@@ -9,7 +9,7 @@
   "CompanyName": "Įmonės pavadinimas",
   "DefaultTheme": "Numatyta tema",
   "RegistrationEnabled": "Leisti vartotojams save užsiregistruoti",
-  "RegistrationEnabledHint": "Patys užsiregistravę vartotojai negali nieko padaryti kol nesuteikti leidimų",
+  "RegistrationEnabledHint": "Patys užsiregistravę vartotojai negali nieko padaryti kol nesuteikti leidimų\n\nIšjungiant šitą tik uždraudžia tiesioginę registraciją, pakvietimai į serverį ir vartotojų puslapis nėra paveikti",
   "EmailProvider": "El. pašto tiekėjas",
   "emailProviders": {
     "none": "Joks",
