@@ -1,6 +1,6 @@
 {
-  "Name": "Name",
-  "Language": "Language",
+  "Name": "Pavadinimas",
+  "Language": "Kalba",
   "Online": "Online",
   "Offline": "Offline",
   "Unknown": "Unknown",
