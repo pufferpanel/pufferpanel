@@ -1,5 +1,5 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Sólo ejecutar este paso si se cumple la condición",
   "mojangdl": {
     "generic": "Descargar Minecraft",
     "formatted": "Descargar Minecraft"
@@ -9,8 +9,8 @@
     "formatted": "Escribir en el archivo {target}"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
-    "formatted": "Resolve Minecraft Forge Version"
+    "generic": "Resolver la versión de Minecraft Forge",
+    "formatted": "Resolver la versión de Minecraft Forge"
   },
   "download": {
     "generic": "Descargar archivo(s)",
