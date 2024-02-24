@@ -18,21 +18,21 @@
   "Next": "Próximo",
   "Details": "Detalhes",
   "ErrorDetails": "Detalhes do erro",
-  "HelpTranslate": "Help us translate PufferPanel",
-  "Protocol": "Protocol",
-  "Add": "Add",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
+  "HelpTranslate": "Ajuda-nos a traduzir o PufferPanel",
+  "Protocol": "Protocolo",
+  "Add": "Adicionar",
+  "Apply": "Aplicar",
+  "Confirm": "Confirmar",
+  "Condition": "Condição",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Tema",
+    "Mode": "Modo",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "Auto": "Auto"
+      "Light": "Claro",
+      "Dark": "Escuro",
+      "Auto": "Automático"
     },
-    "BaseColor": "Base Color",
+    "BaseColor": "Cor base",
     "ServerTypeDisplay": "Server Type Display",
     "serverTypeDisplay": {
       "Icon": "Icon",
