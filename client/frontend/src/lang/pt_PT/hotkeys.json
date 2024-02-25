@@ -48,7 +48,7 @@
     "a r": "Reload Server Definiton from disk"
   },
   "NodeList": {
-    "Title": "Nodes",
+    "Title": "Nós",
     "c": "Create a new node",
     "l": "Focus the first node in the list"
   },
