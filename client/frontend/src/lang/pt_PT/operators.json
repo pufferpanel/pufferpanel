@@ -15,7 +15,7 @@
   "download": {
     "generic": "Download file(s)",
     "formatted": "Download {file} | Download {n} files",
-    "files": "Files"
+    "files": "Ficheiros"
   },
   "command": {
     "generic": "Run command(s)",
@@ -45,8 +45,8 @@
     "appId": "Steam App ID"
   },
   "javadl": {
-    "generic": "Install Java",
-    "formatted": "Install Java {version}"
+    "generic": "Instalar o Java",
+    "formatted": "Instalar o Java {version}"
   },
   "forgedl": {
     "generic": "Download Minecraft Forge",
