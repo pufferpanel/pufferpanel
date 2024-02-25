@@ -14,11 +14,11 @@
     "t 2": "Go to 2-Factor-Auth tab",
     "t a": "Go to Account Details tab",
     "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
+    "t p": "Ir para o separador Palavra-passe",
     "t s": "Go to Preferences tab"
   },
   "ServerList": {
-    "Title": "Servers",
+    "Title": "Servidores",
     "c": "Create a new server",
     "l": "Focus the first server in the list"
   },
@@ -33,9 +33,9 @@
     "t 7": "Go to Api tab",
     "t a": "Go to Admin tab",
     "c c": "Clear Console",
-    "r r": "Start Server",
+    "r r": "Iniciar servidor",
     "r s": "Stop Server",
-    "r k": "Kill Server",
+    "r k": "Terminar servidor",
     "r i": "Install Server",
     "f a": "Archive current directory contents",
     "f c d": "Create new directory",
