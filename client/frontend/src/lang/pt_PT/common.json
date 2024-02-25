@@ -35,13 +35,13 @@
     "BaseColor": "Cor base",
     "ServerTypeDisplay": "Server Type Display",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "Ícone",
+      "None": "Nenhum"
     },
-    "ListType": "List Type",
+    "ListType": "Tipo de lista",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Grelha",
+      "List": "Lista"
     }
   }
 }
