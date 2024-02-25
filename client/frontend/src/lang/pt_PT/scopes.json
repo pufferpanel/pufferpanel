@@ -50,7 +50,7 @@
   "hint": {
     "admin": "Grants all permissions",
     "login": "Allows the user to log in",
-    "self-edit": "Lets the user change their password, update their email and manage 2FA for their account",
+    "self-edit": "Permite ao utilizador alterar a sua palavra-passe, atualizar o seu e-mail e gerir a 2FA da sua conta",
     "settings-edit": "Allows editing global panel settings like master url, email integration etc"
   },
   "ServersEdit": "Edit the server",
