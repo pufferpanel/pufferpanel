@@ -201,7 +201,7 @@ jobs:
       - name: Get the version
         run: |
           $VERSION="0.0.${{ github.run_number }}"
-          if ("${{ github.ref }}".startsWith("refs/tags/v") && !"${{ github.ref }}".contains("-alpha") {
+          if ("${{ github.ref }}".startsWith("refs/tags/v") && !"${{ github.ref }}".contains("-alpha")) {
             $VERSION="${{ github.ref }}".substring('refs/tags/v'.length)
           }
           echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
