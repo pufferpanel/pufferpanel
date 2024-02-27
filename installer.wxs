@@ -1,24 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:firewall="http://schemas.microsoft.com/wix/FirewallExtension">
-    <Product Id="*" Version="$(var.ProductVersion)" UpgradeCode="b0ef7063-2eaa-48b0-948d-00167774557a" Language="1033" Name="PufferPanel" Manufacturer="PufferPanel">
-        <Package InstallerVersion="300" Compressed="yes" Platform="x64"/>
-        <Media Id="1" Cabinet="pufferpanel.cab" EmbedCab="yes" />
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:firewall="http://wixtoolset.org/schemas/v4/wxs/firewall" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+    <Package Version="$(var.ProductVersion)" UpgradeCode="b0ef7063-2eaa-48b0-948d-00167774557a" Language="1033" Name="PufferPanel" Manufacturer="PufferPanel" InstallerVersion="300"><Media Id="1" Cabinet="pufferpanel.cab" EmbedCab="yes" />
         <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
         <!-- Step 1: Define the directory structure -->
-        <Directory Id="TARGETDIR" Name="SourceDir">
-            <Directory Id="ProgramFiles64Folder">
-                <Directory Id="APPLICATIONROOTDIRECTORY" Name="PufferPanel">
-                </Directory>
-            </Directory>
-        </Directory>
 
         <!-- Step 2: Add files to your installer package -->
         <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
             <Component Id="pufferpanel" Guid="6a923f7e-b685-417e-8baf-612b0cade288">
                 <File Id="pufferpanel.exe" Source="pufferpanel.exe" KeyPath="yes" Checksum="yes">
-                    <firewall:FirewallException Id="PanelRule" Name="PufferPanel Web Interface" Scope="any"/>
-                    <firewall:FirewallException Id="SFTPRule" Name="PufferPanel SFTP Interface" Scope="any"/>
+                    <firewall:FirewallException Id="PanelRule" Name="PufferPanel Web Interface" Scope="any" />
+                    <firewall:FirewallException Id="SFTPRule" Name="PufferPanel SFTP Interface" Scope="any" />
                 </File>
                 <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Start="auto" Name="PufferPanel" Description="Game management server panel. This service can be either the daemon or the panel, or both." Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" ErrorControl="normal" Arguments="runService --workDir=&quot;[APPLICATIONROOTDIRECTORY]\&quot;" Vital="yes">
                 </ServiceInstall>
@@ -26,8 +17,8 @@
             </Component>
             <Component Id="RegistryEntries" Guid="34c0bf3c-fa7f-485f-9704-805549e90f66">
                 <RegistryKey Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\Application\PufferPanel">
-                    <RegistryValue Type="expandable" Name="EventMessageFile" Value="%SystemRoot%\System32\EventCreate.exe" KeyPath="yes"/>
-                    <RegistryValue Type="integer" Name="TypesSupported" Value="7"/>
+                    <RegistryValue Type="expandable" Name="EventMessageFile" Value="%SystemRoot%\System32\EventCreate.exe" KeyPath="yes" />
+                    <RegistryValue Type="integer" Name="TypesSupported" Value="7" />
                 </RegistryKey>
             </Component>
         </DirectoryRef>
@@ -37,11 +28,16 @@
             <ComponentRef Id="pufferpanel" />
             <ComponentRef Id="RegistryEntries" />
         </Feature>
-		
-		<Icon Id="icon.ico" SourceFile="favicon.ico"/>
+
+		<Icon Id="icon.ico" SourceFile="favicon.ico" />
 		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
 		<Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
-		<UIRef Id="WixUI_InstallDir" />
-    </Product>
+		<ui:WixUI Id="WixUI_InstallDir" />
+
+            <StandardDirectory Id="ProgramFiles64Folder">
+                <Directory Id="APPLICATIONROOTDIRECTORY" Name="PufferPanel">
+                </Directory>
+            </StandardDirectory>
+        </Package>
 </Wix>
