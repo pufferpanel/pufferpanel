@@ -175,7 +175,7 @@ jobs:
           echo '${{ secrets.CURSEFORGE_CODE }}' > config/curseforge.go
 
       - name: Build Windows
-        run: |          
+        run: |
           go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
         env:
           GOOS: windows
@@ -196,7 +196,7 @@ jobs:
     needs: [ 'build-windows-amd64-binaries' ]
 
     timeout-minutes: 10
-    
+
     steps:
       - name: Get the version
         run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
@@ -208,10 +208,15 @@ jobs:
       - name: Prepare .NET
         run:
           wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+          
           sudo dpkg -i packages-microsoft-prod.deb
+          
           rm packages-microsoft-prod.deb
+          
           sudo apt-get update
+          
           sudo apt-get install -y dotnet-sdk-8.0
+
 
       - uses: actions/download-artifact@v3
         with:
