@@ -235,7 +235,7 @@ jobs:
         if: steps.dotnet-cache.outputs.cache-hit != 'true'
         run: |
           Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
-          .\dotnet-install.ps1 -Channel ${{ env.DOTNET_CHANNEL }}
+          .\dotnet-install.ps1 -Channel ${{ env.DOTNET_CHANNEL }} -InstallDir dotnet
           Remove-Item dotnet-install.ps1
 
       - name: Set Path
@@ -576,6 +576,13 @@ jobs:
       REGISTRY_PASSWORD: ${{ vars.REGISTRY == 'ghcr.io' && secrets.GITHUB_TOKEN || vars.REGISTRY_PASSWORD }}
 
     steps:
+      - name: Get the version
+        run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+      - name: Get the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+
       - name: Ensure mask
         id: values
         run: |
@@ -621,9 +628,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            sha: ${{ github.sha }}
-            version: ${{ env.VERSION }}
-            curseforgeKey: ${{ secrets.CURSEFORGE_KEY }}
+            sha=${{ github.sha }}
+            version=${{ env.VERSION }}
+            curseforgeKey=${{ secrets.CURSEFORGE_KEY }}
           platforms: ${{ matrix.platform }}
 
   release:
