@@ -196,7 +196,7 @@ jobs:
     needs: [ 'build-windows-amd64-binaries' ]
 
     env:
-      DOTNET_CHANNEL: 8.0
+      DOTNET_CHANNEL: '8.0'
 
     timeout-minutes: 10
 
@@ -241,6 +241,7 @@ jobs:
         run: |
           Add-Content $env:GITHUB_PATH "dotnet"
           Add-Content $env:GITHUB_PATH ".dotnet\tools"
+          Add-Content $env:DOTNET_ROOT ".dotnet"
 
       - name: Install WIX
         if: steps.wix-cache.outputs.cache-hit != 'true'
@@ -552,12 +553,16 @@ jobs:
           name: pufferpanel_build_artifact
 
   build-docker-image-base:
-    runs-on: ubuntu-20.04
     name: "Build Docker image"
     if: "startsWith(github.ref, 'refs/tags/v') || !contains(github.event.head_commit.message, '[skip]')"
     strategy:
       matrix:
-        platform: [ "linux/amd64" ]
+        include:
+          - platform: "linux/amd64"
+            runner: "ubuntu-20.04"
+          - platform: "linux/amd64"
+            runner: "debian-12-arm64"
+    runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
       packages: write
