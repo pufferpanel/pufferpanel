@@ -192,26 +192,62 @@ jobs:
 
   build-windows-installer:
     name: Build Windows Installer
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: [ 'build-windows-amd64-binaries' ]
+
+    env:
+      DOTNET_CHANNEL: 8.0
 
     timeout-minutes: 10
 
     steps:
       - name: Get the version
-        run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+        run: |
+          $VERSION="0.0.${{ github.run_number }}"
+          if ("${{ github.ref }}".startsWith("refs/tags/v")) {
+            $VERSION="${{ github.ref }}".substring('refs/tags/v'.length)
+          }
+          echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
 
-      - name: Get the version
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+      - name: Restore DOTNET BIN
+        uses: actions/cache@v3
+        id: dotnet-cache
+        with:
+          path: |
+            ~\dotnet
+          key: ${{ runner.os }}-dotnet-${{ env.DOTNET_CHANNEL }}
+          restore-keys: |
+            ${{ runner.os }}-dotnet-
+
+      - name: Restore Wix cache
+        uses: actions/cache@v3
+        id: wix-cache
+        with:
+          path: |
+            ~\.wix
+            ~\.dotnet\tools
+          key: ${{ runner.os }}-wix-${{ env.DOTNET_CHANNEL }}
+          restore-keys: |
+            ${{ runner.os }}-wixext-
 
       - name: Prepare .NET
+        if: steps.dotnet-cache.outputs.cache-hit != 'true'
         run: |
-          curl -L https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -o packages-microsoft-prod.deb          
-          sudo dpkg -i packages-microsoft-prod.deb          
-          rm packages-microsoft-prod.deb          
-          sudo apt-get update
-          sudo apt-get install -y dotnet-sdk-8.0
+          Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
+          dotnet-install.ps1 -Channel ${{ env.DOTNET_CHANNEL }}
+          Remove-Item dotnet-install.ps1
+
+      - name: Set Path
+        run: |
+          Add-Content $env:GITHUB_PATH "dotnet"
+          Add-Content $env:GITHUB_PATH ".dotnet\tools"
+
+      - name: Install WIX
+        if: steps.wix-cache.outputs.cache-hit != 'true'
+        run: |
+          dotnet tool install --tool-path .dotnet\tools wix
+          wix extension add WixToolset.Firewall.wixext
+          wix extension add WixToolset.UI.wixext
 
       - uses: actions/download-artifact@v3
         with:
@@ -230,13 +266,9 @@ jobs:
 
       - name: Generate MSI
         run: |
-          cp -r binaries/* .
-          cp artifacts/LICENSE.rtf .
-          cp artifacts/installer.wxs .
-          cp artifacts/client/frontend/public/favicon.ico .
-          dotnet tool install --global wix
-          wix extension add WixToolset.Firewall.wixext
-          wix extension add WixToolset.UI.wixext
+          Copy-Item -Recurse -Path binaries\* -Destination .
+          Copy-Item -Path artifacts\LICENSE.rtf -Destination .
+          Copy-Item -Path artifacts\installer.wxs -Destination .
           wix build -o pufferpanel.msi -arch x64 -d ProductVersion="${{ env.VERSION }}" -ext WixToolset.Firewall.wixext -ext WixToolset.UI.wixext installer.wxs
 
       - name: Publish Artifacts
