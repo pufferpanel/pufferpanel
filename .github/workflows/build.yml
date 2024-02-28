@@ -234,7 +234,7 @@ jobs:
         if: steps.dotnet-cache.outputs.cache-hit != 'true'
         run: |
           Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
-          dotnet-install.ps1 -Channel ${{ env.DOTNET_CHANNEL }}
+          .\dotnet-install.ps1 -Channel ${{ env.DOTNET_CHANNEL }}
           Remove-Item dotnet-install.ps1
 
       - name: Set Path
