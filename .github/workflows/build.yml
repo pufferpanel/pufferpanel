@@ -230,10 +230,10 @@ jobs:
 
       - name: Generate MSI
         run: |
-          cp -r binaries\* .
-          cp artifacts\LICENSE.rtf .
-          cp artifacts\installer.wxs .
-          cp artifacts\client\frontend\public\favicon.ico .
+          cp -r binaries/* .
+          cp artifacts/LICENSE.rtf .
+          cp artifacts/installer.wxs .
+          cp artifacts/client/frontend/public/favicon.ico .
           dotnet tool install --global wix
           wix extension add WixToolset.Firewall.wixext
           wix extension add WixToolset.UI.wixext
