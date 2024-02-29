@@ -18,6 +18,7 @@ ARG tags=nohost
 ARG version=devel
 ARG sha=devel
 ARG swagversion=1.16.2
+ARG swagarch=x86_64
 
 ENV CGOENABLED=1
 ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
@@ -25,7 +26,7 @@ ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
 RUN go version && \
     apk add --update --no-cache gcc musl-dev git curl make gcc g++ && \
     mkdir /pufferpanel && \
-    wget https://github.com/swaggo/swag/releases/download/v${swagversion}/swag_${swagversion}_Linux_x86_64.tar.gz && \
+    wget https://github.com/swaggo/swag/releases/download/v${swagversion}/swag_${swagversion}_Linux_$swagarch.tar.gz && \
     mkdir -p ~/go/bin && \
     tar -zxf swag*.tar.gz -C ~/go/bin && \
     rm -rf swag*.tar.gz

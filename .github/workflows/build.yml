@@ -561,8 +561,10 @@ jobs:
         include:
           - platform: "linux/amd64"
             runner: "ubuntu-20.04"
+            swagarch: "x86_64"
           - platform: "linux/arm64"
             runner: "debian-12-arm64"
+            swagarch: "arm64"
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
@@ -632,6 +634,7 @@ jobs:
             sha=${{ github.sha }}
             version=${{ env.VERSION }}
             curseforgeKey=${{ secrets.CURSEFORGE_KEY }}
+            swagarch=${{ matrix.swagarch }}
           platforms: ${{ matrix.platform }}
 
   release:
