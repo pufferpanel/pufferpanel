@@ -533,7 +533,7 @@ jobs:
           path: build-artifacts
 
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: pufferpanel_${{ env.VERSION }}_arm64.deb
           path: pufferpanel_${{ env.VERSION }}_arm64.deb
@@ -663,23 +663,26 @@ jobs:
         run: |
           gem install --no-doc package_cloud
 
-      # download it all, we'll grab what we need
       - uses: actions/download-artifact@v3
-
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
         with:
-          files: |
-            *.zip
-            *.rpm
-            *.deb
-            *.msi
+          merge-multiple: true
 
       - name: Push to repo
         env:
           PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
         run: |
-          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/any/any pufferpanel_*_amd64.deb 
-          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/any/any pufferpanel_*_arm64.deb 
-          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/rpm_any/rpm_any pufferpanel-*.x86_64.rpm 
+          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_amd64.deb 
+          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_arm64.deb 
+          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/rpm_any/rpm_any */pufferpanel-*.x86_64.rpm 
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          prerelease: true
+          files: |
+            *.zip
+            *.rpm
+            *.deb
+            *.msi
