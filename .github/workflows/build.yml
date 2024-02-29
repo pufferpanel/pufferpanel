@@ -197,7 +197,6 @@ jobs:
 
     env:
       DOTNET_CHANNEL: '8.0'
-      DOTNET_ROOT: '.dotnet'
 
     timeout-minutes: 10
 
@@ -240,8 +239,9 @@ jobs:
 
       - name: Set Path
         run: |
-          Add-Content $env:GITHUB_PATH "dotnet"
-          Add-Content $env:GITHUB_PATH ".dotnet\tools"
+          Add-Content $env:GITHUB_PATH "$pwd\dotnet"
+          Add-Content $env:GITHUB_PATH "$pwd\.dotnet\tools"
+          Add-Content $env:GITHUB_ENV "DOTNET_ROOT=$pwd\dotnet"
 
       - name: Install WIX
         if: steps.wix-cache.outputs.cache-hit != 'true'
