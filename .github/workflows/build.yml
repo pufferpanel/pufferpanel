@@ -225,10 +225,10 @@ jobs:
         with:
           path: |
             ~\.wix
-            ~\.dotnet\tools
+            ~\.dotnet
           key: ${{ runner.os }}-wix-${{ env.DOTNET_CHANNEL }}
           restore-keys: |
-            ${{ runner.os }}-wixext-
+            ${{ runner.os }}-wix-
 
       - name: Prepare .NET
         if: steps.dotnet-cache.outputs.cache-hit != 'true'
