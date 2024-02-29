@@ -268,7 +268,7 @@ jobs:
       - name: Generate MSI
         run: |
           Copy-Item -Recurse -Path binaries\* -Destination .
-          Copy-Item -Path artifacts\frontend\public\favicon.ico -Destination .
+          Copy-Item -Path artifacts\client\frontend\public\favicon.ico -Destination .
           Copy-Item -Path artifacts\LICENSE.rtf -Destination .
           Copy-Item -Path artifacts\installer.wxs -Destination .
           wix build -o pufferpanel.msi -arch x64 -d ProductVersion="${{ env.VERSION }}" -ext WixToolset.Firewall.wixext -ext WixToolset.UI.wixext installer.wxs
@@ -561,7 +561,7 @@ jobs:
         include:
           - platform: "linux/amd64"
             runner: "ubuntu-20.04"
-          - platform: "linux/amd64"
+          - platform: "linux/arm64"
             runner: "debian-12-arm64"
     runs-on: ${{ matrix.runner }}
     permissions:
