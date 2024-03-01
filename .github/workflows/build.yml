@@ -351,7 +351,7 @@ jobs:
           cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
           cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
           cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
-          cp systemd/profile.d/pufferpanel.sh DEBBUILD/etc/profile.d/pufferpanel.sh
+          cp -r systemd/etc DEBBUILD
 
       - name: Build Package DEB AMD64
         id: debamd64
@@ -401,7 +401,8 @@ jobs:
             build-artifacts/pufferpanel:/usr/sbin/pufferpanel
             config.linux.json:/etc/pufferpanel/config.json
             systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
-            systemd/profile.d/pufferpanel.sh:/etc/profile.d/pufferpanel.sh
+            systemd/etc/profile.d/pufferpanel.sh:/etc/profile.d/pufferpanel.sh
+            systemd/etc/sudoers.d/pufferpanel_env:/etc/sudoers.d/pufferpanel_env
             RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
             RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
           config: |
@@ -500,7 +501,7 @@ jobs:
           cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
           cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
           cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
-          cp systemd/profile.d/pufferpanel.sh DEBBUILD/etc/profile.d/pufferpanel.sh
+          cp -r systemd/etc DEBBUILD
 
       - name: Build Package DEB ARM64
         id: debarm64

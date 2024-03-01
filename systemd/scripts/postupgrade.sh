@@ -12,6 +12,9 @@ fi
 
 chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/log/pufferpanel /var/lib/pufferpanel /var/www/pufferpanel
 
+sh /etc/profile.d/pufferpanel.sh || true
+
 systemctl is-active --quiet pufferpanel && systemctl restart pufferpanel
 exitCode=$?
 [ $exitCode -eq 0 ] || [ $exitCode -eq 3 ] || exit $exitCode
+
