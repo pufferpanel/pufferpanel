@@ -1,1 +1,0 @@
-export PUFFER_CONFIG=/etc/pufferpanel/config.json

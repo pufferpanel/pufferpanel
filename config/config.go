@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/spf13/viper"
 	"os"
+	"runtime"
 	"strings"
 )
 
@@ -18,7 +19,21 @@ func LoadConfigFile(configFile string) error {
 		var exists bool
 		configFile, exists = os.LookupEnv("PUFFER_CONFIG")
 		if !exists || configFile == "" {
-			configFile = "config.json"
+			if runtime.GOOS == "windows" {
+				//well, check for the program files path....
+				if _, err := os.Lstat("C:\\Program Files\\PufferPanel\\config.json"); err == nil {
+					configFile = "C:\\Program Files\\PufferPanel\\config.json"
+				}
+			} else {
+				//well, check for the /etc path
+				if _, err := os.Lstat("/etc/pufferpanel/config.json"); err == nil {
+					configFile = "/etc/pufferpanel/config.json"
+				}
+			}
+			//we got nothing
+			if configFile == "" {
+				configFile = "config.json"
+			}
 		}
 	}
 
