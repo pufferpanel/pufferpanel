@@ -569,8 +569,8 @@ jobs:
 
     env:
       REGISTRY: ${{ vars.REGISTRY == 'docker.com' && '' || vars.REGISTRY }}
-      REGISTRY_USERNAME: ${{ vars.REGISTRY == 'ghcr.io' && github.actor || vars.REGISTRY_USERNAME }}
-      REGISTRY_PASSWORD: ${{ vars.REGISTRY == 'ghcr.io' && secrets.GITHUB_TOKEN || vars.REGISTRY_PASSWORD }}
+      REGISTRY_USERNAME: ${{ vars.REGISTRY == 'ghcr.io' && github.actor || secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ vars.REGISTRY == 'ghcr.io' && secrets.GITHUB_TOKEN || secrets.REGISTRY_PASSWORD }}
 
     steps:
       - name: Get the version
