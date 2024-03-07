@@ -537,7 +537,7 @@ jobs:
     name: "Cleanup"
 
     #if: ${{ always() }}
-    needs: [ build-shared, build-windows-amd64-binaries, build-windows-installer, build-linux-amd64-binaries, build-linux-arm64-binaries ]
+    needs: [ build-shared, build-docker-image-base, build-windows-amd64-binaries, build-windows-installer, build-linux-amd64-binaries, build-linux-arm64-binaries ]
 
     continue-on-error: true
 
@@ -676,7 +676,9 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            */*.zip
+            pufferpanel_*_linux_amd64/*
+            pufferpanel_*_linux_arm64/*
+            pufferpanel_*_windows_amd64/*
             */*.rpm
             */*.deb
             */*.msi
