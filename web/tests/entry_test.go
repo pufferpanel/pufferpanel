@@ -52,6 +52,12 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
+
+	err = database.Migrate(db)
+	if err != nil {
+		panic(err)
+	}
+
 	err = prepareUsers(db)
 	if err == nil {
 		router := gin.New()
