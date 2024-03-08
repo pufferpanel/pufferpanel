@@ -49,6 +49,7 @@ func init() {
 		versionCmd,
 		userCmd,
 		runServiceCmd,
+		migrateCmd,
 	)
 }
 

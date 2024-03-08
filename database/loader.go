@@ -5,7 +5,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -32,31 +31,8 @@ func openConnection() (err error) {
 		return
 	}
 
-	dialect := config.DatabaseDialect.Value()
-	if dialect == "" {
-		dialect = "sqlite3"
-	}
-	connString := config.DatabaseUrl.Value()
-	if connString == "" {
-		switch dialect {
-		case "mysql":
-			connString = "pufferpanel:pufferpanel@/pufferpanel"
-		case "sqlite3":
-			connString = "file:pufferpanel.db"
-		}
-	}
-
-	if dialect == "mysql" {
-		connString = addConnectionSetting(connString, "charset=utf8")
-		connString = addConnectionSetting(connString, "parseTime=true")
-	} else if dialect == "sqlite3" {
-		connString = addConnectionSetting(connString, "cache=shared")
-		connString = addConnectionSetting(connString, "_loc=auto")
-		connString = addConnectionSetting(connString, "_foreign_keys=1")
-		connString = addConnectionSetting(connString, "_journal_mode=WAL")
-		connString = addConnectionSetting(connString, "_busy_timeout=5000")
-		connString = addConnectionSetting(connString, "_tx_lock=immediate")
-	}
+	dialect := GetDialect()
+	connString := GetConnectionString()
 
 	var dialector gorm.Dialector
 	switch dialect {
@@ -95,14 +71,6 @@ func openConnection() (err error) {
 		logging.Error.Printf("Error connecting to database: %s", err)
 		return pufferpanel.ErrDatabaseNotAvailable
 	}
-	if err := migrateModels(); err != nil {
-		return err
-	}
-
-	err = migrate(dbConn)
-	if err != nil {
-		return err
-	}
 
 	if dialect == "sqlite3" {
 		d, e := dbConn.DB()
@@ -131,25 +99,39 @@ func Close() {
 	}
 }
 
-func migrateModels() error {
-	dbObjects := []interface{}{
-		&models.Node{},
-		&models.Server{},
-		&models.User{},
-		&models.Template{},
-		&models.Permissions{},
-		&models.Client{},
-		&models.UserSetting{},
-		&models.Session{},
-		&models.TemplateRepo{},
+func GetDialect() string {
+	dialect := config.DatabaseDialect.Value()
+	if dialect == "" {
+		dialect = "sqlite3"
 	}
+	return dialect
+}
 
-	for _, v := range dbObjects {
-		if err := dbConn.AutoMigrate(v); err != nil {
-			return err
+func GetConnectionString() string {
+	dialect := GetDialect()
+
+	connString := config.DatabaseUrl.Value()
+	if connString == "" {
+		switch dialect {
+		case "mysql":
+			connString = "pufferpanel:pufferpanel@/pufferpanel"
+		case "sqlite3":
+			connString = "file:pufferpanel.db"
 		}
 	}
-	return migrate(dbConn)
+
+	if dialect == "mysql" {
+		connString = addConnectionSetting(connString, "charset=utf8")
+		connString = addConnectionSetting(connString, "parseTime=true")
+	} else if dialect == "sqlite3" {
+		connString = addConnectionSetting(connString, "cache=shared")
+		connString = addConnectionSetting(connString, "_loc=auto")
+		connString = addConnectionSetting(connString, "_foreign_keys=1")
+		connString = addConnectionSetting(connString, "_journal_mode=WAL")
+		connString = addConnectionSetting(connString, "_busy_timeout=5000")
+		connString = addConnectionSetting(connString, "_tx_lock=immediate")
+	}
+	return connString
 }
 
 func addConnectionSetting(connString, setting string) string {

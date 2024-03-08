@@ -20,7 +20,7 @@ type Permissions struct {
 	ServerIdentifier *string `json:"-"`
 	Server           Server  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
-	RawScopes string               `gorm:"column:scopes;NOT NULL" json:"-" validate:"required"`
+	RawScopes string               `gorm:"column:scopes;NOT NULL;DEFAULT:''" json:"-" validate:"required"`
 	Scopes    []*pufferpanel.Scope `gorm:"-" json:"-"`
 }
 

@@ -70,6 +70,20 @@ func internalRun() (terminate chan bool, success bool) {
 	if config.PanelEnabled.Value() {
 		panel()
 
+		db, err := database.GetConnection()
+		if err != nil {
+			logging.Error.Printf("error connecting to database: %s", err.Error())
+			terminate <- true
+			return
+		}
+
+		err = database.Migrate(db)
+		if err != nil {
+			logging.Error.Printf("error upgrading database: %s", err.Error())
+			terminate <- true
+			return
+		}
+
 		if config.SessionKey.Value() == "" {
 			k := securecookie.GenerateRandomKey(32)
 			if err := config.SessionKey.Set(hex.EncodeToString(k), true); err != nil {
