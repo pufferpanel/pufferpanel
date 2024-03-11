@@ -197,6 +197,7 @@ jobs:
 
     env:
       DOTNET_CHANNEL: '8.0'
+      WIX_VERSION: '4.0.4'
 
     timeout-minutes: 10
 
@@ -246,9 +247,9 @@ jobs:
       - name: Install WIX
         #if: steps.wix-cache.outputs.cache-hit != 'true'
         run: |
-          dotnet tool install --tool-path .dotnet\tools wix
-          wix extension add WixToolset.Firewall.wixext
-          wix extension add WixToolset.UI.wixext
+          dotnet tool install --tool-path .dotnet\tools wix --version ${{ env.WIX_VERSION }}
+          wix extension add WixToolset.Firewall.wixext/${{ env.WIX_VERSION }}
+          wix extension add WixToolset.UI.wixext/${{ env.WIX_VERSION }}
 
       - uses: actions/download-artifact@v3
         with:
