@@ -23,7 +23,7 @@ func Migrate(dbConn *gorm.DB) error {
 	}
 
 	for _, v := range dbObjects {
-		logging.Info.Printf("Migrating model: " + reflect.TypeOf(v).Name())
+		logging.Info.Printf("Migrating model: " + reflect.TypeOf(v).Elem().Name())
 		if err := dbConn.AutoMigrate(v); err != nil {
 			return err
 		}
