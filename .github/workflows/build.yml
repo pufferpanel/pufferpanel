@@ -209,29 +209,29 @@ jobs:
           }
           echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
 
-      - name: Restore DOTNET BIN
-        uses: actions/cache@v3
-        id: dotnet-cache
-        with:
-          path: |
-            ~\dotnet
-          key: ${{ runner.os }}-dotnet-${{ env.DOTNET_CHANNEL }}
-          restore-keys: |
-            ${{ runner.os }}-dotnet-
-
-      - name: Restore Wix cache
-        uses: actions/cache@v3
-        id: wix-cache
-        with:
-          path: |
-            ~\.wix
-            ~\.dotnet
-          key: ${{ runner.os }}-wix-${{ env.DOTNET_CHANNEL }}
-          restore-keys: |
-            ${{ runner.os }}-wix-
+#      - name: Restore DOTNET BIN
+#        uses: actions/cache@v3
+#        id: dotnet-cache
+#        with:
+#          path: |
+#            ~\dotnet
+#          key: ${{ runner.os }}-dotnet-${{ env.DOTNET_CHANNEL }}
+#          restore-keys: |
+#            ${{ runner.os }}-dotnet-
+#
+#      - name: Restore Wix cache
+#        uses: actions/cache@v3
+#        id: wix-cache
+#        with:
+#          path: |
+#            ~\.wix
+#            ~\.dotnet
+#          key: ${{ runner.os }}-wix-${{ env.DOTNET_CHANNEL }}
+#          restore-keys: |
+#            ${{ runner.os }}-wix-
 
       - name: Prepare .NET
-        if: steps.dotnet-cache.outputs.cache-hit != 'true'
+        #if: steps.dotnet-cache.outputs.cache-hit != 'true'
         run: |
           Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
           .\dotnet-install.ps1 -Channel ${{ env.DOTNET_CHANNEL }} -InstallDir dotnet
