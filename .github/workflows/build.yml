@@ -6,9 +6,8 @@ on:
     tags:
       - v3.*
     paths-ignore:
-      - '.github/workflows/release.yml'
-      - '.github/workflows/pr.yml'
       - '.github/workflows/tester.yml'
+      - '.github/workflows/run-template-tester.yml'
       - '.github/workflows/formatter.yml'
   pull_request:
     branches:
@@ -538,7 +537,7 @@ jobs:
     name: "Cleanup"
 
     #if: ${{ always() }}
-    needs: [ build-shared, build-docker-image-base, build-windows-amd64-binaries, build-windows-installer, build-linux-amd64-binaries, build-linux-arm64-binaries ]
+    needs: [ build-shared, build-docker-image-base, build-windows-amd64-binaries, build-windows-installer, build-linux-amd64-binaries, build-linux-arm64-binaries, release ]
 
     continue-on-error: true
 
@@ -551,15 +550,6 @@ jobs:
   build-docker-image-base:
     name: "Build Docker image"
     if: "startsWith(github.ref, 'refs/tags/v') || !contains(github.event.head_commit.message, '[skip]')"
-    strategy:
-      matrix:
-        include:
-          - platform: "linux/amd64"
-            runner: "ubuntu-20.04"
-            swagarch: "x86_64"
-          - platform: "linux/arm64"
-            runner: "debian-12-arm64"
-            swagarch: "arm64"
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
@@ -637,7 +627,9 @@ jobs:
             version=${{ env.VERSION }}
             curseforgeKey=${{ secrets.CURSEFORGE_KEY }}
             swagarch=${{ matrix.swagarch }}
-          platforms: ${{ matrix.platform }}
+          platforms:
+            linux/amd64
+            linux/arm64
 
   release:
     name: "Deployment"
@@ -684,9 +676,9 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            pufferpanel_*_linux_amd64/*
-            pufferpanel_*_linux_arm64/*
-            pufferpanel_*_windows_amd64/*
+            pufferpanel_*_linux_amd64
+            pufferpanel_*_linux_arm64
+            pufferpanel_*_windows_amd64
             */*.rpm
             */*.deb
             */*.msi

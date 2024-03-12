@@ -1,7 +1,7 @@
 ###
 # Builder container
 ###
-FROM node:20-alpine AS node
+FROM --platform=$BUILDPLATFORM node:20-alpine AS node
 
 WORKDIR /build
 COPY client .
@@ -12,7 +12,7 @@ RUN rm -rf /build/*/node_modules/ && \
 RUN yarn install && \
     yarn build
 
-FROM golang:1.21-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS builder
 
 ARG tags=nohost
 ARG version=devel
@@ -42,7 +42,9 @@ RUN ~/go/bin/swag init --md . -o web/swagger -g web/loader.go
 
 COPY --from=node /build/frontend/dist /build/pufferpanel/client/frontend/dist
 
-RUN go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
+ARG TARGETOS
+ARG TARGETARCH
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
 
 ###
 # Generate final image
