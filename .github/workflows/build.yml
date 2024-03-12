@@ -569,7 +569,7 @@ jobs:
     timeout-minutes: 10
 
     env:
-      REGISTRY: ${{ vars.REGISTRY == 'docker.com' && '' || vars.REGISTRY }}
+      REGISTRY: ${{ vars.REGISTRY != 'docker.com' && vars.REGISTRY || '' }}
       REGISTRY_USERNAME: ${{ vars.REGISTRY == 'ghcr.io' && github.actor || secrets.REGISTRY_USERNAME }}
       REGISTRY_PASSWORD: ${{ vars.REGISTRY == 'ghcr.io' && secrets.GITHUB_TOKEN || secrets.REGISTRY_PASSWORD }}
 
