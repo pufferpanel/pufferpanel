@@ -569,7 +569,7 @@ jobs:
     timeout-minutes: 10
 
     env:
-      REGISTRY: ${{ vars.REGISTRY == 'docker.com' && '' || vars.REGISTRY }}
+      REGISTRY: ${{ vars.REGISTRY == 'docker.com' && 'registry-1.docker.io' || vars.REGISTRY }}
       REGISTRY_USERNAME: ${{ vars.REGISTRY == 'ghcr.io' && github.actor || secrets.REGISTRY_USERNAME }}
       REGISTRY_PASSWORD: ${{ vars.REGISTRY == 'ghcr.io' && secrets.GITHUB_TOKEN || secrets.REGISTRY_PASSWORD }}
 
@@ -603,8 +603,8 @@ jobs:
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
           images: |
-            name=${{ env.REGISTRY != '' && format('{0}/', env.REGISTRY) || '' }}${{ env.IMAGE_NAME }},enable=${{ env.REGISTRY != '' }}
-            name=${{ env.IMAGE_NAME }},enable=${{ env.REGISTRY == '' }}
+            name=${{ env.REGISTRY != 'docker.com' && format('{0}/', env.REGISTRY) || '' }}${{ env.IMAGE_NAME }},enable=${{ vars.REGISTRY != 'docker.com' }}
+            name=${{ env.IMAGE_NAME }},enable=${{ vars.REGISTRY == 'docker.com' }}
           flavor: |
             latest=false
           tags: |
