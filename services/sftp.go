@@ -12,7 +12,7 @@ type DatabaseSFTPAuthorization struct {
 }
 
 func (s *DatabaseSFTPAuthorization) Validate(username, password string) (perms *ssh.Permissions, err error) {
-	parts := strings.Split(username, "|")
+	parts := strings.Split(username, "#")
 	if len(parts) != 2 {
 		return nil, errors.New("incorrect username or password")
 	}
@@ -37,7 +37,7 @@ func (s *DatabaseSFTPAuthorization) Validate(username, password string) (perms *
 		return nil, errors.New("incorrect username or password")
 	}
 
-	if pufferpanel.ContainsScope(serverPerms.Scopes, pufferpanel.ScopeServerSftp) {
+	if !pufferpanel.ContainsScope(serverPerms.Scopes, pufferpanel.ScopeServerSftp) {
 		return nil, errors.New("incorrect username or password")
 	}
 
