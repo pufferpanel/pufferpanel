@@ -626,7 +626,6 @@ jobs:
             sha=${{ github.sha }}
             version=${{ env.VERSION }}
             curseforgeKey=${{ secrets.CURSEFORGE_KEY }}
-            swagarch=${{ matrix.swagarch }}
           platforms: linux/amd64,linux/arm64
 
   release:
