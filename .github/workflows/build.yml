@@ -627,9 +627,7 @@ jobs:
             version=${{ env.VERSION }}
             curseforgeKey=${{ secrets.CURSEFORGE_KEY }}
             swagarch=${{ matrix.swagarch }}
-          platforms:
-            linux/amd64
-            linux/arm64
+          platforms: linux/amd64,linux/arm64
 
   release:
     name: "Deployment"
