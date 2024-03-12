@@ -12,7 +12,7 @@ RUN rm -rf /build/*/node_modules/ && \
 RUN yarn install && \
     yarn build
 
-FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS swagger
 
 ARG tags=nohost
 ARG version=devel
@@ -40,11 +40,19 @@ COPY . .
 
 RUN ~/go/bin/swag init --md . -o web/swagger -g web/loader.go
 
+# Actual builder
+FROM  golang:1.21-alpine AS builder
+
+WORKDIR /build/pufferpanel
+
+RUN apk add --update --no-cache gcc musl-dev git curl make gcc g++
+
+COPY . .
+COPY --from=swagger /build/pufferpanel/web/loader.go /build/pufferpanel/web/loader.go
+COPY --from=swagger /go/pkg /go/pkg
 COPY --from=node /build/frontend/dist /build/pufferpanel/client/frontend/dist
 
-ARG TARGETOS
-ARG TARGETARCH
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
+RUN go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
 
 ###
 # Generate final image
