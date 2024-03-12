@@ -7,6 +7,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
+	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/spf13/cast"
 	"net/http"
 )
@@ -74,20 +75,31 @@ func setSetting(c *gin.Context) {
 	for _, v := range editableStringEntries {
 		if v.Key() == key {
 			err = v.Set(cast.ToString(model.Value), true)
+			if response.HandleError(c, err, http.StatusInternalServerError) {
+				return
+			}
 		}
 	}
 
 	for _, v := range editableBoolEntries {
 		if v.Key() == key {
 			err = v.Set(cast.ToBool(model.Value), true)
+			if response.HandleError(c, err, http.StatusInternalServerError) {
+				return
+			}
 		}
 	}
 
 	for _, v := range editableIntEntries {
 		if v.Key() == key {
 			err = v.Set(cast.ToInt(model.Value), true)
+			if response.HandleError(c, err, http.StatusInternalServerError) {
+				return
+			}
 		}
 	}
+
+	services.SyncNodeToConfig()
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -115,24 +127,32 @@ func setSettings(c *gin.Context) {
 		for _, v := range editableStringEntries {
 			if v.Key() == key {
 				err = v.Set(cast.ToString(value), true)
+				if response.HandleError(c, err, http.StatusInternalServerError) {
+					return
+				}
 			}
 		}
 
 		for _, v := range editableBoolEntries {
 			if v.Key() == key {
 				err = v.Set(cast.ToBool(value), true)
+				if response.HandleError(c, err, http.StatusInternalServerError) {
+					return
+				}
 			}
 		}
 
 		for _, v := range editableIntEntries {
 			if v.Key() == key {
 				err = v.Set(cast.ToInt(value), true)
+				if response.HandleError(c, err, http.StatusInternalServerError) {
+					return
+				}
 			}
 		}
-		if response.HandleError(c, err, http.StatusInternalServerError) {
-			return
-		}
 	}
+
+	services.SyncNodeToConfig()
 
 	c.Status(http.StatusNoContent)
 }

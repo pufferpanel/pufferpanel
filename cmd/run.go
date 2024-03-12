@@ -101,6 +101,10 @@ func internalRun() (terminate chan bool, success bool) {
 		}
 		sessionStore := cookie.NewStore(result)
 		router.Use(sessions.Sessions("session", sessionStore))
+
+		if config.DaemonEnabled.Value() {
+			services.SyncNodeToConfig()
+		}
 	}
 
 	if config.DaemonEnabled.Value() {
