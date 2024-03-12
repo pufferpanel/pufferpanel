@@ -550,7 +550,7 @@ jobs:
   build-docker-image-base:
     name: "Build Docker image"
     if: "startsWith(github.ref, 'refs/tags/v') || !contains(github.event.head_commit.message, '[skip]')"
-    runs-on: ${{ matrix.runner }}
+    runs-on: ubuntu-20.04
     permissions:
       contents: read
       packages: write
