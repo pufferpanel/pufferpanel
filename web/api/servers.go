@@ -859,20 +859,15 @@ func removeServerUser(c *gin.Context) {
 // @Description Renames a server
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
-// @Param name body pufferpanel.Name true "New server name"
-// @Router /api/servers/{id}/name [post]
+// @Param name path string true "New server name"
+// @Router /api/servers/{id}/name/{name} [put]
 // @Security OAuth2Application[server.name.edit]
 func renameServer(c *gin.Context) {
 	var err error
 
 	server := getServerFromGin(c)
 
-	var name pufferpanel.Name
-	err = c.ShouldBindJSON(&name)
-	if response.HandleError(c, err, http.StatusBadRequest) {
-		return
-	}
-
+	name := c.Param("name")
 	t, exist := c.Get("db")
 	if !exist {
 		logging.Error.Printf("getting server for rename with err `%s`", err)
@@ -887,7 +882,7 @@ func renameServer(c *gin.Context) {
 	}
 	ss := &services.Server{DB: db}
 
-	server.Name = name.Name
+	server.Name = name
 	err = ss.Update(server)
 	if err != nil {
 		logging.Error.Printf("renaming server with err `%s`", err)
