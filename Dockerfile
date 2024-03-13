@@ -12,7 +12,12 @@ RUN rm -rf /build/*/node_modules/ && \
 RUN yarn install && \
     yarn build
 
-FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS swagger
+FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
+
+FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS builder
+
+RUN apk add clang lld
+COPY --from=xx / /
 
 ARG tags=nohost
 ARG version=devel
@@ -20,12 +25,10 @@ ARG sha=devel
 ARG swagversion=1.16.2
 ARG swagarch=x86_64
 
-ENV CGOENABLED=1
+ENV CGO_ENABLED=1
 ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
 
-RUN go version && \
-    apk add --update --no-cache gcc musl-dev git curl make gcc g++ && \
-    mkdir /pufferpanel && \
+RUN mkdir /pufferpanel && \
     wget https://github.com/swaggo/swag/releases/download/v${swagversion}/swag_${swagversion}_Linux_$swagarch.tar.gz && \
     mkdir -p ~/go/bin && \
     tar -zxf swag*.tar.gz -C ~/go/bin && \
@@ -40,19 +43,12 @@ COPY . .
 
 RUN ~/go/bin/swag init --md . -o web/swagger -g web/loader.go
 
-# Actual builder
-FROM  golang:1.21-alpine AS builder
-
-WORKDIR /build/pufferpanel
-
-RUN apk add --update --no-cache gcc musl-dev git curl make gcc g++
-
-COPY . .
-COPY --from=swagger /build/pufferpanel/web/loader.go /build/pufferpanel/web/loader.go
-COPY --from=swagger /go/pkg /go/pkg
 COPY --from=node /build/frontend/dist /build/pufferpanel/client/frontend/dist
 
-RUN go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
+ARG TARGETPLATFORM
+RUN xx-apk add musl-dev gcc
+RUN xx-go build -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd && \
+    xx-verify /pufferpanel/pufferpanel
 
 ###
 # Generate final image
