@@ -5,7 +5,7 @@
   "Offline": "Vypnut",
   "Unknown": "Neznámý",
   "Loading": "Načítám..",
-  "Description": "Description",
+  "Description": "Popis",
   "Save": "Uložit",
   "Cancel": "Zrušit",
   "Close": "Zavřít",
@@ -22,15 +22,15 @@
   "Protocol": "Protokol",
   "Add": "Přidat",
   "Apply": "Použít",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
+  "Confirm": "Potvrdit",
+  "Condition": "Podmínka",
   "theme": {
     "Theme": "Motiv",
     "Mode": "Režim",
     "mode": {
       "Light": "Světlý",
       "Dark": "Tmavý",
-      "Auto": "Auto"
+      "Auto": "Automaticky"
     },
     "BaseColor": "Základní barva",
     "ServerTypeDisplay": "Zobrazení typu serveru",
