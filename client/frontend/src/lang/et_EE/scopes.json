@@ -50,8 +50,8 @@
   "hint": {
     "admin": "Grants all permissions",
     "login": "Allows the user to log in",
-    "self-edit": "Lets the user change their password, update their email and manage 2FA for their account",
-    "settings-edit": "Allows editing global panel settings like master url, email integration etc"
+    "self-edit": "Luba kasutajal oma salasõna, e-posti aadressi ja kaheastmelist tuvastamist muuta",
+    "settings-edit": "Lubab muuta globaalseit sätteid, nagu põhiaadressi, e-posti integratsioone jne"
   },
   "ServersEdit": "Muuda serverit",
   "ServersInstall": "Paigalda server",
