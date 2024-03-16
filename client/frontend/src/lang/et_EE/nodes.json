@@ -10,8 +10,8 @@
   "Created": "Tehtud sõlm",
   "Updated": "Uuendatud sõlm",
   "Deleted": "Kustutatud sõlm",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "Reachable": "See node on õigesti seadistatud ja töötab",
+  "Unreachable": "See node on kas valesti seadistatud, või pole hetkel saadaval",
   "features": {
     "os": {
       "label": "Operatsioonisüsteem",
@@ -40,10 +40,10 @@
   "LocalNodeEdit": "Kohalikul nodel pole muudetavaid sätteid\n\nSellel nodel hostitavatel serveritel kuvatud hosti muutmiseks, muuda paneeli põhiaadressi paneeli seadetes",
   "Deploy": "Väljasta sõlm",
   "deploy": {
-    "Step1": "Installi PufferPanel uuel serveril, [lisainfot leidub dokumentatsioonist](https://docs.pufferpanel.com/en/latest/installing.html)",
-    "Step2": "Peata PufferPanel'i teenus uuel serveril, juhul kui ta installatsioonil käivitati sooritamal käsk `sudo systemctl stop pufferpanel`",
-    "Step3": "Asenda PufferPanel'i konfiguratsioonifaili sisu uuel serveril all oleva koodiga\n\nKonfiguratsioonifail leidub tavaliselt `/etc/pufferpanel/config.json` teelt\n\n```\n{config}\n```",
-    "Step4": "Rakenda ja (taas)käivita PufferPanel'i teenus uuel serveril `sudo systemctl enable --now pufferpanel` käsuga",
+    "Step1": "## Esimene Samm\n\nInstalli PufferPanel uuel serveril, [lisainfot leidub dokumentatsioonist](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Teine Samm\n\nPeata PufferPanel'i teenus uuel serveril, juhul kui ta installatsioonil käivitati sooritamal käsk `sudo systemctl stop pufferpanel`",
+    "Step3": "## Kolmas samm\n\nAsenda PufferPanel'i konfiguratsioonifaili sisu uuel serveril all oleva koodiga\n\nKonfiguratsioonifail leidub tavaliselt `/etc/pufferpanel/config.json` teelt\n\n```\n{config}\n```",
+    "Step4": "## Neljas Samm\n\nRakenda ja (taas)käivita PufferPanel'i teenus uuel serveril `sudo systemctl enable --now pufferpanel` käsuga",
     "Step5": "### Teie uus node on nüüd kasutamiseks valmis"
   },
   "DeploymentInstruction": "Et juurutada sõlme, paigalda PufferPanel uuele serverile ja pane konfiguratsioon asukohta `/etc/pufferpanel/`<br/>Taaskäivita PufferPanel uuel serveril pärast."
