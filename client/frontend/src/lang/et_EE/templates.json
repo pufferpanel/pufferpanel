@@ -37,7 +37,7 @@
   "AddVariableGroup": "Lisa Muutujate Grupp",
   "CommandConditionHint": "Kasuta seda käsku ainult kui tingimus on täidetud",
   "AddCommand": "Lisa Käsk",
-  "AddEnvironment": "Add Environment",
+  "AddEnvironment": "Lisa Keskkond",
   "signals": {
     "1": "SIGHUP",
     "2": "SIGINT (CTRL+C)",
@@ -68,21 +68,21 @@
   },
   "description": {
     "Name": "Seda nime kasutatagse malli tuvastamiseks",
-    "Display": "This is the name that will be displayed to users for example during server creation",
-    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
-    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
-    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
-    "Command": "This is the command that will be executed to start the server",
-    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
-    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
-    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
-    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+    "Display": "See on nimi, mida kasutajatele näidatakse näiteks serveri loomisel",
+    "Type": "Seda kasutatakse erinevate mallide rühmitamiseks ja selle üle otsustamiseks, millist ikooni selle jaoks serveri nimekirjas kuvada",
+    "Variables": "Muutujad kuvatakse kasutajatele serveri seadistustena, need on kasulikud näiteks selleks, et kasutaja saaks määrata, millist versiooni kasutada või määrata mõningaid seadistusi, nagu näiteks kasutatav port",
+    "Install": "Siin määratletakse, millised sammud sooritatakse, kui kasutaja vajutab selle malli alusel loodud serveri paigaldusnuppu",
+    "Command": "Seda käsku kasutatagse serveri käivitamiseks",
+    "StopCommand": "Kirjuta käsk serveri terminali kui kasutaja serveri peatamise nuppu vajutab",
+    "StopSignal": "Saada signaal serverile kui kasutaja serveri peatamise nuppu vajutab. Sellega saab näiteks CTRL+C klahvivajutust emuleerida",
+    "PreRunHook": "Siin saad määritleda samme, mida iga kord enne serveri käivitumist sooritatakse",
+    "PostRunHook": "Siin saad määritleda samme, mida iga kord pärast serveri väljalülitamist sooritatakse"
   },
   "WorkingDirectory": "Töökataloog",
-  "General": "General",
-  "Hooks": "Hooks",
-  "Import": "Import template",
+  "General": "Üldine",
+  "Hooks": "Haagid",
+  "Import": "Impordi mall",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties"
+    "CommunityWarning": "Need mallid on tehtud kogukonna poolt ja neid pakutakse ilma garantiideta"
   }
 }
