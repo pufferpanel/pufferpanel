@@ -5,14 +5,14 @@
   "Offline": "Poissa päältä",
   "Unknown": "Tuntematon",
   "Loading": "Ladataan...",
-  "Description": "Description",
+  "Description": "Kuvaus",
   "Save": "Tallenna",
   "Cancel": "Peruuta",
-  "Close": "Close",
+  "Close": "Sulje",
   "Host": "Isäntä",
   "Port": "Portti",
   "Collapse": "Romahdus",
-  "Expand": "Expand",
+  "Expand": "Laajenna",
   "Copied": "Kopioitu leikepöydälle",
   "Back": "Takaisin",
   "Next": "Seuraava",
@@ -21,27 +21,27 @@
   "HelpTranslate": "Auta meitä kääntämään PufferPanelia",
   "Protocol": "Protokolla",
   "Add": "Lisää",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
+  "Apply": "Toteuta",
+  "Confirm": "Vahvista",
+  "Condition": "Tila",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Teema",
+    "Mode": "Tila",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "Auto": "Auto"
+      "Light": "Vaalea",
+      "Dark": "Tumma",
+      "Auto": "Automaattinen"
     },
-    "BaseColor": "Base Color",
-    "ServerTypeDisplay": "Server Type Display",
+    "BaseColor": "Pohjaväri",
+    "ServerTypeDisplay": "Palvelimen Tyypin Näyttö",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "Kuvake",
+      "None": "Tyhjä"
     },
-    "ListType": "List Type",
+    "ListType": "Luettelon Tyyli",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Ruudukko",
+      "List": "Luettelo"
     }
   }
 }
