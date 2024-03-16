@@ -3,17 +3,17 @@
   "Global": {
     "Title": "Üldine",
     "g a": "Ava kontoteabe leht",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "g c": "Mine Paneeli Konfiguratsioonile",
+    "g n": "Mine Nodede Juurde",
+    "g s": "Mine Serveritele",
+    "g t": "Mine Mallidele",
+    "g u": "Mine Kasutajatele"
   },
   "Self": {
-    "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
+    "Title": "Konto",
+    "t 2": "Mine Kaheastmelise Tuvastamise avalehele",
+    "t a": "Mine Konto Üksikasjade avalehele",
+    "t o": "Mine OAuth- avalehele",
     "t p": "Go to Password tab",
     "t s": "Go to Preferences tab"
   },
