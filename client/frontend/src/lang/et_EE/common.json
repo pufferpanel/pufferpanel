@@ -12,7 +12,7 @@
   "Host": "Host",
   "Port": "Port",
   "Collapse": "Koonda",
-  "Expand": "Expand",
+  "Expand": "Laienda",
   "Copied": "Kopeeritud lõikelauale",
   "Back": "Tagasi",
   "Next": "Järgmine",
@@ -21,27 +21,27 @@
   "HelpTranslate": "Aita tõlkida PufferPanelit",
   "Protocol": "Protokoll",
   "Add": "Lisa",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
+  "Apply": "Rakenda",
+  "Confirm": "Kinnita",
   "Condition": "Condition",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Teema",
+    "Mode": "Režiim",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "Auto": "Auto"
+      "Light": "Hele",
+      "Dark": "Tume",
+      "Auto": "Automaatne"
     },
-    "BaseColor": "Base Color",
+    "BaseColor": "Põhivärv",
     "ServerTypeDisplay": "Server Type Display",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "Ikoon",
+      "None": "Puudub"
     },
-    "ListType": "List Type",
+    "ListType": "Nimekirja Tüüp",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Ruudustik",
+      "List": "Nimekiri"
     }
   }
 }
