@@ -23,7 +23,7 @@
   "Add": "Lisa",
   "Apply": "Rakenda",
   "Confirm": "Kinnita",
-  "Condition": "Condition",
+  "Condition": "Tingimus",
   "theme": {
     "Theme": "Teema",
     "Mode": "Režiim",
@@ -33,7 +33,7 @@
       "Auto": "Automaatne"
     },
     "BaseColor": "Põhivärv",
-    "ServerTypeDisplay": "Server Type Display",
+    "ServerTypeDisplay": "Serveri Tüüpi Näitaja",
     "serverTypeDisplay": {
       "Icon": "Ikoon",
       "None": "Puudub"
