@@ -18,6 +18,9 @@
     font-size: 36px;
     font-weight: 900;
     color: var(--text-primary);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .name[data-name="PufferPanel"] {
     height: 32px;
