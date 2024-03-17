@@ -149,10 +149,12 @@ function confirmEdit() {
 
 function remove(name) {
   delete template.value.data[name]
-  template.value.groups = template.value.groups.map(group => {
-    const variables = group.variables.filter(v => v !== name)
-    return { ...group, variables }
-  })
+  if (Array.isArray(template.value.groups)) {
+    template.value.groups = template.value.groups.map(group => {
+      const variables = group.variables.filter(v => v !== name)
+      return { ...group, variables }
+    })
+  }
   update()
 }
 
