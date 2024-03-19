@@ -19,3 +19,9 @@ www/
 operations/spongedl/cache/
 operations/spongedl/mods/
 operations/spongedl/*.jar
+
+favicon.ico
+.dotnet/
+.wix/
+/pufferpanel.msi
+/pufferpanel.wixpdb

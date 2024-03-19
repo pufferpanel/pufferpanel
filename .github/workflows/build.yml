@@ -249,6 +249,7 @@ jobs:
           dotnet tool install --tool-path .dotnet\tools wix --version ${{ env.WIX_VERSION }}
           wix extension add WixToolset.Firewall.wixext/${{ env.WIX_VERSION }}
           wix extension add WixToolset.UI.wixext/${{ env.WIX_VERSION }}
+          wix extension add WixToolset.Util.wixext/${{ env.WIX_VERSION }}
 
       - uses: actions/download-artifact@v3
         with:
@@ -271,7 +272,8 @@ jobs:
           Copy-Item -Path artifacts\client\frontend\public\favicon.ico -Destination .
           Copy-Item -Path artifacts\LICENSE.rtf -Destination .
           Copy-Item -Path artifacts\installer.wxs -Destination .
-          wix build -o pufferpanel.msi -arch x64 -d ProductVersion="${{ env.VERSION }}" -ext WixToolset.Firewall.wixext -ext WixToolset.UI.wixext installer.wxs
+          set password $((New-Guid).ToString())
+          wix build -o pufferpanel.msi -arch x64 -d ProductVersion="${{ env.VERSION }}" -d Password="$password" -ext WixToolset.Firewall.wixext -ext WixToolset.UI.wixext -ext WixToolset.Util.wixext installer.wxs
 
       - name: Publish Artifacts
         uses: actions/upload-artifact@v3

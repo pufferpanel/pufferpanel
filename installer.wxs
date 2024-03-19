@@ -1,43 +1,70 @@
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:firewall="http://wixtoolset.org/schemas/v4/wxs/firewall" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
-    <Package Version="$(var.ProductVersion)" UpgradeCode="b0ef7063-2eaa-48b0-948d-00167774557a" Language="1033" Name="PufferPanel" Manufacturer="PufferPanel" InstallerVersion="300"><Media Id="1" Cabinet="pufferpanel.cab" EmbedCab="yes" />
-        <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:firewall="http://wixtoolset.org/schemas/v4/wxs/firewall"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui" xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+    <Package Version="$(var.ProductVersion)" UpgradeCode="b0ef7063-2eaa-48b0-948d-00167774557a" Language="1033"
+             Name="PufferPanel" Manufacturer="PufferPanel" InstallerVersion="300">
+        <Media Id="1" Cabinet="pufferpanel.cab" EmbedCab="yes"/>
+        <MajorUpgrade AllowSameVersionUpgrades="yes"
+                      DowngradeErrorMessage="A newer version of [ProductName] is already installed."/>
 
         <!-- Step 1: Define the directory structure -->
+        <StandardDirectory Id="ProgramFiles64Folder">
+            <Directory Id="APPLICATIONROOTDIRECTORY" Name="PufferPanel">
+            </Directory>
+        </StandardDirectory>
+
+        <StandardDirectory Id="CommonAppDataFolder">
+            <Directory Id="ProgramDataVendorFolder" Name="PufferPanel">
+            </Directory>
+        </StandardDirectory>
 
         <!-- Step 2: Add files to your installer package -->
         <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
             <Component Id="pufferpanel" Guid="6a923f7e-b685-417e-8baf-612b0cade288">
+                <util:User Id="UpdateUserLogonAsService" UpdateIfExists="yes" CreateUser="yes" Name="PufferPanelService"
+                           PasswordNeverExpires="yes" Password="$(var.Password)"
+                           LogonAsService="yes"/>
                 <File Id="pufferpanel.exe" Source="pufferpanel.exe" KeyPath="yes" Checksum="yes">
-                    <firewall:FirewallException Id="PanelRule" Name="PufferPanel Web Interface" Scope="any" />
-                    <firewall:FirewallException Id="SFTPRule" Name="PufferPanel SFTP Interface" Scope="any" />
+                    <firewall:FirewallException Id="PanelRule" Name="PufferPanel Web Interface" Scope="any"/>
+                    <firewall:FirewallException Id="SFTPRule" Name="PufferPanel SFTP Interface" Scope="any"/>
                 </File>
-                <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Start="auto" Name="PufferPanel" Description="Game management server panel. This service can be either the daemon or the panel, or both." Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" ErrorControl="normal" Arguments="runService --workDir=&quot;[APPLICATIONROOTDIRECTORY]\&quot;" Vital="yes">
+                <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Start="auto" Name="PufferPanel"
+                                Description="Game management server panel. This service can be either the daemon or the panel, or both."
+                                Account=".\PufferPanelService"
+                                Password="$(var.Password)"
+                                ErrorControl="normal"
+                                Arguments="runService --workDir=&quot;[ProgramDataVendorFolder]\&quot;" Vital="yes">
                 </ServiceInstall>
-                <ServiceControl Id="StartService" Stop="both" Remove="uninstall" Name="PufferPanel" Wait="yes" />
+                <ServiceControl Id="StartService" Stop="both" Remove="uninstall" Name="PufferPanel" Wait="yes"/>
             </Component>
             <Component Id="RegistryEntries" Guid="34c0bf3c-fa7f-485f-9704-805549e90f66">
                 <RegistryKey Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\Application\PufferPanel">
-                    <RegistryValue Type="expandable" Name="EventMessageFile" Value="%SystemRoot%\System32\EventCreate.exe" KeyPath="yes" />
-                    <RegistryValue Type="integer" Name="TypesSupported" Value="7" />
+                    <RegistryValue Type="expandable" Name="EventMessageFile"
+                                   Value="%SystemRoot%\System32\EventCreate.exe" KeyPath="yes"/>
+                    <RegistryValue Type="integer" Name="TypesSupported" Value="7"/>
                 </RegistryKey>
             </Component>
         </DirectoryRef>
 
+        <DirectoryRef Id="ProgramDataVendorFolder">
+            <Component Id="CreateServerDirectory" Guid="13ae94b7-9ef5-4181-bfa9-933844a13418"
+                       Permanent="yes">
+                <CreateFolder>
+                    <util:PermissionEx User="PufferPanelService" GenericAll="yes"/>
+                </CreateFolder>
+            </Component>
+        </DirectoryRef>
+
         <!-- Step 3: Tell WiX to install the files -->
-        <Feature Id="MainApplication" Title="Main Application" Level="1">
-            <ComponentRef Id="pufferpanel" />
-            <ComponentRef Id="RegistryEntries" />
+        <Feature Id="MainApplication" Title="PufferPanel" Level="1">
+            <ComponentRef Id="pufferpanel"/>
+            <ComponentRef Id="RegistryEntries"/>
+            <ComponentRef Id="CreateServerDirectory"/>
         </Feature>
 
-		<Icon Id="icon.ico" SourceFile="favicon.ico" />
-		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
-		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
-		<Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
-		<ui:WixUI Id="WixUI_InstallDir" />
-
-            <StandardDirectory Id="ProgramFiles64Folder">
-                <Directory Id="APPLICATIONROOTDIRECTORY" Name="PufferPanel">
-                </Directory>
-            </StandardDirectory>
-        </Package>
+        <Icon Id="icon.ico" SourceFile="favicon.ico"/>
+        <WixVariable Id="WixUILicenseRtf" Value="license.rtf"/>
+        <Property Id="ARPPRODUCTICON" Value="icon.ico"/>
+        <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY"/>
+        <ui:WixUI Id="WixUI_InstallDir"/>
+    </Package>
 </Wix>
