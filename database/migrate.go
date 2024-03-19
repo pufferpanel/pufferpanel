@@ -84,6 +84,11 @@ func Migrate(dbConn *gorm.DB) error {
 					return err
 				}
 
+				if !db.Migrator().HasColumn(&models.Permissions{}, "admin") {
+					logging.Info.Printf("No admin column exists, assuming no migration needed")
+					return nil
+				}
+
 				type permissions struct {
 					ID uint `gorm:"primaryKey,autoIncrement" json:"-"`
 
