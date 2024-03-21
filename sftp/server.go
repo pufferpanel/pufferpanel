@@ -24,11 +24,11 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/oauth2"
+	"github.com/pufferpanel/pufferpanel/v2/servers"
 	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh"
 	"net"
 	"os"
-	"path/filepath"
 )
 
 var sftpServer net.Listener
@@ -148,7 +148,7 @@ func handleConn(conn net.Conn, serverConfig *ssh.ServerConfig) error {
 	// The incoming Request channel must be serviced.
 	go PrintDiscardRequests(reqs)
 
-	// Service the incoming Channel channel.
+	// Service the incoming channel.
 	for newChannel := range chans {
 		// Channels have a type, depending on the application level
 		// protocol intended. In the case of an SFTP session, this is "subsystem"
@@ -181,11 +181,17 @@ func handleConn(conn net.Conn, serverConfig *ssh.ServerConfig) error {
 			}
 		}(requests)
 
-		fs := CreateRequestPrefix(filepath.Join(config.ServersFolder.Value(), sc.Permissions.Extensions["server_id"]))
+		serverId := sc.Permissions.Extensions["server_id"]
+		server := servers.GetFromCache(serverId)
+		if server == nil {
+			//this daemon can't handle this request...
+			return nil
+		}
 
-		server := sftp.NewRequestServer(channel, fs)
+		fs := CreateRequestPrefix(server.GetFileServer())
+		s := sftp.NewRequestServer(channel, fs)
 
-		if err := server.Serve(); err != nil {
+		if err = s.Serve(); err != nil {
 			return err
 		}
 	}

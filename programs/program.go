@@ -484,19 +484,13 @@ func (p *Program) afterExit(graceful bool) {
 }
 
 func (p *Program) GetItem(name string) (*FileData, error) {
-	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-		return nil, pufferpanel.ErrIllegalFileAccess
-	}
-
-	info, err := os.Stat(targetFile)
-
+	info, err := p.GetFileServer().Stat(name)
 	if err != nil {
 		return nil, err
 	}
 
 	if info.IsDir() {
-		files, _ := ioutil.ReadDir(targetFile)
+		files, _ := p.GetFileServer().ReadDir(name)
 		var fileNames []messages.FileDesc
 		offset := 0
 		if name == "" || name == "." || name == "/" {
@@ -511,7 +505,6 @@ func (p *Program) GetItem(name string) (*FileData, error) {
 		}
 
 		//validate any symlinks are valid
-		files = pufferpanel.RemoveInvalidSymlinks(files, targetFile, p.GetEnvironment().GetRootDirectory())
 
 		for i, file := range files {
 			newFile := messages.FileDesc{
@@ -519,9 +512,13 @@ func (p *Program) GetItem(name string) (*FileData, error) {
 				File: !file.IsDir(),
 			}
 
-			if newFile.File {
-				newFile.Size = file.Size()
-				newFile.Modified = file.ModTime().Unix()
+			if !file.IsDir() && file.Type()&os.ModeSymlink == 0 {
+				infoData, err := p.GetFileServer().Stat(filepath.Join(name, file.Name()))
+				if err != nil {
+					continue
+				}
+				newFile.Size = infoData.Size()
+				newFile.Modified = infoData.ModTime().Unix()
 				newFile.Extension = filepath.Ext(file.Name())
 			}
 
@@ -530,42 +527,12 @@ func (p *Program) GetItem(name string) (*FileData, error) {
 
 		return &FileData{FileList: fileNames}, nil
 	} else {
-		file, err := os.Open(targetFile)
+		file, err := p.GetFileServer().Open(name)
 		if err != nil {
 			return nil, err
 		}
 		return &FileData{Contents: file, ContentLength: info.Size(), Name: info.Name()}, nil
 	}
-}
-
-func (p *Program) CreateFolder(name string) error {
-	folder := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-
-	if !pufferpanel.EnsureAccess(folder, p.GetEnvironment().GetRootDirectory()) {
-		return pufferpanel.ErrIllegalFileAccess
-	}
-	return os.Mkdir(folder, 0755)
-}
-
-func (p *Program) OpenFile(name string) (io.WriteCloser, error) {
-	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-
-	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-		return nil, pufferpanel.ErrIllegalFileAccess
-	}
-
-	file, err := os.Create(targetFile)
-	return file, err
-}
-
-func (p *Program) DeleteItem(name string) error {
-	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-
-	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-		return pufferpanel.ErrIllegalFileAccess
-	}
-
-	return os.RemoveAll(targetFile)
 }
 
 func (p *Program) ArchiveItems(files []string, destination string) error {
