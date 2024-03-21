@@ -403,6 +403,12 @@ func TestLoadFromFolder(t *testing.T) {
 	if !assert.NoError(t, err) {
 		return
 	}
+
+	err = os.Mkdir(filepath.Join(tmpDir, "loader"), 0755)
+	if !assert.NoError(t, err) {
+		return
+	}
+
 	LoadFromFolder()
 	if !assert.NotEmpty(t, allServers) {
 		return

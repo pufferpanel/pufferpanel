@@ -118,6 +118,7 @@ func Create(program *Server) (server *Server, err error) {
 	defer func() {
 		if err != nil {
 			//revert since we have an error
+			_ = os.Remove(filepath.Join(config.ServersFolder.Value(), program.Id()))
 			_ = os.Remove(filepath.Join(config.ServersFolder.Value(), program.Id()+".json"))
 			if program.RunningEnvironment != nil {
 				_ = program.RunningEnvironment.Delete()
@@ -125,6 +126,12 @@ func Create(program *Server) (server *Server, err error) {
 			server = nil
 		}
 	}()
+
+	err = os.Mkdir(filepath.Join(config.ServersFolder.Value(), program.Id()), 0755)
+	if err != nil {
+		logging.Error.Printf("Error writing server: %s", err)
+		return
+	}
 
 	err = program.Save()
 	if err != nil {

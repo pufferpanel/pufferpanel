@@ -219,7 +219,9 @@ func createServer(c *gin.Context) {
 
 	if prg, err = servers.Create(prg); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
-		_ = servers.Delete(prg.Id())
+		if prg != nil {
+			_ = servers.Delete(prg.Id())
+		}
 		return
 	}
 
