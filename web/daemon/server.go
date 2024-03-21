@@ -531,7 +531,7 @@ func getFile(c *gin.Context) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			c.AbortWithStatus(http.StatusNotFound)
-		} else if err == pufferpanel.ErrIllegalFileAccess {
+		} else if errors.Is(err, pufferpanel.ErrIllegalFileAccess) {
 			response.HandleError(c, err, http.StatusBadRequest)
 		} else {
 			response.HandleError(c, err, http.StatusInternalServerError)
@@ -579,7 +579,7 @@ func putFile(c *gin.Context) {
 
 	_, mkFolder := c.GetQuery("folder")
 	if mkFolder {
-		err = server.CreateFolder(targetPath)
+		err = server.GetFileServer().MkdirAll(targetPath, 0755)
 		response.HandleError(c, err, http.StatusInternalServerError)
 		return
 	}
@@ -596,7 +596,7 @@ func putFile(c *gin.Context) {
 		sourceFile = c.Request.Body
 	}
 
-	file, err := server.OpenFile(targetPath)
+	file, err := server.GetFileServer().OpenFile(targetPath, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0644)
 	defer pufferpanel.Close(file)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -623,7 +623,7 @@ func deleteFile(c *gin.Context) {
 
 	targetPath := c.Param("filename")
 
-	err := server.DeleteItem(targetPath)
+	err := server.GetFileServer().RemoveAll(targetPath)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)

@@ -1,55 +1,41 @@
 package sftp
 
 import (
-	"errors"
 	"fmt"
+	"github.com/pkg/sftp"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
-
-	"github.com/pkg/sftp"
 )
 
 type requestPrefix struct {
-	prefix string
+	fs pufferpanel.FileServer
 }
 
-func CreateRequestPrefix(prefix string) sftp.Handlers {
-	h := requestPrefix{prefix: prefix}
+func CreateRequestPrefix(fs pufferpanel.FileServer) sftp.Handlers {
+	h := requestPrefix{fs: fs}
 
 	return sftp.Handlers{FileCmd: h, FileGet: h, FileList: h, FilePut: h}
 }
 
 func (rp requestPrefix) Fileread(request *sftp.Request) (io.ReaderAt, error) {
+	rp.log(request)
+
 	file, err := rp.getFile(request.Filepath, os.O_RDONLY, 0644)
-	if err != nil {
-		logging.Error.Printf("pp-sftp internal error: %s", err)
-	}
 	return file, err
 }
 
 func (rp requestPrefix) Filewrite(request *sftp.Request) (io.WriterAt, error) {
+	rp.log(request)
+
 	file, err := rp.getFile(request.Filepath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
 	return file, err
 }
 
 func (rp requestPrefix) Filecmd(request *sftp.Request) error {
-	sourceName, err := rp.validate(request.Filepath)
-	if err != nil {
-		logging.Error.Printf("pp-sftp internal error: %s", err)
-		return rp.maskError(err)
-	}
-	var targetName string
-	if request.Target != "" {
-		targetName, err = rp.validate(request.Target)
-		if err != nil {
-			logging.Error.Printf("pp-sftp internal error: %s", err)
-			return rp.maskError(err)
-		}
-	}
+	rp.log(request)
+
 	switch request.Method {
 	case "SetStat", "Setstat":
 		{
@@ -57,15 +43,15 @@ func (rp requestPrefix) Filecmd(request *sftp.Request) error {
 		}
 	case "Rename":
 		{
-			return os.Rename(sourceName, targetName)
+			return rp.fs.Rename(request.Filepath, request.Target)
 		}
 	case "Rmdir":
 		{
-			return os.RemoveAll(sourceName)
+			return rp.fs.RemoveAll(request.Filepath)
 		}
 	case "Mkdir":
 		{
-			return os.Mkdir(sourceName, 0755)
+			return rp.fs.Mkdir(request.Filepath, 0755)
 		}
 	case "Symlink":
 		{
@@ -73,7 +59,7 @@ func (rp requestPrefix) Filecmd(request *sftp.Request) error {
 		}
 	case "Remove":
 		{
-			return os.Remove(sourceName)
+			return rp.fs.Remove(request.Filepath)
 		}
 	default:
 		return fmt.Errorf("unknown request method: %v", request.Method)
@@ -81,67 +67,47 @@ func (rp requestPrefix) Filecmd(request *sftp.Request) error {
 }
 
 func (rp requestPrefix) Filelist(request *sftp.Request) (sftp.ListerAt, error) {
-	sourceName, err := rp.validate(request.Filepath)
-	if err != nil {
-		logging.Error.Printf("pp-sftp internal error: %s", err)
-		return nil, rp.maskError(err)
-	}
+	rp.log(request)
+
 	switch request.Method {
 	case "List":
 		{
-			files, err := os.ReadDir(sourceName)
+			files, err := rp.fs.ReadDir(request.Filepath)
 			if err != nil {
 				return nil, err
 			}
 
-			//validate any symlinks are valid
-			files = pufferpanel.RemoveInvalidSymlinks(files, sourceName, rp.prefix)
-			return toListerAt(files), nil
+			return toListerAt(rp.fs, request.Filepath, files), nil
 		}
 	case "Stat":
 		{
-			file, err := os.Open(sourceName)
+			file, err := rp.getFile(request.Filepath, os.O_RDONLY, 0644)
 			if err != nil {
-				return nil, rp.maskError(err)
+				return nil, err
 			}
 			fi, err := file.Stat()
 			if err != nil {
-				return nil, rp.maskError(err)
+				return nil, err
 			}
 			err = file.Close()
 			if err != nil {
-				return nil, rp.maskError(err)
+				return nil, err
 			}
 			return listerat([]os.FileInfo{fi}), nil
 		}
 	case "Readlink":
 		{
-			target, err := os.Readlink(sourceName)
+			file, err := rp.fs.Open(request.Filepath)
 			if err != nil {
-				return nil, rp.maskError(err)
-			}
-
-			//determine if target is just a local link, or a full link
-			//let's just assume linux really at this point
-			if !strings.HasPrefix(target, string(os.PathSeparator)) {
-				target = rp.prefix + string(os.PathSeparator) + target
-			}
-
-			if !pufferpanel.EnsureAccess(target, rp.prefix) {
-				return nil, rp.maskError(errors.New("access denied"))
-			}
-
-			file, err := os.Open(target)
-			if err != nil {
-				return nil, rp.maskError(err)
+				return nil, err
 			}
 			fi, err := file.Stat()
 			if err != nil {
-				return nil, rp.maskError(err)
+				return nil, err
 			}
 			err = file.Close()
 			if err != nil {
-				return nil, rp.maskError(err)
+				return nil, err
 			}
 			return listerat([]os.FileInfo{fi}), nil
 		}
@@ -150,90 +116,48 @@ func (rp requestPrefix) Filelist(request *sftp.Request) (sftp.ListerAt, error) {
 	}
 }
 
+func (rp requestPrefix) log(request *sftp.Request) {
+	//logging.Debug.Printf("Op %s [%s] ", request.Method, request.Filepath)
+}
+
 func (rp requestPrefix) getFile(path string, flags int, mode os.FileMode) (*os.File, error) {
-	filePath, err := rp.validate(path)
-	if err != nil {
-		logging.Error.Printf("pp-sftp internal error: %s", err)
-		return nil, rp.maskError(err)
-	}
-
-	folderPath := filepath.Dir(filePath)
-
-	var file *os.File
-
+	//if this is a file create, then ensure the folder path exists
 	if flags&os.O_CREATE != 0 {
-		_, err = os.Stat(filePath)
+		_, err := rp.fs.Stat(path)
 		if os.IsNotExist(err) {
 			err = nil
-			err = os.MkdirAll(folderPath, 0755)
+			err = rp.fs.MkdirAll(filepath.Dir(path), 0755)
 			if err != nil {
-				logging.Error.Printf("pp-sftp internal error: %s", err)
-				return nil, rp.maskError(err)
+				return nil, err
 			}
-			file, err = os.Create(filePath)
-		} else if err == nil {
-			file, err = os.OpenFile(filePath, flags, mode)
 		}
-	} else {
-		file, err = os.OpenFile(filePath, flags, mode)
 	}
+
+	file, err := rp.fs.OpenFile(path, flags, mode)
+
 	if err != nil {
-		logging.Error.Printf("pp-sftp internal error: %s", err)
-		return nil, rp.maskError(err)
+		return nil, err
 	}
 
 	return file, err
 }
 
-func (rp requestPrefix) validate(path string) (string, error) {
-	ok, path := rp.tryPrefix(path)
-	if !ok {
-		return "", errors.New("access denied")
-	}
-	return path, nil
-}
-
-func (rp requestPrefix) tryPrefix(path string) (bool, string) {
-	newPath := filepath.Clean(filepath.Join(rp.prefix, path))
-	if pufferpanel.EnsureAccess(newPath, rp.prefix) {
-		return true, newPath
-	} else {
-		return false, ""
-	}
-}
-
-func (rp requestPrefix) stripPrefix(path string) string {
-	prefix, err := filepath.Abs(rp.prefix)
-	if err != nil {
-		prefix = rp.prefix
-	}
-	newStr := strings.TrimPrefix(path, prefix)
-	if len(newStr) == 0 {
-		newStr = "/"
-	}
-	return newStr
-}
-
-func (rp requestPrefix) maskError(err error) error {
-	return errors.New(rp.stripPrefix(err.Error()))
-}
-
 type listerat []os.FileInfo
 
-func toListerAt(entries []os.DirEntry) listerat {
+func toListerAt(fs pufferpanel.FileServer, root string, entries []os.DirEntry) listerat {
 	result := listerat{}
 
 	for _, v := range entries {
-		fi, err := v.Info()
+		file, err := fs.Stat(filepath.Join(root, v.Name()))
 		if err == nil {
-			result = append(result, fi)
+			result = append(result, file)
 		}
 	}
 
 	return result
 }
 
-// Modeled after strings.Reader's ReadAt() implementation
+// ListAt Modeled after strings.Reader's ReadAt() implementation
 func (f listerat) ListAt(ls []os.FileInfo, offset int64) (int, error) {
 	var n int
 	if offset >= int64(len(f)) {

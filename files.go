@@ -38,21 +38,6 @@ func EnsureAccess(source string, prefix string) bool {
 	return strings.HasPrefix(replacement, expected)
 }
 
-func RemoveInvalidSymlinks(files []os.DirEntry, sourceFolder, prefix string) []os.DirEntry {
-	i := 0
-	for _, v := range files {
-		if v.Type()&os.ModeSymlink != 0 {
-			if !EnsureAccess(sourceFolder+string(os.PathSeparator)+v.Name(), prefix) {
-				continue
-			}
-		}
-		files[i] = v
-		i++
-	}
-
-	return files[:i]
-}
-
 func CopyFile(src, dest string) error {
 	source, err := os.Open(src)
 	if err != nil {

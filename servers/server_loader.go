@@ -102,6 +102,11 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 		data.Scheduler.Init()
 	}
 
+	data.fileServer, err = pufferpanel.NewFileServer(data.RunningEnvironment.GetRootDirectory())
+	if err != nil {
+		return nil, err
+	}
+
 	return data, nil
 }
 

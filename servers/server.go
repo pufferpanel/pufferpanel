@@ -28,6 +28,7 @@ type Server struct {
 	Scheduler          *Scheduler              `json:"-"`
 	stopChan           chan bool
 	waitForConsole     sync.Locker
+	fileServer         pufferpanel.FileServer
 }
 
 var queue *list.List
@@ -536,19 +537,13 @@ func (p *Server) afterExit(exitCode int) {
 }
 
 func (p *Server) GetItem(name string) (*FileData, error) {
-	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-		return nil, pufferpanel.ErrIllegalFileAccess
-	}
-
-	info, err := os.Stat(targetFile)
-
+	info, err := p.GetFileServer().Stat(name)
 	if err != nil {
 		return nil, err
 	}
 
 	if info.IsDir() {
-		files, _ := os.ReadDir(targetFile)
+		files, _ := p.GetFileServer().ReadDir(name)
 		var fileNames []messages.FileDesc
 		offset := 0
 		if name == "" || name == "." || name == "/" {
@@ -563,7 +558,6 @@ func (p *Server) GetItem(name string) (*FileData, error) {
 		}
 
 		//validate any symlinks are valid
-		files = pufferpanel.RemoveInvalidSymlinks(files, targetFile, p.GetEnvironment().GetRootDirectory())
 
 		for i, file := range files {
 			newFile := messages.FileDesc{
@@ -571,8 +565,11 @@ func (p *Server) GetItem(name string) (*FileData, error) {
 				File: !file.IsDir(),
 			}
 
-			if newFile.File {
-				infoData, _ := file.Info()
+			if !file.IsDir() && file.Type()&os.ModeSymlink == 0 {
+				infoData, err := p.GetFileServer().Stat(filepath.Join(name, file.Name()))
+				if err != nil {
+					continue
+				}
 				newFile.Size = infoData.Size()
 				newFile.Modified = infoData.ModTime().Unix()
 				newFile.Extension = filepath.Ext(file.Name())
@@ -583,42 +580,12 @@ func (p *Server) GetItem(name string) (*FileData, error) {
 
 		return &FileData{FileList: fileNames}, nil
 	} else {
-		file, err := os.Open(targetFile)
+		file, err := p.GetFileServer().Open(name)
 		if err != nil {
 			return nil, err
 		}
 		return &FileData{Contents: file, ContentLength: info.Size(), Name: info.Name()}, nil
 	}
-}
-
-func (p *Server) CreateFolder(name string) error {
-	folder := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-
-	if !pufferpanel.EnsureAccess(folder, p.GetEnvironment().GetRootDirectory()) {
-		return pufferpanel.ErrIllegalFileAccess
-	}
-	return os.MkdirAll(folder, 0755)
-}
-
-func (p *Server) OpenFile(name string) (io.WriteCloser, error) {
-	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-
-	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-		return nil, pufferpanel.ErrIllegalFileAccess
-	}
-
-	file, err := os.Create(targetFile)
-	return file, err
-}
-
-func (p *Server) DeleteItem(name string) error {
-	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-
-	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-		return pufferpanel.ErrIllegalFileAccess
-	}
-
-	return os.RemoveAll(targetFile)
 }
 
 func (p *Server) ArchiveItems(files []string, destination string) error {
@@ -694,4 +661,8 @@ func (p *Server) RunCondition(condition interface{}, extraData map[string]interf
 	}
 
 	return conditions.ResolveIf(condition, data, CreateFunctions(p.GetEnvironment()))
+}
+
+func (p *Server) GetFileServer() pufferpanel.FileServer {
+	return p.fileServer
 }
