@@ -21,6 +21,7 @@
   "Admin": "Admin",
   "Settings": "設定",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "刪除伺服器",
   "ConfirmDelete": "你確認要刪除此伺服器? (此動作無法撤消)",

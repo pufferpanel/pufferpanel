@@ -1,16 +1,16 @@
 {
   "CreateFile": "Loo fail",
   "CreateFolder": "Loo kaust",
-  "Delete": "Delete",
+  "Delete": "Kustuta",
   "ConfirmDelete": "Olete kindel et soovite kustutada seda faili?",
-  "UploadSuccess": "Files uploaded successfully",
-  "UploadFailed": "Failed uploading files",
-  "UploadProgress": "Upload progress",
-  "PreparingUpload": "Preparing upload",
-  "CreatingFolders": "Creating folders",
-  "CurrentlyUploading": "Uploading file {current}/{total}",
-  "Current": "Current",
-  "Total": "Total",
-  "OpenLargeFile": "This file may cause performance issues for your browser due to its size, do you want to open it anyways?",
-  "OpenAnyways": "Open anyways"
+  "UploadSuccess": "Failid on edukalt üles laaditud",
+  "UploadFailed": "Failide üleslaadimine nurjus",
+  "UploadProgress": "Üleslaadimise edenemine",
+  "PreparingUpload": "Üleslaadimiseks ettevalmistamine",
+  "CreatingFolders": "Kaustasid loodakse",
+  "CurrentlyUploading": "Faili üleslaadimine {current}/{total}",
+  "Current": "Praegune",
+  "Total": "Kokku",
+  "OpenLargeFile": "See fail võib oma suuruse tõttu teie brauserit aeglustada, kas soovite faili avada?",
+  "OpenAnyways": "Ava"
 }

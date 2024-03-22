@@ -21,6 +21,7 @@
   "Admin": "Beheerder",
   "Settings": "Instellingen",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Server Verwijderen",
   "ConfirmDelete": "Weet je zeker dat je deze server wilt verwijderen? (dit kan niet ongedaan worden gemaakt)",

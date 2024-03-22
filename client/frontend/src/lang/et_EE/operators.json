@@ -1,64 +1,64 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Soorita see samm ainult, kui see tingimus on täitetud",
   "mojangdl": {
-    "generic": "Download Minecraft",
-    "formatted": "Download Minecraft"
+    "generic": "Laadi minecraft Alla",
+    "formatted": "Laadi Minecraft Alla"
   },
   "writefile": {
-    "generic": "Write to file",
-    "formatted": "Write to file {target}"
+    "generic": "Kirjuta faili",
+    "formatted": "Kirjuta faili {target}"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
-    "formatted": "Resolve Minecraft Forge Version"
+    "generic": "Leia Minecraft Forge'i Versioon",
+    "formatted": "Leia Minecraft forge'i Versioon"
   },
   "download": {
-    "generic": "Download file(s)",
-    "formatted": "Download {file} | Download {n} files",
-    "files": "Files"
+    "generic": "Laadi fail(e) alla",
+    "formatted": "Lae alla {file} | Lae alla {n} faili",
+    "files": "Failid"
   },
   "command": {
-    "generic": "Run command(s)",
-    "formatted": "Run {command} | Run {n} commands",
-    "commands": "Commands"
+    "generic": "Soorita käsud",
+    "formatted": "Soorita {command} | Soorita {n} käsku",
+    "commands": "Käsud"
   },
   "alterfile": {
-    "generic": "Modify a file",
-    "formatted": "Modify file {target}",
-    "regex": "Treat search string as regular expression",
-    "search": "Search",
-    "replace": "Replace matches with"
+    "generic": "Muuda faili",
+    "formatted": "Muuda faili {target}",
+    "regex": "Käsitle otsingut regulaarse ekspressioonina",
+    "search": "Otsi",
+    "replace": "Asenda tulemustega"
   },
   "move": {
-    "generic": "Move or rename a file",
-    "formatted": "Move file {source} to {target}",
-    "source": "Source Path",
-    "target": "Target Path"
+    "generic": "Liiguta või nime fail uuesti",
+    "formatted": "Liiguta fail {source} asukohta {target}",
+    "source": "Algne Tee",
+    "target": "Tulev Asukoht"
   },
   "mkdir": {
-    "generic": "Create a directory",
-    "formatted": "Create directory {target}"
+    "generic": "Loo kaust",
+    "formatted": "Loo kaust {target}"
   },
   "steamgamedl": {
-    "generic": "Install from Steam",
-    "formatted": "Install Steam App ID {appId}",
-    "appId": "Steam App ID"
+    "generic": "Installi Steami kaudu",
+    "formatted": "Installi Steami App ID {appId}",
+    "appId": "Steami App ID"
   },
   "javadl": {
-    "generic": "Install Java",
-    "formatted": "Install Java {version}"
+    "generic": "Installi Java",
+    "formatted": "Installi Java {version}"
   },
   "forgedl": {
-    "generic": "Download Minecraft Forge",
-    "formatted": "Download Minecraft Forge"
+    "generic": "Lae Minecraft Forge alla",
+    "formatted": "Lae Minecraft Forge Alla"
   },
   "spongeforgedl": {
-    "generic": "Download Minecraft SpongeForge",
-    "formatted": "Download Minecraft SpongeForge",
-    "releaseType": "Release Type"
+    "generic": "Lae Minecraft SpongeForge alla",
+    "formatted": "Lae Minecraft SpongeForge Alla",
+    "releaseType": "Väljalaske Tüüp"
   },
   "fabricdl": {
-    "generic": "Download Minecraft Fabric",
-    "formatted": "Download Minecraft Fabric"
+    "generic": "Laadi Minecraft Fabric alla",
+    "formatted": "Laadi Minecraft Fabric alla"
   }
 }

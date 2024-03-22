@@ -11,7 +11,7 @@
   "ConfirmOverwrite": "A template with this name already exists. Overwrite it?",
   "Overwrite": "Overwrite",
   "Json": "JSON",
-  "Display": "Display Name",
+  "Display": "Nome de exibição",
   "Type": "Type",
   "AddVariable": "Add variable",
   "Variables": "Variables",
@@ -24,13 +24,13 @@
   "AddEnvVar": "Add env variable",
   "EnvVars": "Environment variables",
   "DockerImage": "Docker Image",
-  "RunConfig": "Run Configuration",
+  "RunConfig": "Configuração de execução",
   "AddPreStep": "Add Pre Run Step",
   "PreRunHook": "Pre Run Hook",
   "AddPostStep": "Add Post Run Step",
   "PostRunHook": "Post Run Hook",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
+  "Shutdown": "Encerramento",
+  "Command": "Comando",
   "StopCommand": "Stop Command",
   "StopSignal": "Stop Signal",
   "NoGroup": "No Group",
@@ -79,10 +79,10 @@
     "PostRunHook": "Here you can define some steps to run every time after the server stops"
   },
   "WorkingDirectory": "Working Directory",
-  "General": "General",
+  "General": "Geral",
   "Hooks": "Hooks",
-  "Import": "Import template",
+  "Import": "Importar modelo",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties"
+    "CommunityWarning": "Estes modelos são criados pela comunidade e fornecidos sem quaisquer garantias"
   }
 }

@@ -6,69 +6,69 @@
     "g c": "Gehe zu der Panel-Kofiguration",
     "g n": "Zu den Nodes",
     "g s": "Zu den Servern",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "g t": "Zu den Vorlagen gehen",
+    "g u": "Zu den Benutzern gehen"
   },
   "Self": {
-    "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
-    "t s": "Go to Preferences tab"
+    "Title": "Konto",
+    "t 2": "Gehen zum 2-Faktor-Authentifizierung Tab",
+    "t a": "Gehe zum Kontodetails Tab",
+    "t o": "Gehe zum OAuth Tab",
+    "t p": "Gehe zum Passwort Tab",
+    "t s": "Gehe zu den Einstellungen"
   },
   "ServerList": {
-    "Title": "Servers",
-    "c": "Create a new server",
-    "l": "Focus the first server in the list"
+    "Title": "Server",
+    "c": "Neuen Server erstellen",
+    "l": "Den ersten Server in der Liste fokussieren"
   },
   "ServerView": {
     "Title": "Server",
-    "t c": "Go to Console tab",
-    "t i": "Go to Statistics tab",
-    "t f": "Go to Files tab",
-    "t s": "Go to Settings tab",
-    "t u": "Go to Users tab",
-    "t 6": "Go to SFTP tab",
-    "t 7": "Go to Api tab",
-    "t a": "Go to Admin tab",
-    "c c": "Clear Console",
-    "r r": "Start Server",
-    "r s": "Stop Server",
-    "r k": "Kill Server",
-    "r i": "Install Server",
-    "f a": "Archive current directory contents",
-    "f c d": "Create new directory",
-    "f c f": "Create new file",
-    "f d": "Upload directory",
-    "f l": "Focus first file/folder in the list",
-    "f r": "Reload file list",
-    "f u": "Upload files",
-    "a e": "Edit Server Definition",
-    "a r": "Reload Server Definiton from disk"
+    "t c": "Gehe zum Konsolen Tab",
+    "t i": "Gehe zum Statistiken Tab",
+    "t f": "Gehe zum Datein Tab",
+    "t s": "Gehe zu dem Einstellungs Tab",
+    "t u": "Gehe zum Benutzer Tab",
+    "t 6": "Gehe zum SFTP Tab",
+    "t 7": "Gehe zum Api Tab",
+    "t a": "Gehe zum Admin Tab",
+    "c c": "Konsole leeren",
+    "r r": "Server starten",
+    "r s": "Server stoppen",
+    "r k": "Erzwinge beenden",
+    "r i": "Server aufsetzten",
+    "f a": "Aktuellen Verzeichnisinhalt archivieren",
+    "f c d": "Neues Verzeichnis erstellen",
+    "f c f": "Neue Datei erstellen",
+    "f d": "Upload-Verzeichnis",
+    "f l": "Erste Datei/Ordner in der Liste fokussieren",
+    "f r": "Dateiliste neu laden",
+    "f u": "Dateien hochladen",
+    "a e": "Server Definition bearbeiten",
+    "a r": "Serverkonfiguration neu laden"
   },
   "NodeList": {
     "Title": "Nodes",
-    "c": "Create a new node",
-    "l": "Focus the first node in the list"
+    "c": "Neue Node erstellen",
+    "l": "Erste Node in der Liste fokussieren "
   },
   "UserList": {
-    "Title": "Users",
-    "c": "Create a new user",
-    "l": "Focus the first user in the list"
+    "Title": "Benutzer",
+    "c": "Neuen Nutzer erstellen",
+    "l": "Ersten Nutzer in der Liste fokusieren"
   },
   "TemplateList": {
-    "Title": "Templates",
-    "c": "Create a new template",
-    "l": "Focus the first template in the list"
+    "Title": "Vorlagen",
+    "c": "Neues Template erstellen",
+    "l": "Erstes Template in der Liste fokussieren"
   },
   "Template": {
-    "Title": "Template Editor",
-    "t e": "Go to Environment tab",
-    "t g": "Go to General tab",
-    "t h": "Go to Hooks tab",
+    "Title": "Vorlagen Editor",
+    "t e": "Gehe zum Environment Tab",
+    "t g": "Gehe zur Hauptseite",
+    "t h": "Gehe zum Hooks Tab",
     "t i": "Go to Install tab",
-    "t j": "Go to JSON tab",
+    "t j": "Gehe zum JSON Tab",
     "t r": "Go to Run Configuration tab",
     "t v": "Go to Variables tab"
   }

@@ -31,7 +31,7 @@
   "ErrPasswordRequirements": "Salasõna peab olema vähemalt {min} tähemärki",
   "ErrUsernameRequirements": "Kasutajanimi peab olema vähemalt {min} tähemärki ja sisaldama ainult tähtnumbreid,_, või -",
   "ErrPasswordsNotIdentical": "Salasõnad ei ühti",
-  "ErrEmailInvalid": "Not a valid email",
+  "ErrEmailInvalid": "E-posti aadress on vigane",
   "ErrSessionTimedOut": "Sinu sessioon on aegunud, palun logi uuesti sisse",
   "ErrMissingScope": "Teil puudub õigus selle tegevuse jaoks",
   "ErrInvalidJson": "Json andmed on kehtetud",
@@ -41,9 +41,9 @@
   "ErrDuplicateServerName": "Selle nimega server eksisteerib juba",
   "ErrDuplicateNodeName": "Selle nimega sõlm juba eksisteerib",
   "ErrDirectoryUploadNotSupported": "Kaustu ei saa üles laadida",
-  "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
-  "ErrNoCommand": "No command could be determined to be used for this server"
+  "ErrDockerNotSupported": "Docker ei ole sellel nodel toetatud",
+  "ErrMissingBinary": "Puudub binäär: ${expected}",
+  "ErrUnsupportedOS": "OS(${actual}) pole toetatud. Toetatud OS: ${expected}",
+  "ErrUnsupportedArch": "Arhhitektuur ${actual} pole toetatud. Toetatud Arhhitektuurid: ${expected}",
+  "ErrNoCommand": "Serverile ei leitud ühtegi kasutatavat käsku"
 }

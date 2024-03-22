@@ -21,6 +21,7 @@
   "Admin": "Amministratore",
   "Settings": "Impostazioni",
   "SaveSettings": "Salva Impostazioni",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "Questo server non ha alcuna impostazione che puoi modificare",
   "Delete": "Elimina Server",
   "ConfirmDelete": "Vuoi davvero eliminare questo server? (ciò non è reversibile)",

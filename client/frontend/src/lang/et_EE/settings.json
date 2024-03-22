@@ -9,7 +9,7 @@
   "CompanyName": "Ettevõtte nimi",
   "DefaultTheme": "Vaikmisi teema",
   "RegistrationEnabled": "Luba kasutajatel end ise registeerida",
-  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabledHint": "Ise registreerunud kasutajatel pole enne õiguste andmist lubatud midagi teha",
   "EmailProvider": "E-posti pakkuja",
   "emailProviders": {
     "none": "Puudub",

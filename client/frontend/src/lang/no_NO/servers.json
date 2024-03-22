@@ -21,6 +21,7 @@
   "Admin": "Admin",
   "Settings": "Innstillinger",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Slett serveren",
   "ConfirmDelete": "Er du sikker på at du vil slette denne serveren? (dette kan ikke angres)",

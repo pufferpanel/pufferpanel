@@ -21,6 +21,7 @@
   "Admin": "Admin",
   "Settings": "Beállítások",
   "SaveSettings": "Save Settings",
+  "SettingsSaved": "Settings saved",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Szerver törlése",
   "ConfirmDelete": "Biztosan törli ezt a szervert? (A művelet nem visszavonható)",

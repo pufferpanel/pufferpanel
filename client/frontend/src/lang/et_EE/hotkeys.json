@@ -3,73 +3,73 @@
   "Global": {
     "Title": "Üldine",
     "g a": "Ava kontoteabe leht",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "g c": "Mine Paneeli Konfiguratsioonile",
+    "g n": "Mine Nodede Juurde",
+    "g s": "Mine Serveritele",
+    "g t": "Mine Mallidele",
+    "g u": "Mine Kasutajatele"
   },
   "Self": {
-    "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
-    "t s": "Go to Preferences tab"
+    "Title": "Konto",
+    "t 2": "Mine Kaheastmelise Tuvastamise avalehele",
+    "t a": "Mine Konto Üksikasjade avalehele",
+    "t o": "Mine OAuth- avalehele",
+    "t p": "Mine Salasõnade avalehele",
+    "t s": "Mine Sätete avalehele"
   },
   "ServerList": {
-    "Title": "Servers",
-    "c": "Create a new server",
-    "l": "Focus the first server in the list"
+    "Title": "Serverid",
+    "c": "Loo uus server",
+    "l": "Fokuseeri esimene server nimekirjas"
   },
   "ServerView": {
     "Title": "Server",
-    "t c": "Go to Console tab",
-    "t i": "Go to Statistics tab",
-    "t f": "Go to Files tab",
-    "t s": "Go to Settings tab",
-    "t u": "Go to Users tab",
-    "t 6": "Go to SFTP tab",
-    "t 7": "Go to Api tab",
-    "t a": "Go to Admin tab",
-    "c c": "Clear Console",
-    "r r": "Start Server",
-    "r s": "Stop Server",
-    "r k": "Kill Server",
-    "r i": "Install Server",
-    "f a": "Archive current directory contents",
-    "f c d": "Create new directory",
-    "f c f": "Create new file",
-    "f d": "Upload directory",
-    "f l": "Focus first file/folder in the list",
-    "f r": "Reload file list",
-    "f u": "Upload files",
-    "a e": "Edit Server Definition",
-    "a r": "Reload Server Definiton from disk"
+    "t c": "Mine Konsooli avalehele",
+    "t i": "Mine Statistika avalehele",
+    "t f": "Mine Failide avalehele",
+    "t s": "Mine Sätete avalehele",
+    "t u": "Mine Kasutajate avalehele",
+    "t 6": "Mine SFTP- avalehele",
+    "t 7": "Mine API avalehele",
+    "t a": "Mine Admin- avalehele",
+    "c c": "Puhasta konsool",
+    "r r": "Käivita Server",
+    "r s": "Peata Server",
+    "r k": "Sundsulge Server",
+    "r i": "Paigalda server",
+    "f a": "Arhiveeri praeguse kausta sisu",
+    "f c d": "Loo uus kaust",
+    "f c f": "Loo uus fail",
+    "f d": "Kausta üleslaadimine",
+    "f l": "Fokuseeri esimene fail/kaust nimekirjas",
+    "f r": "Värskenda failide nimekiri",
+    "f u": "Failide üleslaadimine",
+    "a e": "Muuda Serveri Määratlust",
+    "a r": "Värskenda Serveri Määratlus kettalt"
   },
   "NodeList": {
-    "Title": "Nodes",
-    "c": "Create a new node",
-    "l": "Focus the first node in the list"
+    "Title": "Noded",
+    "c": "Loo uus node",
+    "l": "Fokuseeri esimene node nimekirjas"
   },
   "UserList": {
-    "Title": "Users",
-    "c": "Create a new user",
-    "l": "Focus the first user in the list"
+    "Title": "Kasutajad",
+    "c": "Loo uus kasutaja",
+    "l": "Fokuseeri esimene kasutaja nimekirjas"
   },
   "TemplateList": {
-    "Title": "Templates",
-    "c": "Create a new template",
-    "l": "Focus the first template in the list"
+    "Title": "Mallid",
+    "c": "Loo uus mall",
+    "l": "Fokuseeri esimene mall nimekirjas"
   },
   "Template": {
-    "Title": "Template Editor",
-    "t e": "Go to Environment tab",
-    "t g": "Go to General tab",
-    "t h": "Go to Hooks tab",
-    "t i": "Go to Install tab",
-    "t j": "Go to JSON tab",
-    "t r": "Go to Run Configuration tab",
-    "t v": "Go to Variables tab"
+    "Title": "Malliredaktor",
+    "t e": "Mine Keskkondade avalehele",
+    "t g": "Mine Üldine- avalehele",
+    "t h": "Mine Haakide avalehele",
+    "t i": "Mine Installimise- avalehele",
+    "t j": "Mine JSON- avalehele",
+    "t r": "Mine Käivitamise Konfiguratsiooni avalehele",
+    "t v": "Mine Muutujate avalehele"
   }
 }

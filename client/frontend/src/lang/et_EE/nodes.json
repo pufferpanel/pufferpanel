@@ -10,25 +10,25 @@
   "Created": "Tehtud sõlm",
   "Updated": "Uuendatud sõlm",
   "Deleted": "Kustutatud sõlm",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "Reachable": "See node on õigesti seadistatud ja töötab",
+  "Unreachable": "See node on kas valesti seadistatud, või pole hetkel saadaval",
   "features": {
     "os": {
-      "label": "Operating System",
+      "label": "Operatsioonisüsteem",
       "linux": "Linux",
       "windows": "Windows"
     },
     "arch": {
-      "label": "CPU Architecture",
+      "label": "CPU Arhhitektuur",
       "amd64": "x86 64bit",
       "arm": "ARM 32bit",
       "arm64": "ARM 64bit"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "Docker saadaval",
+      "false": "Docker pole saadaval"
     },
-    "envs": "Available Environments"
+    "envs": "Saadaolevad Keskkonnad"
   },
   "PublicHost": "Avalik Host",
   "PublicPort": "Avalik Port",
@@ -37,14 +37,14 @@
   "SftpPort": "SFTP Port",
   "WithPrivateAddress": "Kasutage serveritevahelise suhtluse jaoks teist hosti/porti",
   "WithPrivateAddressHint": "Seda eraldi aadressi kasutatakse siis, kui põhisõlm peab uue sõlmega rääkima. Kasulik näiteks siis, kui sõlmed asuvad NAT-i taga samas võrgus.",
-  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
+  "LocalNodeEdit": "Kohalikul nodel pole muudetavaid sätteid\n\nSellel nodel hostitavatel serveritel kuvatud hosti muutmiseks, muuda paneeli põhiaadressi paneeli seadetes",
   "Deploy": "Väljasta sõlm",
   "deploy": {
-    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
-    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
-    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
-    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
-    "Step5": "### Your new node is now set up and ready to go"
+    "Step1": "## Esimene Samm\n\nInstalli PufferPanel uuel serveril, [lisainfot leidub dokumentatsioonist](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Teine Samm\n\nPeata PufferPanel'i teenus uuel serveril, juhul kui ta installatsioonil käivitati sooritamal käsk `sudo systemctl stop pufferpanel`",
+    "Step3": "## Kolmas samm\n\nAsenda PufferPanel'i konfiguratsioonifaili sisu uuel serveril all oleva koodiga\n\nKonfiguratsioonifail leidub tavaliselt `/etc/pufferpanel/config.json` teelt\n\n```\n{config}\n```",
+    "Step4": "## Neljas Samm\n\nRakenda ja (taas)käivita PufferPanel'i teenus uuel serveril `sudo systemctl enable --now pufferpanel` käsuga",
+    "Step5": "### Teie uus node on nüüd kasutamiseks valmis"
   },
   "DeploymentInstruction": "Et juurutada sõlme, paigalda PufferPanel uuele serverile ja pane konfiguratsioon asukohta `/etc/pufferpanel/`<br/>Taaskäivita PufferPanel uuel serveril pärast."
 }

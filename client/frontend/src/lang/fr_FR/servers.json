@@ -21,6 +21,7 @@
   "Admin": "Admin",
   "Settings": "Paramètres",
   "SaveSettings": "Enregistrer les paramètres",
+  "SettingsSaved": "Paramètres enregistrés",
   "NoSettings": "Ce serveur n'a pas de paramètres que vous pouvez changer",
   "Delete": "Supprimer le serveur",
   "ConfirmDelete": "Êtes-vous vraiment sûr de vouloir supprimer ce serveur ? (cette opération est irréversible)",
