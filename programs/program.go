@@ -43,6 +43,7 @@ type Program struct {
 	CrashCounter       int                     `json:"-"`
 	RunningEnvironment pufferpanel.Environment `json:"-"`
 	Scheduler          Scheduler               `json:"-"`
+	fs                 pufferpanel.FileServer  `json:"-"`
 }
 
 var queue *list.List
@@ -596,6 +597,10 @@ func (p *Program) ExecuteTask(task pufferpanel.Task) (err error) {
 		p.RunningEnvironment.DisplayToConsole(true, "Task %s finished\n", task.Name)
 	}
 	return
+}
+
+func (p *Program) GetFileServer() pufferpanel.FileServer {
+	return p.fs
 }
 
 func (p *Program) valid() bool {
