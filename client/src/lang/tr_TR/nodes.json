@@ -17,6 +17,6 @@
   "DeploymentInstruction": "Düğümü yerleştirmek için, PufferPanel'i yeni sunucuya kurun ve yapılandırma dosyasını `/etc/pufferpanel/` dizinine yerleştirin.<br/>Daha sonra yeni sunucuda PufferPanel'i yeniden başlatın.",
   "UpdateSuccess": "Düğüm güncellendi",
   "UpdateError": "Düğüm güncellenirken hata oluştu",
-  "LocalNodeInstructions": "The local node is not editable through this screen. To change the host or port information, please update the `Master Url` in the settings.",
+  "LocalNodeInstructions": "Yerel düğüm bu ekran ile düzenlenemez. Ana bilgisayar veya bağlantı noktası bilgilerini değiştirmek için, lütfen ayarlardaki 'Ana Url'yi güncelleyin.",
   "CannotEdit": "Cannot Edit"
 }

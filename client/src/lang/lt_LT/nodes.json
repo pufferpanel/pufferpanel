@@ -1,0 +1,22 @@
+{
+  "Node": "Taškas",
+  "Nodes": "Taškai",
+  "Edit": "Redaguoti tašką",
+  "Add": "Pridėti tašką",
+  "Update": "Atnaujinti tašką",
+  "Delete": "Ištrinti tašką",
+  "PublicHost": "Viešas tiekėjas",
+  "PublicPort": "Viešasis prievadas",
+  "PrivateHost": "Privatus tiekėjas",
+  "PrivatePort": "Privatus prievadas",
+  "SftpPort": "SFTP prievadas",
+  "WithPrivateAddress": "Naudoti skirtingą tiekėją/portą serverio į serverį komunikacijai",
+  "WithPrivateAddressHint": "Šis atskiras adresas yra naudojamas kai pagrindiniui taškui reikia susikalbėti su nauju tašku. Naudinga, pavyzdžiui, kai taškai yra tam pačiam tinkle už NAT.",
+  "SaveConfig": "Išsaugoti nuostatas",
+  "SavePublicKey": "Išsaugoti viešą raktą",
+  "DeploymentInstruction": "Kad paleisti tašką, instaliuokite „PufferPanel“ naujame serveryje ir padėkite konfigūracijos failą - `/etc/pufferpanel/`<br/>Po to perkraukite „PufferPanel“ naujajame serveryje.",
+  "UpdateSuccess": "Sėkmingai atnaujintas taškas",
+  "UpdateError": "Klaida atnaujinant tašką",
+  "LocalNodeInstructions": "Vietinis taškas neredaguojamas pro šį ekraną. Kad pakeisti tiekėjo ar porto informaciją, prašome atnaujinti `Pagrindinis URL` nustatymuose.",
+  "CannotEdit": "Negalima redaguoti"
+}

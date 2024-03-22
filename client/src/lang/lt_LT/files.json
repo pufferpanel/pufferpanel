@@ -1,0 +1,19 @@
+{
+  "FileManager": "Failų tvarkyklė",
+  "NewFolder": "Naujas aplankalas",
+  "NewFile": "Naujas failas",
+  "LastModified": "Paskutinį kartą keista",
+  "ConfirmDelete": "Ar jūs užtikrinti, kad norite ištrinti šį failą?",
+  "Upload": "Įkelti",
+  "Download": "Parsisiųsti",
+  "Size": "Dydis",
+  "NoFiles": "Čia dar nėra failų, pavyzdžiui sukurkite kelis spaudžiant \"instaliuoti\" mygtuką puslapio viršuje",
+  "FileLoadFailed": "Klaida kraunant failą",
+  "Refresh": "Atnaujinti",
+  "CreateFile": "Sukurti failą",
+  "CreateFolder": "Sukurti aplankalą",
+  "ArchiveCurrentFolder": "Sukurti archyvą iš dabartinio aplankalo",
+  "ArchiveFolder": "Sukurti archyvą iš aplankalo",
+  "ExtractArchive": "Išarchyvuoti",
+  "DropToUpload": "Nuvilkite failus čia, kad įkeltumėte juos"
+}

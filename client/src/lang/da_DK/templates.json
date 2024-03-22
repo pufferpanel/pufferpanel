@@ -6,7 +6,7 @@
   "Edit": "Redigér skabelon",
   "Editor": "Editor",
   "Json": "JSON",
-  "Display": "Display Name",
+  "Display": "Visningsnavn",
   "Type": "Type",
   "Variables": "Variabler",
   "Install": "Installér",
@@ -47,52 +47,52 @@
   "DeletePostStep": "Slet Post Run Step",
   "Shutdown": "Luk ned",
   "Command": "Kommando",
-  "WorkingDirectory": "Working Directory",
+  "WorkingDirectory": "Arbejdsmappe",
   "Arguments": "Argumenter",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "AddArgument": "Tilføj et argument",
+  "Convert": "Konverter",
+  "OfferV1Convert": "Denne skabelon json ligner en skabelon til PufferPanel 1.x, vil du automatisk konvertere dette til en skabelon til PufferPanel 2.x?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "CommunityWarning": "Disse skabeloner er lavet af fællesskabet og leveres uden nogle garantier",
+    "OverrideWarning": "ADVARSEL: Importerede skabeloner VIL overskrive eksisterende skabeloner med det samme ID",
+    "Import": "Importer skabeloner",
+    "Tooltip": "Importer skabeloner fra det officielle repository",
+    "Select": "Vælg skabeloner at importere",
+    "Started": "Importerer skabeloner, vent et øjeblik",
+    "Successful": "Importerede skabelon {template}",
+    "NoTemplatesTitle": "Vil du importere skabeloner?",
+    "NoTemplatesContent": "Du har i øjeblikket ingen skabeloner. Skabeloner er nødvendige for at oprette servere.<br/>Vil du importere nogle skabeloner fra det officielle PufferPanel skabelon repository nu?"
   },
   "stop": {
-    "Command": "Command",
+    "Command": "Kommando",
     "Signal": "Signal"
   },
   "processors": {
     "download": {
       "ProcessorName": "Download",
-      "files": "Files"
+      "files": "Filer"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Kør Kommando",
+      "commands": "Kommandoer"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Skift fil",
+      "regex": "Behandl søgning som RegEx",
+      "search": "Tekst søgning",
+      "replace": "Erstat med"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Skriv til fil",
+      "text": "Indhold"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Flyt Fil",
+      "source": "Kilde",
+      "target": "Destination"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Opret Mappe"
     },
     "mojangdl": {
       "ProcessorName": "Download Minecraft"
@@ -102,18 +102,18 @@
     },
     "spongeforgedl": {
       "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "releaseType": "Udgivelsestype"
     },
     "fabricdl": {
       "ProcessorName": "Download Minecraft Fabric"
     },
     "javadl": {
       "ProcessorName": "Download Java",
-      "version": "Version of Java to install (8, 16, 17)"
+      "version": "Version af Java der skal installeres (8, 16, 17)"
     },
     "steamgamedl": {
-      "ProcessorName": "Download Game from Steam",
-      "appId": "App Id"
+      "ProcessorName": "Download Spil fra Steam",
+      "appId": "App ID"
     }
   }
 }

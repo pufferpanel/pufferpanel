@@ -1,0 +1,27 @@
+{
+  "Settings": "Nustatymai",
+  "PanelSettings": "Panelės nustatymai",
+  "EmailSettings": "El. pašto nustatymai",
+  "MasterUrl": "Pagrindinis URL",
+  "MasterUrlHint": "Pagrindinis URL su kuriuo galima pasiekti panelę, yra formatu: http://localhost:8080",
+  "CompanyName": "Įmonės pavadinimas",
+  "DefaultTheme": "Įprasta tema",
+  "RegistrationEnabled": "Leisti vartotojams užsiregistruoti patiems",
+  "RegistrationEnabledHint1": "Patys užsiregistravę vartotojai negali nieko padaryti kol nesuteiktos teisės",
+  "RegistrationEnabledHint2": "Atjungiant šitą sustabdo tik tiesioginę registraciją, pakvietimai į serverį ir vartotojų puslapis nepaveikti",
+  "EmailProvider": "El. pašto tiekėjas",
+  "emailProviders": {
+    "none": "Joks",
+    "smtp": "SMTP",
+    "mailgun": "„Mailgun“",
+    "mailjet": "„Mailjet“"
+  },
+  "emailFields": {
+    "from": "Siuntėjo adresas",
+    "domain": "Domenas",
+    "key": "API raktas",
+    "host": "Tiekėjas",
+    "username": "Vartotojo vardas",
+    "password": "Slaptažodis"
+  }
+}

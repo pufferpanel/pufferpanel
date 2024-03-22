@@ -29,7 +29,7 @@
   "ErrNoNodes": "Немає доступних вузлів",
   "ErrNoTemplates": "Немає доступних шаблонів",
   "ErrPasswordRequirements": "Пароль має складатися хоча б з {min} символів",
-  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "Імʼя повинно містити мінімум 5 символів і може містити в собі цифри та літери, _ чи -",
   "ErrPasswordsNotIdentical": "Паролі не співпадають",
   "ErrSessionTimedOut": "Ваш сеанс минув, будь ласка, увійдіть знову",
   "ErrMissingScope": "Ви не маєте прав на виконання цієї дії",
@@ -40,8 +40,8 @@
   "ErrDuplicateServerName": "Сервер з таким ім'ям вже існує",
   "ErrDuplicateNodeName": "Вузол з таким ім'ям вже існує",
   "ErrDirectoryUploadNotSupported": "Неможливо завантажити папки",
-  "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
-  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
+  "ErrDockerNotSupported": "Docker не підтримується на цьому вузлі",
+  "ErrMissingBinary": "Відсутній бінарний файл: {expected}",
+  "ErrUnsupportedOS": "ОС ({actual}) не підтримується. Підтримувані ОС: {expected}",
+  "ErrUnsupportedArch": "Архітектура {actual} не підтримується. Підтримуються наступні архітектури: {expected}"
 }

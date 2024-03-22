@@ -1,0 +1,15 @@
+{
+  "Credentials": "„OAuth2“ aplikacijos duomenys",
+  "ClientId": "Aplikacijos ID",
+  "ClientSecret": "Aplikacijos paslaptis",
+  "NewClientWarning": "Nusirašykite aplikacijos paslaptį, uždarius šį dialogą ji niekados nebe pasirodys. Jos praradimas ar užmiršimas padarys šią aplikaciją visiškai nebenaudojamą.",
+  "Create": "Sukurkite naują „OAuth2“ aplikaciją",
+  "UnnamedClient": "Nepavadinta „OAuth2“ aplikacija",
+  "Docs": "API dokumentaciją galite rasti čia",
+  "DeleteWarning": "„OAuth2“ aplikacijos trynimas yra nepakartojamas procesas ir naujos aplikacijos negali būti sukurtos naudojant tuos pačius duomenis. Visos integracijos dar naudojančios šią aplikaciją nustos veikti po jos ištrynimo.",
+  "ConfirmDelete": "Aš suprantu kokias pasekmes ištrinant šią „OAuth2“ aplikaciją turės ir noriu tęsti.",
+  "Delete": "Ištrinti {clientName}?",
+  "Clients": "„OAuth2“ aplikacijos",
+  "AccountDescription": "„OAuth2“ aplikacijos išvardytos čia paveldi visas jūsų paskyros prieigas",
+  "ServerDescription": "„OAuth2“ aplikacijos išvardytos čia paveldi jūsų paskyros prieigas tik šiame serveryje"
+}
