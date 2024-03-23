@@ -23,7 +23,7 @@ RUN apt-get update && \
     apt-get install -y git wget curl zip unzip musl
 
 # java
-RUN apt-get install -y openjdk-8-jdk-headless openjdk-16-jdk-headless openjdk-17-jdk-headless && \
+RUN apt-get install -y openjdk-8-jdk-headless openjdk-17-jdk-headless && \
     ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/java /usr/bin/java8 && \
     ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/javac /usr/bin/javac8 && \
     ln -sfn /usr/lib/jvm/java-17-openjdk-amd64/bin/java /usr/bin/java17 && \

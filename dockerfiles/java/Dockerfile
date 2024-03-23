@@ -10,7 +10,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repo
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 
 # java
-RUN apk add --no-cache openjdk8 openjdk16 openjdk17 && \
+RUN apk add --no-cache openjdk8 openjdk17 && \
     ln -sfn /usr/lib/jvm/java-17-openjdk/bin/java /usr/bin/java && \
     ln -sfn /usr/lib/jvm/java-17-openjdk/bin/javac /usr/bin/javac && \
     ln -sfn /usr/lib/jvm/java-17-openjdk/bin/java /usr/bin/java17 && \
