@@ -19,11 +19,22 @@ RUN if [ -n "$APTPROXY" ] ; then \
       echo "deb $APTPROXY//ubuntu-focal-backports/ focal-backports main restricted universe multiverse" >> /etc/apt/sources.list ;\
     fi
 
+RUN echo 'path-exclude /usr/share/doc/*' >/etc/dpkg/dpkg.cfg.d/docker-minimal && \
+    echo 'path-exclude /usr/share/man/*' >>/etc/dpkg/dpkg.cfg.d/docker-minimal && \
+    echo 'path-exclude /usr/share/groff/*' >>/etc/dpkg/dpkg.cfg.d/docker-minimal && \
+    echo 'path-exclude /usr/share/info/*' >>/etc/dpkg/dpkg.cfg.d/docker-minimal && \
+    echo 'path-exclude /usr/share/lintian/*' >>/etc/dpkg/dpkg.cfg.d/docker-minimal && \
+    echo 'path-exclude /usr/share/linda/*' >>/etc/dpkg/dpkg.cfg.d/docker-minimal && \
+    echo 'path-exclude /usr/share/locale/*' >>/etc/dpkg/dpkg.cfg.d/docker-minimal && \
+    echo 'path-include /usr/share/locale/en*' >>/etc/dpkg/dpkg.cfg.d/docker-minimal
+
 RUN apt-get update && \
+    mkdir -p /usr/share/binfmts && \
     apt-get install -y git wget curl zip unzip musl
 
 # java
-RUN apt-get install -y openjdk-8-jdk-headless openjdk-17-jdk-headless && \
+RUN apt-get install --no-install-recommends -y openjdk-8-jdk-headless && \
+    apt-get install --no-install-recommends -y openjdk-17-jdk-headless && \
     ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/java /usr/bin/java8 && \
     ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/javac /usr/bin/javac8 && \
     ln -sfn /usr/lib/jvm/java-17-openjdk-amd64/bin/java /usr/bin/java17 && \
