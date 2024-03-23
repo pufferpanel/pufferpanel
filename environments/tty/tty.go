@@ -148,7 +148,8 @@ func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
 }
 
 func (t *tty) Create() error {
-	return os.Mkdir(t.RootDirectory, 0755)
+	//return os.Mkdir(t.RootDirectory, 0755)
+	return nil
 }
 
 func (t *tty) WaitForMainProcess() error {

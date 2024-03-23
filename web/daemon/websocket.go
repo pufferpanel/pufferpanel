@@ -159,7 +159,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 								break
 							}
 
-							err := server.DeleteItem(path)
+							err := server.GetFileServer().RemoveAll(path)
 							if err != nil {
 								_ = pufferpanel.Write(conn, messages.FileList{Error: err.Error()})
 							} else {
@@ -174,7 +174,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 								break
 							}
 
-							err := server.CreateFolder(path)
+							err := server.GetFileServer().MkdirAll(path, 0755)
 
 							if err != nil {
 								_ = pufferpanel.Write(conn, messages.FileList{Error: err.Error()})

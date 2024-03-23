@@ -18,8 +18,6 @@ package sftp
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pkg/sftp"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"io"

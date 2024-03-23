@@ -192,7 +192,8 @@ func (d *docker) Create() error {
 			return
 		}
 	}()*/
-	return os.Mkdir(d.RootDirectory, 0755)
+	//return os.Mkdir(d.RootDirectory, 0755)
+	return nil
 }
 
 func (d *docker) IsRunning() (bool, error) {

@@ -156,7 +156,8 @@ func (s *standard) GetStats() (*pufferpanel.ServerStats, error) {
 }
 
 func (s *standard) Create() error {
-	return os.Mkdir(s.RootDirectory, 0755)
+	//return os.Mkdir(s.RootDirectory, 0755)
+	return nil
 }
 
 func (s *standard) WaitForMainProcess() error {

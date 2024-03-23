@@ -24,7 +24,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/oauth2"
-	"github.com/pufferpanel/pufferpanel/v2/servers"
+	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh"
 	"net"
@@ -182,7 +182,7 @@ func handleConn(conn net.Conn, serverConfig *ssh.ServerConfig) error {
 		}(requests)
 
 		serverId := sc.Permissions.Extensions["server_id"]
-		server := servers.GetFromCache(serverId)
+		server := programs.GetFromCache(serverId)
 		if server == nil {
 			//this daemon can't handle this request...
 			return nil
