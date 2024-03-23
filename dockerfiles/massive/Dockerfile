@@ -26,13 +26,10 @@ RUN apt-get update && \
 RUN apt-get install -y openjdk-8-jdk-headless openjdk-16-jdk-headless openjdk-17-jdk-headless && \
     ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/java /usr/bin/java8 && \
     ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/javac /usr/bin/javac8 && \
-    ln -sfn /usr/lib/jvm/java-16-openjdk-amd64/bin/java /usr/bin/java16 && \
-    ln -sfn /usr/lib/jvm/java-16-openjdk-amd64/bin/javac /usr/bin/javac16 && \
     ln -sfn /usr/lib/jvm/java-17-openjdk-amd64/bin/java /usr/bin/java17 && \
     ln -sfn /usr/lib/jvm/java-17-openjdk-amd64/bin/javac /usr/bin/javac17 && \
     java -version && javac -version && \
     java8 -version && javac8 -version && \
-    java16 -version && javac16 -version && \
     java17 -version && javac17 -version
 
 # nodejs
