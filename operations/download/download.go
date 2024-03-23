@@ -17,10 +17,15 @@
 package download
 
 import (
+	"fmt"
 	"github.com/cavaliercoder/grab"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 )
+
+func init() {
+	grab.DefaultClient.UserAgent = fmt.Sprintf("PufferPanel/%s", pufferpanel.Version)
+}
 
 type Download struct {
 	Files []string
