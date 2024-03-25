@@ -154,7 +154,10 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	}
 
 	data.fs, err = pufferpanel.NewFileServer(data.RunningEnvironment.GetRootDirectory())
-	return data, err
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }
 
 func startScheduler(program *Program) error {
@@ -261,6 +264,11 @@ func Create(program *Program) error {
 	}
 
 	program.RunningEnvironment, err = environments.Create(typeMap.Type, config.ServersFolder.Value(), program.Id(), program.Environment)
+	if err != nil {
+		return err
+	}
+
+	program.fs, err = pufferpanel.NewFileServer(program.RunningEnvironment.GetRootDirectory())
 	if err != nil {
 		return err
 	}
