@@ -124,6 +124,7 @@ func internalRun(terminate chan bool) {
 	}
 
 	if config.DaemonEnabled.Value() {
+		pufferpanel.DetermineKernelSupport()
 		err := daemon()
 		if err != nil {
 			logging.Error.Printf("error starting daemon server: %s", err.Error())
