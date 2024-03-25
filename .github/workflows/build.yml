@@ -180,49 +180,6 @@ jobs:
         name: pufferpanel_${{ env.VERSION }}_windows_amd64
         path: build-artifacts/
 
-  build-windows-installer:
-    name: Build Windows Installer
-    runs-on: windows-latest
-    needs: ['build-windows-amd64-binaries']
-
-    timeout-minutes: 5
-    
-    steps:
-    - name: Get the version
-      run: |
-        $VERSION="0.0.${{ github.run_number }}"
-        if ("${{ github.ref }}".startsWith("refs/tags/v")) {
-          $VERSION="${{ github.ref }}".substring('refs/tags/v'.length)
-        }
-        echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-    
-    - uses: actions/download-artifact@v3
-      with:
-        name: pufferpanel_${{ env.VERSION }}_windows_amd64
-        path: binaries
-
-    - uses: actions/download-artifact@v2
-      with:
-        name: pufferpanel_build_artifact
-        path: artifacts
-    
-    - name: Generate MSI     
-      run: |
-        Copy-Item -Recurse -Path binaries\* -Destination .
-        Copy-Item -Path artifacts\LICENSE.rtf -Destination .
-        Copy-Item -Path artifacts\installer.wxs -Destination .
-        $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
-        heat dir www -out www.wxs -gg -g1 -ke -nologo -cg WwwComponent -dr APPLICATIONROOTDIRECTORY
-        heat dir email -out email.wxs -gg -g1 -ke -nologo -cg EmailComponent -dr APPLICATIONROOTDIRECTORY
-        candle *.wxs -arch x64 -dProductVersion="${{ env.VERSION }}" -ext WixFirewallExtension
-        light *.wixobj -out pufferpanel.msi -b email -b www -ext WixUIExtension -ext WixFirewallExtension -cultures:en-us
-        
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: pufferpanel_${{ env.VERSION }}_installer.msi
-        path: pufferpanel.msi
-
   build-linux-amd64-binaries:
     name: Build Binaries - Linux AMD64
     runs-on: ubuntu-20.04
