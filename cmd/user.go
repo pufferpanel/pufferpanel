@@ -23,6 +23,8 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/spf13/cobra"
 	"gorm.io/gorm"
+	"os"
+	"os/signal"
 )
 
 var AddUserCmd = &cobra.Command{
@@ -59,6 +61,13 @@ func init() {
 }
 
 func addUser(cmd *cobra.Command, args []string) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		<-c
+		os.Exit(1)
+	}()
+
 	answers := userCreate{
 		Username: addUsername,
 		Email:    addEmail,
@@ -218,6 +227,13 @@ type userCreate struct {
 }
 
 func editUser(cmd *cobra.Command, args []string) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		<-c
+		os.Exit(1)
+	}()
+
 	if !pufferpanel.UserInGroup() {
 		fmt.Printf("You do not have permission to use this command")
 		return
