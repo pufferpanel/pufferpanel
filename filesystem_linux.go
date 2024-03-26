@@ -1,37 +1,13 @@
 package pufferpanel
 
 import (
-	"bufio"
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"golang.org/x/sys/unix"
 	"os"
 	"path/filepath"
 	"strings"
 	"syscall"
 )
-
-var useOpenat2 = false
-
-func DetermineKernelSupport() {
-	f, err := os.Open("/proc/kallsyms")
-	if err != nil {
-		panic("could not open /proc/kallsyms to validate kernel support, hard failing.\n" + err.Error())
-	}
-	defer Close(f)
-	reader := bufio.NewScanner(f)
-	var line string
-	for reader.Scan() {
-		line = reader.Text()
-		if strings.Contains(line, " t do_sys_openat2") {
-			useOpenat2 = true
-			break
-		}
-	}
-	if !useOpenat2 {
-		logging.Info.Printf("WARNING: OPENAT2 SUPPORT NOT ENABLED")
-	}
-}
 
 func (sfp *fileServer) OpenFile(path string, flags int, mode os.FileMode) (*os.File, error) {
 	path = prepPath(path)
@@ -48,7 +24,7 @@ func (sfp *fileServer) OpenFile(path string, flags int, mode os.FileMode) (*os.F
 
 	var fd int
 	var err error
-	if useOpenat2 {
+	if UseOpenat2() {
 		//at this point, we are going to work on openat2
 		fd, err = unix.Openat2(getFd(sfp.root), path, &unix.OpenHow{
 			Flags:   uint64(flags),
