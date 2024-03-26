@@ -72,13 +72,13 @@ func (sfp *fileServer) MkdirAll(path string, mode os.FileMode) error {
 	//in theory, the mkdir will be safe enough
 	parts := strings.Split(path, string(filepath.Separator))
 	//if it was just mkdir root... we don't do anything
-	if len(parts) <= 1 {
+	if len(parts) == 0 {
 		return nil
 	}
 
 	var err error
 	for i := range parts {
-		err = sfp.Mkdir(filepath.Join(parts[:i]...), mode)
+		err = sfp.Mkdir(filepath.Join(parts[:i+1]...), mode)
 		if err != nil && !errors.Is(err, os.ErrExist) {
 			return err
 		}
@@ -118,12 +118,16 @@ func (sfp *fileServer) Mkdir(path string, mode os.FileMode) error {
 	parent := filepath.Dir(path)
 	f := filepath.Base(path)
 
-	folder, err := sfp.OpenFile(parent, os.O_RDONLY, mode)
-	if err != nil {
-		return err
+	if parent == "" {
+		return unix.Mkdirat(getFd(sfp.root), f, syscallMode(mode))
+	} else {
+		folder, err := sfp.OpenFile(parent, os.O_RDONLY, mode)
+		if err != nil {
+			return err
+		}
+		defer Close(folder)
+		return unix.Mkdirat(getFd(folder), f, syscallMode(mode))
 	}
-	defer Close(folder)
-	return unix.Mkdirat(getFd(folder), f, syscallMode(mode))
 }
 
 func (sfp *fileServer) Remove(path string) error {
@@ -173,10 +177,6 @@ func (sfp *fileServer) RemoveAll(path string) error {
 			if err != nil {
 				return err
 			}
-			err = unix.Unlinkat(getFd(folder), v.Name(), unix.AT_REMOVEDIR)
-			if err != nil {
-				return err
-			}
 		} else {
 			err = unix.Unlinkat(getFd(folder), v.Name(), 0)
 			if err != nil {
@@ -210,5 +210,10 @@ func getFd(f *os.File) int {
 func prepPath(path string) string {
 	path = filepath.Clean(path)
 	path = strings.TrimPrefix(path, "/")
+
+	if path == "." || path == "/" {
+		return ""
+	}
+
 	return path
 }
