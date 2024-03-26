@@ -1,10 +1,10 @@
 {
   "CreateFile": "Luo tiedosto",
   "CreateFolder": "Luo kansio",
-  "Delete": "Delete",
+  "Delete": "Poista",
   "ConfirmDelete": "Haluatko varmasti poistaa tämän tiedoston?",
-  "UploadSuccess": "Files uploaded successfully",
-  "UploadFailed": "Failed uploading files",
+  "UploadSuccess": "Tiedostot lähetettiin onnistuneesti",
+  "UploadFailed": "Tiedostojen lataaminen epäonnistui",
   "UploadProgress": "Upload progress",
   "PreparingUpload": "Preparing upload",
   "CreatingFolders": "Creating folders",
