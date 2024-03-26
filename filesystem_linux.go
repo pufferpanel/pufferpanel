@@ -13,8 +13,7 @@ func (sfp *fileServer) OpenFile(path string, flags int, mode os.FileMode) (*os.F
 	path = prepPath(path)
 
 	if path == "" {
-		file := os.NewFile(sfp.root.Fd(), filepath.Base(path))
-		return file, nil
+		return os.Open(sfp.dir)
 	}
 
 	//if this is not a create request, nuke mode
@@ -39,10 +38,13 @@ func (sfp *fileServer) OpenFile(path string, flags int, mode os.FileMode) (*os.F
 		parts := strings.Split(path, string(filepath.Separator))
 
 		//follow the chain, this is just directories we're going through
-		var previousFd = getFd(sfp.root)
+		var rootFd = getFd(sfp.root)
+		var previousFd = rootFd
 		for _, v := range parts[:len(parts)-1] {
 			fd, err = unix.Openat(previousFd, v, unix.O_NOFOLLOW|unix.O_PATH, syscallMode(0))
-			_ = unix.Close(previousFd)
+			if previousFd != rootFd {
+				_ = unix.Close(previousFd)
+			}
 			if err != nil {
 				return nil, err
 			}
@@ -50,7 +52,9 @@ func (sfp *fileServer) OpenFile(path string, flags int, mode os.FileMode) (*os.F
 		}
 		//now.... we can open the file
 		fd, err = unix.Openat(previousFd, parts[len(parts)-1], unix.O_NOFOLLOW|flags, syscallMode(mode))
-		_ = unix.Close(previousFd)
+		if previousFd != rootFd {
+			_ = unix.Close(previousFd)
+		}
 		if err != nil {
 			return nil, err
 		}
