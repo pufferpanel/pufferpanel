@@ -21,15 +21,45 @@ func (sfp *fileServer) OpenFile(path string, flags int, mode os.FileMode) (*os.F
 		mode = 0
 	}
 
-	//at this point, we are going to work on openat2
-	fd, err := unix.Openat2(getFd(sfp.root), path, &unix.OpenHow{
-		Flags:   uint64(flags),
-		Mode:    uint64(syscallMode(mode)),
-		Resolve: unix.RESOLVE_BENEATH,
-	})
-	if err != nil {
-		return nil, err
+	var fd int
+	var err error
+	if UseOpenat2() {
+		//at this point, we are going to work on openat2
+		fd, err = unix.Openat2(getFd(sfp.root), path, &unix.OpenHow{
+			Flags:   uint64(flags),
+			Mode:    uint64(syscallMode(mode)),
+			Resolve: unix.RESOLVE_BENEATH,
+		})
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		//because openat is not permitted, we will have to play a game...
+		parts := strings.Split(path, string(filepath.Separator))
+
+		//follow the chain, this is just directories we're going through
+		var rootFd = getFd(sfp.root)
+		var previousFd = rootFd
+		for _, v := range parts[:len(parts)-1] {
+			fd, err = unix.Openat(previousFd, v, unix.O_NOFOLLOW|unix.O_PATH, syscallMode(0))
+			if previousFd != rootFd {
+				_ = unix.Close(previousFd)
+			}
+			if err != nil {
+				return nil, err
+			}
+			previousFd = fd
+		}
+		//now.... we can open the file
+		fd, err = unix.Openat(previousFd, parts[len(parts)-1], unix.O_NOFOLLOW|flags, syscallMode(mode))
+		if previousFd != rootFd {
+			_ = unix.Close(previousFd)
+		}
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	file := os.NewFile(uintptr(fd), filepath.Base(path))
 	return file, nil
 }
@@ -42,13 +72,13 @@ func (sfp *fileServer) MkdirAll(path string, mode os.FileMode) error {
 	//in theory, the mkdir will be safe enough
 	parts := strings.Split(path, string(filepath.Separator))
 	//if it was just mkdir root... we don't do anything
-	if len(parts) <= 1 {
+	if len(parts) == 0 {
 		return nil
 	}
 
 	var err error
 	for i := range parts {
-		err = sfp.Mkdir(filepath.Join(parts[:i]...), mode)
+		err = sfp.Mkdir(filepath.Join(parts[:i+1]...), mode)
 		if err != nil && !errors.Is(err, os.ErrExist) {
 			return err
 		}
@@ -88,12 +118,16 @@ func (sfp *fileServer) Mkdir(path string, mode os.FileMode) error {
 	parent := filepath.Dir(path)
 	f := filepath.Base(path)
 
-	folder, err := sfp.OpenFile(parent, os.O_RDONLY, mode)
-	if err != nil {
-		return err
+	if parent == "" {
+		return unix.Mkdirat(getFd(sfp.root), f, syscallMode(mode))
+	} else {
+		folder, err := sfp.OpenFile(parent, os.O_RDONLY, mode)
+		if err != nil {
+			return err
+		}
+		defer Close(folder)
+		return unix.Mkdirat(getFd(folder), f, syscallMode(mode))
 	}
-	defer Close(folder)
-	return unix.Mkdirat(getFd(folder), f, syscallMode(mode))
 }
 
 func (sfp *fileServer) Remove(path string) error {
@@ -143,10 +177,6 @@ func (sfp *fileServer) RemoveAll(path string) error {
 			if err != nil {
 				return err
 			}
-			err = unix.Unlinkat(getFd(folder), v.Name(), unix.AT_REMOVEDIR)
-			if err != nil {
-				return err
-			}
 		} else {
 			err = unix.Unlinkat(getFd(folder), v.Name(), 0)
 			if err != nil {
@@ -180,5 +210,10 @@ func getFd(f *os.File) int {
 func prepPath(path string) string {
 	path = filepath.Clean(path)
 	path = strings.TrimPrefix(path, "/")
+
+	if path == "." || path == "/" {
+		return ""
+	}
+
 	return path
 }

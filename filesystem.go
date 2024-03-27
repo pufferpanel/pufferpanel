@@ -33,7 +33,10 @@ func NewFileServer(prefix string) (FileServer, error) {
 	f := &fileServer{dir: prefix}
 	var err error
 	f.root, err = f.resolveRootFd()
-	return f, err
+	if err != nil {
+		return nil, err
+	}
+	return f, nil
 }
 
 func (sfp *fileServer) Prefix() string {

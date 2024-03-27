@@ -60,6 +60,8 @@ func internalRun() (terminate chan bool, success bool) {
 		terminate <- true
 	}()
 
+	pufferpanel.DetermineKernelSupport()
+
 	router := gin.New()
 	router.Use(gin.Recovery())
 	router.Use(gin.LoggerWithWriter(logging.Info.Writer()))

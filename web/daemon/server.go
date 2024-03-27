@@ -625,7 +625,16 @@ func deleteFile(c *gin.Context) {
 
 	targetPath := c.Param("filename")
 
-	err := server.GetFileServer().RemoveAll(targetPath)
+	fi, err := server.GetFileServer().Stat(targetPath)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+	if fi.IsDir() {
+		err = server.GetFileServer().RemoveAll(targetPath)
+	} else {
+		err = server.GetFileServer().Remove(targetPath)
+	}
+
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
