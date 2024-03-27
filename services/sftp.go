@@ -25,7 +25,10 @@ type DatabaseSFTPAuthorization struct {
 }
 
 func (s *DatabaseSFTPAuthorization) Validate(username, password string) (perms *ssh.Permissions, err error) {
-	parts := strings.Split(username, "|")
+	parts := strings.SplitN(username, "|", 2)
+	if len(parts) < 2 {
+		parts = strings.SplitN(username, "%7C", 2)
+	}
 	if len(parts) != 2 {
 		return nil, errors.New("incorrect username or password")
 	}
