@@ -1,5 +1,5 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "この条件が満たされいる場合のみ実行してください",
   "mojangdl": {
     "generic": "Minecraftをダウンロード",
     "formatted": "Minecraftをダウンロード"
@@ -9,7 +9,7 @@
     "formatted": "{target} に書き込み"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
+    "generic": "Minecraft Forgeバージョンの解決",
     "formatted": "Resolve Minecraft Forge Version"
   },
   "download": {
