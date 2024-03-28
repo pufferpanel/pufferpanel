@@ -34,8 +34,8 @@
   "StopCommand": "コマンドを停止",
   "StopSignal": "停止信号",
   "NoGroup": "グループなし",
-  "AddVariableGroup": "Add Variable Group",
-  "CommandConditionHint": "Use this command only if this condition is met",
+  "AddVariableGroup": "変数グループを追加",
+  "CommandConditionHint": "条件が満たされている場合のみコマンドを実行します",
   "AddCommand": "コマンドを追加",
   "AddEnvironment": "環境を追加",
   "signals": {
