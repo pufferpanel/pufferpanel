@@ -33,7 +33,7 @@
       "Auto": "Automático"
     },
     "BaseColor": "Cor base",
-    "ServerTypeDisplay": "Server Type Display",
+    "ServerTypeDisplay": "Exibição do tipo de servidor",
     "serverTypeDisplay": {
       "Icon": "Ícone",
       "None": "Nenhum"
