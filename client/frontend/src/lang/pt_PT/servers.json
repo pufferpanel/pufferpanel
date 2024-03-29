@@ -36,7 +36,7 @@
   "InviteUser": "Invite user",
   "EnvironmentEditHint": "Changes to these settings will only apply after reloading the server definition",
   "Command": "Comando",
-  "CreateMissingPermissions": "You don't have permission to view nodes or templates, these are needed for server creation, please talk to your admin",
+  "CreateMissingPermissions": "Não tens permissão para ver os nós ou modelos, que são necessários para criar servidores. Contacta o teu administrador",
   "FlagsHeader": "Autostart conditions",
   "flags": {
     "autoStart": "Start the server when the node starts",
