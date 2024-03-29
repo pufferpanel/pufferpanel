@@ -6,7 +6,7 @@
     "g c": "Go to Panel Configuration",
     "g n": "Go to Nodes",
     "g s": "Go to Servers",
-    "g t": "Go to Templates",
+    "g t": "Ir para Modelos",
     "g u": "Go to Users"
   },
   "Self": {
@@ -40,10 +40,10 @@
     "f a": "Archive current directory contents",
     "f c d": "Create new directory",
     "f c f": "Create new file",
-    "f d": "Upload directory",
+    "f d": "Carregar diretório",
     "f l": "Focus first file/folder in the list",
     "f r": "Reload file list",
-    "f u": "Upload files",
+    "f u": "Carregar ficheiros",
     "a e": "Edit Server Definition",
     "a r": "Reload Server Definiton from disk"
   },
@@ -58,7 +58,7 @@
     "l": "Focus the first user in the list"
   },
   "TemplateList": {
-    "Title": "Templates",
+    "Title": "Modelos",
     "c": "Create a new template",
     "l": "Focus the first template in the list"
   },
