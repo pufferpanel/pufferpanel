@@ -52,6 +52,9 @@ var TokenPrivate = asString("token.private", "private.pem")
 // Deprecated: Removed in v3
 var TokenPublic = asString("token.public", "public.pem")
 
+var SecurityForceOpenat2 = asBool("security.forceOpenat2", false)
+var SecurityForceOpenat = asBool("security.forceOpenat", false)
+
 type entry[T ValueType] struct {
 	key string
 }
