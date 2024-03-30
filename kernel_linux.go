@@ -59,8 +59,4 @@ func testOpenat2() {
 	} else {
 		panic(fmt.Errorf("Could not open /proc/kallsyms to validate kernel support\n%s", err.Error()))
 	}
-
-	if !useOpenat2 {
-		logging.Info.Printf("WARNING: OPENAT2 SUPPORT NOT ENABLED")
-	}
 }
