@@ -33,9 +33,12 @@ func testOpenat2() {
 
 		//we have a file now, let's see if we can... read it with openat2
 		var fd int
-		fd, err = unix.Openat2(int(testFile.Fd()), "validate", &unix.OpenHow{})
+		fd, err = unix.Openat2(int(testFile.Fd()), "validate", &unix.OpenHow{
+			Flags: uint64(os.O_CREATE),
+			Mode:  uint64(syscallMode(0644)),
+		})
 		if err == nil {
-			defer unix.Close(fd)
+			_ = unix.Close(fd)
 			useOpenat2 = true
 		} else if errors.Is(err, unix.EOPNOTSUPP) {
 			useOpenat2 = false
