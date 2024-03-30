@@ -643,9 +643,6 @@ jobs:
       contents: write
     environment: ${{ startsWith(github.ref, 'refs/tags/v') && 'Release' || 'Development' }}
 
-    env:
-      PACKAGECLOUD_REPO: pufferpanel/pufferpanel
-
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -663,9 +660,9 @@ jobs:
         env:
           PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
         run: |
-          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_amd64.deb 
-          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_arm64.deb 
-          package_cloud push ${{ env.PACKAGECLOUD_REPO }}/rpm_any/rpm_any */pufferpanel-*.x86_64.rpm 
+          package_cloud push ${{ vars.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_amd64.deb 
+          package_cloud push ${{ vars.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_arm64.deb 
+          package_cloud push ${{ vars.PACKAGECLOUD_REPO }}/rpm_any/rpm_any */pufferpanel-*.x86_64.rpm 
 
       - name: Create Release
         id: create_release
