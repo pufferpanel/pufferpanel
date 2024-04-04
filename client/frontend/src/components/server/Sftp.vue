@@ -17,12 +17,14 @@ const hostField = ref(null)
 const userField = ref(null)
 const hostCopied = ref(false)
 const userCopied = ref(false)
+const userEncoded = ref('')
 
 onMounted(async () => {
   host.value = props.server.node.publicHost !== '127.0.0.1' ? props.server.node.publicHost : window.location.hostname
   host.value = host.value + ':' + props.server.node.sftpPort
   const u = await api.self.get()
-  user.value = `${u.email}%23${props.server.id}`
+  user.value = `${u.email}#${props.server.id}`
+  userEncoded.value = encodeURIComponent(user.value);
 })
 
 function copyHost() {
@@ -67,6 +69,6 @@ function copyUser() {
       <b>{{t('users.Password')}}: </b>
       <span>{{t('users.AccountPassword')}}</span>
     </div>
-    <a :href="`sftp://${user}@${host}`"><btn color="primary" v-text="t('servers.SftpConnection')" /></a>
+    <a :href="`sftp://${userEncoded}@${host}`"><btn color="primary" v-text="t('servers.SftpConnection')" /></a>
   </div>
 </template>
