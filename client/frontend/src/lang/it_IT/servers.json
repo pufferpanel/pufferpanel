@@ -21,7 +21,7 @@
   "Admin": "Amministratore",
   "Settings": "Impostazioni",
   "SaveSettings": "Salva Impostazioni",
-  "SettingsSaved": "Settings saved",
+  "SettingsSaved": "Impostazioni salvate",
   "NoSettings": "Questo server non ha alcuna impostazione che puoi modificare",
   "Delete": "Elimina Server",
   "ConfirmDelete": "Vuoi davvero eliminare questo server? (ciò non è reversibile)",
@@ -37,10 +37,10 @@
   "EnvironmentEditHint": "Le modifiche a queste impostazioni saranno applicate solo dopo aver ricaricato la definizione del server",
   "Command": "Comando",
   "CreateMissingPermissions": "Non hai i permessi per visualizzare nodi o modelli, questi sono necessari per la creazione del server, si prega di parlare con il tuo amministratore",
-  "FlagsHeader": "Autostart conditions",
+  "FlagsHeader": "Condizioni di avvio automatico",
   "flags": {
-    "autoStart": "Start the server when the node starts",
-    "autoRestartOnGraceful": "Restart the server when it stops normally",
-    "autoRestartOnCrash": "Restart the server when it crashes"
+    "autoStart": "Avvia il server all'avvio del nodo",
+    "autoRestartOnGraceful": "Riavvia il server quando si spegne normalmente",
+    "autoRestartOnCrash": "Riavvia il server quando crasha"
   }
 }
