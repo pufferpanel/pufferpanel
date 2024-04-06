@@ -5,7 +5,7 @@
   "Offline": "Offline",
   "Unknown": "Sconosciuto",
   "Loading": "Caricamento...",
-  "Description": "Description",
+  "Description": "Descrizione",
   "Save": "Salva",
   "Cancel": "Annulla",
   "Close": "Chiudi",
@@ -22,15 +22,15 @@
   "Protocol": "Protocollo",
   "Add": "Aggiungi",
   "Apply": "Applica",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
+  "Confirm": "Conferma",
+  "Condition": "Condizione",
   "theme": {
     "Theme": "Tema",
     "Mode": "Modalità",
     "mode": {
       "Light": "Chiaro",
       "Dark": "Scuro",
-      "Auto": "Auto"
+      "Auto": "Automatico"
     },
     "BaseColor": "Colore Base",
     "ServerTypeDisplay": "Visualizzazione Tipo Server",
