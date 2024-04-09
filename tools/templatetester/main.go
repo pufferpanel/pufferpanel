@@ -369,6 +369,13 @@ func main() {
 
 		err = prg.Destroy()
 		panicIf(err)
+
+		//force delete files
+		if reuse {
+			_ = os.Remove(filepath.Join(config.ServersFolder.Value(), prg.Identifier+".json"))
+		} else {
+			_ = os.RemoveAll(filepath.Join(config.ServersFolder.Value(), prg.Identifier))
+		}
 	}
 }
 
