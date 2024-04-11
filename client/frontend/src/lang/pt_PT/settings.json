@@ -8,7 +8,7 @@
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
   "CompanyName": "Nome da empresa",
   "DefaultTheme": "Tema padrão",
-  "RegistrationEnabled": "Permitir o registo dos utilizadores",
+  "RegistrationEnabled": "Permitir aos utilizadores registarem-se",
   "RegistrationEnabledHint": "Os utilizadores auto-registados não podem fazer nada até que lhes sejam dadas permissões\n\nDesativar esta opção apenas impede o registo direto; o convite para um servidor e a página de utilizadores não são afetados",
   "EmailProvider": "Fornecedor de e-mail",
   "emailProviders": {

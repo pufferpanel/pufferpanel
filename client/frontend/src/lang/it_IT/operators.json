@@ -1,5 +1,5 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Eseguire questo passaggio solo se la condizione è soddisfatta",
   "mojangdl": {
     "generic": "Scarica Minecraft",
     "formatted": "Scarica Minecraft"
