@@ -36,6 +36,11 @@ var lock = sync.Mutex{}
 var startQueueTicker, statTicker *time.Ticker
 var running = false
 
+func init() {
+	archiver.DefaultZip.OverwriteExisting = true
+	archiver.DefaultTarGz.OverwriteExisting = true
+}
+
 func InitService() {
 	queue = list.New()
 	running = true
@@ -622,7 +627,6 @@ func (p *Server) Extract(source, destination string) error {
 	if _, err := os.Stat(destinationFile); os.IsNotExist(err) {
 		return pufferpanel.ErrFileExists
 	}
-
 	return archiver.Unarchive(sourceFile, destinationFile)
 }
 
