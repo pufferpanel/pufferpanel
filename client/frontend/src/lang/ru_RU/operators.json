@@ -1,64 +1,64 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Выполнить только этот шаг, если это условие выполнено",
   "mojangdl": {
-    "generic": "Download Minecraft",
-    "formatted": "Download Minecraft"
+    "generic": "Загрузить Minecraft",
+    "formatted": "Загрузить Minecraft"
   },
   "writefile": {
-    "generic": "Write to file",
-    "formatted": "Write to file {target}"
+    "generic": "Записать в файл",
+    "formatted": "Записать в файл {target}"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
-    "formatted": "Resolve Minecraft Forge Version"
+    "generic": "Разрешить версию Minecraft Forge",
+    "formatted": "Разрешить версию Minecraft Forge"
   },
   "download": {
-    "generic": "Download file(s)",
-    "formatted": "Download {file} | Download {n} files",
-    "files": "Files"
+    "generic": "Загрузить файл(ы)",
+    "formatted": "Загрузить {file}. | Загрузить {n} файлов",
+    "files": "Файлы"
   },
   "command": {
-    "generic": "Run command(s)",
-    "formatted": "Run {command} | Run {n} commands",
-    "commands": "Commands"
+    "generic": "Выполнить команду(ы)",
+    "formatted": "Запустить {command}. | Запустить команды {n}",
+    "commands": "Команды"
   },
   "alterfile": {
-    "generic": "Modify a file",
-    "formatted": "Modify file {target}",
-    "regex": "Treat search string as regular expression",
-    "search": "Search",
-    "replace": "Replace matches with"
+    "generic": "Изменить файл",
+    "formatted": "Изменить файл {target}",
+    "regex": "Считать строку поиска регулярным выражением",
+    "search": "Поиск",
+    "replace": "Заменить совпадения на"
   },
   "move": {
-    "generic": "Move or rename a file",
-    "formatted": "Move file {source} to {target}",
-    "source": "Source Path",
-    "target": "Target Path"
+    "generic": "Переместить или переименовать файл",
+    "formatted": "Переместить файл {source} в {target}",
+    "source": "Исходный путь",
+    "target": "Целевой путь"
   },
   "mkdir": {
-    "generic": "Create a directory",
-    "formatted": "Create directory {target}"
+    "generic": "Создать папку",
+    "formatted": "Создать каталог {target}"
   },
   "steamgamedl": {
-    "generic": "Install from Steam",
-    "formatted": "Install Steam App ID {appId}",
-    "appId": "Steam App ID"
+    "generic": "Установить из Steam",
+    "formatted": "Установить Steam App ID {appId}",
+    "appId": "ID приложения Steam"
   },
   "javadl": {
-    "generic": "Install Java",
-    "formatted": "Install Java {version}"
+    "generic": "Установка Java",
+    "formatted": "Установить Java {version}"
   },
   "forgedl": {
-    "generic": "Download Minecraft Forge",
-    "formatted": "Download Minecraft Forge"
+    "generic": "Скачать Minecraft Forge",
+    "formatted": "Скачать Minecraft Forge"
   },
   "spongeforgedl": {
-    "generic": "Download Minecraft SpongeForge",
-    "formatted": "Download Minecraft SpongeForge",
-    "releaseType": "Release Type"
+    "generic": "Скачать Minecraft SpongeForge",
+    "formatted": "Скачать Minecraft SpongeForge",
+    "releaseType": "Тип релиза"
   },
   "fabricdl": {
     "generic": "Скачать Minecraft Fabric",
-    "formatted": "Download Minecraft Fabric"
+    "formatted": "Скачать Minecraft Fabric"
   }
 }
