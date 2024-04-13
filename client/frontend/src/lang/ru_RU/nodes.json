@@ -10,25 +10,25 @@
   "Created": "Хост создан",
   "Updated": "Хост обновлён",
   "Deleted": "Хост удалён",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "Reachable": "Этот узел правильно настроен и запущен",
+  "Unreachable": "Этот узел либо неправильно настроен или в настоящее время недоступен",
   "features": {
     "os": {
-      "label": "Operating System",
+      "label": "Операционная система",
       "linux": "Linux",
       "windows": "Windows"
     },
     "arch": {
-      "label": "CPU Architecture",
-      "amd64": "x86 64bit",
-      "arm": "ARM 32bit",
-      "arm64": "ARM 64bit"
+      "label": "Архитектура ЦП",
+      "amd64": "x86 64-битный",
+      "arm": "ARM 32-битный",
+      "arm64": "ARM 64-битный"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "Докер доступен",
+      "false": "Докер недоступен"
     },
-    "envs": "Available Environments"
+    "envs": "Доступные Окружения"
   },
   "PublicHost": "Публичный хост",
   "PublicPort": "Публичный порт",
@@ -37,7 +37,7 @@
   "SftpPort": "SFTP-порт",
   "WithPrivateAddress": "Используйте другой хост / порт для связи между сервером",
   "WithPrivateAddressHint": "Этот отдельный адрес используется, когда главному узлу необходимо связаться с новым узлом. Полезно, например, когда узлы находятся в одной сети за NAT.",
-  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
+  "LocalNodeEdit": "Локальный узел не имеет редактируемых настроек\n\nЧтобы изменить отображенный хост с серверами, размещенными на этом узле, настройте основной url панели в настройках панели",
   "Deploy": "Развернуть хост",
   "deploy": {
     "Step1": "## Шаг 1\n\nУстановите PufferPanel на новом сервере, [подробности см. в документации](https://docs.pufferpanel.com/en/latest/installing.html)",
