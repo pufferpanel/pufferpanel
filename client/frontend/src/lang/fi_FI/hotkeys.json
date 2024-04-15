@@ -1,20 +1,20 @@
 {
-  "Title": "Keyboard Shortcuts",
+  "Title": "Pikanäppäimet",
   "Global": {
-    "Title": "Global",
-    "g a": "Go to Account",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "Title": "Globaali",
+    "g a": "Siirry tilinäkymään",
+    "g c": "Siirry Paneelinhallintanäkymään",
+    "g n": "Siirry solmuihin",
+    "g s": "Siirry Palvelimiin",
+    "g t": "Siirry Malleihin",
+    "g u": "Siirry Käyttäjiin"
   },
   "Self": {
-    "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
+    "Title": "Tili",
+    "t 2": "Siirry kaksivaiheisen tunnistautumisen näkymään",
+    "t a": "Siirry Tilitietonäkymään",
+    "t o": "Siirry OAuth näkymään",
+    "t p": "Siirry Salasananäkymään",
     "t s": "Go to Preferences tab"
   },
   "ServerList": {
