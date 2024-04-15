@@ -27,7 +27,7 @@
   "ErrNoPermission": "Sinulla ei ole oikeuksia tämän toiminnon suorittamiseen",
   "ErrDatabaseNotAvailable": "Tietokanta ei ole käytettävissä",
   "ErrNoNodes": "Noodeja ei ole saatavilla",
-  "ErrNoTemplates": "No templates available",
+  "ErrNoTemplates": "Malleja ei ole saatavilla",
   "ErrPasswordRequirements": "Salasanan pitää olla vähintään 8 merkkiä pitkä",
   "ErrUsernameRequirements": "Käyttäjänimen pitää olla vähintään 3 kirjainta ja sisältää vain kirjaimia, _ tai -",
   "ErrPasswordsNotIdentical": "Salasanat eivät täsmää",
@@ -42,7 +42,7 @@
   "ErrDuplicateNodeName": "Noodi samalla nimellä on jo olemassa",
   "ErrDirectoryUploadNotSupported": "Kansioden siirtäminen palvelimelle epäonnistui",
   "ErrDockerNotSupported": "Docker ei ole tuettu tällä noodilla",
-  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrMissingBinary": "Puuttuva binääri: ${expected}",
   "ErrUnsupportedOS": "Käyttöjärjestelmää (${actual}) ei tueta. Tuettu käyttöjärjestelmä: ${expected}",
   "ErrUnsupportedArch": "Arkkitehtuuria ${actual} ei tueta. Tuetut arkkitehtuurit: ${expected}",
   "ErrNoCommand": "Tälle palvelimelle ei voitu määrittää mitään komentoa"
