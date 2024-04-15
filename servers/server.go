@@ -624,9 +624,9 @@ func (p *Server) Extract(source, destination string) error {
 	}
 
 	// destination shouldn't exist
-	if _, err := os.Stat(destinationFile); os.IsNotExist(err) {
+	/*if _, err := os.Stat(destinationFile); os.IsNotExist(err) {
 		return pufferpanel.ErrFileExists
-	}
+	}*/
 	return archiver.Unarchive(sourceFile, destinationFile)
 }
 
