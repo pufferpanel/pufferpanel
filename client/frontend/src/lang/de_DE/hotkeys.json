@@ -2,20 +2,20 @@
   "Title": "Tastenkombinationen",
   "Global": {
     "Title": "Global",
-    "g a": "Zum Profil",
-    "g c": "Gehe zu der Panel-Kofiguration",
-    "g n": "Zu den Nodes",
-    "g s": "Zu den Servern",
-    "g t": "Zu den Vorlagen gehen",
-    "g u": "Zu den Benutzern gehen"
+    "g a": "Zum Profil wechseln",
+    "g c": "Zur Panel-Kofiguration wechseln",
+    "g n": "Zu den Nodes wechseln",
+    "g s": "Zu den Servern wechseln",
+    "g t": "Zu den Vorlagen wechseln",
+    "g u": "Zu den Benutzern wechseln"
   },
   "Self": {
     "Title": "Konto",
-    "t 2": "Gehen zum 2-Faktor-Authentifizierung Tab",
-    "t a": "Gehe zum Kontodetails Tab",
-    "t o": "Gehe zum OAuth Tab",
-    "t p": "Gehe zum Passwort Tab",
-    "t s": "Gehe zu den Einstellungen"
+    "t 2": "Zum 2-Faktor-Authentifizierungs-Tab wechseln",
+    "t a": "Zum Kontodetails-Tab wechseln",
+    "t o": "Zum OAuth-Tab wechseln",
+    "t p": "Zum Passwort-Tab wechseln",
+    "t s": "Zu den Einstellungen wechseln"
   },
   "ServerList": {
     "Title": "Server",
@@ -24,19 +24,19 @@
   },
   "ServerView": {
     "Title": "Server",
-    "t c": "Gehe zum Konsolen Tab",
-    "t i": "Gehe zum Statistiken Tab",
-    "t f": "Gehe zum Datein Tab",
-    "t s": "Gehe zu dem Einstellungs Tab",
-    "t u": "Gehe zum Benutzer Tab",
-    "t 6": "Gehe zum SFTP Tab",
-    "t 7": "Gehe zum Api Tab",
-    "t a": "Gehe zum Admin Tab",
+    "t c": "Zum Konsolen-Tab wechseln",
+    "t i": "Zum Statistiken-Tab wechseln",
+    "t f": "Zum Dateien-Tab wechseln",
+    "t s": "Zum Einstellungs-Tab wechseln",
+    "t u": "Zum Benutzer-Tab wechseln",
+    "t 6": "Zum SFTP-Tab wechseln",
+    "t 7": "Zum Api-Tab wechseln",
+    "t a": "Zum Admin-Tab wechseln",
     "c c": "Konsole leeren",
     "r r": "Server starten",
     "r s": "Server stoppen",
-    "r k": "Erzwinge beenden",
-    "r i": "Server aufsetzten",
+    "r k": "Stoppen erzwingen",
+    "r i": "Server einrichten",
     "f a": "Aktuellen Verzeichnisinhalt archivieren",
     "f c d": "Neues Verzeichnis erstellen",
     "f c f": "Neue Datei erstellen",
@@ -45,12 +45,12 @@
     "f r": "Dateiliste neu laden",
     "f u": "Dateien hochladen",
     "a e": "Server Definition bearbeiten",
-    "a r": "Serverkonfiguration neu laden"
+    "a r": "Server Definition von der Festplatte neu laden"
   },
   "NodeList": {
-    "Title": "Nodes",
-    "c": "Neue Node erstellen",
-    "l": "Erste Node in der Liste fokussieren "
+    "Title": "Knoten",
+    "c": "Neuen Knoten erstellen",
+    "l": "Ersten Knoten in der Liste fokussieren"
   },
   "UserList": {
     "Title": "Benutzer",
@@ -67,9 +67,9 @@
     "t e": "Gehe zum Environment Tab",
     "t g": "Gehe zur Hauptseite",
     "t h": "Gehe zum Hooks Tab",
-    "t i": "Go to Install tab",
+    "t i": "Zum Installations-Tab wechseln",
     "t j": "Gehe zum JSON Tab",
-    "t r": "Go to Run Configuration tab",
-    "t v": "Go to Variables tab"
+    "t r": "Zum Konfigurations-Tab wechseln",
+    "t v": "Zum Variablen-Tab wechseln"
   }
 }
