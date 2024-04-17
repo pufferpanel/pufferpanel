@@ -1,16 +1,16 @@
 {
   "CreateFile": "Datei erstellen",
   "CreateFolder": "Ordner erstellen",
-  "Delete": "Delete",
+  "Delete": "Löschen",
   "ConfirmDelete": "Soll diese Datei wirklich gelöscht werden?",
-  "UploadSuccess": "Files uploaded successfully",
-  "UploadFailed": "Failed uploading files",
-  "UploadProgress": "Upload progress",
-  "PreparingUpload": "Preparing upload",
-  "CreatingFolders": "Creating folders",
-  "CurrentlyUploading": "Uploading file {current}/{total}",
-  "Current": "Current",
-  "Total": "Total",
-  "OpenLargeFile": "This file may cause performance issues for your browser due to its size, do you want to open it anyways?",
-  "OpenAnyways": "Open anyways"
+  "UploadSuccess": "Dateien erfolgreich hochgeladen",
+  "UploadFailed": "Hochladen von Dateien fehlgeschlagen",
+  "UploadProgress": "Upload-Fortschritt",
+  "PreparingUpload": "Upload wird vorbereitet",
+  "CreatingFolders": "Ordner werden erstellt",
+  "CurrentlyUploading": "Datei {current}/{total} wird hochgeladen",
+  "Current": "Aktuell",
+  "Total": "Gesamt",
+  "OpenLargeFile": "Diese Datei kann aufgrund ihrer Größe zu Performance Problemen im Browser führen. Soll die Datei trotzdem geöffnet werden?",
+  "OpenAnyways": "Trotzdem öffnen"
 }
