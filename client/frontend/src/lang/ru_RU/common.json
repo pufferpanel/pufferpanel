@@ -24,6 +24,8 @@
   "Apply": "Применить",
   "Confirm": "Подтвердить",
   "Condition": "Состояние",
+  "Discard": "Discard",
+  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
   "theme": {
     "Theme": "Тема",
     "Mode": "Режим",
