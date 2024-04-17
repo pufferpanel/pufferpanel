@@ -12,7 +12,7 @@
   "Host": "Host",
   "Port": "Port",
   "Collapse": "Einklappen",
-  "Expand": "Expand",
+  "Expand": "Erweitern",
   "Copied": "In die Zwischenablage kopiert",
   "Back": "Zurück",
   "Next": "Weiter",
@@ -25,23 +25,23 @@
   "Confirm": "Bestätigen",
   "Condition": "Bedingung",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Erscheinungsbild",
+    "Mode": "Modus",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
+      "Light": "Hell",
+      "Dark": "Dunkel",
       "Auto": "Auto"
     },
     "BaseColor": "Standardfarbe",
-    "ServerTypeDisplay": "Server Type Display",
+    "ServerTypeDisplay": "Servertyp Anzeige",
     "serverTypeDisplay": {
       "Icon": "Icon",
-      "None": "None"
+      "None": "Kein(e)"
     },
-    "ListType": "List Type",
+    "ListType": "Listentyp",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Raster",
+      "List": "Liste"
     }
   }
 }
