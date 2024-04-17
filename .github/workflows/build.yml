@@ -102,7 +102,7 @@ jobs:
         run: |
           npm install -g yarn
           yarn install
-          yarn build
+          env VITE_CHECK_ENV="true" yarn build
         env:
           CI: true
         working-directory: client
