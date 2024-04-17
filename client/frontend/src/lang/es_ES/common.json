@@ -24,6 +24,8 @@
   "Apply": "Aplicar",
   "Confirm": "Confirmar",
   "Condition": "Condición",
+  "Discard": "Discard",
+  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
   "theme": {
     "Theme": "Tema",
     "Mode": "Modo",
