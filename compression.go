@@ -1,6 +1,7 @@
 package pufferpanel
 
 import (
+	"archive/tar"
 	"errors"
 	"github.com/klauspost/compress/zip"
 	"github.com/mholt/archiver/v3"
@@ -11,6 +12,15 @@ import (
 )
 
 const PathSeparator = string(os.PathSeparator)
+
+type ExtractOptions struct {
+	FileServer   FileServer
+	SourceFile   string
+	TargetPath   string
+	Filter       string
+	SkipRoot     bool
+	ForcedWalker Walker
+}
 
 func DetermineIfSingleRoot(sourceFile string) (bool, error) {
 	isSingleRoot := false
@@ -74,7 +84,7 @@ func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.Wa
 		}
 
 		parent := filepath.Join(targetPath, filepath.Dir(path))
-		path = filepath.Join(targetPath, file.Name())
+		path = filepath.Join(targetPath, path)
 
 		if file.Mode().IsDir() {
 			if fs != nil {
@@ -121,6 +131,8 @@ func getCompressedItemName(file archiver.File) string {
 
 	switch v := file.Header.(type) {
 	case zip.FileHeader:
+		return v.Name
+	case *tar.Header:
 		return v.Name
 	default:
 		return file.Name()
