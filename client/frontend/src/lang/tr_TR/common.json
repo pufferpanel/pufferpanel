@@ -5,14 +5,14 @@
   "Offline": "Çevrımdışı",
   "Unknown": "Bilinmeyen",
   "Loading": "Yükleniyor...",
-  "Description": "Description",
+  "Description": "Açıklama",
   "Save": "Kaydet",
   "Cancel": "İptal",
-  "Close": "Close",
+  "Close": "Kapat",
   "Host": "Sunucu",
   "Port": "Port",
   "Collapse": "Daralt",
-  "Expand": "Expand",
+  "Expand": "Genişlet",
   "Copied": "Panoya kopyalandı",
   "Back": "Geri",
   "Next": "İleri",
@@ -21,27 +21,29 @@
   "HelpTranslate": "PufferPanel'i çevirmemize yardım edin",
   "Protocol": "Protokol",
   "Add": "Ekle",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
+  "Apply": "Uygula",
+  "Confirm": "Onayla",
+  "Condition": "Şart",
+  "Discard": "Discard",
+  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Tema",
+    "Mode": "Mod",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "Auto": "Auto"
+      "Light": "Aydınlık",
+      "Dark": "Karanlık",
+      "Auto": "Otomatik"
     },
-    "BaseColor": "Base Color",
-    "ServerTypeDisplay": "Server Type Display",
+    "BaseColor": "Ana Renk",
+    "ServerTypeDisplay": "Sunucu Tipini Göster",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "İkon",
+      "None": "Hiçbiri"
     },
-    "ListType": "List Type",
+    "ListType": "Liste Türü",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Izgara",
+      "List": "Liste"
     }
   }
 }

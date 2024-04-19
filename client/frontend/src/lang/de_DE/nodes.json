@@ -3,32 +3,32 @@
   "Nodes": "Knotenpunkte",
   "Edit": "Knotenpunkt bearbeiten",
   "Add": "Knotenpunkt hinzufügen",
-  "Create": "Create Node",
+  "Create": "Knoten erstellen",
   "Update": "Knotenpunkt aktualisieren",
   "Delete": "Knotenpunkt entfernen",
-  "ConfirmDelete": "Do you really want to delete the node {name}?",
-  "Created": "Created Node",
-  "Updated": "Updated Node",
-  "Deleted": "Deleted Node",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "ConfirmDelete": "Soll der Knoten {name} wirklich gelöscht werden?",
+  "Created": "Knoten erstellt",
+  "Updated": "Knoten aktualisiert",
+  "Deleted": "Knoten gelöscht",
+  "Reachable": "Dieser Knoten ist korrekt eingerichtet und läuft",
+  "Unreachable": "Dieser Knoten ist entweder nicht korrekt eingerichtet oder zurzeit nicht erreichbar",
   "features": {
     "os": {
-      "label": "Operating System",
+      "label": "Betriebssystem",
       "linux": "Linux",
       "windows": "Windows"
     },
     "arch": {
-      "label": "CPU Architecture",
-      "amd64": "x86 64bit",
-      "arm": "ARM 32bit",
-      "arm64": "ARM 64bit"
+      "label": "CPU-Architektur",
+      "amd64": "x86 64Bit",
+      "arm": "ARM 32Bit",
+      "arm64": "ARM 64Bit"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "Docker verfügbar",
+      "false": "Docker nicht verfügbar"
     },
-    "envs": "Available Environments"
+    "envs": "Verfügbare Umgebungen"
   },
   "PublicHost": "Öffentlicher Host",
   "PublicPort": "Öffentlicher Port",
@@ -37,14 +37,14 @@
   "SftpPort": "SFTP-Port",
   "WithPrivateAddress": "Benutzen Sie einen anderen Host/Port für die Server zu Server Verbindung",
   "WithPrivateAddressHint": "Diese Addresse wird für die Verbindung zwischen dem Hauptserver und den Knotenpunkten genutzt. Nützlich falls sich beide in dem selben Netzwerk befinden.",
-  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
-  "Deploy": "Deploy Node",
+  "LocalNodeEdit": "Der lokale Knoten hat keine Einstellungen die bearbeitet werden können.\n\nUm den angezeigten Host der auf diesem Knoten gehosteten Servern zu ändern, passe die Master-Url des Panels in den Panel-Einstellungen an",
+  "Deploy": "Knoten bereitstellen",
   "deploy": {
-    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
-    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
-    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
-    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
-    "Step5": "### Your new node is now set up and ready to go"
+    "Step1": "## Schritt 1\n\nInstalliere PufferPanel auf dem neuen Server, [weitere Informationen finden Sie in der Dokumentation](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Schritt 2\n\nStoppe den PufferPanel Dienst auf dem neuen Server, wenn er während der Installation gestartet wurde, indem du den Befehl `sudo systemctl stop pufferpanel` ausführst",
+    "Step3": "## Schritt 3\n\nErsetze den Inhalt der PufferPanel Konfigurationsdatei auf dem neuen Server mit dem untenstehenden Code\n\nDie Konfigurationsdatei ist normalerweise hier `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Schritt 4\n\nFühre den Befehl `sudo systemctl enable --now pufferpanel` auf dem neuen Server aus, um den PufferPanel Dienst zu aktivieren und (neu) zu starten",
+    "Step5": "### Der Knoten ist jetzt eingerichtet und betriebsbereit"
   },
   "DeploymentInstruction": "Um den Knoten bereitzustellen, installieren Sie PufferPanel auf dem neuen Server und platzieren Sie die Konfigurationsdatei in `/etc/pufferpanel/`<br/>Starten Sie PufferPanel anschließend auf dem neuen Server neu."
 }

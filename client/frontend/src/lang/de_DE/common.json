@@ -5,14 +5,14 @@
   "Offline": "Offline",
   "Unknown": "Unbekannt",
   "Loading": "Lädt...",
-  "Description": "Description",
+  "Description": "Beschreibung",
   "Save": "Speichern",
   "Cancel": "Abbrechen",
-  "Close": "Close",
+  "Close": "Schließen",
   "Host": "Host",
   "Port": "Port",
   "Collapse": "Einklappen",
-  "Expand": "Expand",
+  "Expand": "Erweitern",
   "Copied": "In die Zwischenablage kopiert",
   "Back": "Zurück",
   "Next": "Weiter",
@@ -21,27 +21,29 @@
   "HelpTranslate": "Hilf uns, PufferPanel zu übersetzen",
   "Protocol": "Protokoll",
   "Add": "Hinzufügen",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
+  "Apply": "Übernehmen",
+  "Confirm": "Bestätigen",
+  "Condition": "Bedingung",
+  "Discard": "Discard",
+  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Erscheinungsbild",
+    "Mode": "Modus",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
+      "Light": "Hell",
+      "Dark": "Dunkel",
       "Auto": "Auto"
     },
-    "BaseColor": "Base Color",
-    "ServerTypeDisplay": "Server Type Display",
+    "BaseColor": "Standardfarbe",
+    "ServerTypeDisplay": "Servertyp Anzeige",
     "serverTypeDisplay": {
       "Icon": "Icon",
-      "None": "None"
+      "None": "Kein(e)"
     },
-    "ListType": "List Type",
+    "ListType": "Listentyp",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Raster",
+      "List": "Liste"
     }
   }
 }

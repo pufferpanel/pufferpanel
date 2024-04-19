@@ -5,7 +5,7 @@
   "Offline": "Офлайн",
   "Unknown": "Неизвестно",
   "Loading": "Загрузка...",
-  "Description": "Description",
+  "Description": "Описание",
   "Save": "Сохранить",
   "Cancel": "Отменить",
   "Close": "Закрыть",
@@ -22,15 +22,17 @@
   "Protocol": "Протокол",
   "Add": "Добавить",
   "Apply": "Применить",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
+  "Confirm": "Подтвердить",
+  "Condition": "Состояние",
+  "Discard": "Discard",
+  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
   "theme": {
     "Theme": "Тема",
     "Mode": "Режим",
     "mode": {
       "Light": "Светлая",
       "Dark": "Тёмная",
-      "Auto": "Auto"
+      "Auto": "Авто"
     },
     "BaseColor": "Основной цвет",
     "ServerTypeDisplay": "Тип отображения сервера",
