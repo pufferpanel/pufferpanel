@@ -123,7 +123,7 @@ func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult
 	serverZipPath := getCacheFilePath(serverFile)
 	logging.Debug.Printf("Extracting modpack from %s\n", serverZipPath)
 	env.DisplayToConsole(true, "Extracting modpack from %s", serverZipPath)
-	err = pufferpanel.ExtractZipIgnoreSingleDir(serverZipPath, env.GetRootDirectory())
+	err = pufferpanel.Extract(nil, serverZipPath, env.GetRootDirectory(), "*", true)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}

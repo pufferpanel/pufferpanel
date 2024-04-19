@@ -144,7 +144,7 @@ func downloadBinaries(rootBinaryFolder string) error {
 	}
 	link = strings.Replace(link, "${arch}", arch, 1)
 
-	err = pufferpanel.HttpGetZip(link, filepath.Join(rootBinaryFolder, "depotdownloader"))
+	err = pufferpanel.HttpExtract(link, filepath.Join(rootBinaryFolder, "depotdownloader"))
 	if err != nil {
 		return err
 	}
@@ -172,7 +172,7 @@ func downloadMetadata(env pufferpanel.Environment) error {
 		return err
 	}
 
-	err = pufferpanel.HttpGetZip(SteamMetadataServerLink+metadataName, filepath.Join(env.GetRootDirectory(), ".steam"))
+	err = pufferpanel.HttpExtract(SteamMetadataServerLink+metadataName, filepath.Join(env.GetRootDirectory(), ".steam"))
 	if err != nil {
 		return err
 	}

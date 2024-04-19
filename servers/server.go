@@ -623,11 +623,7 @@ func (p *Server) Extract(source, destination string) error {
 		return pufferpanel.ErrIllegalFileAccess
 	}
 
-	// destination shouldn't exist
-	/*if _, err := os.Stat(destinationFile); os.IsNotExist(err) {
-		return pufferpanel.ErrFileExists
-	}*/
-	return archiver.Unarchive(sourceFile, destinationFile)
+	return pufferpanel.Extract(p.GetFileServer(), sourceFile, destinationFile, "*", false)
 }
 
 func (p *Server) valid() bool {

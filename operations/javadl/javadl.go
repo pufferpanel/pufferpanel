@@ -11,7 +11,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"sync"
 )
 
@@ -50,11 +49,7 @@ func (op JavaDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 		url := file.Binaries[0].Package.Link
 
 		logging.Debug.Println("Calling " + url)
-		if strings.HasSuffix(url, ".zip") {
-			err = pufferpanel.HttpGetZip(url, rootBinaryFolder)
-		} else {
-			err = pufferpanel.HttpGetTarGz(url, rootBinaryFolder)
-		}
+		err = pufferpanel.HttpExtract(url, rootBinaryFolder)
 
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}

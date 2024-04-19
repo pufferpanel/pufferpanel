@@ -16,18 +16,7 @@ func HttpGet(url string) (*http.Response, error) {
 	return httpClient.Get(url)
 }
 
-func HttpGetTarGz(url, directory string) error {
-	response, err := HttpGet(url)
-	defer CloseResponse(response)
-	if err != nil {
-		return err
-	}
-
-	err = ExtractTarGz(response.Body, directory)
-	return err
-}
-
-func HttpGetZip(url, directory string) error {
+func HttpExtract(url, directory string) error {
 	//we will write this to temp so we can not keep so much in memory
 	file, err := os.CreateTemp("", "pufferpanel-dl-*")
 	if err != nil {
@@ -52,5 +41,6 @@ func HttpGetZip(url, directory string) error {
 		return err
 	}
 
-	return ExtractZip(file.Name(), directory)
+	err = Extract(nil, file.Name(), directory, "*", false)
+	return err
 }

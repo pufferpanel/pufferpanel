@@ -84,7 +84,7 @@ func extractFile(zipFile, fileName string) (*os.File, error) {
 
 	file, err := os.Open(filepath.Join(folder, fileName))
 	if err != nil && os.IsNotExist(err) {
-		err = pufferpanel.ExtractFileFromZip(zipFile, folder, fileName)
+		err = pufferpanel.Extract(nil, zipFile, folder, fileName, false)
 		if err != nil {
 			return nil, err
 		}

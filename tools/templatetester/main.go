@@ -22,7 +22,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"time"
 )
@@ -265,14 +264,14 @@ func main() {
 	for _, scenario := range testScenarios {
 		skip := false
 		for _, v := range templatesToSkip {
-			if match(v, scenario.Name) {
+			if pufferpanel.CompareWildcard(scenario.Name, v) {
 				skip = true
 				break
 			}
 		}
 		if skip {
 			for _, v := range mustTest {
-				if match(v, scenario.Name) {
+				if pufferpanel.CompareWildcard(scenario.Name, v) {
 					skip = false
 					break
 				}
@@ -451,28 +450,6 @@ func panicIf(err error) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-// wildCardToRegexp converts a wildcard pattern to a regular expression pattern.
-func wildCardToRegexp(pattern string) string {
-	var result strings.Builder
-	for i, literal := range strings.Split(pattern, "*") {
-
-		// Replace * with .*
-		if i > 0 {
-			result.WriteString(".*")
-		}
-
-		// Quote any regular expression meta characters in the
-		// literal text.
-		result.WriteString(regexp.QuoteMeta(literal))
-	}
-	return result.String()
-}
-
-func match(pattern string, value string) bool {
-	result, _ := regexp.MatchString("^"+wildCardToRegexp(pattern)+"$", value)
-	return result
 }
 
 type TestScenario struct {

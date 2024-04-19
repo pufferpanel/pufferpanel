@@ -1,220 +1,92 @@
 package pufferpanel
 
 import (
-	"archive/tar"
-	"archive/zip"
-	"compress/gzip"
-	"fmt"
+	"errors"
+	"github.com/mholt/archiver/v3"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
-func ExtractTar(stream io.Reader, directory string) error {
-	err := os.MkdirAll(directory, 0755)
-	if err != nil {
-		return err
+const PathSeparator = string(os.PathSeparator)
+
+func DetermineIfSingleRoot(sourceFile string) (bool, error) {
+	isSingleRoot := false
+
+	var rootName string
+
+	err := archiver.Walk(sourceFile, func(file archiver.File) (err error) {
+		if file.Name() == "" || file.Name() == PathSeparator {
+			return
+		}
+		root := strings.Split(file.Name(), PathSeparator)[0]
+		if rootName == "" {
+			rootName = root
+			return nil
+		}
+		if root != rootName {
+			return archiver.ErrStopWalk
+		}
+		return nil
+	})
+
+	if errors.Is(err, archiver.ErrStopWalk) {
+		isSingleRoot = false
 	}
 
-	var tarReader *tar.Reader
-	if r, isGood := stream.(*tar.Reader); isGood {
-		tarReader = r
-	} else {
-		tarReader = tar.NewReader(stream)
-	}
+	return isSingleRoot, err
+}
 
-	var header *tar.Header
-	for {
-		header, err = tarReader.Next()
-		if err == io.EOF {
-			break
+func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool) error {
+	return archiver.Walk(sourceFile, func(file archiver.File) (err error) {
+		path := file.Name()
+
+		if !CompareWildcard(file.Name(), filter) {
+			return
 		}
 
-		if err != nil {
-			return err
+		if skipRoot {
+			path = strings.Join(strings.Split(path, PathSeparator)[1:], PathSeparator)
 		}
 
-		switch header.Typeflag {
-		case tar.TypeDir:
-			if err = os.MkdirAll(filepath.Join(directory, header.Name), 0755); err != nil {
-				return err
-			}
-		case tar.TypeSymlink:
-			if err = os.MkdirAll(filepath.Join(directory, filepath.Dir(header.Name)), 0755); err != nil {
-				return err
-			}
+		parent := filepath.Join(targetPath, filepath.Dir(path))
+		path = filepath.Join(targetPath, file.Name())
 
-			//symlinks suck... so much
-			sourceFile := filepath.Join(directory, header.Name)
-			targetFile := header.Linkname
-			if strings.HasPrefix(header.Linkname, "/") {
-				targetFile = filepath.Join(directory, strings.TrimPrefix(header.Linkname, "/"))
+		if file.Mode().IsDir() {
+			if fs != nil {
+				if err = fs.MkdirAll(path, 0755); err != nil {
+					return err
+				}
+			} else {
+				if err = os.MkdirAll(path, 0755); err != nil {
+					return err
+				}
 			}
-
-			if err = os.Symlink(targetFile, sourceFile); err != nil {
-				return err
-			}
-		case tar.TypeReg:
-			if err = os.MkdirAll(filepath.Join(directory, filepath.Dir(header.Name)), 0755); err != nil {
-				return err
+		} else if file.Mode().IsRegular() {
+			if fs != nil {
+				if err = fs.MkdirAll(parent, 0755); err != nil {
+					return err
+				}
+			} else {
+				if err = os.MkdirAll(parent, 0755); err != nil {
+					return err
+				}
 			}
 			var outFile *os.File
-			outFile, err = os.Create(filepath.Join(directory, header.Name))
+			if fs != nil {
+				outFile, err = fs.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode())
+			} else {
+				outFile, err = os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode())
+			}
+
 			if err != nil {
 				return err
 			}
-			if _, err = io.Copy(outFile, tarReader); err != nil {
-				_ = outFile.Close()
-				return err
-			}
-			_ = outFile.Close()
-			err = os.Chmod(filepath.Join(directory, header.Name), header.FileInfo().Mode())
-			if err != nil {
-				return err
-			}
-		default:
-			return fmt.Errorf("uknown type: %s in %s", string([]byte{header.Typeflag}), header.Name)
+			defer Close(outFile)
+			_, err = io.Copy(outFile, file.ReadCloser)
 		}
-	}
 
-	return nil
-}
-
-func ExtractTarGz(gzipStream io.Reader, directory string) error {
-	uncompressedStream, err := gzip.NewReader(gzipStream)
-	if err != nil {
-		return err
-	}
-	defer Close(uncompressedStream)
-	return ExtractTar(uncompressedStream, directory)
-}
-
-func ExtractZip(name, directory string) error {
-	file, err := zip.OpenReader(name)
-	if err != nil {
-		return err
-	}
-	defer Close(file)
-	for _, f := range file.File {
-		err = unzipFile(f, directory, false, "")
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func ExtractFileFromZip(name, directory, targetFile string) error {
-	file, err := zip.OpenReader(name)
-	if err != nil {
-		return err
-	}
-	defer Close(file)
-	for _, f := range file.File {
-		err = unzipFile(f, directory, false, targetFile)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func ExtractZipIgnoreSingleDir(name, directory string) error {
-	file, err := zip.OpenReader(name)
-	if err != nil {
-		return err
-	}
-	defer Close(file)
-
-	var fileList []string
-	for _, f := range file.File {
-		fileList = append(fileList, f.Name)
-	}
-
-	dirs := make(map[string]bool)
-	for _, f := range fileList {
-		folderName := filepath.Dir(f)
-		if folderName == ".." || folderName == "." || folderName == "/" {
-			folderName = "."
-		}
-		dirs[folderName] = true
-	}
-
-	isSingleDir := true
-	if len(dirs) > 0 {
-		var rootDir string
-		for k := range dirs {
-			if rootDir == "" {
-				firstPath := strings.SplitN(k, string(os.PathSeparator), 2)
-				rootDir = firstPath[0]
-			} else if rootDir != k && !strings.HasPrefix(k, rootDir+string(os.PathSeparator)) {
-				isSingleDir = false
-				break
-			}
-		}
-	}
-
-	for _, f := range file.File {
-		err = unzipFile(f, directory, isSingleDir, "")
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func unzipFile(f *zip.File, destination string, skipLevel bool, filter string) error {
-	// 4. Check if file paths are not vulnerable to Zip Slip
-
-	fileName := f.Name
-	if filter != "" && fileName != filter {
-		return nil
-	}
-	if skipLevel {
-		parts := strings.SplitN(fileName, "/", 2)
-		if len(parts) != 2 {
-			return nil
-		}
-		fileName = parts[1]
-		if fileName == "" {
-			return nil
-		}
-	}
-
-	filePath := filepath.Join(destination, fileName)
-	if !strings.HasPrefix(filePath, filepath.Clean(destination)+string(os.PathSeparator)) {
-		return fmt.Errorf("invalid file path: %s", filePath)
-	}
-
-	// 5. Create directory tree
-	if f.FileInfo().IsDir() {
-		if err := os.MkdirAll(filePath, os.ModePerm); err != nil {
-			return err
-		}
-		return nil
-	}
-
-	if err := os.MkdirAll(filepath.Dir(filePath), os.ModePerm); err != nil {
-		return err
-	}
-
-	// 6. Create a destination file for unzipped content
-	destinationFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-	if err != nil {
-		return err
-	}
-	defer Close(destinationFile)
-
-	// 7. Unzip the content of a file and copy it to the destination file
-	zippedFile, err := f.Open()
-	if err != nil {
-		return err
-	}
-	defer Close(zippedFile)
-
-	if _, err := io.Copy(destinationFile, zippedFile); err != nil {
-		return err
-	}
-	return nil
+		return
+	})
 }
