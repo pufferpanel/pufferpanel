@@ -623,7 +623,7 @@ func (p *Server) Extract(source, destination string) error {
 		return pufferpanel.ErrIllegalFileAccess
 	}
 
-	return pufferpanel.Extract(p.GetFileServer(), sourceFile, destinationFile, "*", false)
+	return pufferpanel.Extract(p.GetFileServer(), sourceFile, destinationFile, "*", false, nil)
 }
 
 func (p *Server) valid() bool {
