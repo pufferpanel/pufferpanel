@@ -41,7 +41,7 @@ func DetermineIfSingleRoot(sourceFile string) (bool, error) {
 	return isSingleRoot, err
 }
 
-func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool) error {
+func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool, forcedType Walker) error {
 	if fs != nil {
 		sourceFile = filepath.Join(fs.Prefix(), sourceFile)
 	}
@@ -54,7 +54,15 @@ func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool
 		}
 	}
 
-	return archiver.Walk(sourceFile, func(file archiver.File) (err error) {
+	if forcedType != nil {
+		return forcedType.Walk(sourceFile, walker(fs, targetPath, filter, skipRoot))
+	}
+
+	return archiver.Walk(sourceFile, walker(fs, targetPath, filter, skipRoot))
+}
+
+func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.WalkFunc {
+	return func(file archiver.File) (err error) {
 		path := getCompressedItemName(file)
 
 		if !CompareWildcard(file.Name(), filter) {
@@ -103,7 +111,7 @@ func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool
 		}
 
 		return
-	})
+	}
 }
 
 // getCompressedItemName Resolves headers in the event the wrapped interface fails
@@ -117,4 +125,8 @@ func getCompressedItemName(file archiver.File) string {
 	default:
 		return file.Name()
 	}
+}
+
+type Walker interface {
+	Walk(archive string, walkFn archiver.WalkFunc) error
 }
