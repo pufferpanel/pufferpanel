@@ -1,7 +1,7 @@
 package pufferpanel
 
 import (
-	"io"
+	"github.com/cavaliergopher/grab/v3"
 	"net/http"
 	"os"
 )
@@ -12,35 +12,19 @@ func Http() *http.Client {
 	return httpClient
 }
 
-func HttpGet(url string) (*http.Response, error) {
-	return httpClient.Get(url)
+func HttpGet(requestUrl string) (*http.Response, error) {
+	return httpClient.Get(requestUrl)
 }
 
-func HttpExtract(url, directory string) error {
+func HttpExtract(requestUrl, directory string) error {
 	//we will write this to temp so we can not keep so much in memory
-	file, err := os.CreateTemp("", "pufferpanel-dl-*")
+
+	response, err := grab.Get(os.TempDir(), requestUrl)
 	if err != nil {
 		return err
 	}
+	defer os.Remove(response.Filename)
 
-	defer os.Remove(file.Name())
-
-	response, err := HttpGet(url)
-	defer CloseResponse(response)
-	if err != nil {
-		return err
-	}
-
-	_, err = io.Copy(file, response.Body)
-	if err != nil {
-		return err
-	}
-
-	err = file.Close()
-	if err != nil {
-		return err
-	}
-
-	err = Extract(nil, file.Name(), directory, "*", false)
+	err = Extract(nil, response.Filename, directory, "*", false)
 	return err
 }

@@ -39,6 +39,18 @@ func DetermineIfSingleRoot(sourceFile string) (bool, error) {
 }
 
 func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool) error {
+	if fs != nil {
+		sourceFile = filepath.Join(fs.Prefix(), sourceFile)
+	}
+
+	if skipRoot {
+		var err error
+		skipRoot, err = DetermineIfSingleRoot(sourceFile)
+		if err != nil {
+			return err
+		}
+	}
+
 	return archiver.Walk(sourceFile, func(file archiver.File) (err error) {
 		path := file.Name()
 
