@@ -2,6 +2,7 @@ package pufferpanel
 
 import (
 	"errors"
+	"github.com/klauspost/compress/zip"
 	"github.com/mholt/archiver/v3"
 	"io"
 	"os"
@@ -17,10 +18,12 @@ func DetermineIfSingleRoot(sourceFile string) (bool, error) {
 	var rootName string
 
 	err := archiver.Walk(sourceFile, func(file archiver.File) (err error) {
-		if file.Name() == "" || file.Name() == PathSeparator {
+		name := getCompressedItemName(file)
+
+		if name == "" || name == PathSeparator {
 			return
 		}
-		root := strings.Split(file.Name(), PathSeparator)[0]
+		root := strings.Split(name, PathSeparator)[0]
 		if rootName == "" {
 			rootName = root
 			return nil
@@ -52,7 +55,7 @@ func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool
 	}
 
 	return archiver.Walk(sourceFile, func(file archiver.File) (err error) {
-		path := file.Name()
+		path := getCompressedItemName(file)
 
 		if !CompareWildcard(file.Name(), filter) {
 			return
@@ -101,4 +104,17 @@ func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool
 
 		return
 	})
+}
+
+// getCompressedItemName Resolves headers in the event the wrapped interface fails
+func getCompressedItemName(file archiver.File) string {
+	//For certain headers, the actual File interface uses the wrong value
+	//Example, ZIP gives the filename, not the full path
+
+	switch v := file.Header.(type) {
+	case zip.FileHeader:
+		return v.Name
+	default:
+		return file.Name()
+	}
 }
