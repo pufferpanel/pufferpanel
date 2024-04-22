@@ -55,12 +55,20 @@ func main() {
 		_ = os.RemoveAll(serverId)
 		_ = os.Mkdir(serverId, 0755)
 
+		server := servers.CreateProgram()
+
 		env, err := servers.CreateEnvironment("host", ".", serverId, pufferpanel.MetadataType{Type: "host"})
 		if err != nil {
 			results[test.ProjectId] = err
 			continue
 		}
-		result := test.Run(env)
+
+		arg := pufferpanel.RunOperatorArgs{
+			Environment: env,
+			Server:      server,
+		}
+
+		result := test.Run(arg)
 		if result.Error != nil {
 			results[test.ProjectId] = result.Error
 			continue
@@ -70,7 +78,7 @@ func main() {
 			results[test.ProjectId] = nil
 		} else {
 			op := resolveforgeversion.ResolveForgeVersion{OutputVariable: "result"}
-			result = op.Run(env)
+			result = op.Run(arg)
 			if result.Error != nil && !os.IsNotExist(err) {
 				results[test.ProjectId] = result.Error
 				continue
