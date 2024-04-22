@@ -49,7 +49,9 @@ var ImprovedFabricInstallerUrl = "https://meta.fabricmc.net/v2/versions/loader/$
 var ForgeInstallerUrl = "https://maven.minecraftforge.net/net/minecraftforge/forge/${mcVersion}-${version}/forge-${mcVersion}-${version}-installer.jar"
 var ForgeInstallerName = "forge-${mcVersion}-${version}-installer.jar"
 
-func (c CurseForge) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+
 	var clientFile, serverFile File
 	var err error
 	if c.FileId == 0 {

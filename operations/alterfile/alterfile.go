@@ -16,7 +16,9 @@ type AlterFile struct {
 	Regex      bool
 }
 
-func (c AlterFile) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (c AlterFile) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+
 	logging.Info.Printf("Changing data in file: %s", c.TargetFile)
 	env.DisplayToConsole(true, "Changing some data in file: %s\n ", c.TargetFile)
 	target := filepath.Join(env.GetRootDirectory(), c.TargetFile)

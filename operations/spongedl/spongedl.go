@@ -35,7 +35,9 @@ type SpongeApiV2Asset struct {
 	Extension   string
 }
 
-func (op SpongeDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (op SpongeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+
 	//first, we need to get the build we need to get, if one isn't specified
 	if op.SpongeVersion == "" {
 		data, err := op.getLatestVersion(env)
@@ -91,12 +93,12 @@ func (op SpongeDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult 
 				return pufferpanel.OperationResult{Error: err}
 			}
 
-			res := forgeDlOp.Run(env)
+			res := forgeDlOp.Run(args)
 			if res.Error != nil {
 				return pufferpanel.OperationResult{Error: res.Error}
 			}
 
-			err = os.Mkdir(path.Join(env.GetRootDirectory(), "mods"), 0755)
+			err = args.Server.GetFileServer().Mkdir("mods", 0755)
 			if err != nil && !os.IsExist(err) {
 				return pufferpanel.OperationResult{Error: err}
 			}

@@ -10,7 +10,8 @@ type DockerPull struct {
 	ImageName string
 }
 
-func (d DockerPull) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (d DockerPull) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
 	dockerEnv, ok := env.(*docker.Docker)
 
 	if !ok {

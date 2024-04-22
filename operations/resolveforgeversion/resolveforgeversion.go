@@ -20,7 +20,6 @@ import (
 	"errors"
 	"github.com/hashicorp/go-version"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"os"
 	"path/filepath"
 	"strings"
 )
@@ -31,11 +30,14 @@ type ResolveForgeVersion struct {
 	OutputVariable   string
 }
 
-func (op ResolveForgeVersion) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (op ResolveForgeVersion) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+	fs := args.Server.GetFileServer()
+
 	//if a specific version wasn't specified, we have to dig around through the files....
 	if op.Version == "" {
-		dir := filepath.Join(env.GetRootDirectory(), "libraries", "net", "minecraftforge", "forge")
-		folders, err := os.ReadDir(dir)
+		dir := filepath.Join("libraries", "net", "minecraftforge", "forge")
+		folders, err := fs.ReadDir(dir)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
@@ -50,7 +52,7 @@ func (op ResolveForgeVersion) Run(env pufferpanel.Environment) pufferpanel.Opera
 				folderName := v.Name()
 				//look for the unix file to accurately confirm this to be supported
 				desiredFile := filepath.Join(dir, folderName, "unix_args.txt")
-				if _, err = os.Lstat(desiredFile); err != nil {
+				if _, err = fs.Stat(desiredFile); err != nil {
 					continue
 				}
 				if op.Version == "" {

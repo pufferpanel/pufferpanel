@@ -21,6 +21,7 @@ import (
 )
 
 type Server struct {
+	pufferpanel.DaemonServer
 	pufferpanel.Server
 
 	CrashCounter       int                     `json:"-"`

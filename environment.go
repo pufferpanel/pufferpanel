@@ -69,6 +69,8 @@ type Environment interface {
 	GetWrapper() io.Writer
 
 	GetStatsTracker() *Tracker
+
+	GetServer() Server
 }
 
 type BaseEnvironment struct {

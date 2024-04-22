@@ -10,7 +10,9 @@ type Download struct {
 	Files []string
 }
 
-func (d Download) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (d Download) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+
 	for _, file := range d.Files {
 		logging.Info.Printf("Download file from %s to %s", file, env.GetRootDirectory())
 		env.DisplayToConsole(true, "Downloading file %s\n", file)

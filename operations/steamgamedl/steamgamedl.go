@@ -28,7 +28,9 @@ type SteamGameDl struct {
 	ExtraArgs []string
 }
 
-func (c SteamGameDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+
 	env.DisplayToConsole(true, "Downloading game from Steam")
 
 	rootBinaryFolder := config.BinariesFolder.Value()
@@ -52,19 +54,19 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) pufferpanel.OperationResul
 	manifestFolder := filepath.Join(env.GetRootDirectory(), ".manifest")
 	_ = os.RemoveAll(manifestFolder)
 
-	args := []string{"-app", c.AppId, "-dir", manifestFolder, "-loginid", loginId, "-manifest-only"}
+	cmdArgs := []string{"-app", c.AppId, "-dir", manifestFolder, "-loginid", loginId, "-manifest-only"}
 	if c.Username != "" {
-		args = append(args, "-username", c.Username, "-remember-password")
+		cmdArgs = append(cmdArgs, "-username", c.Username, "-remember-password")
 		if c.Password != "" {
-			args = append(args, "-password", c.Password)
+			cmdArgs = append(cmdArgs, "-password", c.Password)
 		}
 	}
-	args = append(args, c.ExtraArgs...)
+	cmdArgs = append(cmdArgs, c.ExtraArgs...)
 
 	ch := make(chan int, 1)
 	steps := pufferpanel.ExecutionData{
 		Command:   filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary),
-		Arguments: args,
+		Arguments: cmdArgs,
 		Callback: func(exitCode int) {
 			ch <- exitCode
 		},
@@ -80,21 +82,21 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) pufferpanel.OperationResul
 	}
 
 	//download game itself now
-	args = []string{"-app", c.AppId, "-dir", env.GetRootDirectory(), "-loginid", loginId, "-validate"}
+	cmdArgs = []string{"-app", c.AppId, "-dir", env.GetRootDirectory(), "-loginid", loginId, "-validate"}
 	if c.Username != "" {
-		args = append(args, "-username", c.Username, "-remember-password")
+		cmdArgs = append(cmdArgs, "-username", c.Username, "-remember-password")
 		if c.Password != "" {
-			args = append(args, "-password", c.Password)
+			cmdArgs = append(cmdArgs, "-password", c.Password)
 		}
 	}
 
 	if c.ExtraArgs != nil && len(c.ExtraArgs) > 0 {
-		args = append(args, c.ExtraArgs...)
+		cmdArgs = append(cmdArgs, c.ExtraArgs...)
 	}
 
 	steps = pufferpanel.ExecutionData{
 		Command:   filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary),
-		Arguments: args,
+		Arguments: cmdArgs,
 		Callback: func(exitCode int) {
 			ch <- exitCode
 		},

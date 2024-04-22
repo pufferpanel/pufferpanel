@@ -144,7 +144,11 @@ func (p *OperationProcess) Run(server *Server) error {
 				return pufferpanel.ErrFactoryError(v.Type, err)
 			}
 
-			result := op.Run(server.RunningEnvironment)
+			result := op.Run(pufferpanel.RunOperatorArgs{
+				Environment: server.RunningEnvironment,
+				Server:      server,
+			})
+
 			if result.Error != nil {
 				logging.Error.Printf("Error running command: %s", result.Error.Error())
 				if firstError == nil {

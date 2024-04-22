@@ -15,7 +15,9 @@ type MojangDl struct {
 	Target  string
 }
 
-func (op MojangDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (op MojangDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+
 	response, err := pufferpanel.HttpGet(VersionJsonUrl)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}

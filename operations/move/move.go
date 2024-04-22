@@ -12,18 +12,19 @@ type Move struct {
 	TargetFile string
 }
 
-func (m Move) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
-	source := filepath.Join(env.GetRootDirectory(), m.SourceFile)
-	target := filepath.Join(env.GetRootDirectory(), m.TargetFile)
-	result, valid := validateMove(source, target)
+func (m Move) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+	fs := args.Server.GetFileServer()
+
+	result, valid := validateMove(fs, m.SourceFile, m.TargetFile)
 	if !valid {
 		return pufferpanel.OperationResult{Error: nil}
 	}
 
 	for k, v := range result {
-		logging.Info.Printf("Moving file from %s to %s", source, target)
-		env.DisplayToConsole(true, "Moving file from %s to %s\n", m.SourceFile, m.TargetFile)
-		err := os.Rename(k, v)
+		logging.Info.Printf("Moving file from %s to %s", k, v)
+		env.DisplayToConsole(true, "Moving file from %s to %s\n", k, v)
+		err := args.Server.GetFileServer().Rename(k, v)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
@@ -31,10 +32,10 @@ func (m Move) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func validateMove(source string, target string) (result map[string]string, valid bool) {
+func validateMove(fs pufferpanel.FileServer, source string, target string) (result map[string]string, valid bool) {
 	result = make(map[string]string)
 	sourceFiles, _ := filepath.Glob(source)
-	info, err := os.Stat(target)
+	info, err := fs.Stat(target)
 
 	if err != nil {
 		if os.IsNotExist(err) && len(sourceFiles) > 1 {

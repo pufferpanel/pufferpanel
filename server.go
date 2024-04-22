@@ -213,12 +213,12 @@ func parseRequirementRow(str string) []string {
 	return d
 }
 
-func (c *StdinConsoleConfiguration) Replace(variables map[string]interface{}) StdinConsoleConfiguration {
+func (v *StdinConsoleConfiguration) Replace(variables map[string]interface{}) StdinConsoleConfiguration {
 	return StdinConsoleConfiguration{
-		Type:     c.Type,
-		IP:       ReplaceTokens(c.IP, variables),
-		Port:     ReplaceTokens(c.Port, variables),
-		Password: ReplaceTokens(c.Password, variables),
+		Type:     v.Type,
+		IP:       ReplaceTokens(v.IP, variables),
+		Port:     ReplaceTokens(v.Port, variables),
+		Password: ReplaceTokens(v.Password, variables),
 	}
 }
 
@@ -265,4 +265,12 @@ func (v *StdinConsoleConfiguration) UnmarshalJSON(data []byte) error {
 	}
 	*v = StdinConsoleConfiguration(aux)
 	return nil
+}
+
+type DaemonServer interface {
+	GetFileServer() FileServer
+
+	Extract(source, destination string) error
+
+	ArchiveItems(files []string, destination string) error
 }

@@ -21,7 +21,9 @@ type JavaDl struct {
 	Version string
 }
 
-func (op JavaDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (op JavaDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+
 	env.DisplayToConsole(true, "Downloading Java "+op.Version)
 
 	downloader.Lock()

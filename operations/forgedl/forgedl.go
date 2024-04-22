@@ -34,7 +34,9 @@ type ForgeDl struct {
 	OutputVariable   string
 }
 
-func (op ForgeDl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (op ForgeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+
 	if op.Version == "" {
 		version, err := getLatestForMCVersion(op.MinecraftVersion)
 		if err != nil {

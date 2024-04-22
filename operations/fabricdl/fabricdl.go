@@ -16,7 +16,9 @@ type FabricMetadata struct {
 	Url string `json:"url"`
 }
 
-func (f *Fabricdl) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (f *Fabricdl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	env := args.Environment
+
 	env.DisplayToConsole(true, "Downloading metadata from %s\n", FabricMetadataUrl)
 	response, err := pufferpanel.HttpGet(FabricMetadataUrl)
 	if err != nil {

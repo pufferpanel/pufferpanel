@@ -1,7 +1,7 @@
 package pufferpanel
 
 type Operation interface {
-	Run(env Environment) OperationResult
+	Run(args RunOperatorArgs) OperationResult
 }
 
 type OperationFactory interface {
@@ -14,6 +14,11 @@ type CreateOperation struct {
 	OperationArgs        map[string]interface{}
 	EnvironmentVariables map[string]string
 	DataMap              map[string]interface{}
+}
+
+type RunOperatorArgs struct {
+	Environment Environment
+	Server      DaemonServer
 }
 
 type OperationResult struct {
