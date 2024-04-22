@@ -16,7 +16,7 @@ func (m Move) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult 
 	env := args.Environment
 	fs := args.Server.GetFileServer()
 
-	result, valid := validateMove(fs, m.SourceFile, m.TargetFile)
+	result, valid := resolve(fs, m.SourceFile, m.TargetFile)
 	if !valid {
 		return pufferpanel.OperationResult{Error: nil}
 	}
@@ -24,7 +24,7 @@ func (m Move) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult 
 	for k, v := range result {
 		logging.Info.Printf("Moving file from %s to %s", k, v)
 		env.DisplayToConsole(true, "Moving file from %s to %s\n", k, v)
-		err := args.Server.GetFileServer().Rename(k, v)
+		err := fs.Rename(k, v)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
@@ -32,9 +32,9 @@ func (m Move) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult 
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func validateMove(fs pufferpanel.FileServer, source string, target string) (result map[string]string, valid bool) {
+func resolve(fs pufferpanel.FileServer, source string, target string) (result map[string]string, valid bool) {
 	result = make(map[string]string)
-	sourceFiles, _ := filepath.Glob(source)
+	sourceFiles, _ := fs.Glob(source)
 	info, err := fs.Stat(target)
 
 	if err != nil {

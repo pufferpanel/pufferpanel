@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"path/filepath"
 )
 
 type FileServer interface {
@@ -20,6 +21,7 @@ type FileServer interface {
 	Remove(path string) error
 	Rename(source, target string) error
 	RemoveAll(path string) error
+	Glob(pattern string) ([]string, error)
 
 	Close() error
 }
@@ -64,6 +66,27 @@ func (sfp *fileServer) ReadDir(name string) ([]fs.DirEntry, error) {
 	defer Close(folder)
 
 	return folder.ReadDir(0)
+}
+
+func (stp *fileServer) Glob(pattern string) ([]string, error) {
+	parent := filepath.Base(pattern)
+	if parent == pattern {
+		parent = "."
+	}
+
+	files, err := stp.ReadDir(parent)
+
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]string, 0)
+	for _, v := range files {
+		if matches, _ := filepath.Match(pattern, v.Name()); matches {
+			results = append(results, v.Name())
+		}
+	}
+	return results, nil
 }
 
 // shorten maps name, which should start with f.dir, back to the suffix after f.dir.
