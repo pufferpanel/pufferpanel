@@ -24,8 +24,8 @@
   "Apply": "Übernehmen",
   "Confirm": "Bestätigen",
   "Condition": "Bedingung",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Discard": "Verwerfen",
+  "ConfirmLeave": "Sie haben ungespeicherte Änderungen. Möchten Sie diese Änderungen verwerfen und diese Seite verlassen?",
   "theme": {
     "Theme": "Erscheinungsbild",
     "Mode": "Modus",
