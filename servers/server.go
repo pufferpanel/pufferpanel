@@ -595,36 +595,15 @@ func (p *Server) GetItem(name string) (*FileData, error) {
 }
 
 func (p *Server) ArchiveItems(files []string, destination string) error {
-	var targets []string
-	for _, name := range files {
-		targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-		if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-			return pufferpanel.ErrIllegalFileAccess
-		}
-		targets = append(targets, targetFile)
-	}
-
-	destination = pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), destination)
-	if !pufferpanel.EnsureAccess(destination, p.GetEnvironment().GetRootDirectory()) {
-		return pufferpanel.ErrIllegalFileAccess
-	}
-
 	// This may technically error out in other cases
 	if _, err := os.Stat(destination); !os.IsNotExist(err) {
 		return pufferpanel.ErrFileExists
 	}
-	return archiver.Archive(targets, destination)
+	return archiver.Archive(files, destination)
 }
 
 func (p *Server) Extract(source, destination string) error {
-	sourceFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), source)
-	destinationFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), destination)
-
-	if !pufferpanel.EnsureAccess(sourceFile, p.GetEnvironment().GetRootDirectory()) || !pufferpanel.EnsureAccess(destinationFile, p.GetEnvironment().GetRootDirectory()) {
-		return pufferpanel.ErrIllegalFileAccess
-	}
-
-	return pufferpanel.Extract(p.GetFileServer(), sourceFile, destinationFile, "*", false, nil)
+	return pufferpanel.Extract(p.GetFileServer(), source, destination, "*", false, nil)
 }
 
 func (p *Server) valid() bool {
