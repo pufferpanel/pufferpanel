@@ -38,21 +38,17 @@ func (c *MemoryCache) ReadFrom(startTime int64) (msg []byte, lastTime int64) {
 	c.Lock.RLock()
 	defer c.Lock.RUnlock()
 
-	result := make([]byte, 0)
+	lastTime = time.Now().UnixMicro()
 
-	var endTime int64 = 0
+	msg = make([]byte, 0)
 
 	for _, v := range c.Buffer {
 		if v.time > startTime {
-			result = append(result, v.msg...)
-			endTime = v.time
+			msg = append(msg, v.msg...)
 		}
 	}
 
-	if endTime == 0 {
-		endTime = time.Now().Unix()
-	}
-	return result, endTime
+	return
 }
 
 func (c *MemoryCache) Write(b []byte) (n int, err error) {
@@ -70,7 +66,7 @@ func (c *MemoryCache) Write(b []byte) (n int, err error) {
 	co := make([]byte, len(b))
 	copy(co, b)
 
-	c.Buffer = append(c.Buffer, Message{msg: co, time: time.Now().Unix()})
+	c.Buffer = append(c.Buffer, Message{msg: co, time: time.Now().UnixMicro()})
 	c.Size = c.Size + n
 	return
 }

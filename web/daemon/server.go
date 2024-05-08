@@ -689,6 +689,7 @@ func getStats(c *gin.Context) {
 // @Description Get the console logs for the server
 // @Success 200 {object} pufferpanel.ServerLogs
 // @Param id path string true "Server ID"
+// @Param time query int64 false "Epoch time in MS to get from"
 // @Router /api/servers/{id}/console [get]
 // @Security OAuth2Application[server.console]
 func getLogs(c *gin.Context) {

@@ -981,6 +981,9 @@ func proxyServerRequest(c *gin.Context) {
 	ns := &services.Node{DB: db}
 
 	resolvedPath := "/daemon/server/" + strings.TrimPrefix(c.Request.URL.Path, "/api/servers/")
+	if c.Request.URL.RawQuery != "" {
+		resolvedPath += "?" + c.Request.URL.RawQuery
+	}
 
 	user := c.MustGet("user").(*models.User)
 	server := c.MustGet("server").(*models.Server)

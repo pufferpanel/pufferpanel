@@ -44,7 +44,7 @@ function onMessage(e) {
   if ('epoch' in e) {
     lastMessageTime = e.epoch
   } else {
-    lastMessageTime = Math.floor(Date.now() / 1000)
+    lastMessageTime = Date.now()
   }
   worker.postMessage({ ...e, panelName })
 }
