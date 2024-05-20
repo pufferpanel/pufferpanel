@@ -154,8 +154,8 @@ async function createFile() {
   const file = { name: newItemName.value, size: 0, isFile: true }
   createFileOpen.value = false
   newItemName.value = ''
-  openFile(file)
-  refresh()
+  await openFile(file)
+  await refresh()
 }
 
 async function createFolder() {
@@ -164,8 +164,8 @@ async function createFolder() {
   const folder = { name: newItemName.value, isFile: false }
   createFolderOpen.value = false
   newItemName.value = ''
-  openFile(folder)
-  refresh()
+  await openFile(folder)
+  await refresh()
 }
 
 const archiveExtensions = [
@@ -211,8 +211,13 @@ async function makeArchiveName(fileName) {
 async function archiveCurrentDirectory() {
   loading.value = true
   try {
-    const lastPathEntry = currentPath.value[currentPath.value.length - 1].name
-    props.server.archiveFile(
+    const item = currentPath.value[currentPath.value.length - 1];
+    let lastPathEntry = props.server.id
+    if (item !== undefined) {
+      lastPathEntry = currentPath.value[currentPath.value.length - 1].name
+    }
+
+    await props.server.archiveFile(
       await makeArchiveName(lastPathEntry),
       `${getCurrentPath()}`
     )
@@ -227,7 +232,7 @@ async function archiveCurrentDirectory() {
 async function archive(file) {
   loading.value = true
   try {
-    props.server.archiveFile(
+    await props.server.archiveFile(
       await makeArchiveName(file.name),
       `${getCurrentPath()}/${file.name}`
     )

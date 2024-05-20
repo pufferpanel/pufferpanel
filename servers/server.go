@@ -596,10 +596,10 @@ func (p *Server) GetItem(name string) (*FileData, error) {
 
 func (p *Server) ArchiveItems(files []string, destination string) error {
 	// This may technically error out in other cases
-	if _, err := os.Stat(destination); !os.IsNotExist(err) {
+	if _, err := os.Stat(destination); err != nil && !os.IsNotExist(err) {
 		return pufferpanel.ErrFileExists
 	}
-	return archiver.Archive(files, destination)
+	return pufferpanel.Compress(p.GetFileServer(), destination, files)
 }
 
 func (p *Server) Extract(source, destination string) error {

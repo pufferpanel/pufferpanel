@@ -71,6 +71,20 @@ func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool
 	return archiver.Walk(sourceFile, walker(fs, targetPath, filter, skipRoot))
 }
 
+func Compress(fs FileServer, targetFile string, files []string) error {
+	if fs != nil {
+		p := fs.Prefix()
+
+		targetFile = filepath.Join(p, targetFile)
+
+		for k, v := range files {
+			files[k] = filepath.Join(p, v)
+		}
+	}
+
+	return archiver.Archive(files, targetFile)
+}
+
 func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.WalkFunc {
 	return func(file archiver.File) (err error) {
 		path := getCompressedItemName(file)
