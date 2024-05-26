@@ -496,7 +496,7 @@ func editServer(c *gin.Context) {
 		return
 	}
 
-	if nodeResponse.StatusCode != http.StatusOK {
+	if nodeResponse.StatusCode != http.StatusNoContent {
 		resData, err := io.ReadAll(nodeResponse.Body)
 		if err != nil {
 			logging.Error.Printf("Failed to parse response from daemon\n%s", err.Error())
@@ -506,7 +506,8 @@ func editServer(c *gin.Context) {
 		c.Header("Content-Type", "application/json")
 		c.Status(nodeResponse.StatusCode)
 		_, _ = c.Writer.Write(resData)
-		c.Abort()
+		e := c.Error(errors.New("unexpected response from daemon"))
+		response.HandleError(c, e, http.StatusInternalServerError)
 		return
 	}
 
