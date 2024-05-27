@@ -5,14 +5,14 @@
   "Offline": "Frakoblet",
   "Unknown": "Ukjent",
   "Loading": "Laster...",
-  "Description": "Description",
+  "Description": "Beskrivelse",
   "Save": "Lagre",
   "Cancel": "Avbryt",
-  "Close": "Close",
+  "Close": "Lukk",
   "Host": "Vert",
   "Port": "Port",
   "Collapse": "Skjul",
-  "Expand": "Expand",
+  "Expand": "Utvide",
   "Copied": "Kopiert til utklippstavle",
   "Back": "Tilbake",
   "Next": "Neste",
@@ -21,29 +21,29 @@
   "HelpTranslate": "Hjelp oss med å oversette PufferPanel",
   "Protocol": "Protokoll",
   "Add": "Legg til",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Apply": "Bruk",
+  "Confirm": "Bekreft",
+  "Condition": "Tilstand",
+  "Discard": "Forkast",
+  "ConfirmLeave": "Du har ulagrede endringer, ønsker du å forkaste endringene og forlate denne siden?",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Tema",
+    "Mode": "Modus",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
+      "Light": "Lyst",
+      "Dark": "Mørk",
       "Auto": "Auto"
     },
-    "BaseColor": "Base Color",
+    "BaseColor": "Basisfarge",
     "ServerTypeDisplay": "Server Type Display",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "Ikon",
+      "None": "Ingen"
     },
-    "ListType": "List Type",
+    "ListType": "Liste type",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Rutenett",
+      "List": "Liste"
     }
   }
 }
