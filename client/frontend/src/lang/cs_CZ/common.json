@@ -24,8 +24,8 @@
   "Apply": "Použít",
   "Confirm": "Potvrdit",
   "Condition": "Podmínka",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Discard": "Zrušit",
+  "ConfirmLeave": "Máte neuložené změny, chcete tyto změny zahodit a opustit tuto stránku?",
   "theme": {
     "Theme": "Motiv",
     "Mode": "Režim",
