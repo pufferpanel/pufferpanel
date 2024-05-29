@@ -14,7 +14,7 @@ RUN yarn install && \
 
 FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
 
-FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.22-alpine AS builder
 
 RUN apk add clang lld
 COPY --from=xx / /
@@ -22,7 +22,7 @@ COPY --from=xx / /
 ARG tags=nohost
 ARG version=devel
 ARG sha=devel
-ARG swagversion=1.16.2
+ARG swagversion=1.16.3
 ARG swagarch=x86_64
 
 ENV CGO_ENABLED=1

@@ -16,8 +16,8 @@ on:
       - 'client/frontend/src/lang/**.json'
 
 env:
-  SWAG_VERSION: "1.16.2"
-  GO_VERSION: "1.21"
+  SWAG_VERSION: "1.16.3"
+  GO_VERSION: "1.22"
   NODE_VERSION: "20"
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
