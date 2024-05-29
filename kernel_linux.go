@@ -40,7 +40,7 @@ func testOpenat2() {
 		if err == nil {
 			_ = unix.Close(fd)
 			useOpenat2 = true
-		} else if errors.Is(err, unix.EOPNOTSUPP) {
+		} else if errors.Is(err, unix.EOPNOTSUPP) || errors.Is(err, unix.ENOSYS) {
 			useOpenat2 = false
 		} else {
 			panic(fmt.Errorf("failed to validate kernel support with test file\n%s", err.Error()))
