@@ -69,7 +69,7 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		return err
 	}
 
-	cfg := types.ContainerAttachOptions{
+	cfg := container.AttachOptions{
 		Stdin:  true,
 		Stdout: true,
 		Stderr: true,
@@ -93,7 +93,7 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 
 	go d.handleClose(dockerClient, steps.Callback)
 
-	startOpts := types.ContainerStartOptions{}
+	startOpts := container.StartOptions{}
 
 	msg := messages.Status{Running: true, Installing: d.IsInstalling()}
 	_ = d.StatusTracker.WriteMessage(msg)
@@ -198,7 +198,7 @@ func (d *Docker) getClient() (*client.Client, error) {
 }
 
 func (d *Docker) doesContainerExist(client *client.Client, ctx context.Context) (bool, error) {
-	opts := types.ContainerListOptions{
+	opts := container.ListOptions{
 		Filters: filters.NewArgs(),
 	}
 
