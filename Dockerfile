@@ -22,8 +22,8 @@ COPY --from=xx / /
 ARG tags=nohost
 ARG version=devel
 ARG sha=devel
-ARG swagversion=1.16.3
-ARG swagarch=amd64
+ARG swagversion=1.16.2
+ARG swagarch=x86_64
 
 ENV CGO_ENABLED=1
 ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
@@ -31,7 +31,7 @@ ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
 RUN mkdir /pufferpanel && \
     wget https://github.com/swaggo/swag/releases/download/v${swagversion}/swag_${swagversion}_Linux_$swagarch.tar.gz && \
     mkdir -p ~/go/bin && \
-    tar -zxf swag*.tar.gz -C ~/go/bin && \
+    tar -zxvf swag*.tar.gz -C ~/go/bin && \
     rm -rf swag*.tar.gz
 
 WORKDIR /build/pufferpanel
