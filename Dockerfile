@@ -23,7 +23,7 @@ ARG tags=nohost
 ARG version=devel
 ARG sha=devel
 ARG swagversion=1.16.3
-ARG swagarch=x86_64
+ARG swagarch=amd64
 
 ENV CGO_ENABLED=1
 ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
