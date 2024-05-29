@@ -8,7 +8,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/go-git/go-git/v5"
@@ -300,7 +300,7 @@ func main() {
 				docker.NegotiateAPIVersion(ctx)
 			}
 
-			opts := types.ContainerListOptions{
+			opts := container.ListOptions{
 				Filters: filters.NewArgs(),
 			}
 
@@ -310,7 +310,7 @@ func main() {
 			existingContainers, err := docker.ContainerList(ctx, opts)
 			panicIf(err)
 			if len(existingContainers) > 0 {
-				err = docker.ContainerRemove(ctx, scenario.Name, types.ContainerRemoveOptions{
+				err = docker.ContainerRemove(ctx, scenario.Name, container.RemoveOptions{
 					Force: true,
 				})
 				panicIf(err)
