@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-const InstallerUrl = "https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-installer.jar"
+const InstallerUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/${version}/neoforge-${version}-installer.jar"
 const MetadataUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml"
 
 type NeoforgeDL struct {
