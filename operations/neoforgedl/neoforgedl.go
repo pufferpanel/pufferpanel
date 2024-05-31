@@ -17,12 +17,15 @@
 package neoforgedl
 
 import (
-	"encoding/json"
-  "encoding/xml"
+	"encoding/xml"
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v3"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 	"path"
 	"strings"
+
+	"github.com/pufferpanel/pufferpanel/v3"
 )
 
 const InstallerUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/${version}/neoforge-${version}-installer.jar"
@@ -30,14 +33,14 @@ const PromoUrl = "https://maven.neoforged.net/releases/net/neoforged/forge/maven
 
 // const PromoUrl = "https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json"
 
-type ForgeDl struct {
+type neoForgeDl struct {
 	Version          string
 	Filename         string
 	MinecraftVersion string
 	OutputVariable   string
 }
 
-func (op ForgeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+func (op neoForgeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
 	env := args.Environment
 
 	if op.Version == "" {
@@ -65,33 +68,6 @@ func (op ForgeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRes
 		op.OutputVariable: op.Version,
 	}}
 }
-
-
-func getLatestForMCVersion(minecraftVersion string) (string, error) {
-	response, err := pufferpanel.HttpGet(PromoUrl)
-	defer pufferpanel.CloseResponse(response)
-	if err != nil {
-		return "", err
-	}
-
-  /*
-	var promos ForgePromos
-	err = json.NewDecoder(response.Body).Decode(&promos)
-	if err != nil {
-		return "", err
-	}
-	version := promos.VersionMap[minecraftVersion+"-latest"]
-	if version == "" {
-		return "", errors.New("no neoforge available for mc version")
-	}
-	return version, nil
-}
-
-type ForgePromos struct {
-	Homepage   string            `json:"homepage"`
-	VersionMap map[string]string `json:"promos"`
-}
-*/
 
 func getLatestForMCVersion(minecraftVersion string) (string, error) {
 	response, err := http.Get(PromoUrl)
@@ -139,9 +115,9 @@ type Metadata struct {
 }
 
 type Versioning struct {
-	Latest     string    `xml:"latest"`
-	Release    string    `xml:"release"`
-	Versions   Versions  `xml:"versions"`
+	Latest      string   `xml:"latest"`
+	Release     string   `xml:"release"`
+	Versions    Versions `xml:"versions"`
 	LastUpdated string   `xml:"lastUpdated"`
 }
 
