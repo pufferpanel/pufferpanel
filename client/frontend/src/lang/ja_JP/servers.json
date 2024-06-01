@@ -14,6 +14,7 @@
   "Memory": "メモリ",
   "Files": "ファイル",
   "Name": "サーバー名",
+  "EditName": "Edit server name",
   "NameInvalid": "サーバー名は空白や特殊文字を含むことはできません",
   "SelectTemplate": "テンプレートを選択してください",
   "SelectThisTemplate": "このテンプレートを使う",
