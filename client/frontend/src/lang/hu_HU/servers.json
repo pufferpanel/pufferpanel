@@ -14,6 +14,7 @@
   "Memory": "Memória",
   "Files": "Fájlok",
   "Name": "Szerver neve",
+  "EditName": "Edit server name",
   "NameInvalid": "A szerver neve nem lehet üres és nem tartalmazhat speciális karaktereket",
   "SelectTemplate": "Válasszon sablont",
   "SelectThisTemplate": "A sablon használása",
