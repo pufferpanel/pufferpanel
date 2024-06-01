@@ -64,7 +64,11 @@
       "Boolean": "Boolean",
       "Number": "Number",
       "Options": "Options"
-    }
+    },
+    "EditGroup": "Edit group",
+    "RemoveGroup": "Remove group",
+    "MoveToGroup": "Move to different group",
+    "Remove": "Remove"
   },
   "description": {
     "Name": "This name is used as an identifier for the template",
