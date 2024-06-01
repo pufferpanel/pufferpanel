@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "Створити файл",
   "CreateFolder": "Створити папку",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Видалити",
   "ConfirmDelete": "Ви дійсно бажаєте видалити цей файл?",
   "UploadSuccess": "Файл успішно завантажено",
