@@ -14,6 +14,7 @@
   "Memory": "Memoria",
   "Files": "File",
   "Name": "Nome del Server",
+  "EditName": "Edit server name",
   "NameInvalid": "Il nome del server non può essere vuoto o contenere caratteri speciali",
   "SelectTemplate": "Sei pregato di selezionare il modello",
   "SelectThisTemplate": "Usa questo modello",
