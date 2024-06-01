@@ -14,6 +14,7 @@
   "Memory": "Пам'ять",
   "Files": "Файли",
   "Name": "Ім'я сервера",
+  "EditName": "Edit server name",
   "NameInvalid": "Ім'я сервера не може бути пустим або містити спеціальні символи",
   "SelectTemplate": "Будь ласка, оберіть шаблон",
   "SelectThisTemplate": "Використовувати цей шаблон",
