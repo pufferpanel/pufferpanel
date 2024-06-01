@@ -64,7 +64,11 @@
       "Boolean": "Boolean",
       "Number": "Numero",
       "Options": "Opzioni"
-    }
+    },
+    "EditGroup": "Edit group",
+    "RemoveGroup": "Remove group",
+    "MoveToGroup": "Move to different group",
+    "Remove": "Remove"
   },
   "description": {
     "Name": "Questo nome è usato come identificatore per il modello",
