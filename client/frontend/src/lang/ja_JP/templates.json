@@ -64,7 +64,11 @@
       "Boolean": "ブール型",
       "Number": "数値",
       "Options": "オプション"
-    }
+    },
+    "EditGroup": "Edit group",
+    "RemoveGroup": "Remove group",
+    "MoveToGroup": "Move to different group",
+    "Remove": "Remove"
   },
   "description": {
     "Name": "この名前はテンプレートの識別子として使用されます",
