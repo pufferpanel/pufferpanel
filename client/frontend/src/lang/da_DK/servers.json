@@ -14,6 +14,7 @@
   "Memory": "Hukommelse",
   "Files": "Filer",
   "Name": "Servernavn",
+  "EditName": "Edit server name",
   "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectTemplate": "Vælg venligst en skabelon",
   "SelectThisTemplate": "Brug denne skabelon",
