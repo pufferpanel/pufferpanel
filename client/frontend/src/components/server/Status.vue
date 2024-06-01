@@ -43,6 +43,10 @@ onUnmounted(() => {
   <span
     v-if="server.hasScope('server.status')"
     :class="['status', status]"
-    :data-hint="t(status === 'online' ? 'common.Online' : status === 'offline' ? 'common.Offline' : status === 'installing' ? 'common.Installing' : 'common.Unknown')"
-  />
+  >
+    <span
+      class="tooltip"
+      :data-tooltip="t(status === 'online' ? 'common.Online' : status === 'offline' ? 'common.Offline' : status === 'installing' ? 'common.Installing' : 'common.Unknown')"
+    />
+  </span>
 </template>

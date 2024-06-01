@@ -263,12 +263,12 @@ function trackFileEl(index) {
       <h2 v-text="t('servers.Files')" />
       <h3 v-text="'/' + getCurrentPath()" />
       <span class="spacer" />
-      <btn v-if="canEdit" v-hotkey="'f a'" variant="icon" @click="archiveCurrentDirectory()"><icon name="archive" /></btn>
+      <btn v-if="canEdit" v-hotkey="'f a'" variant="icon" :tooltip="t('files.ArchiveCurrent')" @click="archiveCurrentDirectory()"><icon name="archive" /></btn>
       <upload v-if="canEdit" :path="getCurrentPath()" :server="server" hotkey="f u" @uploaded="refresh()" />
       <upload v-if="canEdit && allowDirectoryUpload" :path="getCurrentPath()" :server="server" folder hotkey="f d" @uploaded="refresh()" />
-      <btn v-if="canEdit" v-hotkey="'f c f'" variant="icon" @click="startCreateFile()"><icon name="file-create" /></btn>
-      <btn v-if="canEdit" v-hotkey="'f c d'" variant="icon" @click="startCreateFolder()"><icon name="folder-create" /></btn>
-      <btn v-hotkey="'f r'" variant="icon" @click="refresh(true)"><icon name="reload" /></btn>
+      <btn v-if="canEdit" v-hotkey="'f c f'" variant="icon" :tooltip="t('files.CreateFile')" @click="startCreateFile()"><icon name="file-create" /></btn>
+      <btn v-if="canEdit" v-hotkey="'f c d'" variant="icon" :tooltip="t('files.CreateFolder')" @click="startCreateFolder()"><icon name="folder-create" /></btn>
+      <btn v-hotkey="'f r'" variant="icon" :tooltip="t('files.Refresh')" @click="refresh(true)"><icon name="reload" /></btn>
     </div>
     <div v-hotkey="'f l'" class="file-list" @hotkey="fileListHotkey">
       <loader v-if="!Array.isArray(files)" />
@@ -279,18 +279,18 @@ function trackFileEl(index) {
           <div class="name">{{ file.name }}</div>
           <div v-if="file.isFile" class="size">{{ formatFileSize(file.size) }}</div>
         </div>
-        <btn v-if="canEdit && file.name !== '..' && !file.isFile" tabindex="-1" variant="icon" @click.stop="archive(file)">
+        <btn v-if="canEdit && file.name !== '..' && !file.isFile" tabindex="-1" variant="icon" :tooltip="t('files.Archive')" @click.stop="archive(file)">
           <icon name="archive" />
         </btn>
-        <btn v-if="canEdit && file.isFile && isArchive(file)" tabindex="-1" variant="icon" @click.stop="extract(file)">
+        <btn v-if="canEdit && file.isFile && isArchive(file)" tabindex="-1" variant="icon" :tooltip="t('files.Extract')" @click.stop="extract(file)">
           <icon name="extract" />
         </btn>
         <a v-if="file.isFile" tabindex="-1" class="dl-link" :href="downloadLink(file)" target="_blank" rel="noopener">
-          <btn tabindex="-1" variant="icon" @click.stop="">
+          <btn tabindex="-1" variant="icon" :tooltip="t('files.Download')" @click.stop="">
             <icon name="download" />
           </btn>
         </a>
-        <btn v-if="canEdit && file.name !== '..'" tabindex="-1" variant="icon" @click.stop="deleteFile(file)">
+        <btn v-if="canEdit && file.name !== '..'" tabindex="-1" variant="icon" :tooltip="t('files.Delete')" @click.stop="deleteFile(file)">
           <icon name="remove" />
         </btn>
       </a>

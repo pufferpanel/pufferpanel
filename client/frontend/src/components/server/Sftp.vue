@@ -54,14 +54,14 @@ function copyUser() {
     <div>
       <b>{{t('common.Host')}}/{{t('common.Port')}}: </b>
       <span>{{host}}</span>
-      <btn variant="icon" @click="copyHost()"><icon name="copy" /></btn>
+      <btn variant="icon" :tooltip="t('common.Copy')" @click="copyHost()"><icon name="copy" /></btn>
       <span v-if="hostCopied" class="copied" v-text="t('common.Copied')" />
     </div>
     <input ref="hostField" :value="host" style="width:1px;height:1px;position:fixed;left:-100vw;" />
     <div>
       <b>{{t('users.Username')}}: </b>
       <span>{{user}}</span>
-      <btn variant="icon" @click="copyUser()"><icon name="copy" /></btn>
+      <btn variant="icon" :tooltip="t('common.Copy')" @click="copyUser()"><icon name="copy" /></btn>
       <span v-if="userCopied" class="copied" v-text="t('common.Copied')" />
     </div>
     <input ref="userField" :value="user" style="width:1px;height:1px;position:fixed;left:-100vw;" />

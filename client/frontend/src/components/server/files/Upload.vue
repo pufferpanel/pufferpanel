@@ -96,7 +96,7 @@ async function uploadFiles(event) {
 
 <template>
   <div>
-    <btn v-hotkey="hotkey" variant="icon" @click="trigger()">
+    <btn v-hotkey="hotkey" variant="icon" :tooltip="t(folder ? 'files.UploadFolder' : 'files.UploadFile')" @click="trigger()">
       <icon :name="folder ? 'folder-upload' : 'file-upload'" />
     </btn>
     <input ref="input" type="file" multiple :webkitdirectory="folder" @change="uploadFiles" />

@@ -295,18 +295,18 @@ const supportsOptions = {
             <h3 v-text="group.display" />
             <div class="hint" v-text="group.description" />
           </div>
-          <btn variant="icon" @click="startEditGroup(index)"><icon name="edit" /></btn>
-          <btn variant="icon" @click="add(group)"><icon name="plus" /></btn>
+          <btn variant="icon" :tooltip="t('templates.variables.EditGroup')" @click="startEditGroup(index)"><icon name="edit" /></btn>
+          <btn variant="icon" :tooltip="t('templates.AddVariable')" @click="add(group)"><icon name="plus" /></btn>
           <btn :disabled="isFirstGroup(group.order)" variant="icon" @click="moveGroupUp(group.order)"><icon name="up" /></btn>
           <btn :disabled="isLastGroup(group.order)" variant="icon" @click="moveGroupDown(group.order)"><icon name="down" /></btn>
-          <btn variant="icon" @click="removeGroup(group)"><icon name="close" /></btn>
+          <btn variant="icon" :tooltip="t('templates.variables.RemoveGroup')" @click="removeGroup(group)"><icon name="close" /></btn>
         </div>
         <ul class="list">
           <li v-for="name in group.variables" :key="name" class="list-item clickable" @click="startEdit(name)">
             <div class="list-item-content">
               <span v-text="template.data[name].display" />
-              <btn variant="icon" @click.stop="changeGroup(name, group)"><icon name="select-group" /></btn>
-              <btn variant="icon" @click.stop="remove(name)"><icon name="remove" /></btn>
+              <btn variant="icon" :tooltip="t('templates.variables.MoveToGroup')" @click.stop="changeGroup(name, group)"><icon name="select-group" /></btn>
+              <btn variant="icon" :tooltip="t('templates.variables.Remove')" @click.stop="remove(name)"><icon name="remove" /></btn>
             </div>
           </li>
         </ul>
@@ -378,7 +378,7 @@ const supportsOptions = {
       </div>
     </overlay>
 
-    <overlay v-model="changeVarGroupOpen" class="select-var-group" :title="t('templates.SelectNewVarGroup')">
+    <overlay v-model="changeVarGroupOpen" class="select-var-group" :title="t('templates.variables.MoveToGroup')">
       <dropdown v-model="changeVarGroup.selected" :options="groupSelectOptions" :object="true" />
 
       <div class="actions">

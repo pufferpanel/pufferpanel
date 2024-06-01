@@ -25,10 +25,13 @@ async function updateName() {
 <template>
   <h1 class="server-header">
     <Status :server="server" />
-    <span class="name">{{ server.name }}<btn v-if="server.hasScope('server.name.edit')" variant="icon" @click="edit = !edit"><icon name="edit" /></btn></span>
+    <span class="name">
+      {{ server.name }}
+      <btn v-if="server.hasScope('server.name.edit')" variant="icon" :tooltip="t('servers.EditName')" @click="edit = !edit"><icon name="edit" /></btn>
+    </span>
     <controls :server="server" />
   </h1>
-  <overlay v-model="edit" :title="t('common.Name')" closable class="server-name">
+  <overlay v-model="edit" :title="t('servers.EditName')" closable class="server-name">
     <text-field v-model="name" />
     <btn color="primary" @click="updateName()"><icon name="save" />{{ t('common.Save') }}</btn>
   </overlay>

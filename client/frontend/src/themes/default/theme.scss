@@ -168,6 +168,43 @@ hr {
   }
 }
 
+[data-tooltip] {
+  &::after {
+    transition: .1s all;
+    visibility: hidden;
+    display: block;
+    opacity: 0;
+    position: absolute;
+    content: attr(data-tooltip);
+    font-size: 1rem;
+    background-color: var(--code-background);
+    transform: translateY(-2.5rem);
+    padding: .25rem .75rem;
+    border-radius: var(--border-radius);
+    z-index: 50;
+  }
+  &::before {
+    transition: .1s all;
+    visibility: hidden;
+    display: block;
+    opacity: 0;
+    position: absolute;
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--code-background);
+    transform: translateY(-1.45rem);
+  }
+  &:hover, &:focus {
+    &::after, &::before {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}
+
 
 
 .apexcharts-tooltip, .apexcharts-xaxistooltip {
@@ -303,6 +340,23 @@ hr {
 // Server Components
 .status {
   @include icon;
+  position: relative;
+
+  .tooltip {
+    position: absolute;
+    left: 0;
+    width: 1em;
+    height: 1em;
+    &::after {
+      transform: translate(-50%, -2rem);
+      left: 50%;
+      white-space: nowrap;
+    }
+    &::before {
+      transform: translate(-50%, -0.35rem);
+      left: 50%;
+    }
+  }
 
   &.unknown {
     @include icon-name(loading);
