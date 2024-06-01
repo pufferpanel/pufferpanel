@@ -64,7 +64,11 @@
       "Boolean": "Boolean",
       "Number": "Number",
       "Options": "Seaded"
-    }
+    },
+    "EditGroup": "Edit group",
+    "RemoveGroup": "Remove group",
+    "MoveToGroup": "Move to different group",
+    "Remove": "Remove"
   },
   "description": {
     "Name": "Seda nime kasutatagse malli tuvastamiseks",
