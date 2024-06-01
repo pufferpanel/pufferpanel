@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "Δημιουργία αρχείου",
   "CreateFolder": "Δημιουργία φακέλου",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Delete",
   "ConfirmDelete": "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το αρχείο?",
   "UploadSuccess": "Files uploaded successfully",
