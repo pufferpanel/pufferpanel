@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "Opret fil",
   "CreateFolder": "Opret mappe",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Delete",
   "ConfirmDelete": "Er du sikker på du vil slette denne fil?",
   "UploadSuccess": "Files uploaded successfully",
