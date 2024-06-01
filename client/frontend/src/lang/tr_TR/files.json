@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "Dosya oluştur",
   "CreateFolder": "Klasör oluştur",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Delete",
   "ConfirmDelete": "Bu dosyayı silmek istediğinden emin misin?",
   "UploadSuccess": "Files uploaded successfully",
