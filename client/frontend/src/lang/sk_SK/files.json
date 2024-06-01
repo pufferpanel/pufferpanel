@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "Vytvoriť súbor",
   "CreateFolder": "Vytvoriť zložku",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Odstrániť",
   "ConfirmDelete": "Naozaj chcete vymazať {name}?",
   "UploadSuccess": "Súbory boli úspešne nahrané",
