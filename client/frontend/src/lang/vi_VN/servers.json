@@ -14,6 +14,7 @@
   "Memory": "Bộ nhớ",
   "Files": "Tập tin",
   "Name": "Tên máy chủ",
+  "EditName": "Edit server name",
   "NameInvalid": "Tên máy chủ không thể trống hoặc chứa các ký tự đặc biệt",
   "SelectTemplate": "Hãy chọn một mẫu",
   "SelectThisTemplate": "Sử dụng mẫu này",

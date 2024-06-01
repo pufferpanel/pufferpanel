@@ -14,6 +14,7 @@
   "Memory": "Memory",
   "Files": "Files",
   "Name": "Nama Server",
+  "EditName": "Edit server name",
   "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectTemplate": "Mohon pilih template",
   "SelectThisTemplate": "Gunakan Template ini",

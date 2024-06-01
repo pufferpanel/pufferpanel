@@ -14,6 +14,7 @@
   "Memory": "Geheugen",
   "Files": "Bestanden",
   "Name": "Server Naam",
+  "EditName": "Edit server name",
   "NameInvalid": "De servernaam mag niet leeg zijn of speciale tekens bevatten",
   "SelectTemplate": "Selecteer een sjabloon",
   "SelectThisTemplate": "Dit sjabloon gebruiken",

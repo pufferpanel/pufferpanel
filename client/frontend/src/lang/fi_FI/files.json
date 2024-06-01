@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "Luo tiedosto",
   "CreateFolder": "Luo kansio",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Poista",
   "ConfirmDelete": "Haluatko varmasti poistaa tämän tiedoston?",
   "UploadSuccess": "Tiedostot lähetettiin onnistuneesti",

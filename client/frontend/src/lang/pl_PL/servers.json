@@ -14,6 +14,7 @@
   "Memory": "Pamięć RAM",
   "Files": "Pliki",
   "Name": "Nazwa Serwera",
+  "EditName": "Edit server name",
   "NameInvalid": "Nazwa serwera nie może być pusta ani zawierać znaków specjalnych",
   "SelectTemplate": "Proszę wybrać szablon",
   "SelectThisTemplate": "Użyj tego szablonu",

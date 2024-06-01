@@ -64,7 +64,11 @@
       "Boolean": "Typ logiczny",
       "Number": "Liczba",
       "Options": "Opcje"
-    }
+    },
+    "EditGroup": "Edit group",
+    "RemoveGroup": "Remove group",
+    "MoveToGroup": "Move to different group",
+    "Remove": "Remove"
   },
   "description": {
     "Name": "Ta nazwa używana jest jako identyfikator dla szablonu",

@@ -64,7 +64,11 @@
       "Boolean": "Booleano",
       "Number": "Numero",
       "Options": "Opciones"
-    }
+    },
+    "EditGroup": "Edit group",
+    "RemoveGroup": "Remove group",
+    "MoveToGroup": "Move to different group",
+    "Remove": "Remove"
   },
   "description": {
     "Name": "Este nombre se utiliza como identificador para la plantilla",

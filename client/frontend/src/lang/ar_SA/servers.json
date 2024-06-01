@@ -14,6 +14,7 @@
   "Memory": "ذاكرة الوصول العشوائي",
   "Files": "الملفات",
   "Name": "اسم الخادم",
+  "EditName": "Edit server name",
   "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectTemplate": "يرجى تحديد قالب",
   "SelectThisTemplate": "استخدام هذا القالب",

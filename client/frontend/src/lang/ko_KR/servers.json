@@ -14,6 +14,7 @@
   "Memory": "메모리",
   "Files": "파일",
   "Name": "서버 이름",
+  "EditName": "Edit server name",
   "NameInvalid": "서버 이름은 비워두거나 특수 문자를 포함할 수 없습니다.",
   "SelectTemplate": "템플릿 선택",
   "SelectThisTemplate": "이 템플릿 사용하기",

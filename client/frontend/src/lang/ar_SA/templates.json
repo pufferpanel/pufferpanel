@@ -64,7 +64,11 @@
       "Boolean": "شرط",
       "Number": "رقم",
       "Options": "الخيارات"
-    }
+    },
+    "EditGroup": "Edit group",
+    "RemoveGroup": "Remove group",
+    "MoveToGroup": "Move to different group",
+    "Remove": "Remove"
   },
   "description": {
     "Name": "يستخدم هذا الاسم كمعرف للنموذج",

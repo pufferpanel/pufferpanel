@@ -14,6 +14,7 @@
   "Memory": "Minne",
   "Files": "Filer",
   "Name": "Servernamn",
+  "EditName": "Edit server name",
   "NameInvalid": "Servernamnet kan inte vara tomt eller innehålla specialtecken",
   "SelectTemplate": "Välj mall",
   "SelectThisTemplate": "Använd denna mall",

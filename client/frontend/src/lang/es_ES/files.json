@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "Crear archivo",
   "CreateFolder": "Crear carpeta",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Eliminar",
   "ConfirmDelete": "¿Estás seguro que quieres borrar este archivo?",
   "UploadSuccess": "Archivos cargados correctamente",

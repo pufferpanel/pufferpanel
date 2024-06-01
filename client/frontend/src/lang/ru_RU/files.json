@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "Создать файл",
   "CreateFolder": "Создать папку",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Удалить",
   "ConfirmDelete": "Вы уверены, что хотите удалить этот файл?",
   "UploadSuccess": "Файлы успешно загружены",

@@ -14,6 +14,7 @@
   "Memory": "Arbeitsspeicher",
   "Files": "Dateien",
   "Name": "Servername",
+  "EditName": "Edit server name",
   "NameInvalid": "Der Servername darf nicht leer sein oder darf keine Sonderzeichen enthalten",
   "SelectTemplate": "Bitte Vorlage auswählen",
   "SelectThisTemplate": "Diese Vorlage verwenden",

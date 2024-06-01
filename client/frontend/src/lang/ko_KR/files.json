@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "파일 생성",
   "CreateFolder": "폴더 생성",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Delete",
   "ConfirmDelete": "이 파일을 삭제할까요?",
   "UploadSuccess": "Files uploaded successfully",

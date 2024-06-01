@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "ファイルを作成",
   "CreateFolder": "フォルダを作成",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "削除",
   "ConfirmDelete": "このファイルを削除してもよろしいですか？",
   "UploadSuccess": "ファイルが正常にアップロードされました",

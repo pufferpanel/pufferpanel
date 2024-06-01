@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "Crează fișier",
   "CreateFolder": "Creează folder",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Șterge",
   "ConfirmDelete": "Eşti sigur că vrei să ştergi acest fişier?",
   "UploadSuccess": "Fișierele au fost încărcate cu succes",
