@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "إنشاء ملف",
   "CreateFolder": "إنشاء مجلد",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "حذف",
   "ConfirmDelete": "هل أنت متأكد من أنك تريد حذف هذا الملف؟",
   "UploadSuccess": "تم رفع الملفات بنجاح",
