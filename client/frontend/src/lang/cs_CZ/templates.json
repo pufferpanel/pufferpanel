@@ -64,7 +64,11 @@
       "Boolean": "Boolean",
       "Number": "Číslo",
       "Options": "Možnosti"
-    }
+    },
+    "EditGroup": "Edit group",
+    "RemoveGroup": "Remove group",
+    "MoveToGroup": "Move to different group",
+    "Remove": "Remove"
   },
   "description": {
     "Name": "Tento název se používá jako identifikátor šablony",
