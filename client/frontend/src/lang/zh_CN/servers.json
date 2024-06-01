@@ -14,6 +14,7 @@
   "Memory": "内存",
   "Files": "文件",
   "Name": "服务器名称",
+  "EditName": "Edit server name",
   "NameInvalid": "服务器名称不能为空或包含特殊字符",
   "SelectTemplate": "请选择模板",
   "SelectThisTemplate": "使用此模板",
