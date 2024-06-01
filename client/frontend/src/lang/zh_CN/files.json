@@ -1,6 +1,13 @@
 {
+  "Refresh": "Refresh",
   "CreateFile": "新建文件",
   "CreateFolder": "新建文件夹",
+  "ArchiveCurrent": "Archive current folder",
+  "UploadFile": "Upload file",
+  "UploadFolder": "Upload folder",
+  "Archive": "Archive",
+  "Extract": "Extract",
+  "Download": "Download",
   "Delete": "Delete",
   "ConfirmDelete": "您确认要删除此文件吗？",
   "UploadSuccess": "Files uploaded successfully",
