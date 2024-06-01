@@ -64,7 +64,11 @@
       "Boolean": "Boolescher Wert",
       "Number": "Zahl",
       "Options": "Optionen"
-    }
+    },
+    "EditGroup": "Edit group",
+    "RemoveGroup": "Remove group",
+    "MoveToGroup": "Move to different group",
+    "Remove": "Remove"
   },
   "description": {
     "Name": "Dieser Name wird als Identifikator für die Vorlage verwendet",
