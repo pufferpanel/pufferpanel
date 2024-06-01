@@ -14,6 +14,7 @@
   "Memory": "Minne",
   "Files": "Filer",
   "Name": "Server Navn",
+  "EditName": "Edit server name",
   "NameInvalid": "Servernavnet kan ikke være tomt eller inneholde spesialtegn",
   "SelectTemplate": "Velg mal",
   "SelectThisTemplate": "Bruk denne malen",
