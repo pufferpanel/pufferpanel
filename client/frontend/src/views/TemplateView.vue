@@ -93,7 +93,11 @@ function canDelete() {
 
 async function save() {
   if (!canSave()) return
-  await api.template.save(route.params.id, template.value)
+  const data = template.value
+  await api.template.save(route.params.id, data)
+  // update the clean state to prevent confirmation popup
+  // on leave despite no unsaved changes existing
+  unmodified = data
   toast.success(t('templates.Saved'))
 }
 
