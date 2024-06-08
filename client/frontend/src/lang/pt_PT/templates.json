@@ -2,7 +2,7 @@
   "Templates": "Modelos",
   "Save": "Save Template",
   "Saved": "Template saved",
-  "Delete": "Delete Template",
+  "Delete": "Eliminar modelo",
   "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Template deleted",
   "New": "Create new template",
@@ -62,13 +62,13 @@
     "types": {
       "String": "String",
       "Boolean": "Boolean",
-      "Number": "Number",
-      "Options": "Options"
+      "Number": "Número",
+      "Options": "Opções"
     },
-    "EditGroup": "Edit group",
-    "RemoveGroup": "Remove group",
-    "MoveToGroup": "Move to different group",
-    "Remove": "Remove"
+    "EditGroup": "Editar grupo",
+    "RemoveGroup": "Remover grupo",
+    "MoveToGroup": "Mover para um grupo diferente",
+    "Remove": "Remover"
   },
   "description": {
     "Name": "This name is used as an identifier for the template",
