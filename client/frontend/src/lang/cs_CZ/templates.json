@@ -65,10 +65,10 @@
       "Number": "Číslo",
       "Options": "Možnosti"
     },
-    "EditGroup": "Edit group",
-    "RemoveGroup": "Remove group",
-    "MoveToGroup": "Move to different group",
-    "Remove": "Remove"
+    "EditGroup": "Upravit skupinu",
+    "RemoveGroup": "Odstranit skupinu",
+    "MoveToGroup": "Přesunout do jiné skupiny",
+    "Remove": "Odstranit"
   },
   "description": {
     "Name": "Tento název se používá jako identifikátor šablony",
