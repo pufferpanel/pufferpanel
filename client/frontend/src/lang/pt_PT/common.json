@@ -13,7 +13,7 @@
   "Port": "Porta",
   "Collapse": "Esconder",
   "Expand": "Expandir",
-  "Copy": "Copy to clipboard",
+  "Copy": "Copiar para área de transferência",
   "Copied": "Copiado",
   "Back": "Voltar",
   "Next": "Próximo",
@@ -25,7 +25,7 @@
   "Apply": "Aplicar",
   "Confirm": "Confirmar",
   "Condition": "Condição",
-  "Discard": "Discard",
+  "Discard": "Descartar",
   "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
   "theme": {
     "Theme": "Tema",

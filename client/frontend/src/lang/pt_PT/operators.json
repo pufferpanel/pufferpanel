@@ -41,24 +41,24 @@
   },
   "steamgamedl": {
     "generic": "Install from Steam",
-    "formatted": "Install Steam App ID {appId}",
-    "appId": "Steam App ID"
+    "formatted": "Instalar ID da app do Steam {appId}",
+    "appId": "ID da app do Steam"
   },
   "javadl": {
     "generic": "Instalar o Java",
     "formatted": "Instalar o Java {version}"
   },
   "forgedl": {
-    "generic": "Download Minecraft Forge",
-    "formatted": "Download Minecraft Forge"
+    "generic": "Transferir o Minecraft Forge",
+    "formatted": "Transferir o Minecraft Forge"
   },
   "spongeforgedl": {
-    "generic": "Download Minecraft SpongeForge",
-    "formatted": "Download Minecraft SpongeForge",
-    "releaseType": "Release Type"
+    "generic": "Transferir o Minecraft SpongeForge",
+    "formatted": "Transferir o Minecraft SpongeForge",
+    "releaseType": "Tipo de lançamento"
   },
   "fabricdl": {
-    "generic": "Download Minecraft Fabric",
-    "formatted": "Download Minecraft Fabric"
+    "generic": "Transferir o Minecraft Fabric",
+    "formatted": "Transferir o Minecraft Fabric"
   }
 }

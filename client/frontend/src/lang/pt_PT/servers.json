@@ -34,14 +34,14 @@
   "Create": "Create Server",
   "API": "API",
   "NoUsers": "This server does not have any associated users",
-  "InviteUser": "Invite user",
+  "InviteUser": "Convidar utilizador",
   "EnvironmentEditHint": "Changes to these settings will only apply after reloading the server definition",
   "Command": "Comando",
   "CreateMissingPermissions": "Não tens permissão para ver os nós ou modelos, que são necessários para criar servidores. Contacta o teu administrador",
-  "FlagsHeader": "Autostart conditions",
+  "FlagsHeader": "Condições de início automático",
   "flags": {
-    "autoStart": "Start the server when the node starts",
-    "autoRestartOnGraceful": "Restart the server when it stops normally",
-    "autoRestartOnCrash": "Restart the server when it crashes"
+    "autoStart": "Iniciar o servidor quando o nó inicia",
+    "autoRestartOnGraceful": "Reiniciar o servidor quando pára normalmente",
+    "autoRestartOnCrash": "Reiniciar o servidor quando falha"
   }
 }

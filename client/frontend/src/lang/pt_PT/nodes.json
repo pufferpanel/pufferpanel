@@ -1,40 +1,40 @@
 {
-  "Node": "Node",
+  "Node": "Nó",
   "Nodes": "Nós",
-  "Edit": "Edit Node",
+  "Edit": "Editar nó",
   "Add": "Adicionar nó",
-  "Create": "Create Node",
-  "Update": "Update Node",
-  "Delete": "Delete Node",
-  "ConfirmDelete": "Do you really want to delete the node {name}?",
-  "Created": "Created Node",
-  "Updated": "Updated Node",
-  "Deleted": "Deleted Node",
+  "Create": "Criar nó",
+  "Update": "Atualizar nó",
+  "Delete": "Apagar nó",
+  "ConfirmDelete": "Queres apagar o nó {name}?",
+  "Created": "Nó criado",
+  "Updated": "Nó atualizado",
+  "Deleted": "Nó apagado",
   "Reachable": "This node is correctly set up and running",
   "Unreachable": "This node is either not set up correctly or currently unavailable",
   "features": {
     "os": {
-      "label": "Operating System",
+      "label": "Sistema operativo",
       "linux": "Linux",
       "windows": "Windows"
     },
     "arch": {
-      "label": "CPU Architecture",
+      "label": "Arquitetura do processador",
       "amd64": "x86 64bit",
       "arm": "ARM 32bit",
       "arm64": "ARM 64bit"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "Docker disponível",
+      "false": "Docker não disponível"
     },
-    "envs": "Available Environments"
+    "envs": "Ambientes disponíveis"
   },
   "PublicHost": "Host público",
   "PublicPort": "Porta pública",
   "PrivateHost": "Host privado",
   "PrivatePort": "Porta privada",
-  "SftpPort": "SFTP Port",
+  "SftpPort": "Porta SFTP",
   "WithPrivateAddress": "Usar um host/porta diferente para a comunicação entre servidores",
   "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",

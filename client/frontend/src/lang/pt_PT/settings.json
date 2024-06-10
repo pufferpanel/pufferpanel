@@ -1,9 +1,9 @@
 {
   "Settings": "Definições",
   "PanelSettings": "Definições do painel",
-  "SavePanelSettings": "Save Panel Settings",
+  "SavePanelSettings": "Guardar definições do painel",
   "EmailSettings": "Definições de e-mail",
-  "SaveEmailSettings": "Save Email Settings",
+  "SaveEmailSettings": "Guardar definições de e-mail",
   "MasterUrl": "URL mestre",
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
   "CompanyName": "Nome da empresa",
@@ -19,10 +19,10 @@
   },
   "email": {
     "from": "Sender Address",
-    "domain": "Domain",
-    "key": "API Key",
+    "domain": "Domínio",
+    "key": "Chave API",
     "host": "Host",
-    "username": "Username",
+    "username": "Nome de utilizador",
     "password": "Palavra-passe"
   }
 }
