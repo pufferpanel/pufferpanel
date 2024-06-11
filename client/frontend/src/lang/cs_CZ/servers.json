@@ -14,7 +14,7 @@
   "Memory": "Paměť",
   "Files": "Soubory",
   "Name": "Název serveru",
-  "EditName": "Edit server name",
+  "EditName": "Upravit název serveru",
   "NameInvalid": "Jméno serveru nesmí být prázné nebo obsahovat speciální znaky",
   "SelectTemplate": "Vyberte šablonu",
   "SelectThisTemplate": "Použít tuto šablonu",
