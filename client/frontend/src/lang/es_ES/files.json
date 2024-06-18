@@ -10,7 +10,7 @@
   "Download": "Descargar",
   "Delete": "Eliminar",
   "ConfirmDelete": "¿Estás seguro que quieres borrar este archivo?",
-  "UploadSuccess": "Archivos cargados correctamente",
+  "UploadSuccess": "Archivos subidos correctamente",
   "UploadFailed": "Error al subir archivos",
   "UploadProgress": "Progreso de la subida",
   "PreparingUpload": "Preparando la subida",
@@ -18,6 +18,6 @@
   "CurrentlyUploading": "Subiendo archivo {current}/{total}",
   "Current": "Actual",
   "Total": "Total",
-  "OpenLargeFile": "Este archivo podría causar problemas de rendimiento en tu navegador debido a su tamaño, ¿quieres abrirlo de todos modos?",
+  "OpenLargeFile": "Este archivo podría causar problemas de rendimiento en tu navegador debido a su tamaño, ¿quieres abrirlo de todas formas?",
   "OpenAnyways": "Abrir de todas formas"
 }
