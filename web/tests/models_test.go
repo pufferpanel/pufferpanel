@@ -247,7 +247,6 @@ var CreateServerData = []byte(`{
       "type": "writefile"
     }
   ],
-  "id": "971f62c5",
   "run": {
     "command": [
       {
@@ -384,5 +383,100 @@ var TemplateData = []byte(`{
   },
   "environment": {
     "type": "standard"
+  }
+}`)
+
+var EditServerData = []byte(`{
+  "type": "minecraft-java",
+  "data": {
+    "eula": {
+      "type": "boolean",
+      "desc": "Do you (or the server owner) agree to the \u003ca href='https://account.mojang.com/documents/minecraft_eula'\u003eMinecraft EULA?\u003c/a\u003e",
+      "display": "EULA Agreement (true/false)",
+      "required": true,
+      "value": false
+    },
+    "ip": {
+      "type": "",
+      "desc": "What IP to bind the server to",
+      "display": "IP",
+      "required": true,
+      "value": "0.0.0.0"
+    },
+    "javaversion": {
+      "type": "",
+      "desc": "Version of Java to use",
+      "display": "Java Version",
+      "required": true,
+      "value": "17"
+    },
+    "memory": {
+      "type": "integer",
+      "desc": "How much memory in MB to allocate to the Java Heap",
+      "display": "Memory (MB)",
+      "required": true,
+      "value": 1024
+    },
+    "motd": {
+      "type": "",
+      "desc": "This is the message that is displayed in the server list of the client, below the name. The MOTD does support \u003ca href='https://minecraft.gamepedia.com/Formatting_codes' target='_blank'\u003ecolor and formatting codes\u003c/a\u003e.",
+      "display": "MOTD message of the day",
+      "required": true,
+      "value": "A Minecraft Server\\n\\u00A79 hosted on PufferPanel",
+      "userEdit": true
+    },
+    "port": {
+      "type": "integer",
+      "desc": "What port to bind the server to",
+      "display": "Port",
+      "required": true,
+      "value": 25565
+    },
+    "version": {
+      "type": "",
+      "desc": "Version of Minecraft you wish to install (not all software may respect this value",
+      "display": "Version",
+      "required": true,
+      "value": "latest"
+    }
+  },
+  "display": "Minecraft: Java Edition",
+  "environment": {
+    "type": "host"
+  },
+  "install": [
+    {
+      "if": "javaversion != \"\"",
+      "type": "javadl",
+      "version": "${javaversion}"
+    },
+    {
+      "target": "server.jar",
+      "type": "mojangdl",
+      "version": "${version}"
+    },
+    {
+      "if": "!file_exists(\"server.properties\")",
+      "target": "server.properties",
+      "text": "server-ip=${ip}\nserver-port=${port}\nmotd=${motd}\n",
+      "type": "writefile"
+    },
+    {
+      "target": "eula.txt",
+      "text": "eula=${eula}",
+      "type": "writefile"
+    }
+  ],
+  "run": {
+    "command": [
+      {
+        "command": "java${javaversion} -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar",
+        "if": "in_path(\"java${javaversion}\")"
+      },
+      {
+        "command": "java -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar"
+      }
+    ],
+    "stop": "stop"
   }
 }`)

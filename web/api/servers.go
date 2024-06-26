@@ -451,7 +451,7 @@ func editServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	postBody := &models.ServerWithName{}
-	err = c.Bind(postBody)
+	err = c.BindJSON(postBody)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}

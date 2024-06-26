@@ -48,6 +48,17 @@ func TestServers(t *testing.T) {
 		}
 	})
 
+	t.Run("AdminUpdate", func(t *testing.T) {
+		response := CallAPIRaw("PUT", "/api/servers/"+serverId+"/definition", EditServerData, session)
+		if !assert.Equal(t, http.StatusNoContent, response.Code) {
+			return
+		}
+	})
+
+	if t.Failed() {
+		return
+	}
+
 	//previous test is a block,so we can now open up a websocket connection and start playing with it
 	//the test here is... do we get all 3 types of messages
 	statsReceived := false
