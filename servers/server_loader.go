@@ -185,6 +185,7 @@ func Delete(id string) (err error) {
 	}
 
 	program.Scheduler.Stop()
+	_ = program.GetFileServer().Close()
 
 	err = program.Destroy()
 	if err != nil {
