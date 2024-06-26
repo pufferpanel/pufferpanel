@@ -387,6 +387,7 @@ var TemplateData = []byte(`{
 }`)
 
 var EditServerData = []byte(`{
+  "name": "testserver-update",
   "type": "minecraft-java",
   "data": {
     "eula": {

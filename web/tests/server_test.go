@@ -53,6 +53,7 @@ func TestServers(t *testing.T) {
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
+		//TODO: Check that name and such update with this call
 	})
 
 	if t.Failed() {
