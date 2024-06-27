@@ -33,13 +33,16 @@ func (ps *Permission) GetForServer(serverId string) ([]*models.Permissions, erro
 	return allPerms, err
 }
 
-func (ps *Permission) GetForUserAndServer(userId uint, serverId *string) (*models.Permissions, error) {
-	if serverId != nil && *serverId == "" {
-		serverId = nil
+func (ps *Permission) GetForUserAndServer(userId uint, serverId string) (*models.Permissions, error) {
+	var id *string
+
+	if serverId != "" {
+		id = &serverId
 	}
+
 	permissions := &models.Permissions{
 		UserId:           &userId,
-		ServerIdentifier: serverId,
+		ServerIdentifier: id,
 	}
 
 	err := ps.DB.Preload(clause.Associations).Where(permissions).First(permissions).Error

@@ -82,7 +82,7 @@ func createSession(c *gin.Context, user *models.User) {
 	ps := &services.Permission{DB: db}
 	ss := &services.Session{DB: db}
 
-	perms, err := ps.GetForUserAndServer(user.ID, nil)
+	perms, err := ps.GetForUserAndServer(user.ID, "")
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

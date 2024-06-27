@@ -62,16 +62,34 @@ func handleTokenRequest(c *gin.Context) {
 				}
 			}
 
+			var serverId string
+			if client.Server != nil {
+				serverId = client.Server.Identifier
+			}
+
 			var scopes []string
 			ps := &services.Permission{DB: db}
-			perms, err := ps.GetForUserAndServer(client.UserId, nil)
+			perms, err := ps.GetForUserAndServer(client.UserId, serverId)
 			if response.HandleError(c, err, http.StatusInternalServerError) {
 				return
 			}
 
 			if !pufferpanel.ContainsScope(perms.Scopes, pufferpanel.ScopeLogin) {
-				c.AbortWithStatus(http.StatusForbidden)
-				return
+				//because servers don't have an explicit login scope, we need to check the root user
+				if serverId == "" {
+					c.AbortWithStatus(http.StatusForbidden)
+					return
+				}
+
+				userPerms, err := ps.GetForUserAndServer(client.UserId, "")
+				if response.HandleError(c, err, http.StatusInternalServerError) {
+					return
+				}
+
+				if !pufferpanel.ContainsScope(userPerms.Scopes, pufferpanel.ScopeLogin) {
+					c.AbortWithStatus(http.StatusForbidden)
+					return
+				}
 			}
 			for _, v := range perms.Scopes {
 				scopes = append(scopes, v.String())
@@ -131,7 +149,7 @@ func handleTokenRequest(c *gin.Context) {
 
 			//confirm user has access to this server
 			ps := &services.Permission{DB: db}
-			perms, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
+			perms, err := ps.GetForUserAndServer(user.ID, server.Identifier)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 				return

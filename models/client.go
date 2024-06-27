@@ -17,6 +17,9 @@ type Client struct {
 	UserId uint  `gorm:"NOT NULL" json:"-"`
 	User   *User `json:"-"`
 
+	ServerId uint    `gorm:"NOT NULL" json:"-"`
+	Server   *Server `json:"-"`
+
 	Name        string `gorm:"column:name;NOT NULL;size:100;default\"\"" json:"name"`
 	Description string `gorm:"column:description;NOT NULL;size:4000;default:\"\"" json:"description"`
 }

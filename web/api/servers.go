@@ -210,7 +210,7 @@ func searchServers(c *gin.Context) {
 			continue
 		}
 
-		serverPerms, _ := ps.GetForUserAndServer(user.ID, &v.Identifier)
+		serverPerms, _ := ps.GetForUserAndServer(user.ID, v.Identifier)
 		for _, p := range append(perms, serverPerms) {
 			if p == nil {
 				continue
@@ -254,7 +254,7 @@ func getServer(c *gin.Context) {
 
 		ps := &services.Permission{DB: db}
 
-		p, err := ps.GetForUserAndServer(u.ID, &server.Identifier)
+		p, err := ps.GetForUserAndServer(u.ID, server.Identifier)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
@@ -350,7 +350,7 @@ func createServer(c *gin.Context) {
 	}
 
 	for _, v := range users {
-		perm, err := ps.GetForUserAndServer(v.ID, &server.Identifier)
+		perm, err := ps.GetForUserAndServer(v.ID, server.Identifier)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
@@ -621,7 +621,7 @@ func getServerUsers(c *gin.Context) {
 			return
 		}
 		var p *models.Permissions
-		p, err = ps.GetForUserAndServer(user.ID, &server.Identifier)
+		p, err = ps.GetForUserAndServer(user.ID, server.Identifier)
 		if p != nil {
 			perms = []*models.Permissions{p}
 		}
@@ -700,12 +700,12 @@ func editServerUser(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	currentUser := c.MustGet("user").(*models.User)
-	currentPerms, err := ps.GetForUserAndServer(currentUser.ID, &server.Identifier)
+	currentPerms, err := ps.GetForUserAndServer(currentUser.ID, server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	currentGlobalPerms, err := ps.GetForUserAndServer(currentUser.ID, nil)
+	currentGlobalPerms, err := ps.GetForUserAndServer(currentUser.ID, "")
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -751,7 +751,7 @@ func editServerUser(c *gin.Context) {
 		}
 	}
 
-	existing, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
+	existing, err := ps.GetForUserAndServer(user.ID, server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -829,7 +829,7 @@ func removeServerUser(c *gin.Context) {
 		return
 	}
 
-	perms, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
+	perms, err := ps.GetForUserAndServer(user.ID, server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -1011,14 +1011,14 @@ func proxyServerRequest(c *gin.Context) {
 		}
 
 		permService := &services.Permission{DB: db}
-		perms, err := permService.GetForUserAndServer(user.ID, &server.Identifier)
+		perms, err := permService.GetForUserAndServer(user.ID, server.Identifier)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
 
 		scopes := perms.Scopes
 
-		perms, err = permService.GetForUserAndServer(user.ID, nil)
+		perms, err = permService.GetForUserAndServer(user.ID, "")
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}

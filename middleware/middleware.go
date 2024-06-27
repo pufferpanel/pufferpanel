@@ -72,12 +72,8 @@ func requiresPermission(c *gin.Context, perm *pufferpanel.Scope) {
 	}
 
 	//we now have a user and they are allowed to access something, let's confirm they have server access
-	var serverId *string
-	id := c.Param("serverId")
-	if id != "" {
-		serverId = &id
-	}
-	if perm.ForServer && serverId == nil {
+	serverId := c.Param("serverId")
+	if perm.ForServer && serverId == "" {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -93,9 +89,9 @@ func requiresPermission(c *gin.Context, perm *pufferpanel.Scope) {
 	}
 
 	perms = append(perms, p)
-	if serverId != nil {
+	if serverId != "" {
 		//if we had a server, also grab global scopes
-		p, err = ps.GetForUserAndServer(user.ID, nil)
+		p, err = ps.GetForUserAndServer(user.ID, "")
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}

@@ -131,7 +131,7 @@ func addUser(cmd *cobra.Command, args []string) {
 		}
 
 		ps := &services.Permission{DB: tx}
-		perms, err := ps.GetForUserAndServer(user.ID, nil)
+		perms, err := ps.GetForUserAndServer(user.ID, "")
 		if err != nil {
 			fmt.Printf("Failed to get permissions: %s\n", err.Error())
 			return err
@@ -293,7 +293,7 @@ func editUser(cmd *cobra.Command, args []string) {
 			}, &prompt)
 
 			ps := &services.Permission{DB: db}
-			perms, err := ps.GetForUserAndServer(user.ID, nil)
+			perms, err := ps.GetForUserAndServer(user.ID, "")
 			if err != nil {
 				fmt.Printf("Error updating permissions: %s\n", err.Error())
 				return

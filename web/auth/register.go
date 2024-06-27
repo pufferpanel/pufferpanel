@@ -47,7 +47,7 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	ps := &services.Permission{DB: db}
-	perms, err := ps.GetForUserAndServer(user.ID, nil)
+	perms, err := ps.GetForUserAndServer(user.ID, "")
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

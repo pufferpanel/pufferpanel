@@ -32,7 +32,7 @@ func (s *DatabaseSFTPAuthorization) Validate(username, password string) (perms *
 	}
 
 	ss := &Permission{DB: db}
-	serverPerms, err := ss.GetForUserAndServer(user.ID, &serverId)
+	serverPerms, err := ss.GetForUserAndServer(user.ID, serverId)
 	if err != nil {
 		return nil, errors.New("incorrect username or password")
 	}

@@ -238,7 +238,7 @@ func getUserPerms(c *gin.Context) {
 		return
 	}
 
-	perms, err := ps.GetForUserAndServer(user.ID, nil)
+	perms, err := ps.GetForUserAndServer(user.ID, "")
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -279,14 +279,14 @@ func setUserPerms(c *gin.Context) {
 		return
 	}
 
-	perms, err := ps.GetForUserAndServer(user.ID, nil)
+	perms, err := ps.GetForUserAndServer(user.ID, "")
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	//get the current user's scopes
 	editorUser := c.MustGet("user").(*models.User)
-	editorPerms, err := ps.GetForUserAndServer(editorUser.ID, nil)
+	editorPerms, err := ps.GetForUserAndServer(editorUser.ID, "")
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
