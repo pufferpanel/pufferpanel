@@ -53,7 +53,22 @@ func TestServers(t *testing.T) {
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
-		//TODO: Check that name and such update with this call
+
+		var server *models.Server
+		err := db.Model(&server).Where(&models.Server{Identifier: serverId}).Find(&server).Error
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		if !assert.Equal(t, EditServerNewName, server.Name) {
+			return
+		}
+		if !assert.Equal(t, EditServerNewIP, server.IP) {
+			return
+		}
+		if !assert.Equal(t, EditServerNewPort, server.Port) {
+			return
+		}
 	})
 
 	if t.Failed() {

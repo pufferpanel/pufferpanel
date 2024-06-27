@@ -5,6 +5,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/services"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -386,8 +387,11 @@ var TemplateData = []byte(`{
   }
 }`)
 
+var EditServerNewName = "testserver-update"
+var EditServerNewIP = "127.0.0.1"
+var EditServerNewPort = uint16(25566)
 var EditServerData = []byte(`{
-  "name": "testserver-update",
+  "name": "` + EditServerNewName + `",
   "type": "minecraft-java",
   "data": {
     "eula": {
@@ -402,7 +406,7 @@ var EditServerData = []byte(`{
       "desc": "What IP to bind the server to",
       "display": "IP",
       "required": true,
-      "value": "0.0.0.0"
+      "value": "` + EditServerNewIP + `"
     },
     "javaversion": {
       "type": "",
@@ -431,7 +435,7 @@ var EditServerData = []byte(`{
       "desc": "What port to bind the server to",
       "display": "Port",
       "required": true,
-      "value": 25565
+      "value": ` + cast.ToString(EditServerNewPort) + `
     },
     "version": {
       "type": "",
