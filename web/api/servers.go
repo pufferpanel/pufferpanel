@@ -50,7 +50,8 @@ func registerServers(g *gin.RouterGroup) {
 
 	g.GET("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServerViewData), middleware.ResolveServerPanel, proxyServerRequest)
 	g.POST("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServerEditData), middleware.ResolveServerPanel, editServerData)
-	g.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST"))
+	g.PUT("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServerEditDataAdmin), middleware.ResolveServerPanel, editServerDataAdmin)
+	g.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST", "PUT"))
 
 	g.GET("/:serverId/flags", middleware.RequiresPermission(pufferpanel.ScopeServerViewFlags), middleware.ResolveServerPanel, proxyServerRequest)
 	g.POST("/:serverId/flags", middleware.RequiresPermission(pufferpanel.ScopeServerEditFlags), middleware.ResolveServerPanel, proxyServerRequest)
@@ -899,14 +900,20 @@ func renameServer(c *gin.Context) {
 // @Success 202 {object} nil
 // @Param id path string true "Server ID"
 // @Param server body map[string]interface{} true "Server variables"
-// @Router /api/servers/{id}/data [put]
+// @Router /api/servers/{id}/data [post]
 // @Security OAuth2Application[server.data.edit]
 func editServerData(c *gin.Context) {
-	//TODO: Get this to actually set ip and port when it's safe
 	proxyServerRequest(c)
 }
 
-/*func editServerData(c *gin.Context) {
+// @Summary Update server data with admin level rights
+// @Description Updates a server's set of variables
+// @Success 202 {object} nil
+// @Param id path string true "Server ID"
+// @Param server body map[string]interface{} true "Server variables"
+// @Router /api/servers/{id}/data [put]
+// @Security OAuth2Application[server.data.edit.admin]
+func editServerDataAdmin(c *gin.Context) {
 	server := getServerFromGin(c)
 
 	//clone request body, so we can re-set it for the proxy call
@@ -914,8 +921,8 @@ func editServerData(c *gin.Context) {
 	useThere := &bytes.Buffer{}
 
 	multi := io.MultiWriter(useHere, useThere)
-	_, err := io.CopyN(multi, c.Request.Body, 1024*512)
-	if err != nil && errors.Is(err, io.EOF) && response.HandleError(c, err, http.StatusBadRequest) {
+	_, err := io.Copy(multi, c.Request.Body)
+	if err != nil && response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
@@ -940,11 +947,13 @@ func editServerData(c *gin.Context) {
 	}
 
 	ip, exist := postBody["ip"]
-	ip, err := getFromDataOrDefault(postBody, "ip", "0.0.0.0")
-	if response.HandleError(c, err, http.StatusBadRequest) {
-		return
+	if exist {
+		if response.HandleError(c, err, http.StatusBadRequest) {
+			return
+		}
+		server.IP = cast.ToString(ip)
+		dirty = true
 	}
-	server.IP = cast.ToString(ip)
 
 	if dirty {
 		db := middleware.GetDatabase(c)
@@ -956,7 +965,7 @@ func editServerData(c *gin.Context) {
 	}
 
 	proxyServerRequest(c)
-}*/
+}
 
 func getFromData(variables map[string]pufferpanel.Variable, key string) (result interface{}, exists bool) {
 	for k, v := range variables {

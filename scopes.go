@@ -25,6 +25,7 @@ var (
 	ScopeServerDelete         = registerServerScope("server.delete")
 	ScopeServerEditDefinition = registerServerScope("server.definition.edit")
 	ScopeServerEditData       = registerServerScope("server.data.edit")
+	ScopeServerEditDataAdmin  = registerServerScope("server.data.edit.admin")
 	ScopeServerEditFlags      = registerServerScope("server.flags.edit")
 	ScopeServerEditName       = registerServerScope("server.name.edit")
 	ScopeServerViewDefinition = registerServerScope("server.definition.view")

@@ -485,3 +485,11 @@ var EditServerData = []byte(`{
     "stop": "stop"
   }
 }`)
+
+var NewVariableChanges = []byte(`{
+	"ip": "` + NewVariableChangeIP + `",
+	"port": ` + cast.ToString(NewVariableChangePort) + `
+}`)
+
+var NewVariableChangeIP = "1.2.3.4"
+var NewVariableChangePort uint16 = 5356

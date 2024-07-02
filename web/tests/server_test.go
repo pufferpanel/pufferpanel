@@ -71,6 +71,26 @@ func TestServers(t *testing.T) {
 		}
 	})
 
+	t.Run("AdminDataUpdate", func(t *testing.T) {
+		response := CallAPIRaw("PUT", "/api/servers/"+serverId+"/data", NewVariableChanges, session)
+		if !assert.Equal(t, http.StatusNoContent, response.Code) {
+			return
+		}
+
+		var server *models.Server
+		err := db.Model(&server).Where(&models.Server{Identifier: serverId}).Find(&server).Error
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		if !assert.Equal(t, NewVariableChangeIP, server.IP) {
+			return
+		}
+		if !assert.Equal(t, NewVariableChangePort, server.Port) {
+			return
+		}
+	})
+
 	if t.Failed() {
 		return
 	}

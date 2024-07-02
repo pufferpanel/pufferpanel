@@ -43,7 +43,8 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 
 		l.GET("/:serverId/data", middleware.ResolveServerNode, getServerData)
 		l.POST("/:serverId/data", middleware.ResolveServerNode, editServerData)
-		l.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST"))
+		l.PUT("/:serverId/data", middleware.ResolveServerNode, editServerDataAdmin)
+		l.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST", "PUT"))
 
 		l.GET("/:serverId/tasks", middleware.ResolveServerNode, getServerTasks)
 		l.OPTIONS("/:serverId/tasks", response.CreateOptions("GET"))
@@ -276,7 +277,24 @@ func editServerData(c *gin.Context) {
 		return
 	}
 
-	err = server.EditData(data)
+	err = server.EditData(data, false)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
+	}
+}
+
+// Not documented in swagger as overridden on frontend
+func editServerDataAdmin(c *gin.Context) {
+	server := getServerFromGin(c)
+
+	var data map[string]interface{}
+	err := json.NewDecoder(c.Request.Body).Decode(&data)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	err = server.EditData(data, true)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)

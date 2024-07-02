@@ -459,14 +459,14 @@ func (p *Server) Save() (err error) {
 	return
 }
 
-func (p *Server) EditData(data map[string]interface{}) (err error) {
+func (p *Server) EditData(data map[string]interface{}, asAdmin bool) (err error) {
 	for k, v := range data {
 		var elem pufferpanel.Variable
 
 		if _, ok := p.Variables[k]; ok {
 			elem = p.Variables[k]
 		}
-		if !elem.UserEditable {
+		if !asAdmin && !elem.UserEditable {
 			continue
 		}
 
