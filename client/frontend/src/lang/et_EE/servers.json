@@ -23,6 +23,7 @@
   "Settings": "Sätted",
   "SaveSettings": "Salvesta Sätted",
   "SettingsSaved": "Sätted salvestatud",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "Sellel serveril ei ole sätteid, mida saaksid muuta",
   "Delete": "Kustuta Server",
   "ConfirmDelete": "Kas soovid kindlasti kustutada seda serverit? (seda ei saa tagasi võtta)",
