@@ -23,6 +23,7 @@
   "Settings": "Настройки",
   "SaveSettings": "Save Settings",
   "SettingsSaved": "Settings saved",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Удалить сервер",
   "ConfirmDelete": "Вы действительно хотите удалить этот сервер? Действие не может быть отменено.",
