@@ -23,6 +23,7 @@
   "Settings": "Innstillinger",
   "SaveSettings": "Lagre endringer",
   "SettingsSaved": "Instillinger lagret",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "Denne serveren har ikke noe instillinger du kan endre",
   "Delete": "Slett serveren",
   "ConfirmDelete": "Er du sikker på at du vil slette denne serveren? (dette kan ikke angres)",
