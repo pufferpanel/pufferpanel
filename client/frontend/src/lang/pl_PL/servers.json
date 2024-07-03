@@ -23,6 +23,7 @@
   "Settings": "Ustawienia",
   "SaveSettings": "Zapisz ustawienia",
   "SettingsSaved": "Settings saved",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "Ten serwer nie posiada żadnych ustawień, które możesz zmienić",
   "Delete": "Usuń serwer",
   "ConfirmDelete": "Czy chcesz usunąć ten serwer? (tego nie można cofnąć)",
