@@ -156,7 +156,7 @@ func searchServers(c *gin.Context) {
 	}
 
 	node, err := strconv.Atoi(nodeQuery)
-	if response.HandleError(c, err, http.StatusBadRequest) || node <= 0 {
+	if response.HandleError(c, err, http.StatusBadRequest) || node < 0 {
 		response.HandleError(c, pufferpanel.ErrFieldTooSmall("nodeId", 0), http.StatusBadRequest)
 		return
 	}

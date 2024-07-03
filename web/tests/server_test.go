@@ -48,6 +48,33 @@ func TestServers(t *testing.T) {
 		}
 	})
 
+	t.Run("EnsureServerListContains1", func(t *testing.T) {
+		response := CallAPI("GET", "/api/servers", nil, session)
+		if !assert.Equal(t, http.StatusOK, response.Code) {
+			return
+		}
+
+		var s *models.ServerSearchResponse
+		err := json.NewDecoder(response.Body).Decode(&s)
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		if !assert.NotEmpty(t, s) {
+			return
+		}
+
+		serverExists := false
+		for _, v := range s.Servers {
+			if v.Identifier == serverId {
+				serverExists = true
+			}
+		}
+		if !assert.True(t, serverExists, "server does not exist in API") {
+			return
+		}
+	})
+
 	t.Run("AdminUpdate", func(t *testing.T) {
 		response := CallAPIRaw("PUT", "/api/servers/"+serverId+"/definition", EditServerData, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
