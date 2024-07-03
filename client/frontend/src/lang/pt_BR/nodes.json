@@ -1,50 +1,50 @@
 {
-  "Node": "Node",
-  "Nodes": "Nodes",
+  "Node": "Nó",
+  "Nodes": "Nós ",
   "Edit": "Editar node",
   "Add": "Adicionar node",
-  "Create": "Create Node",
+  "Create": "Criar Nó",
   "Update": "Atualizar node",
   "Delete": "Remover node",
-  "ConfirmDelete": "Do you really want to delete the node {name}?",
-  "Created": "Created Node",
-  "Updated": "Updated Node",
-  "Deleted": "Deleted Node",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "ConfirmDelete": "Você realmente deseja excluir o nó {name}?",
+  "Created": "Nó criado",
+  "Updated": "Nó atualizado",
+  "Deleted": "Nó excluído",
+  "Reachable": "Este nó está configurado e funcionando corretamente",
+  "Unreachable": "Este node não está configurado corretamente ou atualmente indisponível",
   "features": {
     "os": {
-      "label": "Operating System",
+      "label": "Sistema operacional",
       "linux": "Linux",
       "windows": "Windows"
     },
     "arch": {
-      "label": "CPU Architecture",
+      "label": "Arquitetura do CPU",
       "amd64": "x86 64bit",
       "arm": "ARM 32bit",
       "arm64": "ARM 64bit"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "Docker disponível",
+      "false": "Docker não disponível"
     },
-    "envs": "Available Environments"
+    "envs": "Ambientes disponíveis"
   },
   "PublicHost": "Host público",
   "PublicPort": "Porta pública",
   "PrivateHost": "Host privada",
   "PrivatePort": "Porta privada",
   "SftpPort": "Porta SFTP",
-  "WithPrivateAddress": "Use a different host/port for server to server communication",
-  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
-  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
-  "Deploy": "Deploy Node",
+  "WithPrivateAddress": "Use um host/porta diferente para comunicação de servidor para servidor",
+  "WithPrivateAddressHint": "Este endereço separado é usado quando o nó principal precisa se comunicar com o novo nó. Útil, por exemplo, quando os nós estão na mesma rede atrás do NAT.",
+  "LocalNodeEdit": "O nó local não possui nenhuma configuração editável\n\nPara alterar o host exibido com os servidores hospedados neste nó, ajuste a url principal dos painéis no painel configurações",
+  "Deploy": "Implantar Nó",
   "deploy": {
-    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
-    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
-    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
-    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
-    "Step5": "### Your new node is now set up and ready to go"
+    "Step1": "## Passo 1\n\nInstale o PufferPanel no novo servidor, [veja a documentação para mais detalhes](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## Passo 2\n\nPare o serviço PufferPanel no novo servidor se ele foi iniciado durante a instalação executando o comando `sudo systemctl stop pufferpanel`",
+    "Step3": "## Etapa 3\n\nSubstitua o conteúdo do arquivo de configuração do \"PufferPanel\" no novo servidor pelo código abaixo\n\nO arquivo de configuração é geralmente encontrado em `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Passo 4\n\nAtivar e (re)iniciar o serviço PufferPanel no novo servidor executando `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### O seu novo nó está configurado e pronto para ir"
   },
   "DeploymentInstruction": "Para instalar o node, instale o PufferPanel no novo servidor e coloque o arquivo de configuração em `/etc/pufferpanel/`<br/>Reinicie o PufferPanel no novo servidor."
 }
