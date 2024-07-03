@@ -28,6 +28,7 @@
     "server-definition-edit": "Saab serveri määratlust muuta",
     "server-data-view": "Saab serveri sätteid vaatelda",
     "server-data-edit": "Saab serveri sätteid muuta",
+    "server-data-edit-admin": "Can change admin-only server settings",
     "server-flags-view": "Saab autostardi sätteid vaatelda",
     "server-flags-edit": "Saab autostardi sätteid muuta",
     "server-name-edit": "Saab serveri nime muuta",
