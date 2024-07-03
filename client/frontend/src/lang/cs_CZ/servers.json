@@ -23,6 +23,7 @@
   "Settings": "Nastavení",
   "SaveSettings": "Uložit nastavení",
   "SettingsSaved": "Nastavení uloženo",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "Tento server nemá žádné nastavení, které můžete změnit",
   "Delete": "Odstranit server",
   "ConfirmDelete": "Opravdu chcete smazat tento server? (toto nelze vrátit zpět)",
