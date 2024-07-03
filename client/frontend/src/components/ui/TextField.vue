@@ -14,6 +14,8 @@ const props = defineProps({
   icon: { type: String, default: () => undefined },
   autofocus: { type: Boolean, default: () => false },
   disabled: { type: Boolean, default: () => false },
+  afterIcon: { type: String, default: () => undefined },
+  afterHint: { type: String, default: () => undefined },
   modelValue: { type: [String, Number], default: () => '' }
 })
 
@@ -49,7 +51,8 @@ function onFocus(e) {
     <div :class="['input-field', 'input-' + type, error ? 'error' : '', disabled ? 'disabled' : '']">
       <icon v-if="icon" class="pre" :name="icon" />
       <input :id="id" ref="input" :value="modelValue" :type="showPassword ? 'text' : type" :placeholder="label" :name="name" :disabled="disabled" @input="onInput($event)" @blur="onBlur($event)" @focus="onFocus($event)" />
-      <icon v-if="type === 'password'" class="post" :name="showPassword ? 'eye-off' : 'eye'" @click="showPassword = !showPassword" />
+      <icon v-if="type === 'password'" class="post btn" :name="showPassword ? 'eye-off' : 'eye'" @click="showPassword = !showPassword" />
+      <template v-else><icon class="post" :name="afterIcon" /><span v-if="afterHint" class="post-tooltip" :data-tooltip="afterHint" /></template>
       <label v-if="label" :for="id"><span v-text="label" /></label>
     </div>
     <span v-if="error" class="error" v-text="error" />

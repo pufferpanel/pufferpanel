@@ -108,6 +108,11 @@ export class ServerApi {
     return res.data
   }
 
+  async adminUpdateData(id, data) {
+    await this._api.put(`/api/servers/${id}/data`, data)
+    return true
+  }
+
   async updateData(id, data) {
     await this._api.post(`/api/servers/${id}/data`, data)
     return true
@@ -429,6 +434,10 @@ class Server {
 
   async getData() {
     return await this._api.server.getData(this.id)
+  }
+
+  async adminUpdateData(data) {
+    return await this._api.server.adminUpdateData(this.id, data)
   }
 
   async updateData(data) {

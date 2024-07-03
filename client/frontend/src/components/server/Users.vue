@@ -20,6 +20,7 @@ const perms = [
 	'server.definition.edit',
 	'server.data.view',
 	'server.data.edit',
+  'server.data.edit.admin',
 	'server.flags.view',
 	'server.flags.edit',
 	'server.name.edit',
@@ -88,6 +89,14 @@ async function loadUsers() {
   })
 }
 
+function permissionDisabled(scope) {
+  // always deny changing any permission if user doesn't have edit user permission
+  if (!props.server.hasScope('server.users.edit')) return true
+
+  // only allow changing any permission the current user posseses themselves
+  return !props.server.hasScope(scope)
+}
+
 onMounted(async () => {
   loadUsers()
 })
@@ -102,7 +111,7 @@ onMounted(async () => {
         v-for="perm in perms"
         :key="perm.name"
         v-model="user.scopes[perm.name]"
-        :disabled="!server.hasScope('server.users.edit')"
+        :disabled="permissionDisabled(perm.name)"
         :label="perm.label"
         :hint="perm.hint"
         @update:modelValue="updatePerms(user)"

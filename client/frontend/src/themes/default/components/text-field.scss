@@ -65,10 +65,10 @@
       color: var(--primary);
     }
 
-    .icon.post {
+    .icon.post.btn {
       @include clickable;
     }
-    .icon.pre, .icon.post {
+    .icon.pre {
       padding: 0.5rem 0.75rem;
       font-size: 2rem;
       transition: all 0.1s ease-in-out;
@@ -80,6 +80,17 @@
     .icon.pre ~ input:focus ~ label, .icon.pre ~ input:not(:placeholder-shown) ~ label {
       top: -1.5rem;
       left: 0.75em;
+    }
+    .icon.post::before {
+      padding: 0.5rem 0.75rem;
+      padding-left: 0;
+      font-size: 2rem;
+    }
+    .icon.post ~ .post-tooltip {
+      position: absolute;
+      right: 0;
+      height: 3em;
+      width: 3em;
     }
     &:focus-within {
       border: 1px solid var(--primary);

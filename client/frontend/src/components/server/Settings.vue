@@ -22,18 +22,23 @@ const anyItems = computed(() => {
 })
 
 onMounted(async () => {
-  if (props.server.hasScope('server.data.view'))
+  if (props.server.hasScope('server.definition.view')) {
+    vars.value = (await props.server.getDefinition())
+  } else if (props.server.hasScope('server.data.view')) {
     vars.value = (await props.server.getData()) || {}
+  }
   if (props.server.hasScope('server.flags.view'))
     flags.value = (await props.server.getFlags()) || {}
 })
 
 async function save() {
-  if (props.server.hasScope('server.data.edit')) {
-    const data = {}
-    Object.keys(vars.value.data).map(name => {
-      data[name] = vars.value.data[name].value
-    })
+  const data = {}
+  Object.keys(vars.value.data).map(name => {
+    data[name] = vars.value.data[name].value
+  })
+  if (props.server.hasScope('server.data.edit.admin')) {
+    await props.server.adminUpdateData(data)
+  } else if (props.server.hasScope('server.data.edit')) {
     await props.server.updateData(data)
   }
   if (props.server.hasScope('server.flags.edit'))
