@@ -1,50 +1,50 @@
 {
   "Name": "Nome",
   "Language": "Linguagem",
-  "Online": "Online",
-  "Offline": "Offline",
+  "Online": "Disponível",
+  "Offline": "Desligado",
   "Unknown": "Desconhecido",
   "Loading": "Carregando...",
-  "Description": "Description",
+  "Description": "Descrição",
   "Save": "Salvar",
   "Cancel": "Cancelar",
-  "Close": "Close",
-  "Host": "Host",
+  "Close": "Fechar",
+  "Host": "Servidor",
   "Port": "Porta",
   "Collapse": "Ocultar",
-  "Expand": "Expand",
-  "Copy": "Copy to clipboard",
+  "Expand": "Expandir",
+  "Copy": "Copiar para área de transferência",
   "Copied": "Copiado para a área de transferência",
   "Back": "Voltar",
   "Next": "Próximo",
   "Details": "Detalhes",
   "ErrorDetails": "Detalhes do erro",
   "HelpTranslate": "Nós ajude a traduzir o PufferPanel",
-  "Protocol": "Protocol",
-  "Add": "Add",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Protocol": "Protocolo",
+  "Add": "Adicionar",
+  "Apply": "Aplicar",
+  "Confirm": "Confirmar",
+  "Condition": "Condição",
+  "Discard": "Descartar",
+  "ConfirmLeave": "Você tem alterações não salvas, deseja descartar essas alterações e deixar esta página?",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Tema",
+    "Mode": "Modo",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "Auto": "Auto"
+      "Light": "Claro",
+      "Dark": "Escuro",
+      "Auto": "Automático"
     },
-    "BaseColor": "Base Color",
-    "ServerTypeDisplay": "Server Type Display",
+    "BaseColor": "Cor Principal",
+    "ServerTypeDisplay": "Mostrar Tipo de Servidor",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "Ícone",
+      "None": "Nenhum"
     },
-    "ListType": "List Type",
+    "ListType": "Tipo de lista",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Grade",
+      "List": "Lista"
     }
   }
 }
