@@ -23,6 +23,7 @@
   "Settings": "Nustatymai",
   "SaveSettings": "Išsaugoti nustatymus",
   "SettingsSaved": "Nustatymai išsaugoti",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "Šis serveris neturi jokių nustatymų, kuriuos galėtumėte redaguoti",
   "Delete": "Ištrinti serverį",
   "ConfirmDelete": "Ar tikrai norite ištrinti serverį, pavadinimu \"{name}\"?",
