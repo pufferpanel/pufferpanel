@@ -1,69 +1,69 @@
 {
-  "Title": "Keyboard Shortcuts",
+  "Title": "Atalhos de Teclado",
   "Global": {
     "Title": "Global",
-    "g a": "Go to Account",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "g a": "Ir para a conta",
+    "g c": "Ir para o painel de configuração ",
+    "g n": "Ir para nós",
+    "g s": "Ir para Servidores",
+    "g t": "Ir para Modelos",
+    "g u": "Ir para Usuários"
   },
   "Self": {
-    "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
-    "t s": "Go to Preferences tab"
+    "Title": "Conta",
+    "t 2": "Vá para a guia 2-Fator-Auth",
+    "t a": "Vá para a guia Detalhes da Conta",
+    "t o": "Ir para aba OAuth",
+    "t p": "Ir para aba Senha",
+    "t s": "Vá para a aba Preferências"
   },
   "ServerList": {
-    "Title": "Servers",
-    "c": "Create a new server",
-    "l": "Focus the first server in the list"
+    "Title": "Servidores",
+    "c": "Criar um novo servidor",
+    "l": "Focar o primeiro servidor na lista"
   },
   "ServerView": {
-    "Title": "Server",
-    "t c": "Go to Console tab",
-    "t i": "Go to Statistics tab",
-    "t f": "Go to Files tab",
-    "t s": "Go to Settings tab",
-    "t u": "Go to Users tab",
-    "t 6": "Go to SFTP tab",
-    "t 7": "Go to Api tab",
-    "t a": "Go to Admin tab",
-    "c c": "Clear Console",
-    "r r": "Start Server",
-    "r s": "Stop Server",
-    "r k": "Kill Server",
-    "r i": "Install Server",
-    "f a": "Archive current directory contents",
-    "f c d": "Create new directory",
-    "f c f": "Create new file",
-    "f d": "Upload directory",
-    "f l": "Focus first file/folder in the list",
-    "f r": "Reload file list",
-    "f u": "Upload files",
-    "a e": "Edit Server Definition",
-    "a r": "Reload Server Definiton from disk"
+    "Title": "Servidor",
+    "t c": "Ir para aba do Console",
+    "t i": "Ir para aba de Estatísticas",
+    "t f": "Ir para aba Arquivos",
+    "t s": "Vá para a aba de Configurações",
+    "t u": "Ir para aba de usuários",
+    "t 6": "Ir para aba SFTP",
+    "t 7": "Vá para a aba Api",
+    "t a": "Vá para a aba Administrador",
+    "c c": "Limpar o Console",
+    "r r": "Iniciar Servidor",
+    "r s": "Parar Servidor",
+    "r k": " Finalizar Servidor",
+    "r i": "Instalar o servidor",
+    "f a": "Arquivar conteúdo do diretório atual",
+    "f c d": "Criar novo diretório",
+    "f c f": "Criar novo arquivo",
+    "f d": "Diretório De Upload",
+    "f l": "Focar primeiro arquivo/pasta na lista",
+    "f r": "Recarregar lista de arquivos",
+    "f u": "Enviar Arquivos",
+    "a e": "Editar Definição de Servidor",
+    "a r": "Recarregar definição de servidor do disco"
   },
   "NodeList": {
-    "Title": "Nodes",
-    "c": "Create a new node",
-    "l": "Focus the first node in the list"
+    "Title": "Nós",
+    "c": "Criar um novo nó",
+    "l": "Focar o primeiro nó na lista"
   },
   "UserList": {
-    "Title": "Users",
-    "c": "Create a new user",
-    "l": "Focus the first user in the list"
+    "Title": "Usuários",
+    "c": "Criar um usuário ",
+    "l": "Focar o primeiro servidor na lista"
   },
   "TemplateList": {
-    "Title": "Templates",
-    "c": "Create a new template",
-    "l": "Focus the first template in the list"
+    "Title": "Modelos",
+    "c": "Criar um  modelo",
+    "l": "Focar o primeiro modelo na lista"
   },
   "Template": {
-    "Title": "Template Editor",
+    "Title": "Editor de Modelo",
     "t e": "Go to Environment tab",
     "t g": "Go to General tab",
     "t h": "Go to Hooks tab",
