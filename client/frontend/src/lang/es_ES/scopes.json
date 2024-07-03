@@ -28,6 +28,7 @@
     "server-definition-edit": "Puede editar la definición del servidor",
     "server-data-view": "Puede ver la configuración del servidor",
     "server-data-edit": "Puede cambiar la configuración del servidor",
+    "server-data-edit-admin": "Can change admin-only server settings",
     "server-flags-view": "Puede ver los ajustes de inicio automático",
     "server-flags-edit": "Puede cambiar la configuración de inicio automático",
     "server-name-edit": "Puede cambiar el nombre del servidor",
