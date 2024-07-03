@@ -23,6 +23,7 @@
   "Settings": "Definições",
   "SaveSettings": "Guardar definições",
   "SettingsSaved": "Definições guardadas",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Delete Server",
   "ConfirmDelete": "Do you really want to delete this server? (this cannot be undone)",
