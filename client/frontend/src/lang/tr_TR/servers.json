@@ -23,6 +23,7 @@
   "Settings": "Ayarlar",
   "SaveSettings": "Save Settings",
   "SettingsSaved": "Settings saved",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Sunucuyu Sil",
   "ConfirmDelete": "Sunucuyu cidden silmek istiyor musun? (geri getiremezsin)",
