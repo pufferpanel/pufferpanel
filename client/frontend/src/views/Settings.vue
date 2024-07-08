@@ -10,9 +10,22 @@ import Toggle from '@/components/ui/Toggle.vue'
 
 const emailProviderConfigs = {
   none: [],
-  smtp: ['from', 'host', 'username', 'password'],
-  mailgun: ['domain', 'from', 'key'],
-  mailjet: ['domain', 'from', 'key']
+  smtp: [
+    { key: 'from', type: 'text' },
+    { key: 'host', type: 'text' },
+    { key: 'username', type: 'text' },
+    { key: 'password', type: 'password' }
+  ],
+  mailgun: [
+    { key: 'domain', type: 'text' },
+    { key: 'from', type: 'text' },
+    { key: 'key', type: 'text' }
+  ],
+  mailjet: [
+    { key: 'domain', type: 'text' },
+    { key: 'from', type: 'text' },
+    { key: 'key', type: 'text' }
+  ]
 }
 
 const { t } = useI18n()
@@ -73,8 +86,8 @@ async function savePanelSettings() {
 
 async function saveEmailSettings() {
   const data = { 'panel.email.provider': emailProvider.value }
-  emailFields.value.map(key => {
-    data['panel.email.' + key] = email[key]
+  emailFields.value.map(elem => {
+    data['panel.email.' + elem.key] = email[elem.key]
   })
   await api.settings.set(data)
   toast.success(t('settings.Saved'))
@@ -118,7 +131,7 @@ function updateThemeSetting(name, newSetting) {
     <div class="email">
       <h1 v-text="t('settings.EmailSettings')" />
       <dropdown v-model="emailProvider" :options="emailProviders" :label="t('settings.EmailProvider')" @change="emailProviderChanged()" />
-      <text-field v-for="key in emailFields" :key="key" v-model="email[key]" :label="t('settings.email.' + key)" />
+      <text-field v-for="elem in emailFields" :key="elem.key" v-model="email[elem.key]" :type="elem.type" :label="t('settings.email.' + elem.key)" />
       <btn color="primary" @click="saveEmailSettings()"><icon name="save" />{{ t('settings.SaveEmailSettings') }}</btn>
     </div>
   </div>
