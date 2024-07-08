@@ -43,13 +43,13 @@ func (sfp *fileServer) MkdirAll(path string, mode os.FileMode) error {
 	//in theory, the mkdir will be safe enough
 	parts := strings.Split(path, string(filepath.Separator))
 	//if it was just mkdir root... we don't do anything
-	if len(parts) <= 1 {
+	if len(parts) == 0 {
 		return nil
 	}
 
 	var err error
 	for i := range parts {
-		err = sfp.Mkdir(filepath.Join(parts[:i]...), mode)
+		err = sfp.Mkdir(filepath.Join(parts[:i+1]...), mode)
 		if err != nil && !errors.Is(err, os.ErrExist) {
 			return err
 		}

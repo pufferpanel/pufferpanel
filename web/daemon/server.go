@@ -93,7 +93,7 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.OPTIONS("/:serverId/status", response.CreateOptions("GET"))
 
 		l.POST("/:serverId/archive/*filename", middleware.ResolveServerNode, archive)
-		l.GET("/:serverId/extract/*filename", middleware.ResolveServerNode, extract)
+		l.POST("/:serverId/extract/*filename", middleware.ResolveServerNode, extract)
 
 		p := l.Group("/:serverId/socket")
 		{

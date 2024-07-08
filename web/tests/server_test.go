@@ -2,6 +2,8 @@ package tests
 
 import (
 	"bytes"
+	"crypto/rand"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
@@ -12,7 +14,9 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/stretchr/testify/assert"
+	"io"
 	"net/http"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -350,6 +354,65 @@ func TestServers(t *testing.T) {
 
 	listening = false
 	_ = c.Close()
+
+	//create a fake file that we can use to both
+
+	dir := filepath.Join(config.ServersFolder.Value(), serverId, "testarchive")
+	err = os.Mkdir(dir, 0755)
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	fileLocation := filepath.Join(dir, "file.img")
+	tmpFile, err := os.Create(fileLocation)
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	hasher := sha256.New()
+	w := io.MultiWriter(tmpFile, hasher)
+
+	_, err = io.CopyN(w, rand.Reader, 1024*1024*1024)
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	_ = tmpFile.Close()
+	expectedHash := hasher.Sum(nil)
+
+	//test other functionality
+	t.Run("Archive", func(t *testing.T) {
+		response := CallAPI("POST", "/api/servers/"+serverId+"/archive/archive.zip", []string{"testarchive"}, session)
+		if !assert.Equal(t, http.StatusNoContent, response.Code) {
+			return
+		}
+		_ = os.RemoveAll(dir)
+	})
+
+	t.Run("Extract", func(t *testing.T) {
+		response := CallAPI("POST", "/api/servers/"+serverId+"/extract/archive.zip", nil, session)
+		if !assert.Equal(t, http.StatusNoContent, response.Code) {
+			return
+		}
+		if !assert.FileExists(t, fileLocation) {
+			return
+		}
+
+		f, err := os.Open(fileLocation)
+		if !assert.NoError(t, err) {
+			return
+		}
+		defer f.Close()
+		h := sha256.New()
+		_, err = io.Copy(h, f)
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		if !assert.Equal(t, expectedHash, h.Sum(nil), "File hashes do not match") {
+			return
+		}
+	})
 
 	t.Run("Delete", func(t *testing.T) {
 		response := CallAPIRaw("DELETE", "/api/servers/"+serverId, nil, session)
