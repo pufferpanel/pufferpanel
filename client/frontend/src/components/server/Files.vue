@@ -190,10 +190,12 @@ function isArchive (file) {
   return false
 }
 
-function extract(file) {
+async function extract(file) {
   loading.value = true
   try {
-    props.server.extractFile(`${getCurrentPath()}/${file.name}`, getCurrentPath())
+    let dest = getCurrentPath()
+    if (!dest.startsWith('/')) dest = '/' + dest
+    await props.server.extractFile(`${getCurrentPath()}/${file.name}`, dest)
     refresh()
   } finally {
     loading.value = false

@@ -221,7 +221,7 @@ export class ServerApi {
 
   async extractFile(id, path, destination) {
     if (path.startsWith('/')) path = path.substring(1)
-    await this._api.post(`/api/servers/${id}/extract/${path}`, { destination })
+    await this._api.post(`/api/servers/${id}/extract/${path}`, undefined, { destination })
     return true
   }
 

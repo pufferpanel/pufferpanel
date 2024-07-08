@@ -100,7 +100,7 @@ async function uploadFiles(event) {
       <icon :name="folder ? 'folder-upload' : 'file-upload'" />
     </btn>
     <input ref="input" type="file" multiple :webkitdirectory="folder" @change="uploadFiles" />
-    <overlay v-model="uploading" :title="t('files.UploadProgress')">
+    <overlay v-model="uploading" class="file-upload-progress" :title="t('files.UploadProgress')">
       <div v-if="uploadState.state === 'preparing'">
         <div class="progress">
           <span v-text="t('files.PreparingUpload')" />
