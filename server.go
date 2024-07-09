@@ -231,6 +231,11 @@ func (v *Variable) UnmarshalJSON(data []byte) (err error) {
 		aux.Type = Type{Type: "string"}
 	}
 
+	//default any null value to empty string
+	if aux.Value == nil {
+		aux.Value = ""
+	}
+
 	//convert variable to correct typing
 	switch aux.Type.Type {
 	case "integer":
