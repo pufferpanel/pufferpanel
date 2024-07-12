@@ -23,6 +23,7 @@
   "Settings": "Inställningar",
   "SaveSettings": "Save Settings",
   "SettingsSaved": "Settings saved",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Ta bort server",
   "ConfirmDelete": "Vill du verkligen ta bort denna server? (detta kan inte ångras)",

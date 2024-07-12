@@ -23,6 +23,7 @@
   "Settings": "設定",
   "SaveSettings": "設定を保存",
   "SettingsSaved": "設定を保存しました",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "このサーバーには変更できる設定がありません",
   "Delete": "サーバーを削除",
   "ConfirmDelete": "このコメントを削除してもよろしいですか? この操作は元に戻すことができません。",

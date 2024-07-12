@@ -23,6 +23,7 @@
   "Settings": "Impostazioni",
   "SaveSettings": "Salva Impostazioni",
   "SettingsSaved": "Impostazioni salvate",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "Questo server non ha alcuna impostazione che puoi modificare",
   "Delete": "Elimina Server",
   "ConfirmDelete": "Vuoi davvero eliminare questo server? (ciò non è reversibile)",

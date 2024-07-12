@@ -23,6 +23,7 @@
   "Settings": "الإعدادات",
   "SaveSettings": "Save Settings",
   "SettingsSaved": "Settings saved",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "حذف الخادم",
   "ConfirmDelete": "هل تريد حذف هذا الخادم حقاً؟ (لا يمكن التراجع عن هذا)",

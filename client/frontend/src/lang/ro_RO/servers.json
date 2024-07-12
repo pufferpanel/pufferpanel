@@ -23,6 +23,7 @@
   "Settings": "Setari",
   "SaveSettings": "Save Settings",
   "SettingsSaved": "Settings saved",
+  "AdminOnlySetting": "This setting is only visible to admins",
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Șterge Server",
   "ConfirmDelete": "Ești sigur ca vrei sa ștergi comentariul acesta? Acțiunea aceasta nu poate fi anulată",
