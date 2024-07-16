@@ -313,16 +313,6 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		newEnv = append(newEnv, fmt.Sprintf("%s=%s", k, v))
 	}
 
-	binaryFolder := config.BinariesFolder.Value()
-	if !filepath.IsAbs(binaryFolder) {
-		var ef error
-		binaryFolder, ef = filepath.Abs(binaryFolder)
-		if ef != nil {
-			logging.Error.Printf("Failed to resolve binary folder to absolute path: %s", ef)
-			binaryFolder = ""
-		}
-	}
-
 	cmdSlice := strslice.StrSlice{}
 	if data.Command != "" {
 		cmdSlice = append(cmdSlice, data.Command)
@@ -361,7 +351,12 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		containerConfig.User = fmt.Sprintf("%d:%d", os.Getuid(), os.Getgid())
 	}
 
-	dir := d.GetRootDirectory()
+	var dir string
+	if config.DockerRootPath.Value() != "" {
+		dir = filepath.Join(config.DockerRootPath.Value(), "servers", d.ServerId)
+	} else {
+		dir = d.GetRootDirectory()
+	}
 
 	//convert root dir to a full path, so we can bind it
 	if !filepath.IsAbs(dir) {
@@ -372,8 +367,21 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 	}
 
 	bindDirs := []string{convertToBind(dir) + ":" + containerRoot}
+
+	binaryFolder := config.BinariesFolder.Value()
+	if config.DockerRootPath.Value() != "" {
+		binaryFolder = filepath.Join(config.DockerRootPath.Value(), "binaries")
+	} else {
+		if !filepath.IsAbs(binaryFolder) {
+			var ef error
+			binaryFolder, ef = filepath.Abs(binaryFolder)
+			if ef != nil {
+				logging.Error.Printf("Failed to resolve binary folder to absolute path: %s", ef)
+				binaryFolder = ""
+			}
+		}
+	}
 	if binaryFolder != "" {
-		//bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+convertToBind(binaryFolder))
 		bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+"/var/lib/pufferpanel/binaries")
 	}
 

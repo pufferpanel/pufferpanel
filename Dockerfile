@@ -58,21 +58,30 @@ FROM alpine
 
 EXPOSE 8080 5657
 RUN mkdir -p /etc/pufferpanel && \
-    mkdir -p /var/lib/pufferpanel && \
-    mkdir -p /var/log/pufferpanel && \
-    addgroup --system -g 1000 pufferpanel && \
-    adduser -D -H --home /var/lib/pufferpanel --ingroup pufferpanel -u 1000 pufferpanel && \
-    chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/lib/pufferpanel /var/log/pufferpanel
+    mkdir -p /var/lib/pufferpanel /var/lib/pufferpanel/servers /var/lib/pufferpanel/binaries /var/lib/pufferpanel/cache && \
+    mkdir -p /var/log/pufferpanel
+    #addgroup --system -g 1000 pufferpanel && \
+    #adduser -D -H --home /var/lib/pufferpanel --ingroup pufferpanel -u 1000 pufferpanel && \
+    #chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/lib/pufferpanel /var/log/pufferpanel
 
 ENV GIN_MODE=release \
-    PUFFER_CONFIG=/etc/pufferpanel/config.json
+    PUFFER_DOCKER_ROOT=""
+
+#COPY --from=builder --chown=pufferpanel:pufferpanel --chmod=755 /pufferpanel /pufferpanel/bin
+#COPY --from=builder --chown=pufferpanel:pufferpanel --chmod=755 /build/pufferpanel/entrypoint.sh /pufferpanel/bin/entrypoint.sh
+#COPY --from=builder --chown=pufferpanel:pufferpanel --chmod=755 /build/pufferpanel/config.docker.json /etc/pufferpanel/config.json
+COPY --from=builder --chmod=755 /pufferpanel /pufferpanel/bin
+COPY --from=builder --chmod=755 /build/pufferpanel/entrypoint.sh /pufferpanel/bin/entrypoint.sh
+COPY --from=builder --chmod=755 /build/pufferpanel/config.docker.json /etc/pufferpanel/config.json
+
+VOLUME /etc/pufferpanel
+VOLUME /var/lib/pufferpanel
+VOLUME /var/log/pufferpanel
 
 WORKDIR /var/lib/pufferpanel
 
-COPY --from=builder --chown=pufferpanel:pufferpanel /pufferpanel /pufferpanel/bin
-COPY --from=builder --chown=pufferpanel:pufferpanel /build/pufferpanel/config.linux.json /etc/pufferpanel/config.json
+#USER pufferpanel
 
-USER pufferpanel
+RUN /pufferpanel/bin/pufferpanel dbmigrate
 
-ENTRYPOINT ["/pufferpanel/bin/pufferpanel"]
-CMD ["run"]
+ENTRYPOINT ["/pufferpanel/bin/entrypoint.sh"]

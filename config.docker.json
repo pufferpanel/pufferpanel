@@ -1,0 +1,17 @@
+{
+  "logs": "/var/log/pufferpanel",
+  "panel": {
+    "database": {
+      "dialect": "sqlite3",
+      "url": "file:/var/lib/pufferpanel/database.db?cache=shared"
+    },
+    "web": {
+      "files": "/var/www/pufferpanel"
+    }
+  },
+  "daemon": {
+    "data": {
+      "root": "/var/lib/pufferpanel"
+    }
+  }
+}

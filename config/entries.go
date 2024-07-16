@@ -51,6 +51,8 @@ var TokenPublicUrl = asString("token.public", "")
 var SecurityForceOpenat2 = asBool("security.forceOpenat2", false)
 var SecurityForceOpenat = asBool("security.forceOpenat", false)
 
+var DockerRootPath = asString("docker.root", "")
+
 type entry[T ValueType] struct {
 	key string
 }
