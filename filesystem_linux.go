@@ -61,7 +61,10 @@ func (sfp *fileServer) OpenFile(path string, flags int, mode os.FileMode) (*os.F
 	}
 
 	file := os.NewFile(uintptr(fd), filepath.Base(path))
-	return file, nil
+	if flags&os.O_CREATE == 1 && sfp.uid != -1 {
+		err = file.Chown(sfp.uid, sfp.gid)
+	}
+	return file, err
 }
 
 func (sfp *fileServer) MkdirAll(path string, mode os.FileMode) error {
@@ -119,14 +122,29 @@ func (sfp *fileServer) Mkdir(path string, mode os.FileMode) error {
 	f := filepath.Base(path)
 
 	if parent == "" {
-		return unix.Mkdirat(getFd(sfp.root), f, syscallMode(mode))
+		err := unix.Mkdirat(getFd(sfp.root), f, syscallMode(mode))
+		if err != nil {
+			return err
+		}
+		if sfp.uid != -1 {
+			err = unix.Fchown(getFd(sfp.root), sfp.uid, sfp.gid)
+		}
+
+		return err
 	} else {
 		folder, err := sfp.OpenFile(parent, os.O_RDONLY, mode)
 		if err != nil {
 			return err
 		}
 		defer Close(folder)
-		return unix.Mkdirat(getFd(folder), f, syscallMode(mode))
+		err = unix.Mkdirat(getFd(folder), f, syscallMode(mode))
+		if err != nil {
+			return err
+		}
+		if sfp.uid != -1 {
+			err = unix.Fchown(getFd(folder), sfp.uid, sfp.gid)
+		}
+		return err
 	}
 }
 

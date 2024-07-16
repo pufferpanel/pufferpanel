@@ -29,10 +29,13 @@ type FileServer interface {
 type fileServer struct {
 	dir  string
 	root *os.File
+
+	uid int
+	gid int
 }
 
-func NewFileServer(prefix string) (FileServer, error) {
-	f := &fileServer{dir: prefix}
+func NewFileServer(prefix string, uid, gid int) (FileServer, error) {
+	f := &fileServer{dir: prefix, uid: uid, gid: gid}
 	var err error
 	f.root, err = f.resolveRootFd()
 	if err != nil {

@@ -128,6 +128,14 @@ func (s *standard) SendCode(code int) error {
 	return s.mainProcess.Process.Signal(syscall.Signal(code))
 }
 
+func (s *standard) GetUid() int {
+	return -1
+}
+
+func (s *standard) GetGid() int {
+	return -1
+}
+
 func (s *standard) handleClose(callback func(exitCode int)) {
 	err := s.mainProcess.Wait()
 

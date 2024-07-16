@@ -110,6 +110,14 @@ func (t *tty) SendCode(code int) error {
 	return t.mainProcess.Process.Signal(syscall.Signal(code))
 }
 
+func (t *tty) GetUid() int {
+	return -1
+}
+
+func (t *tty) GetGid() int {
+	return -1
+}
+
 func (t *tty) isRunning() (isRunning bool, err error) {
 	isRunning = t.mainProcess != nil && t.mainProcess.Process != nil
 	if isRunning {

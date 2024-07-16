@@ -71,6 +71,10 @@ type Environment interface {
 	GetStatsTracker() *Tracker
 
 	GetServer() Server
+
+	GetUid() int
+
+	GetGid() int
 }
 
 type BaseEnvironment struct {

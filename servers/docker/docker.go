@@ -455,6 +455,22 @@ func (d *Docker) SendCode(code int) error {
 	return dockerClient.ContainerKill(ctx, d.ContainerId, cast.ToString(code))
 }
 
+func (d *Docker) GetUid() int {
+	user := d.Config.User
+	if user == "" {
+		return -1
+	}
+	return cast.ToInt(strings.Split(user, ":")[0])
+}
+
+func (d *Docker) GetGid() int {
+	user := d.Config.User
+	if user == "" {
+		return -1
+	}
+	return cast.ToInt(strings.Split(user, ":")[1])
+}
+
 func (d *Docker) handleClose(client *client.Client, callback func(int)) {
 	exitCode := -1
 	okChan, errChan := client.ContainerWait(context.Background(), d.ContainerId, container.WaitConditionRemoved)
