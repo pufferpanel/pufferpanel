@@ -8,6 +8,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/strslice"
 	"github.com/docker/docker/client"
@@ -27,14 +28,15 @@ import (
 
 type Docker struct {
 	*pufferpanel.BaseEnvironment
-	ContainerId   string              `json:"-"`
-	ImageName     string              `json:"image"`
-	Binds         map[string]string   `json:"bindings,omitempty"`
-	Network       string              `json:"networkName,omitempty"`
-	Ports         []string            `json:"portBindings,omitempty"`
-	Resources     container.Resources `json:"resources,omitempty"`
-	Labels        map[string]string   `json:"labels,omitempty"`
-	ContainerRoot string              `json:"containerRoot,omitempty"`
+	ContainerId   string               `json:"-"`
+	ImageName     string               `json:"image"`
+	Binds         map[string]string    `json:"bindings,omitempty"`
+	Network       string               `json:"networkName,omitempty"`
+	Ports         []string             `json:"portBindings,omitempty"`
+	ContainerRoot string               `json:"containerRoot,omitempty"`
+	HostConfig    container.HostConfig `json:"hostConfig,omitempty"`
+	Labels        map[string]string    `json:"labels,omitempty"`
+	Config        container.Config     `json:"config,omitempty"`
 
 	connection       types.HijackedResponse
 	cli              *client.Client
@@ -227,7 +229,7 @@ func (d *Docker) PullImage(ctx context.Context, imageName string, force bool) er
 			imageName = imageName + ":latest"
 		}
 
-		opts := types.ImageListOptions{
+		opts := image.ListOptions{
 			All:     true,
 			Filters: filters.NewArgs(),
 		}
@@ -257,7 +259,7 @@ func (d *Docker) PullImage(ctx context.Context, imageName string, force bool) er
 		}
 	}
 
-	op := types.ImagePullOptions{}
+	op := image.PullOptions{}
 
 	d.Log(logging.Debug, "Downloading image %v", imageName)
 	d.DisplayToConsole(true, "Downloading image for container, please wait\n")
@@ -330,24 +332,34 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		labels[k] = v
 	}
 
-	containerConfig := &container.Config{
-		AttachStderr:    true,
-		AttachStdin:     true,
-		AttachStdout:    true,
-		Tty:             true,
-		OpenStdin:       true,
-		NetworkDisabled: false,
-		Image:           imageName,
-		WorkingDir:      containerRoot,
-		Env:             newEnv,
-		Labels:          labels,
+	c := d.Config
+	containerConfig := &c
+
+	//these we need to override
+	containerConfig.AttachStderr = true
+	containerConfig.AttachStdin = true
+	containerConfig.AttachStdout = true
+	containerConfig.Tty = true
+	containerConfig.OpenStdin = true
+	containerConfig.NetworkDisabled = false
+
+	//default if it wasn't overridden
+	if containerConfig.Image == "" {
+		containerConfig.Image = imageName
 	}
 
-	if len(cmdSlice) > 0 {
+	if containerConfig.WorkingDir == "" {
+		containerConfig.WorkingDir = containerRoot
+	}
+
+	//append anything the container config added
+	containerConfig.Env = append(newEnv, containerConfig.Env...)
+
+	if len(containerConfig.Entrypoint) == 0 && len(cmdSlice) > 0 {
 		containerConfig.Entrypoint = cmdSlice
 	}
 
-	if runtime.GOOS != "windows" {
+	if containerConfig.User == "" && runtime.GOOS != "windows" {
 		containerConfig.User = fmt.Sprintf("%d:%d", os.Getuid(), os.Getgid())
 	}
 
@@ -389,27 +401,37 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		bindDirs = append(bindDirs, convertToBind(k)+":"+v)
 	}
 
-	hostConfig := &container.HostConfig{
-		AutoRemove:   true,
-		NetworkMode:  container.NetworkMode(d.Network),
-		Resources:    d.Resources,
-		Binds:        bindDirs,
-		PortBindings: nat.PortMap{},
+	baseConfig := d.HostConfig
+
+	hostConfig := &baseConfig
+	hostConfig.AutoRemove = true
+	if hostConfig.NetworkMode == "" {
+		hostConfig.NetworkMode = container.NetworkMode(d.Network)
 	}
 
-	networkConfig := &network.NetworkingConfig{}
+	hostConfig.Binds = append(hostConfig.Binds, bindDirs...)
+
+	if hostConfig.PortBindings == nil {
+		hostConfig.PortBindings = nat.PortMap{}
+	}
 
 	_, bindings, err := nat.ParsePortSpecs(d.Ports)
 	if err != nil {
 		return err
 	}
-	hostConfig.PortBindings = bindings
 
-	exposedPorts := make(nat.PortSet)
-	for k := range bindings {
-		exposedPorts[k] = struct{}{}
+	for k, v := range bindings {
+		hostConfig.PortBindings[k] = v
 	}
-	containerConfig.ExposedPorts = exposedPorts
+
+	if containerConfig.ExposedPorts == nil {
+		containerConfig.ExposedPorts = make(nat.PortSet)
+	}
+	for k := range bindings {
+		containerConfig.ExposedPorts[k] = struct{}{}
+	}
+
+	networkConfig := &network.NetworkingConfig{}
 
 	//for now, default to linux across the board. This resolves problems that Windows has when you use it and docker
 	_, err = d.cli.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, &v1.Platform{OS: "linux"}, d.ContainerId)
