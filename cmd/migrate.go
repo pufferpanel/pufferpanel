@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/mattn/go-sqlite3"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/spf13/cobra"
@@ -22,6 +23,11 @@ var migrateCmd = &cobra.Command{
 func executeDbMigrations(cmd *cobra.Command, args []string) {
 	var currentFile string
 	var backupFile string
+
+	if !config.PanelEnabled.Value() {
+		logging.Info.Printf("Panel not enabled, skipping migration")
+		os.Exit(0)
+	}
 
 	if database.GetDialect() == "sqlite3" {
 		//we could get the filename... let's get it
