@@ -126,7 +126,7 @@ func handleTokenRequest(c *gin.Context) {
 			//get user and server information
 			parts := strings.SplitN(request.Username, "#", 2)
 			if len(parts) != 2 {
-				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "bad username"})
 				return
 			}
 			user, err := us.GetByEmail(parts[0])
@@ -160,6 +160,7 @@ func handleTokenRequest(c *gin.Context) {
 			}
 
 			//validate their credentials
+
 			var token string
 			user, _, err = us.ValidateLogin(user.Email, request.Password)
 			if err != nil {

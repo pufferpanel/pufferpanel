@@ -37,13 +37,6 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 
 	//we should only get a 200, if we get any others, we have a problem
 	if response.StatusCode != http.StatusOK {
-		if response.StatusCode == http.StatusUnauthorized {
-			if recurse && RefreshToken() {
-				pufferpanel.CloseResponse(response)
-				return validateSSH(username, password, false)
-			}
-		}
-
 		msg, _ := io.ReadAll(response.Body)
 
 		logging.Error.Printf("Error talking to auth server: [%d] [%s]", response.StatusCode, msg)

@@ -71,13 +71,13 @@ func (sfp *fileServer) ReadDir(name string) ([]fs.DirEntry, error) {
 	return folder.ReadDir(0)
 }
 
-func (stp *fileServer) Glob(pattern string) ([]string, error) {
+func (sfp *fileServer) Glob(pattern string) ([]string, error) {
 	parent := filepath.Base(pattern)
 	if parent == pattern {
 		parent = "."
 	}
 
-	files, err := stp.ReadDir(parent)
+	files, err := sfp.ReadDir(parent)
 
 	if err != nil {
 		return nil, err
