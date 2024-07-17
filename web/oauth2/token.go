@@ -142,7 +142,7 @@ func handleTokenRequest(c *gin.Context) {
 			}
 
 			//ensure the node asking for the credential check is where this server is
-			if server.NodeID != node.ID {
+			if server.Node.ID != node.ID {
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
 			}
