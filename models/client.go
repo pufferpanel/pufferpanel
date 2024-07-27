@@ -9,7 +9,7 @@ import (
 
 type Client struct {
 	ID                 uint   `gorm:"PRIMARY_KEY,AUTO_INCREMEMT" json:"-"`
-	ClientId           string `gorm:"NOT NULL;uniqueIndex" json:"client_id"`
+	ClientId           string `gorm:"NOT NULL;uniqueIndex;size:100" json:"client_id"`
 	HashedClientSecret string `gorm:"column:client_secret;NOT NULL" json:"-"`
 
 	ClientSecret string `gorm:"-" json:"client_secret"`
