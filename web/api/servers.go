@@ -395,10 +395,13 @@ func createServer(c *gin.Context) {
 		}
 	}
 
-	data, _ := json.Marshal(postBody.Server)
-	reader := io.NopCloser(bytes.NewReader(data))
+	reader := &bytes.Buffer{}
+	err = json.NewEncoder(reader).Encode(&postBody.Server)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
 
-	nodeResponse, err := ns.CallNode(node, "PUT", "/daemon/server/"+server.Identifier, reader, c.Request.Header)
+	nodeResponse, err := ns.CallNode(node, "PUT", "/daemon/server/"+server.Identifier, io.NopCloser(reader), c.Request.Header)
 	if nodeResponse != nil {
 		defer pufferpanel.Close(nodeResponse.Body)
 	}
