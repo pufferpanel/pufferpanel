@@ -22,7 +22,8 @@ const { t } = useI18n()
 const entries = ref([])
 
 onMounted(() => {
-  for (let entry in props.modelValue) {
+  for (let k in props.modelValue) {
+    const entry = props.modelValue[k];
     const [head, protocol] = entry.split('/')
     const [host, outsidePort, insidePort] = head.split(':')
     entries.value.push({ host, outsidePort, insidePort, protocol })
