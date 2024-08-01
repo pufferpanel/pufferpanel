@@ -60,5 +60,9 @@
   "fabricdl": {
     "generic": "Stáhnout Minecraft Fabric",
     "formatted": "Stáhnout Minecraft Fabric"
+  },
+  "curseforge": {
+    "generic": "Download From CurseForge",
+    "formatted": "Download From CurseForge"
   }
 }

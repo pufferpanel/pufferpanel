@@ -60,5 +60,9 @@
   "fabricdl": {
     "generic": "Laadi Minecraft Fabric alla",
     "formatted": "Laadi Minecraft Fabric alla"
+  },
+  "curseforge": {
+    "generic": "Download From CurseForge",
+    "formatted": "Download From CurseForge"
   }
 }

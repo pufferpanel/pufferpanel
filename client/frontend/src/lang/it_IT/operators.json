@@ -60,5 +60,9 @@
   "fabricdl": {
     "generic": "Scarica Tessuto Minecraft",
     "formatted": "Scarica Tessuto Minecraft"
+  },
+  "curseforge": {
+    "generic": "Download From CurseForge",
+    "formatted": "Download From CurseForge"
   }
 }
