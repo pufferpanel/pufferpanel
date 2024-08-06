@@ -108,7 +108,13 @@ func readVariableFile(serverFile File) (map[string]string, error) {
 	var txt string
 	for scanner.Scan() {
 		txt = scanner.Text()
+		if strings.HasPrefix(txt, "#") {
+			continue
+		}
 		parts := strings.SplitN(txt, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
 		data[parts[0]] = strings.Trim(parts[1], "\"")
 	}
 	return data, scanner.Err()
