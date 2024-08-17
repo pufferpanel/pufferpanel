@@ -89,7 +89,7 @@ async function submit() {
     node.privateHost = publicHost.value
     node.privatePort = publicPort.value
   }
-  await api.node.update(node)
+  await api.node.update(route.params.id, node)
   toast.success(t('nodes.Updated'))
 }
 

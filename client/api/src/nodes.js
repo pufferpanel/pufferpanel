@@ -45,7 +45,7 @@ export class NodeApi {
   }
 
   async update(id, node) {
-    await this._api.post(`/api/nodes/${id}`, this.fixNode(node))
+    await this._api.put(`/api/nodes/${id}`, this.fixNode(node))
     return true
   }
 
