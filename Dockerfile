@@ -46,8 +46,10 @@ RUN ~/go/bin/swag init --md . -o web/swagger -g web/loader.go
 COPY --from=node /build/frontend/dist /build/pufferpanel/client/frontend/dist
 
 ARG TARGETPLATFORM
+ARG curseforgeKey=''
+
 RUN xx-apk add musl-dev gcc
-RUN xx-go build -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
+RUN xx-go build -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config.curseforgeKey=$curseforgeKey' -X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
 RUN xx-verify /pufferpanel/pufferpanel
 
 ###
