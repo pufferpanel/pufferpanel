@@ -58,6 +58,7 @@ let lastIncompleteLine = null
 let lastIncompleteChar = new Uint8Array(0)
 
 onmessage = function (e) {
+  if (e.data.logs.length === 0) return
   const { decoded, incomplete } = decode(lastIncompleteChar, Array.isArray(e.data.logs) ? e.data.logs.join('') : e.data.logs)
   lastIncompleteChar = incomplete
   let newLines = decoded.replaceAll('\r\n', '\n')
