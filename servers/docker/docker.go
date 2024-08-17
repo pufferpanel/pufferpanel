@@ -5,6 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
@@ -19,11 +25,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/spf13/cast"
-	"io"
-	"os"
-	"path/filepath"
-	"runtime"
-	"strings"
 )
 
 type Docker struct {
@@ -328,8 +329,13 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 	labels := map[string]string{
 		"pufferpanel.server": d.ContainerId,
 	}
+
 	for k, v := range d.Labels {
 		labels[k] = v
+	}
+
+	for k, v := range labels {
+		labels[k] = pufferpanel.ReplaceTokens(v, data.Variables)
 	}
 
 	c := d.Config
@@ -342,6 +348,7 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 	containerConfig.Tty = true
 	containerConfig.OpenStdin = true
 	containerConfig.NetworkDisabled = false
+	containerConfig.Labels = labels
 
 	//default if it wasn't overridden
 	if containerConfig.Image == "" {
