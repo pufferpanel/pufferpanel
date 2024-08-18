@@ -621,6 +621,7 @@ jobs:
     permissions:
       contents: write
     environment: ${{ startsWith(github.ref, 'refs/tags/v') && 'Release' || 'Development' }}
+    if: "github.event_name != 'pull_request'"
 
     steps:
       - uses: ruby/setup-ruby@v1
