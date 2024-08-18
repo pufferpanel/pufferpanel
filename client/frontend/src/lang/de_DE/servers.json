@@ -40,6 +40,7 @@
   "Command": "Befehl",
   "CreateMissingPermissions": "Sie haben nicht die Berechtigung, Knoten oder Vorlagen anzusehen. Diese werden für die Server-Erstellung benötigt. Bitte sprechen Sie mit dem Administrator",
   "FlagsHeader": "Autostart-Bedingungen",
+  "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
   "flags": {
     "autoStart": "Server starten, wenn der Knoten startet",
     "autoRestartOnGraceful": "Server neu starten, wenn er gewöhnlich gestoppt ist",
