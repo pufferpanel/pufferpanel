@@ -158,7 +158,7 @@ func CreateProgram() *Server {
 			Groups:         make([]pufferpanel.Group, 0),
 		},
 	}
-	p.stopChan = make(chan bool)
+	p.stopChan = make(chan bool, 1)
 	p.waitForConsole = &sync.Mutex{}
 	return p
 }
@@ -524,15 +524,6 @@ func (p *Server) afterExit(exitCode int) {
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n")
 		return
 	}
-
-	if !p.Execution.AutoRestartFromCrash && !p.Execution.AutoRestartFromGraceful {
-		return
-	}
-
-	p.stopChan <- true
-	//wait for the console to be done with it's work, if it has any
-	p.waitForConsole.Lock()
-	p.waitForConsole.Unlock()
 
 	if graceful && p.Execution.AutoRestartFromGraceful {
 		StartViaService(p)
