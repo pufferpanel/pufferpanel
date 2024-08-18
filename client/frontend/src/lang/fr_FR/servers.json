@@ -40,6 +40,7 @@
   "Command": "Commande",
   "CreateMissingPermissions": "Vous n'avez pas la permission de voir les nœuds ou les modèles, ils sont nécessaires à la création du serveur, veuillez contacter votre administrateur",
   "FlagsHeader": "Conditions de démarrage automatique",
+  "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
   "flags": {
     "autoStart": "Démarrer le serveur au démarrage du nœud",
     "autoRestartOnGraceful": "Redémarrer le serveur lorsqu'il s'arrête normalement",
