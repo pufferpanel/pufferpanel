@@ -1,10 +1,12 @@
 <script setup>
-import { defineAsyncComponent, inject, onMounted } from 'vue'
+import { ref, defineAsyncComponent, inject, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import ServerHeader from '../server/Header.vue'
 
+import Btn from '@/components/ui/Btn.vue'
+import Icon from '@/components/ui/Icon.vue'
 import Loader from '@/components/ui/Loader.vue'
 import Tab from '@/components/ui/Tab.vue'
 import Tabs from '@/components/ui/Tabs.vue'
@@ -46,11 +48,15 @@ const { t } = useI18n()
 const events = inject('events')
 const route = useRoute()
 const router = useRouter()
+const http = ref(false)
+const httpWarnDismissed = ref(false)
+let httpCount = 2
 
 const props = defineProps({
   server: { type: Object, required: true }
 })
 
+let task = null
 onMounted(() => {
   if (route.query.created && props.server.hasScope('server.install')) {
     events.emit(
@@ -72,11 +78,23 @@ onMounted(() => {
     )
     router.push({query: {}, hash: route.hash})
   }
+
+  task = props.server.startTask(() => {
+    // prevent the info alert from flickering on and off too much when dealing with a wonky connection
+    if (props.server.needsPolling() && httpCount < 3) httpCount += 1
+    if (!props.server.needsPolling() && httpCount > 0) httpCount -= 1
+    if (httpCount === 3) http.value = true
+    if (httpCount === 0) http.value = false
+  }, 5000)
+})
+
+onUnmounted(() => {
+  if (task) props.server.stopTask(task)
 })
 </script>
 
 <template>
-  <div>
+  <div :class="http ? 'http-fallback' : ''">
     <server-header :key="nameUpdateHack" :server="server" />
 
     <tabs anchors>
@@ -87,6 +105,10 @@ onMounted(() => {
         icon="console"
         hotkey="t c"
       >
+        <div v-if="http && !httpWarnDismissed" class="alert info">
+          <span v-text="t('servers.SocketWarnConsole')" />
+          <btn variant="icon" @click="httpWarnDismissed = true"><icon name="close"></icon></btn>
+        </div>
         <Console :server="server" />
       </tab>
       <tab

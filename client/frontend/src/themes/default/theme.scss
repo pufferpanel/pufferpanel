@@ -1110,6 +1110,14 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   h2 {
     display: none;
   }
+
+  #console > div:not(.alert) {
+    position: relative;
+  }
+
+  #console > .alert {
+    padding: 0 0 0 .75em;
+  }
 }
 
 .file-manager {
