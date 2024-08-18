@@ -40,6 +40,7 @@
   "Command": "Komenda",
   "CreateMissingPermissions": "Nie masz uprawnień do przeglądania węzłów lub szablonów, one są potrzebne do tworzenia serwera, skontaktuj się z administratorem",
   "FlagsHeader": "Autostart conditions",
+  "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
   "flags": {
     "autoStart": "Start the server when the node starts",
     "autoRestartOnGraceful": "Restart the server when it stops normally",
