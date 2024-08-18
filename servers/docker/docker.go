@@ -331,11 +331,7 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 	}
 
 	for k, v := range d.Labels {
-		labels[k] = v
-	}
-
-	for k, v := range labels {
-		labels[k] = pufferpanel.ReplaceTokens(v, data.Variables)
+		labels[pufferpanel.ReplaceTokens(k, data.Variables)] = pufferpanel.ReplaceTokens(v, data.Variables)
 	}
 
 	c := d.Config
