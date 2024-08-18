@@ -40,6 +40,7 @@
   "Command": "Kommando",
   "CreateMissingPermissions": "Du har ikke tilatelse til å se noder eller maler, disse trengs for opprettelse av servere, hør med din administrator",
   "FlagsHeader": "Vilkår for autostart",
+  "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
   "flags": {
     "autoStart": "Start serveren når noden starter",
     "autoRestartOnGraceful": "Start serveren på nyttnår den stopper normalt",
