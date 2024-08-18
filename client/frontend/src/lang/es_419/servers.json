@@ -40,6 +40,7 @@
   "Command": "Comando",
   "CreateMissingPermissions": "No tienes permisos para ver los nodos o plantillas, los cuales son necesarios para la creación de servidores. Por favor, comunícate con un administrador",
   "FlagsHeader": "Condiciones de inicio automático",
+  "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
   "flags": {
     "autoStart": "Iniciar el servidor cuando el nodo arranque",
     "autoRestartOnGraceful": "Reiniciar el servidor cuando se detenga",
