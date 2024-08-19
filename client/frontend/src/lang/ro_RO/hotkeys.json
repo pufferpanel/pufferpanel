@@ -65,11 +65,11 @@
   "Template": {
     "Title": "Editor de șabloane",
     "t e": "Go to Environment tab",
-    "t g": "Go to General tab",
-    "t h": "Go to Hooks tab",
-    "t i": "Go to Install tab",
-    "t j": "Go to JSON tab",
-    "t r": "Go to Run Configuration tab",
-    "t v": "Go to Variables tab"
+    "t g": "Mergi la fila General",
+    "t h": "Mergi la fila Hooks",
+    "t i": "Mergi la fila de instalare",
+    "t j": "Mergi la fila JSON",
+    "t r": "Mergi la fila Configurare",
+    "t v": "Mergi la fila Variabile"
   }
 }
