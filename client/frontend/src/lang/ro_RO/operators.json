@@ -1,5 +1,5 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Execută acest pas doar dacă această condiţie este îndeplinită",
   "mojangdl": {
     "generic": "Descarcă Minecraft",
     "formatted": "Descarcă Minecraft"
@@ -9,8 +9,8 @@
     "formatted": "Scrie în fişierul {target}"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
-    "formatted": "Resolve Minecraft Forge Version"
+    "generic": "Rezolvă versiunea de Minecraft Forge",
+    "formatted": "Rezolvă versiunea de Minecraft Forge"
   },
   "download": {
     "generic": "Descărcare fişier(ele)",
@@ -62,7 +62,7 @@
     "formatted": "Descarcă Minecraft Fabric"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "generic": "Descarcă de pe CurseForge",
+    "formatted": "Descarcă de pe CurseForge"
   }
 }
