@@ -10,7 +10,7 @@
   },
   "resolveforgeversion": {
     "generic": "Minecraft Forgeバージョンの解決",
-    "formatted": "Resolve Minecraft Forge Version"
+    "formatted": "Minecraft Forgeのバージョンを解決する"
   },
   "download": {
     "generic": "ファイルをダウンロード",
@@ -19,7 +19,7 @@
   },
   "command": {
     "generic": "コマンドを実行",
-    "formatted": "Run {command} | Run {n} commands",
+    "formatted": "実行 {command} | {n} コマンド実行",
     "commands": "コマンド"
   },
   "alterfile": {
