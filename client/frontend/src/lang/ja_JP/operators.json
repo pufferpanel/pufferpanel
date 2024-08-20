@@ -1,5 +1,5 @@
 {
-  "ConditionHint": "この条件が満たされいる場合のみ実行してください",
+  "ConditionHint": "この条件が満たされている場合のみ実行してください",
   "mojangdl": {
     "generic": "Minecraftをダウンロード",
     "formatted": "Minecraftをダウンロード"
@@ -62,7 +62,7 @@
     "formatted": "Minecraft Fabricをダウンロード"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "generic": "CurseForge からダウンロード",
+    "formatted": "CurseForge からダウンロード"
   }
 }
