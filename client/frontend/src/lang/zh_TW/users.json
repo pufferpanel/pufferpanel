@@ -8,6 +8,7 @@
   "ChangePassword": "變更密碼",
   "ChangeInfo": "變更帳戶詳細資訊",
   "InfoChanged": "已成功變更您的資訊",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "已成功修改您的密碼",
   "AccountPassword": "帳戶密碼",
   "Edit": "編輯使用者",
