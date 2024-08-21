@@ -1,6 +1,8 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	uuid "github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -9,7 +11,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
-	"net/http"
 )
 
 func registerSelf(g *gin.RouterGroup) {
@@ -98,6 +99,11 @@ func updateSelf(c *gin.Context) {
 
 	passwordChanged := false
 	if viewModel.NewPassword != "" {
+		if !us.IsSecurePassword(viewModel.NewPassword) {
+			response.HandleError(c, pufferpanel.ErrPasswordRequirements, http.StatusBadRequest)
+			return
+		}
+
 		passwordChanged = true
 		err := user.SetPassword(viewModel.NewPassword)
 		if response.HandleError(c, err, http.StatusInternalServerError) {

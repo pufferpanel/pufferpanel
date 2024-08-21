@@ -4,6 +4,10 @@ import (
 	"bytes"
 	"encoding/base64"
 	"errors"
+	"image"
+	"image/png"
+	"strings"
+
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -11,9 +15,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"image"
-	"image/png"
-	"strings"
 )
 
 type User struct {
@@ -246,4 +247,8 @@ func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) 
 	res := query.Offset(int((page - 1) * pageSize)).Limit(int(pageSize)).Find(&users)
 
 	return users, count, res.Error
+}
+
+func (us *User) IsSecurePassword(password string) bool {
+	return len(password) >= 8
 }

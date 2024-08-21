@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -10,7 +12,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"gopkg.in/go-playground/validator.v9"
-	"net/http"
 )
 
 func RegisterPost(c *gin.Context) {
@@ -32,6 +33,11 @@ func RegisterPost(c *gin.Context) {
 	validate := validator.New()
 	err = validate.Struct(request)
 	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	if !us.IsSecurePassword(request.Password) {
+		response.HandleError(c, pufferpanel.ErrPasswordRequirements, http.StatusBadRequest)
 		return
 	}
 

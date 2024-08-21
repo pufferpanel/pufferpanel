@@ -2,10 +2,11 @@ package pufferpanel
 
 import (
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"gopkg.in/go-playground/validator.v9"
 	"runtime/debug"
 	"strings"
+
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 var ErrUnknownError = CreateError("unknown error", "ErrUnknownError")
@@ -47,6 +48,7 @@ var ErrServerRunning = CreateError("server running", "ErrServerRunning")
 var ErrNoCommand = CreateError("command could not be determined", "ErrNoCommand")
 var ErrRepoExists = CreateError("repo already exists with given name", "ErrRepoExists")
 var ErrEnvironmentNotSupported = CreateError("environment not supported", "ErrEnvironmentNotSupported")
+var ErrPasswordRequirements = CreateError("password does not meet requirements", "ErrPasswordRequirements")
 
 func CreateErrMissingScope(scope Scope) *Error {
 	return CreateError(ErrMissingScope.Message, ErrMissingScope.Code).Metadata(map[string]interface{}{"scope": scope})

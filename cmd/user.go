@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/database"
@@ -183,9 +184,15 @@ func validateUsername(val interface{}) error {
 
 func validatePassword(val interface{}) error {
 	pw, ok := val.(string)
-	if !ok || len(pw) < 6 {
-		return errors.New("password must be at least 6 characters")
+	if !ok {
+		return errors.New("password is not a string")
 	}
+
+	us := &services.User{}
+	if !us.IsSecurePassword(pw) {
+		return errors.New("Password must be at least 8 characters")
+	}
+
 	var secondAttempt string
 	confirm := &survey.Password{
 		Message: "Confirm Password",
