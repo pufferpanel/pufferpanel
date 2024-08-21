@@ -8,6 +8,7 @@
   "ChangePassword": "パスワードを変更",
   "ChangeInfo": "アカウントの詳細を変更",
   "InfoChanged": "あなたの情報は変更されました",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "パスワードが変更されました",
   "AccountPassword": "アカウントパスワード",
   "Edit": "ユーザーを編集",
