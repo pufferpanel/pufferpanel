@@ -8,6 +8,7 @@
   "ChangePassword": "Изменить пароль",
   "ChangeInfo": "Изменить данные аккаунта",
   "InfoChanged": "Ваша информация была изменена",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "Ваш пароль был успешно изменён",
   "AccountPassword": "Пароль учетной записи",
   "Edit": "Редактировать пользователя",
