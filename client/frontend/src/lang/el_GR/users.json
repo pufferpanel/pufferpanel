@@ -8,6 +8,7 @@
   "ChangePassword": "Change Password",
   "ChangeInfo": "Change Account Details",
   "InfoChanged": "Your information has been changed",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "Your password has been changed",
   "AccountPassword": "Account Password",
   "Edit": "Edit User",
