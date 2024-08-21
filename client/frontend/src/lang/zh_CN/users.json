@@ -8,6 +8,7 @@
   "ChangePassword": "更改密码",
   "ChangeInfo": "更改账户信息",
   "InfoChanged": "您的信息已更改",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "您的密码已更改",
   "AccountPassword": "账户密码",
   "Edit": "编辑用户",
