@@ -6,7 +6,7 @@ const validate = {
     return /^.+@.+\..{2,}$/.test(email)
   },
   password(password) {
-    return password.length >= 8
+    return password.length >= 1
   }
 }
 
