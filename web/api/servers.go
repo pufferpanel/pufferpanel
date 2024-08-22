@@ -306,6 +306,7 @@ func createServer(c *gin.Context) {
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		response.HandleError(c, pufferpanel.ErrNodeInvalid, http.StatusBadRequest)
+		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
