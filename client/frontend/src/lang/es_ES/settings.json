@@ -1,8 +1,8 @@
 {
-  "Settings": "Ajustes",
+  "Settings": "Configuración",
   "PanelSettings": "Configuración del panel",
   "SavePanelSettings": "Guardar Configuración del Panel",
-  "EmailSettings": "Ajustes del correo",
+  "EmailSettings": "Configuración del correo",
   "SaveEmailSettings": "Guardar Configuración de Correo Electrónico",
   "MasterUrl": "URL Principal",
   "MasterUrlHint": "El enlace desde el cual accederás al panel de control siguiendo el siguiente formato: http://localhost:8080",
