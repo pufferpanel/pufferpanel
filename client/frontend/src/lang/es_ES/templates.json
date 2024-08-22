@@ -65,10 +65,10 @@
       "Number": "Numero",
       "Options": "Opciones"
     },
-    "EditGroup": "Edit group",
-    "RemoveGroup": "Remove group",
-    "MoveToGroup": "Move to different group",
-    "Remove": "Remove"
+    "EditGroup": "Editar grupo",
+    "RemoveGroup": "Eliminar grupo",
+    "MoveToGroup": "Mover a un grupo diferente",
+    "Remove": "Eliminar"
   },
   "description": {
     "Name": "Este nombre se utiliza como identificador para la plantilla",
