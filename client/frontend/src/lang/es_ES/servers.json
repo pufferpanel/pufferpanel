@@ -26,7 +26,7 @@
   "AdminOnlySetting": "Esta configuración solo es visible para los administradores",
   "NoSettings": "Este servidor no tiene ninguna configuración que puedas cambiar",
   "Delete": "Eliminar servidor",
-  "ConfirmDelete": "¿Realmente quieres eliminar este servidor? (Esto no se puede deshacer)",
+  "ConfirmDelete": "¿Realmente quieres eliminar este servidor? (No se puede deshacer)",
   "Deleted": "Servidor eliminado",
   "SftpConnection": "Conectarse con SFTP",
   "EditDefinition": "Editar definición del servidor",
