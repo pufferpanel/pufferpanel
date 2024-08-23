@@ -3,7 +3,7 @@
   "Save": "Guardar plantilla",
   "Saved": "Plantilla guardada",
   "Delete": "Eliminar Plantilla",
-  "ConfirmDelete": "¿Realmente deseas eliminar la plantilla {name}?",
+  "ConfirmDelete": "¿Realmente quieres eliminar esta plantilla?",
   "Deleted": "Plantilla borrada",
   "New": "Crear nueva plantilla",
   "EditLocalOnly": "Solo puedes guardar cambios realizados en plantillas locales",
