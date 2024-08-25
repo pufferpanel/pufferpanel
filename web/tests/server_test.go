@@ -45,9 +45,20 @@ func TestServers(t *testing.T) {
 		if !assert.NoError(t, err) {
 			return
 		}
-		assert.Equal(t, int64(1), count)
+
+		if !assert.Equal(t, int64(1), count) {
+			return
+		}
 
 		if !assert.DirExists(t, filepath.Join(config.ServersFolder.Value(), serverId)) {
+			return
+		}
+
+		err = db.Model(&models.Node{}).Count(&count).Error
+		if !assert.NoError(t, err) {
+			return
+		}
+		if !assert.Equal(t, int64(0), count) {
 			return
 		}
 	})

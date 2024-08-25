@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 
 	"github.com/docker/docker/api/types"
@@ -209,12 +210,17 @@ func (d *Docker) doesContainerExist(client *client.Client, ctx context.Context) 
 	opts.Filters.Add("name", d.ContainerId)
 
 	existingContainers, err := client.ContainerList(ctx, opts)
-
-	if len(existingContainers) == 0 {
+	if err != nil {
 		return false, err
-	} else {
-		return true, err
 	}
+
+	for _, v := range existingContainers {
+		if slices.Contains(v.Names, d.ContainerId) {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 func (d *Docker) PullImage(ctx context.Context, imageName string, force bool) error {
