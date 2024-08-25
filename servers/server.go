@@ -114,10 +114,18 @@ func SendStatsForServers() {
 			if err != nil {
 				return
 			}
-			_ = p.GetEnvironment().GetStatsTracker().WriteMessage(&messages.Stat{
+			m := &messages.Stat{
 				Memory: stats.Memory,
 				Cpu:    stats.Cpu,
-			})
+			}
+			if stats.Jvm != nil {
+				m.Jvm = &messages.JvmStats{
+					HeapUsed:      stats.Jvm.HeapUsed,
+					MetaspaceUsed: stats.Jvm.MetaspaceUsed,
+					HeapTotal:     stats.Jvm.HeapTotal,
+				}
+			}
+			_ = p.GetEnvironment().GetStatsTracker().WriteMessage(m)
 		}(v)
 	}
 	wg.Wait()
@@ -259,6 +267,8 @@ func (p *Server) Start() error {
 		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
 		return err
 	}
+
+	//stats!
 
 	return err
 }
@@ -615,7 +625,7 @@ func (p *Server) Log(l *log.Logger, format string, obj ...interface{}) {
 	l.Printf(msg, obj...)
 }
 
-func (p *Server) RunCondition(condition interface{}, extraData map[string]interface{}) (bool, error) {
+func (p *Server) RunCondition(condition string, extraData map[string]interface{}) (bool, error) {
 	data := map[string]interface{}{
 		conditions.VariableEnv:      p.RunningEnvironment.GetBase().Type,
 		conditions.VariableServerId: p.Id(),

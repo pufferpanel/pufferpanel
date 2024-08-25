@@ -9,7 +9,7 @@ import (
 
 var envMapping = make(map[string]pufferpanel.EnvironmentFactory)
 
-func CreateEnvironment(environmentType, folder, id string, environmentSection pufferpanel.MetadataType) (pufferpanel.Environment, error) {
+func CreateEnvironment(environmentType, folder string, server pufferpanel.Server) (pufferpanel.Environment, error) {
 	factory := envMapping[environmentType]
 
 	if factory == nil {
@@ -25,13 +25,13 @@ func CreateEnvironment(environmentType, folder, id string, environmentSection pu
 		return nil, fmt.Errorf("undefined environment: %s", environmentType)
 	}
 
-	item := factory.Create(id)
-	err := pufferpanel.UnmarshalTo(environmentSection.Metadata, item)
+	item := factory.Create(server.Identifier)
+	err := pufferpanel.UnmarshalTo(server.Environment.Metadata, item)
 	if err != nil {
 		return nil, err
 	}
 
-	serverRoot := filepath.Join(folder, id)
+	serverRoot := filepath.Join(folder, server.Identifier)
 	envCache := pufferpanel.CreateCache()
 
 	e := item.GetBase()
@@ -45,6 +45,7 @@ func CreateEnvironment(environmentType, folder, id string, environmentSection pu
 	e.ConsoleBuffer = envCache
 	e.Wait = &sync.WaitGroup{}
 	e.Wrapper = e.CreateWrapper()
+	e.Server = server
 
 	return item, nil
 }

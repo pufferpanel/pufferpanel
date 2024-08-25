@@ -18,6 +18,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v3/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/move"
+	neoforgedl "github.com/pufferpanel/pufferpanel/v3/operations/neoforge"
 	"github.com/pufferpanel/pufferpanel/v3/operations/resolveforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/operations/sleep"
 	"github.com/pufferpanel/pufferpanel/v3/operations/spongedl"
@@ -42,6 +43,7 @@ var factories = []pufferpanel.OperationFactory{
 	mkdir.Factory,
 	mojangdl.Factory,
 	move.Factory,
+	neoforgedl.Factory,
 	resolveforgeversion.Factory,
 	sleep.Factory,
 	spongedl.Factory,
@@ -114,7 +116,7 @@ type OperationProcess []*OperationTask
 
 type OperationTask struct {
 	Operation pufferpanel.CreateOperation
-	Condition interface{}
+	Condition string
 	Type      string
 }
 

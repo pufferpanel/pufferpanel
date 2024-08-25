@@ -12,6 +12,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
+	"github.com/pufferpanel/pufferpanel/v3/query"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/spf13/cast"
@@ -94,6 +95,9 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 
 		l.POST("/:serverId/archive/*filename", middleware.ResolveServerNode, archive)
 		l.POST("/:serverId/extract/*filename", middleware.ResolveServerNode, extract)
+
+		l.HEAD("/:serverId/query", middleware.ResolveServerNode, canQueryServer)
+		l.POST("/:serverId/query", middleware.ResolveServerNode, queryServer)
 
 		p := l.Group("/:serverId/socket")
 		{
@@ -847,6 +851,69 @@ func setFlags(c *gin.Context) {
 		return
 	}
 	c.Status(http.StatusNoContent)
+}
+
+// @Summary Determine if the server supports query protocol
+// @Description Returns a 202 if the server can be queried, otherwise 204
+// @Success 202 {object} nil
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/query [head]
+// @Security OAuth2Application[server.query]
+func canQueryServer(c *gin.Context) {
+	server := getServerFromGin(c)
+
+	switch server.Query.Type {
+	case "minecraft":
+		c.Status(http.StatusAccepted)
+	default:
+		c.Status(http.StatusNoContent)
+	}
+}
+
+// @Summary Queries the server for game-specific stats
+// @Description Queries the server using the server's protocol to gather information such as players.
+// @Success 200 {object} interface{}
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/query [post]
+// @Security OAuth2Application[server.query]
+func queryServer(c *gin.Context) {
+	server := getServerFromGin(c)
+
+	if running, err := server.IsRunning(); err != nil || !running {
+		c.Status(http.StatusNoContent)
+		return
+	}
+
+	var result map[string]interface{}
+
+	switch server.Query.Type {
+	case "minecraft":
+		ip := cast.ToString(server.DataToMap()["ip"])
+		if ip == "" {
+			c.Status(http.StatusNoContent)
+			return
+		}
+
+		port := cast.ToInt(server.GetData()["port"])
+		if port <= 0 {
+			c.Status(http.StatusNoContent)
+			return
+		}
+
+		res, err := query.Minecraft(ip, port)
+		if err != nil {
+			c.Status(http.StatusNoContent)
+			return
+		}
+		result["minecraft"] = res
+	default:
+		c.Status(http.StatusNoContent)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }
 
 func openSocket(c *gin.Context) {

@@ -25,6 +25,8 @@ type Server struct {
 	Environment           MetadataType              `json:"environment"`
 	SupportedEnvironments []MetadataType            `json:"supportedEnvironments,omitempty"`
 	Requirements          Requirements              `json:"requirements,omitempty"`
+	Stats                 MetadataType              `json:"stats,omitempty"`
+	Query                 MetadataType              `json:"query,omitempty"`
 } //@name ServerDefinition
 
 type Task struct {
@@ -114,6 +116,7 @@ func (s *Server) CopyFrom(replacement *Server) {
 	s.Requirements = replacement.Requirements
 	s.SupportedEnvironments = replacement.SupportedEnvironments
 	s.Groups = replacement.Groups
+	s.Stats = replacement.Stats
 }
 
 func (r Requirements) Test(server Server) error {

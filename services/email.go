@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/assets/email"
+	emailAssets "github.com/pufferpanel/pufferpanel/v3/assets/email"
 	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/email"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"html/template"
 	"io/fs"
@@ -38,9 +39,9 @@ func LoadEmailService() {
 
 	var merged fs.ReadFileFS
 	if config.EmailTemplateFolder.Value() != "" {
-		merged = pufferpanel.NewMergedFS(os.DirFS(config.EmailTemplateFolder.Value()), email.FS)
+		merged = pufferpanel.NewMergedFS(os.DirFS(config.EmailTemplateFolder.Value()), emailAssets.FS)
 	} else {
-		merged = email.FS
+		merged = emailAssets.FS
 	}
 
 	emailDefinition, err := merged.Open("emails.json")
@@ -120,18 +121,20 @@ func (es *emailService) SendEmail(to, template string, data map[string]interface
 
 	logging.Debug.Printf("Sending email to %s using %s", to, provider)
 
-	switch provider {
-	case "mailgun":
-		return SendEmailViaMailgun(to, subjectBuilder.String(), bodyBuilder.String(), async)
-	case "mailjet":
-		return SendEmailViaMailjet(to, subjectBuilder.String(), bodyBuilder.String(), async)
-	case "smtp":
-		return SendEmailViaSMTP(to, subjectBuilder.String(), bodyBuilder.String(), async)
-	case "debug":
-		return SendEmailViaDebug(to, subjectBuilder.String(), bodyBuilder.String(), async)
-	case "none":
-		return nil
-	default:
+	svc := email.GetProvider(provider)
+	if svc == nil {
 		return pufferpanel.ErrServiceInvalidProvider("email", provider)
+	}
+
+	if async {
+		go func(emailService email.Provider, toEmail, subject, body string) {
+			err := emailService.Send(toEmail, subject, body)
+			if err != nil {
+				logging.Error.Printf("Error sending email: %s", err)
+			}
+		}(svc, to, subjectBuilder.String(), bodyBuilder.String())
+		return nil
+	} else {
+		return svc.Send(to, subjectBuilder.String(), bodyBuilder.String())
 	}
 }

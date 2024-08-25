@@ -12,9 +12,11 @@ import (
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
 	"io"
+	"net"
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 )
@@ -22,6 +24,10 @@ import (
 type tty struct {
 	*pufferpanel.BaseEnvironment
 	mainProcess *exec.Cmd
+
+	statLocker   sync.Mutex
+	lastStats    *pufferpanel.ServerStats
+	lastStatTime time.Time
 }
 
 func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
@@ -86,6 +92,15 @@ func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
 			Memory: 0,
 		}, nil
 	}
+
+	t.statLocker.Lock()
+	defer t.statLocker.Unlock()
+
+	//only fetch stats once every 5 seconds, to avoid excessive spam
+	if t.lastStatTime.Add(5 * time.Second).After(time.Now()) {
+		return t.lastStats, nil
+	}
+
 	pr, err := process.NewProcess(int32(t.mainProcess.Process.Pid))
 	if err != nil {
 		return nil, err
@@ -94,10 +109,37 @@ func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
 	memMap, _ := pr.MemoryInfo()
 	cpu, _ := pr.Percent(time.Second * 1)
 
-	return &pufferpanel.ServerStats{
+	stats := &pufferpanel.ServerStats{
 		Cpu:    cpu,
 		Memory: cast.ToFloat64(memMap.RSS),
-	}, nil
+	}
+
+	if t.Server.Stats.Type == "jcmd" {
+		var socket *net.UnixConn
+		if socket, err = t.initiateJCMD(); err == nil && socket != nil {
+			for _, s := range []string{"1", "\x00", "jcmd", "\x00", "GC.heap_info", "\x00", "\x00", "\x00"} {
+				_, err = socket.Write([]byte(s))
+				if err != nil {
+					logging.Error.Printf("unable to send command to Java process: %v", err)
+					break
+				}
+			}
+			//only continue parsing if no errors sending command
+			if err == nil {
+				var jcmdData []byte
+				jcmdData, err = io.ReadAll(socket)
+				if err != nil {
+					logging.Error.Printf("Could not get result of JCMD: %s", err.Error())
+				}
+
+				stats.Jvm = pufferpanel.ParseJCMDResponse(jcmdData)
+			}
+		}
+	}
+
+	t.lastStats = stats
+
+	return stats, nil
 }
 
 func (t *tty) SendCode(code int) error {
@@ -160,7 +202,12 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 	if t.mainProcess != nil && t.mainProcess.Process != nil {
 		_ = t.mainProcess.Process.Release()
 	}
+
+	t.statLocker.Lock()
+	t.statLocker.Unlock()
+
 	t.mainProcess = nil
+
 	t.Wait.Done()
 
 	msg := messages.Status{Running: false, Installing: t.IsInstalling()}
@@ -169,4 +216,61 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 	if callback != nil {
 		callback(exitCode)
 	}
+}
+
+func activateAttachAPI(pid int) error {
+	// It's not, lets do a quick ceremony of touching a file and
+	// sending SIGQUIT to activate this feature
+
+	attachpath := fmt.Sprintf("/proc/%v/cwd/.attach_pid%v", pid, pid)
+	if err := os.WriteFile(attachpath, nil, 0660); err != nil {
+		return fmt.Errorf("could not touch file to activate attach api: %w", err)
+	}
+
+	proc, err := os.FindProcess(pid)
+	if err != nil { // can't happen on unix
+		return fmt.Errorf("could not find process: %w", err)
+	}
+
+	if err = proc.Signal(syscall.SIGQUIT); err != nil {
+		return fmt.Errorf("could not send signal 3 to activate attach API: %w", err)
+	}
+
+	// Check if the UNIX socket is active
+	sock := socketPath(pid)
+	for i := 1; i < 10; i++ {
+		if _, err = os.Stat(sock); err != nil && !os.IsNotExist(err) {
+			_ = os.Remove(attachpath)
+			return err
+		}
+
+		// exponential backoff
+		time.Sleep(time.Duration(1<<uint(i)) * time.Millisecond)
+	}
+
+	//if we got here, then the file wasn't available or otherwise not good anymore
+	return err
+}
+
+func socketPath(pid int) string {
+	return fmt.Sprintf("/proc/%v/root/tmp/.java_pid%v", pid, pid)
+}
+
+func (t *tty) initiateJCMD() (*net.UnixConn, error) {
+	pid := t.mainProcess.Process.Pid
+	sock := socketPath(pid)
+
+	// Check if the UNIX socket is active
+	if _, err := os.Stat(sock); err != nil && os.IsNotExist(err) {
+		if err = activateAttachAPI(pid); err != nil {
+			return nil, err
+		}
+	}
+
+	addr, err := net.ResolveUnixAddr("unix", sock)
+	if err != nil {
+		return nil, err // can't happen (on linux)
+	}
+
+	return net.DialUnix("unix", nil, addr)
 }

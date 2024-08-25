@@ -5,12 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"os"
-	"path/filepath"
-	"runtime"
 	"slices"
-	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -26,6 +21,13 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/spf13/cast"
+	"io"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"sync"
+	"time"
 )
 
 type Docker struct {
@@ -43,6 +45,9 @@ type Docker struct {
 	connection       types.HijackedResponse
 	cli              *client.Client
 	downloadingImage bool
+	statLocker       sync.Mutex
+	lastStats        *pufferpanel.ServerStats
+	lastStatTime     time.Time
 }
 
 func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
@@ -162,6 +167,14 @@ func (d *Docker) GetStats() (*pufferpanel.ServerStats, error) {
 		}, nil
 	}
 
+	d.statLocker.Lock()
+	defer d.statLocker.Unlock()
+
+	//only fetch stats once every 5 seconds, to avoid excessive spam
+	if d.lastStatTime.Add(5 * time.Second).After(time.Now()) {
+		return d.lastStats, nil
+	}
+
 	dockerClient, err := d.getClient()
 
 	if err != nil {
@@ -185,10 +198,52 @@ func (d *Docker) GetStats() (*pufferpanel.ServerStats, error) {
 		return nil, err
 	}
 
-	return &pufferpanel.ServerStats{
+	//for java, we can get some extra data from the jcmd command
+	//as such, we'll see if we can
+
+	stats := &pufferpanel.ServerStats{
 		Memory: calculateMemoryPercent(data),
 		Cpu:    calculateCPUPercent(data),
-	}, nil
+	}
+
+	if d.Server.Stats.Type == "jcmd" {
+		cmd, _ := d.Server.Stats.Metadata["cmd"].(string)
+		if cmd == "" {
+			cmd = "jcmd"
+		}
+
+		r, e := dockerClient.ContainerExecCreate(context.Background(), d.ContainerId, types.ExecConfig{
+			AttachStderr: true,
+			AttachStdout: true,
+			Cmd:          []string{cmd, "1", "GC.heap_info"},
+		})
+
+		if e == nil {
+			rw, e := dockerClient.ContainerExecAttach(context.Background(), r.ID, types.ExecStartCheck{
+				Detach: false,
+				Tty:    false,
+			})
+			if e != nil {
+				logging.Error.Printf("Could not exec JCMD: %s", e.Error())
+			} else {
+				defer func(z types.HijackedResponse) {
+					z.Close()
+				}(rw)
+
+				jcmdData, err := io.ReadAll(rw.Reader)
+				if err != nil {
+					logging.Error.Printf("Could not get result of JCMD: %s", err.Error())
+				}
+
+				stats.Jvm = pufferpanel.ParseJCMDResponse(jcmdData)
+			}
+		}
+	}
+
+	d.lastStats = stats
+	d.lastStatTime = time.Now()
+
+	return stats, nil
 }
 
 func (d *Docker) getClient() (*client.Client, error) {
@@ -544,6 +599,8 @@ func convertToBind(source string) string {
 
 	fullPath = strings.ReplaceAll(fullPath, "\\", "/")
 	fullPath = strings.ReplaceAll(fullPath, ":", "")
-	fullPath = "//" + fullPath
+	//lowercase first character as that's the drive
+	fullPath = strings.ToLower(string(fullPath[0])) + fullPath[1:]
+	fullPath = "/" + fullPath
 	return fullPath
 }

@@ -94,6 +94,7 @@ type BaseEnvironment struct {
 	IsRunningFunc     func() (bool, error) `json:"-"`
 	KillFunc          func() error         `json:"-"`
 	Console           Console              `json:"-"`
+	Server            Server               `json:"-"`
 }
 
 type ExecutionData struct {
