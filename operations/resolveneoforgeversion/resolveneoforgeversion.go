@@ -32,10 +32,10 @@ type ResolveNeoForgeVersion struct {
 	OutputVariable   string
 }
 
-func (op ResolveNeoForgeVersion) Run(env pufferpanel.Environment) pufferpanel.OperationResult {
+func (op ResolveNeoForgeVersion) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
 	//if a specific version wasn't specified, we have to dig around through the files....
 	if op.Version == "" {
-		dir := filepath.Join(env.GetRootDirectory(), "libraries", "net", "neoforged", "neoforge")
+		dir := filepath.Join(args.Environment.GetRootDirectory(), "libraries", "net", "neoforged", "neoforge")
 		folders, err := os.ReadDir(dir)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
@@ -71,7 +71,7 @@ func (op ResolveNeoForgeVersion) Run(env pufferpanel.Environment) pufferpanel.Op
 		}
 	}
 
-	env.DisplayToConsole(true, "Resolved NeoForge Version: %s", op.Version)
+	args.Environment.DisplayToConsole(true, "Resolved NeoForge Version: %s", op.Version)
 
 	return pufferpanel.OperationResult{VariableOverrides: map[string]interface{}{
 		op.OutputVariable: op.Version,

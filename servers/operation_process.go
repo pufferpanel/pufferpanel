@@ -20,6 +20,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/move"
 	neoforgedl "github.com/pufferpanel/pufferpanel/v3/operations/neoforge"
 	"github.com/pufferpanel/pufferpanel/v3/operations/resolveforgeversion"
+	"github.com/pufferpanel/pufferpanel/v3/operations/resolveneoforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/operations/sleep"
 	"github.com/pufferpanel/pufferpanel/v3/operations/spongedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/steamgamedl"
@@ -45,6 +46,7 @@ var factories = []pufferpanel.OperationFactory{
 	move.Factory,
 	neoforgedl.Factory,
 	resolveforgeversion.Factory,
+	resolveneoforgeversion.Factory,
 	sleep.Factory,
 	spongedl.Factory,
 	steamgamedl.Factory,
