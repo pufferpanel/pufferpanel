@@ -189,6 +189,9 @@ func handle404(c *gin.Context) {
 		}
 	}
 
+	c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+	c.Header("Pragma", "no-cache")
+	c.Header("Expires", "0")
 	file, err := clientFiles.ReadFile("index.html")
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
