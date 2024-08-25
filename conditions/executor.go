@@ -15,9 +15,6 @@ var GlobalConstantValues = map[string]interface{}{
 }
 
 func ResolveIf(condition string, data map[string]interface{}, extraCels []cel.EnvOption) (bool, error) {
-	if condition == "" {
-		return true, nil
-	}
 	return Run[bool](condition, data, extraCels)
 }
 
@@ -27,6 +24,13 @@ func Run[T interface{}](statement string, data map[string]interface{}, extras []
 	celVars := extras
 	if celVars == nil {
 		celVars = make([]cel.EnvOption, 0)
+	}
+
+	//if we didn't define a statement, then set as success if the map has one
+	if statement == "" {
+		if _, exists := data["success"]; exists {
+			statement = "success"
+		}
 	}
 
 	inputData := map[string]interface{}{}

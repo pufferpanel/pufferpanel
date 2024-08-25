@@ -57,7 +57,7 @@ func main() {
 
 		server := servers.CreateProgram()
 
-		env, err := servers.CreateEnvironment("host", ".", serverId, pufferpanel.MetadataType{Type: "host"})
+		env, err := servers.CreateEnvironment("host", ".", server.Server)
 		if err != nil {
 			results[test.ProjectId] = err
 			continue
