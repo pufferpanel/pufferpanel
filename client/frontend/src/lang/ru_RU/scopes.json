@@ -38,7 +38,7 @@
     "server-users-delete": "Can remove users from the server",
     "server-start": "Can start the server",
     "server-stop": "Can stop the server",
-    "server-kill": "Can kill the server",
+    "server-kill": "Разрешить изменение глобальных настроек панели (гл. адрес, интеграция с почтой и т. п.)",
     "server-install": "Can install the server",
     "server-files-view": "Can view files",
     "server-files-edit": "Can edit files",
