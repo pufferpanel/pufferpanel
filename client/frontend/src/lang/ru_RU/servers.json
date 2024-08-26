@@ -24,11 +24,11 @@
   "SaveSettings": "Save Settings",
   "SettingsSaved": "Settings saved",
   "AdminOnlySetting": "This setting is only visible to admins",
-  "NoSettings": "This server does not have any settings you can change",
+  "NoSettings": "У этого сервера нет настроек, которые вы можете изменить",
   "Delete": "Удалить сервер",
-  "ConfirmDelete": "Вы действительно хотите удалить этот сервер? Действие не может быть отменено.",
+  "ConfirmDelete": "Вы действительно хотите удалить сервер с названием {name}? Действие не может быть отменено.",
   "Deleted": "Сервер удален",
-  "SftpConnection": "Подключится к SFTP",
+  "SftpConnection": "Подключится через SFTP",
   "EditDefinition": "Изменить определение сервера",
   "Reload": "Перезагрузить данные сервера с диска",
   "Reloaded": "Данные сервера перезагружены",
@@ -44,6 +44,6 @@
   "flags": {
     "autoStart": "Start the server when the node starts",
     "autoRestartOnGraceful": "Restart the server when it stops normally",
-    "autoRestartOnCrash": "Restart the server when it crashes"
+    "autoRestartOnCrash": "Перезапустить сервер при сбое"
   }
 }
