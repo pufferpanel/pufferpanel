@@ -27,7 +27,7 @@
   "Confirm": "Подтвердить",
   "Condition": "Состояние",
   "Discard": "Отменить",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "ConfirmLeave": "У вас есть несохранённые изменения, вы хотите покинуть страницу без сохранения изменений?",
   "theme": {
     "Theme": "Тема",
     "Mode": "Режим",
