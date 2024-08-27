@@ -37,5 +37,7 @@
   "OtpSetupHint": "Naskenujte QR kód pomocí vaší ověřovací aplikace nebo do ní zkopírujte tajný kód",
   "OtpSecret": "Tajný kód",
   "OtpConfirm": "Potvrdit pomocí kódu 2FA",
-  "OtpNeeded": "Vyžadováno 2 fázové ověření"
+  "OtpNeeded": "Vyžadováno 2 fázové ověření",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
