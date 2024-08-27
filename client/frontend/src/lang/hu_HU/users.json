@@ -37,5 +37,7 @@
   "OtpSetupHint": "Szkellend be a QR kódot a hitelesítő alkalmazásoddal vagy másol át a lenti titkos kódot.",
   "OtpSecret": "Titkos Kód",
   "OtpConfirm": "Kétlépcsős azonosító kód megerősítése",
-  "OtpNeeded": "Kétlépcsős azonosítás szükséges"
+  "OtpNeeded": "Kétlépcsős azonosítás szükséges",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
