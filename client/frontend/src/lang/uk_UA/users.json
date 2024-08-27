@@ -37,5 +37,7 @@
   "OtpSetupHint": "Відскануйте QR-код за допомогою програми автентифікатора або скопіюйте в нього секретний код, наведений нижче.",
   "OtpSecret": "Секретний код",
   "OtpConfirm": "Підтвердьте використання коду 2FA",
-  "OtpNeeded": "Необхідна 2FA"
+  "OtpNeeded": "Необхідна 2FA",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
