@@ -47,5 +47,6 @@
       "Grid": "Raster",
       "List": "Liste"
     }
-  }
+  },
+  "NoResults": "No Results"
 }
