@@ -32,34 +32,57 @@ func ParseJCMDResponse(data []byte) *JvmStats {
 
 		if z, had := strings.CutPrefix(line, " garbage-first heap"); had {
 			//heap could have array stuff in it, remove it
-			z = strings.Split(z, "[")[0]
-			z = strings.TrimSpace(z)
-			parts := strings.Split(z, ", ")
-			for _, v := range parts {
-				if strings.HasPrefix(v, "used ") {
-					d := strings.TrimPrefix(v, "used ")
-					d = strings.TrimSuffix(d, "K")
-					stats.HeapUsed = cast.ToInt64(d)
-					stats.HeapUsed *= 1024
-				} else if strings.HasPrefix(v, "total ") {
-					d := strings.TrimPrefix(v, "total ")
-					d = strings.TrimSuffix(d, "K")
-					stats.HeapTotal = cast.ToInt64(d)
-					stats.HeapTotal *= 1024
-				}
+			results := parseLine(z)
+			if num, exists := results["used"]; exists {
+				stats.HeapUsed += num
+			}
+			if num, exists := results["total"]; exists {
+				stats.HeapTotal += num
+			}
+		} else if z, had := strings.CutPrefix(line, " def new generation"); had {
+			//heap could have array stuff in it, remove it
+			results := parseLine(z)
+			if num, exists := results["used"]; exists {
+				stats.HeapUsed += num
+			}
+			if num, exists := results["total"]; exists {
+				stats.HeapTotal += num
+			}
+		} else if z, had := strings.CutPrefix(line, " tenured generation"); had {
+			//heap could have array stuff in it, remove it
+			results := parseLine(z)
+			if num, exists := results["used"]; exists {
+				stats.HeapUsed += num
+			}
+			if num, exists := results["total"]; exists {
+				stats.HeapTotal += num
 			}
 		} else if z, had = strings.CutPrefix(line, " Metaspace"); had {
-			line = strings.TrimSpace(z)
-			parts := strings.Split(line, ", ")
-			for _, v := range parts {
-				if d, o := strings.CutPrefix(v, "used "); o {
-					d = strings.TrimSuffix(d, "K")
-					stats.MetaspaceUsed = cast.ToInt64(d)
-					stats.MetaspaceUsed *= 1024
-				}
+			results := parseLine(z)
+			if num, exists := results["used"]; exists {
+				stats.MetaspaceUsed += num
 			}
 		}
 	}
 
 	return stats
+}
+
+func parseLine(line string) map[string]int64 {
+	result := make(map[string]int64)
+	z := strings.Split(line, "[")[0]
+	z = strings.TrimSpace(z)
+	parts := strings.Split(z, ", ")
+	for _, v := range parts {
+		if strings.HasPrefix(v, "used ") {
+			d := strings.TrimPrefix(v, "used ")
+			d = strings.TrimSuffix(d, "K")
+			result["used"] = cast.ToInt64(d) * 1024
+		} else if strings.HasPrefix(v, "total ") {
+			d := strings.TrimPrefix(v, "total ")
+			d = strings.TrimSuffix(d, "K")
+			result["total"] = cast.ToInt64(d) * 1024
+		}
+	}
+	return result
 }
