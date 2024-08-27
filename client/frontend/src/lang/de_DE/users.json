@@ -37,5 +37,7 @@
   "OtpSetupHint": "Scannen Sie den QR-Code mit Ihrer Authenticator-Anwendung oder kopieren Sie den untenstehenden Geheimcode hinein.",
   "OtpSecret": "Geheimcode",
   "OtpConfirm": "Bestätigung für die Nutzung der 2FA",
-  "OtpNeeded": "2FA erforderlich"
+  "OtpNeeded": "2FA erforderlich",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
