@@ -237,6 +237,14 @@ func createServer(c *gin.Context) {
 func deleteServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
+	if running, err := server.IsRunning(); running || err != nil {
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+		} else {
+			response.HandleError(c, pufferpanel.ErrServerRunning, http.StatusNotAcceptable)
+		}
+		return
+	}
+
 	err := servers.Delete(server.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
