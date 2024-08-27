@@ -37,5 +37,7 @@
   "OtpSetupHint": "Zeskanuj kod QR za pomocą aplikacji uwierzytelniającej lub skopiuj poniższy tajny kod.",
   "OtpSecret": "Tajny Kod",
   "OtpConfirm": "Potwierdź używając kodu 2FA",
-  "OtpNeeded": "Wymagane 2FA"
+  "OtpNeeded": "Wymagane 2FA",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
