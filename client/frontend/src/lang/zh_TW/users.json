@@ -37,5 +37,7 @@
   "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
   "OtpSecret": "密碼",
   "OtpConfirm": "使用 2FA 驗證碼確定",
-  "OtpNeeded": "2FA required"
+  "OtpNeeded": "2FA required",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
