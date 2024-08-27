@@ -37,5 +37,7 @@
   "OtpSetupHint": "Scan de QR-code met uw authenticator-applicatie of kopieer de onderstaande geheime code erin.",
   "OtpSecret": "Geheime code",
   "OtpConfirm": "Bevestig met een 2FA-code",
-  "OtpNeeded": "2FA vereist"
+  "OtpNeeded": "2FA vereist",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
