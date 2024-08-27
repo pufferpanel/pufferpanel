@@ -37,5 +37,7 @@
   "OtpSetupHint": "قم بمسح رمز QR باستخدام تطبيق المصادقة الخاص بك أو نسخ الرمز السري أدناه إليه.",
   "OtpSecret": "الرمز السري",
   "OtpConfirm": "تأكيد استخدام رمز 2FA",
-  "OtpNeeded": "2FA مطلوب"
+  "OtpNeeded": "2FA مطلوب",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
