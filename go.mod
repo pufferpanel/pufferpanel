@@ -12,7 +12,7 @@ require (
 	github.com/braintree/manners v0.0.0-20160418043613-82a8879fc5fd
 	github.com/cavaliergopher/grab/v3 v3.0.1
 	github.com/creack/pty v1.1.21
-	github.com/docker/docker v26.1.3+incompatible
+	github.com/docker/docker v26.1.5+incompatible
 	github.com/docker/go-connections v0.5.0
 	github.com/dreamscached/minequery/v2 v2.5.0
 	github.com/emersion/go-sasl v0.0.0-20231106173351-e73c9f7bad43
