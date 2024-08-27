@@ -37,5 +37,7 @@
   "OtpSetupHint": "Nuskenuokite QR kodą naudojant jūsų autentifikacijos programėlę arba nukopijuokite slaptą kodą žemiau į ją.",
   "OtpSecret": "Slaptas kodas",
   "OtpConfirm": "Patvirtinkite naudojant 2FA kodą",
-  "OtpNeeded": "2FA privaloma"
+  "OtpNeeded": "2FA privaloma",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
