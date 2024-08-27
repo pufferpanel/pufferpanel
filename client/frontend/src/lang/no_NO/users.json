@@ -37,5 +37,7 @@
   "OtpSetupHint": "Skann QR-koden ved å bruke autentiseringsappen din eller kopier den hemmelige koden nedenfor inn i den.",
   "OtpSecret": "Hemmelig kode",
   "OtpConfirm": "Bekreft bruk av en 2FA-kode",
-  "OtpNeeded": "2FA kreves"
+  "OtpNeeded": "2FA kreves",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
