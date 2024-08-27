@@ -37,5 +37,7 @@
   "OtpSetupHint": "Escaneie o código QR usando o seu aplicativo de autenticação ou copie o código secreto abaixo nele.",
   "OtpSecret": "Código secreto",
   "OtpConfirm": "Confirme utilizando um código 2FA",
-  "OtpNeeded": "Autenticação de dois fatores é necessária"
+  "OtpNeeded": "Autenticação de dois fatores é necessária",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
