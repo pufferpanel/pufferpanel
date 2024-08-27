@@ -37,5 +37,7 @@
   "OtpSetupHint": "Escanea el código QR utilizando tu aplicación o copia el código secreto que verás debajo.",
   "OtpSecret": "Código secreto",
   "OtpConfirm": "Confirma los cambios utilizando tu código de A2F",
-  "OtpNeeded": "2FA requerido"
+  "OtpNeeded": "2FA requerido",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
