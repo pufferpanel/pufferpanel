@@ -37,5 +37,7 @@
   "OtpSetupHint": "Quét mã QR bằng ứng dụng xác thực hoặc sao chép mã bí mật bên dưới.",
   "OtpSecret": "Mã bí mật",
   "OtpConfirm": "Xác nhận bằng mã xác thực hai yếu tố",
-  "OtpNeeded": "Cần xác thực hai yếu tố"
+  "OtpNeeded": "Cần xác thực hai yếu tố",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
