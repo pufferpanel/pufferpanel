@@ -24,5 +24,6 @@
     "host": "Host",
     "username": "Kasutajanimi",
     "password": "Parool"
-  }
+  },
+  "Saved": "Saved"
 }
