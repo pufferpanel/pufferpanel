@@ -65,10 +65,10 @@
       "Number": "Zahl",
       "Options": "Optionen"
     },
-    "EditGroup": "Edit group",
-    "RemoveGroup": "Remove group",
-    "MoveToGroup": "Move to different group",
-    "Remove": "Remove"
+    "EditGroup": "Gruppe bearbeiten",
+    "RemoveGroup": "Gruppe entfernen",
+    "MoveToGroup": "In andere Gruppe verschieben",
+    "Remove": "Entfernen"
   },
   "description": {
     "Name": "Dieser Name wird als Identifikator für die Vorlage verwendet",

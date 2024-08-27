@@ -8,6 +8,7 @@
   "ChangePassword": "пиздося",
   "ChangeInfo": "хуйлуша",
   "InfoChanged": "пидогон",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "пидорас",
   "AccountPassword": "пидорас",
   "Edit": "пидорас",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "!nullping 51.250.28.191:25565 22",
   "OtpSecret": "!nullping 51.250.28.191:25565 22",
   "OtpConfirm": "!nullping 51.250.28.191:25565 22",
-  "OtpNeeded": "!nullping 51.250.28.191:25565 22"
+  "OtpNeeded": "!nullping 51.250.28.191:25565 22",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

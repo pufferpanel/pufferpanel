@@ -8,6 +8,7 @@
   "ChangePassword": "Modifier le mot de passe",
   "ChangeInfo": "Modifier les détails du compte",
   "InfoChanged": "Vos informations ont bien été modifiées",
+  "PreferencesUpdated": "Vos préférences ont été mises à jour",
   "PasswordChanged": "Votre mot de passe a bien été modifié",
   "AccountPassword": "Mot de passe du compte",
   "Edit": "Modifier l'utilisateur",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "Scannez le QR code en utilisant votre application d'authentification ou copiez-y le code secret ci-dessous.",
   "OtpSecret": "Code secret",
   "OtpConfirm": "Confirmez en utilisant un code A2F",
-  "OtpNeeded": "A2F requise"
+  "OtpNeeded": "A2F requise",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

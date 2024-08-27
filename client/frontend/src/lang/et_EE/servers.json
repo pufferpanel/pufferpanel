@@ -40,6 +40,7 @@
   "Command": "Käsk",
   "CreateMissingPermissions": "Sul puuduvad õigused mallide ja nodede vaatlemiseks. Õiguseid on serverite loomiseks vaja, palun arutle oma adminiga",
   "FlagsHeader": "Autostardi tingimused",
+  "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
   "flags": {
     "autoStart": "Käivita server koos seotud nodega",
     "autoRestartOnGraceful": "Taaskäivita server kui ta normaalselt peatub",

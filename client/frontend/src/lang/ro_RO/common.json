@@ -3,10 +3,10 @@
   "Language": "Limbă",
   "Online": "Pornit",
   "Offline": "Oprit",
-  "Installing": "Installing",
+  "Installing": "Se instalează",
   "Unknown": "Necunoscută",
   "Loading": "Se încarcă...",
-  "Description": "Description",
+  "Description": "Descriere",
   "Save": "Salvează",
   "Cancel": "Anulează",
   "Close": "Inchide",
@@ -14,30 +14,30 @@
   "Port": "Port",
   "Collapse": "Restrânge",
   "Expand": "Extinde",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copiaţi în clipboard",
+  "Copy": "Copiază",
+  "Copied": "Copiat în clipboard",
   "Back": "Înapoi",
-  "Next": "Inainte",
+  "Next": "Înainte",
   "Details": "Detalii",
   "ErrorDetails": "Detalii eroare",
   "HelpTranslate": "Ajută-ne să traducem PufferPanel",
   "Protocol": "Protocol",
   "Add": "Adaugă",
   "Apply": "Aplică",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Confirm": "Confirmă",
+  "Condition": "Condiţie",
+  "Discard": "Anulează",
+  "ConfirmLeave": "Aveți modificări nesalvate, doriți să renunțați la aceste modificări și să părăsiți această pagină?",
   "theme": {
     "Theme": "Temă",
     "Mode": "Mod",
     "mode": {
       "Light": "Luminos",
       "Dark": "Întunecat",
-      "Auto": "Auto"
+      "Auto": "Automat"
     },
     "BaseColor": "Culoarea de bază",
-    "ServerTypeDisplay": "Server Type Display",
+    "ServerTypeDisplay": "Afișare tip server",
     "serverTypeDisplay": {
       "Icon": "Pictogramă",
       "None": "None"
@@ -47,5 +47,6 @@
       "Grid": "Grilă",
       "List": "Listă"
     }
-  }
+  },
+  "NoResults": "No Results"
 }

@@ -8,6 +8,7 @@
   "ChangePassword": "Vaihda salasana",
   "ChangeInfo": "Muuta Tilin Tietoja",
   "InfoChanged": "Sinut tietosi on muutettu",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "Sinun salasana on muutettu",
   "AccountPassword": "Tilin salasana",
   "Edit": "Muokkaa käyttäjää",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "Skannaa QR-koodi todennussovelluksellasi tai kopioi alla oleva salainen koodi siihen.",
   "OtpSecret": "Salainen koodi",
   "OtpConfirm": "Vahvista käyttäen 2FA-koodia",
-  "OtpNeeded": "2FA Vaaditaan"
+  "OtpNeeded": "2FA Vaaditaan",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

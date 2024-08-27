@@ -8,6 +8,7 @@
   "ChangePassword": "Modificare parola",
   "ChangeInfo": "Schimbă detaliile contului",
   "InfoChanged": "Informațiile dvs. au fost modificate",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "Parola ta a fost schimbată",
   "AccountPassword": "Parola contului",
   "Edit": "Editare utilizator",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
   "OtpSecret": "Cod secret",
   "OtpConfirm": "Confirmați folosind un cod 2FA",
-  "OtpNeeded": "2FA required"
+  "OtpNeeded": "2FA required",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

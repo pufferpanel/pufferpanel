@@ -8,6 +8,7 @@
   "ChangePassword": "Ändra lösenord",
   "ChangeInfo": "Ändra kontouppgifter",
   "InfoChanged": "Din information har ändrats",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "Ditt lösenord har ändrats",
   "AccountPassword": "Kontolösenord",
   "Edit": "Redigera användare",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "Skanna QR-koden med din autentiseringsapplikation eller kopiera den hemliga koden nedan till den.",
   "OtpSecret": "Hemlig kod",
   "OtpConfirm": "Bekräfta med en 2FA-kod",
-  "OtpNeeded": "2FA krävs"
+  "OtpNeeded": "2FA krävs",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

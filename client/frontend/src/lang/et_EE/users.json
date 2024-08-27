@@ -8,6 +8,7 @@
   "ChangePassword": "Muuda Parooli",
   "ChangeInfo": "Muuda Konto Seadeid",
   "InfoChanged": "Teie informatsioon on muudetud",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "Sinu salasõna on muudetud",
   "AccountPassword": "Konto salasõna",
   "Edit": "Muuda kasutajat",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "Skannige QR-kood oma autentimisrakenduse abil või kopeerige sellesse allolev salakood.",
   "OtpSecret": "Salajane Kood",
   "OtpConfirm": "Kinnita kasutades 2FA koodi",
-  "OtpNeeded": "2FA nõutud"
+  "OtpNeeded": "2FA nõutud",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

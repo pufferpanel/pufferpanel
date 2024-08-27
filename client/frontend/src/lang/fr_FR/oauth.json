@@ -1,13 +1,13 @@
 {
   "Credentials": "Identifiants du client OAuth 2.0",
   "ClientId": "ID du client",
-  "ClientSecret": "nom du client secret",
-  "NewClientWarning": "Nouveau client attention",
-  "Create": "creer",
-  "UnnamedClient": "client sans nom",
-  "Docs": "documentations",
-  "Clients": "Clients",
+  "ClientSecret": "Nom du secret du client",
+  "NewClientWarning": "Notez le secret du client, après fermeture de cette fenêtre vous ne pourrez plus y accéder. L'oublier ou le perdre rendra ce client inutilisable.",
+  "Create": "Créer un nouveau client OAuth2",
+  "UnnamedClient": "Client OAuth2 sans nom",
+  "Docs": "Trouvez la documentation de l'API ici",
+  "Clients": "Clients OAuth2",
   "Delete": "Supprimer {clientName}?",
-  "ConfirmDelete": "confirmer la supprimation \n",
-  "AccountDescription": "description du compte\n"
+  "ConfirmDelete": "Voulez-vous vraiment supprimer le client OAuth2 {name}? Vous ne pourrez pas le recréer avec les mêmes identifiants !",
+  "AccountDescription": "Les clients OAuth2 listés ici héritent de toutes les autorisations de vos comptes"
 }

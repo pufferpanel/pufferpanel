@@ -40,6 +40,7 @@
   "Command": "Comando",
   "CreateMissingPermissions": "Non hai i permessi per visualizzare nodi o modelli, questi sono necessari per la creazione del server, si prega di parlare con il tuo amministratore",
   "FlagsHeader": "Condizioni di avvio automatico",
+  "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
   "flags": {
     "autoStart": "Avvia il server all'avvio del nodo",
     "autoRestartOnGraceful": "Riavvia il server quando si spegne normalmente",

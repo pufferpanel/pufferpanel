@@ -8,6 +8,7 @@
   "ChangePassword": "تغيير كلمة المرور",
   "ChangeInfo": "تغيير تفاصيل الحساب",
   "InfoChanged": "تم تغيير معلوماتك",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "تم تغيير كلمة مرورك",
   "AccountPassword": "كلمة مرور الحساب",
   "Edit": "تعديل مستخدم",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "قم بمسح رمز QR باستخدام تطبيق المصادقة الخاص بك أو نسخ الرمز السري أدناه إليه.",
   "OtpSecret": "الرمز السري",
   "OtpConfirm": "تأكيد استخدام رمز 2FA",
-  "OtpNeeded": "2FA مطلوب"
+  "OtpNeeded": "2FA مطلوب",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

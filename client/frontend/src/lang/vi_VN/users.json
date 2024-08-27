@@ -8,6 +8,7 @@
   "ChangePassword": "Đổi mật khẩu",
   "ChangeInfo": "Thay đổi thông tin tài khoản",
   "InfoChanged": "Thông tin của bạn đã được thay đổi",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "Mật khẩu của bạn đã được thay đổi",
   "AccountPassword": "Mật khẩu Tài khoản",
   "Edit": "Chỉnh sửa người dùng",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "Quét mã QR bằng ứng dụng xác thực hoặc sao chép mã bí mật bên dưới.",
   "OtpSecret": "Mã bí mật",
   "OtpConfirm": "Xác nhận bằng mã xác thực hai yếu tố",
-  "OtpNeeded": "Cần xác thực hai yếu tố"
+  "OtpNeeded": "Cần xác thực hai yếu tố",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

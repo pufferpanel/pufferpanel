@@ -8,6 +8,7 @@
   "ChangePassword": "Cambiar contraseña",
   "ChangeInfo": "Cambiar detalles de la cuenta",
   "InfoChanged": "Su información fue actualizada",
+  "PreferencesUpdated": "Tus preferencias han sido actualizadas",
   "PasswordChanged": "Su contraseña ha sido cambiada",
   "AccountPassword": "Contraseña de la cuenta",
   "Edit": "Editar usuario",
@@ -22,12 +23,12 @@
   "UpdateDetails": "Actualizar Información del Usuario",
   "UpdatePermissions": "Actualizar Permisos del Usuario",
   "Delete": "Eliminar usuario",
-  "ConfirmDelete": "¿Realmente quieres eliminar al usuario {name}?",
+  "ConfirmDelete": "¿Realmente quieres eliminar este usuario?",
   "UpdateSuccess": "Usuario actualizado",
   "Details": "Detalles del Usuario",
   "Permissions": "Permisos",
   "Preferences": "Configuración",
-  "SavePreferences": "Guardar Configuración",
+  "SavePreferences": "Guardar configuración",
   "Otp": "Autenticación de dos pasos",
   "OtpEnable": "Habilitar A2F",
   "OtpDisable": "Deshabilitar A2F",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "Escanea el código QR utilizando tu aplicación o copia el código secreto que verás debajo.",
   "OtpSecret": "Código secreto",
   "OtpConfirm": "Confirma los cambios utilizando tu código de A2F",
-  "OtpNeeded": "2FA requerido"
+  "OtpNeeded": "2FA requerido",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

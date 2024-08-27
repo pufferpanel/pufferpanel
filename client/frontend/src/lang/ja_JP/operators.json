@@ -1,5 +1,5 @@
 {
-  "ConditionHint": "この条件が満たされいる場合のみ実行してください",
+  "ConditionHint": "この条件が満たされている場合のみ実行してください",
   "mojangdl": {
     "generic": "Minecraftをダウンロード",
     "formatted": "Minecraftをダウンロード"
@@ -10,7 +10,7 @@
   },
   "resolveforgeversion": {
     "generic": "Minecraft Forgeバージョンの解決",
-    "formatted": "Resolve Minecraft Forge Version"
+    "formatted": "Minecraft Forgeのバージョンを解決する"
   },
   "download": {
     "generic": "ファイルをダウンロード",
@@ -19,7 +19,7 @@
   },
   "command": {
     "generic": "コマンドを実行",
-    "formatted": "Run {command} | Run {n} commands",
+    "formatted": "実行 {command} | {n} コマンド実行",
     "commands": "コマンド"
   },
   "alterfile": {
@@ -62,7 +62,7 @@
     "formatted": "Minecraft Fabricをダウンロード"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "generic": "CurseForge からダウンロード",
+    "formatted": "CurseForge からダウンロード"
   }
 }

@@ -8,6 +8,7 @@
   "ChangePassword": "Изменить пароль",
   "ChangeInfo": "Изменить данные аккаунта",
   "InfoChanged": "Ваша информация была изменена",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "Ваш пароль был успешно изменён",
   "AccountPassword": "Пароль учетной записи",
   "Edit": "Редактировать пользователя",
@@ -27,7 +28,7 @@
   "Details": "User Details",
   "Permissions": "Permissions",
   "Preferences": "Preferences",
-  "SavePreferences": "Save Preferences",
+  "SavePreferences": "Сохранить настройки",
   "Otp": "Двухфакторная аутентификация",
   "OtpEnable": "Включить 2FA",
   "OtpDisable": "Отключить 2FA",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "Отсканируйте QR-код с помощью приложения аутентификатора или скопируйте в него секретный код указанный ниже.",
   "OtpSecret": "Секретный код",
   "OtpConfirm": "Подтвердите с помощью кода 2FA",
-  "OtpNeeded": "Требуется 2FA"
+  "OtpNeeded": "Требуется 2FA",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

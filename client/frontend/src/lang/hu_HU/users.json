@@ -8,6 +8,7 @@
   "ChangePassword": "Jelszó módosítása",
   "ChangeInfo": "Fiókadatok változtatása",
   "InfoChanged": "Az adataid módosítva lettek",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "A jelszavad módosítva lett",
   "AccountPassword": "Fiók jelszava",
   "Edit": "Felhasználó szerkesztése",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "Szkellend be a QR kódot a hitelesítő alkalmazásoddal vagy másol át a lenti titkos kódot.",
   "OtpSecret": "Titkos Kód",
   "OtpConfirm": "Kétlépcsős azonosító kód megerősítése",
-  "OtpNeeded": "Kétlépcsős azonosítás szükséges"
+  "OtpNeeded": "Kétlépcsős azonosítás szükséges",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

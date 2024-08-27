@@ -35,9 +35,9 @@
   "PrivateHost": "Hôte Privé",
   "PrivatePort": "Port Privé",
   "SftpPort": "Port SFTP",
-  "WithPrivateAddress": "avec adresse priver",
-  "WithPrivateAddressHint": "avec astuce d adresse priver",
-  "LocalNodeEdit": "Le nœeud local n'a pas de paramètres modifiables.\nPour changer l'IP affichée sur les serveurs hébergés sur ce nœud, modifiez l'adresse principale du panel dans les paramètres",
+  "WithPrivateAddress": "Utiliser un hôte/port différent pour la communication serveur à serveur",
+  "WithPrivateAddressHint": "Cette adresse séparée est utilisée lorsque le nœud principal a besoin de parler au nouveau nœud. Utile par exemple lorsque les nœuds sont dans le même réseau derrière NAT.",
+  "LocalNodeEdit": "Le nœud local n'a pas de paramètres modifiables\n\nPour modifier l'hôte affiché avec les serveurs hébergés sur ce nœud, ajustez l'url principale du panel dans les paramètres",
   "Deploy": "Déployer le Nœud",
   "deploy": {
     "Step1": "## Étape 1\n\nInstallez PufferPanel sur le nouveau serveur, [voir la documentation pour plus de détails](https://docs.pufferpanel.com/en/latest/installing.html)",

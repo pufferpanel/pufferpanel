@@ -47,5 +47,6 @@
       "Grid": "Grade",
       "List": "Lista"
     }
-  }
+  },
+  "NoResults": "No Results"
 }

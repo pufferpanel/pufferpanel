@@ -8,6 +8,7 @@
   "ChangePassword": "비밀번호 변경",
   "ChangeInfo": "계정 정보 변경",
   "InfoChanged": "정보가 변경되었습니다.",
+  "PreferencesUpdated": "Your preferences has been updated",
   "PasswordChanged": "비밀번호가 변경되었습니다.",
   "AccountPassword": "비밀번호",
   "Edit": "사용자 편집",
@@ -36,5 +37,7 @@
   "OtpSetupHint": "인증 애플리케이션을 사용하여 QR 코드를 스캔하거나 아래의 코드를 복사하십시오.",
   "OtpSecret": "비밀 코드",
   "OtpConfirm": "2단계 인증 코드를 이용하여 계속하기",
-  "OtpNeeded": "2단계 인증 필요"
+  "OtpNeeded": "2단계 인증 필요",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }

@@ -1,9 +1,9 @@
 {
   "Settings": "Configuración",
   "PanelSettings": "Configuración del Panel",
-  "SavePanelSettings": "Guardar Configuración del Panel",
+  "SavePanelSettings": "Guardar configuración del panel",
   "EmailSettings": "Configuración del Correo Electronico",
-  "SaveEmailSettings": "Guardar Configuración de Correo Electrónico",
+  "SaveEmailSettings": "Guardar configuración del correo electrónico",
   "MasterUrl": "URL Principal",
   "MasterUrlHint": "La URL base en la cual se puede acceder al panel en formato http://localhost:8080",
   "CompanyName": "Nombre de la Empresa",
@@ -24,5 +24,6 @@
     "host": "Host",
     "username": "Usuario",
     "password": "Contraseña"
-  }
+  },
+  "Saved": "Saved"
 }

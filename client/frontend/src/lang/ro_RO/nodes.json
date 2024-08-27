@@ -10,23 +10,23 @@
   "Created": "Node creat",
   "Updated": "Node actualizat",
   "Deleted": "Node șters",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "Reachable": "Acest node este configurat și funcționează corect",
+  "Unreachable": "Acest node nu este configurat corect sau nu este disponibil în prezent",
   "features": {
     "os": {
-      "label": "Operating System",
+      "label": "Sistem de operare",
       "linux": "Linux",
       "windows": "Windows"
     },
     "arch": {
-      "label": "CPU Architecture",
+      "label": "Arhitectura procesorului",
       "amd64": "x86 64bit",
       "arm": "ARM 32bit",
       "arm64": "ARM 64bit"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "Docker disponibil",
+      "false": "Docker indisponibil"
     },
     "envs": "Available Environments"
   },
@@ -37,8 +37,8 @@
   "SftpPort": "Port SFTP",
   "WithPrivateAddress": "Folosește un host/port diferit pentru comunicarea dintre servere",
   "WithPrivateAddressHint": "Acestă adresă separată este folosită atunci când node-ul principal comunică cu node-ul nou. Folositor, de exemplu, pentru node-uri care se află în aceeași rețea în spatele unui NAT.",
-  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
-  "Deploy": "Deploy Node",
+  "LocalNodeEdit": "Node-ul local nu are nicio setare editabilă\n\nPentru a schimba hostul afişat cu servere găzduite pe acest node ajustează url-ul panoului în setările panoului",
+  "Deploy": "Lansează Node",
   "deploy": {
     "Step1": "## Pasul 1\n\nInstalează PufferPanel pe noul server, [vezi documentația pentru detalii](https://docs.pufferpanel.com/en/latest/installing.html)",
     "Step2": "## Pasul 2\n\nOpriți serviciul PufferPanel pe noul server dacă a fost pornit în timpul instalării executând `sudo systemctl stop pufferpanel`",

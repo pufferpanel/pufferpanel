@@ -24,5 +24,6 @@
     "host": "Hostitel",
     "username": "Uživatelské jméno",
     "password": "Heslo"
-  }
+  },
+  "Saved": "Saved"
 }
