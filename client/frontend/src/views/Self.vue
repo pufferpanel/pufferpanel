@@ -53,7 +53,7 @@ function savePreferences() {
   })
 
   themeApi.setTheme(theme.value, settings)
-  toast.success(t('self.PreferencesUpdated'))
+  toast.success(t('users.PreferencesUpdated'))
 }
 
 async function startOtpEnroll() {
