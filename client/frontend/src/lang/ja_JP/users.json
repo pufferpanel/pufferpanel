@@ -37,5 +37,7 @@
   "OtpSetupHint": "お使いの認証アプリケーションでQRコードを読み取るか、下記のシークレットコードをコピーして入れてください。",
   "OtpSecret": "シークレットコード",
   "OtpConfirm": "2FAコードを使用して確認してください",
-  "OtpNeeded": "2要素認証が必要です"
+  "OtpNeeded": "2要素認証が必要です",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
