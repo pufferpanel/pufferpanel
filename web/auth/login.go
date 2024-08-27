@@ -88,7 +88,7 @@ func createSession(c *gin.Context, user *models.User) {
 	}
 
 	if !pufferpanel.ContainsScope(perms.Scopes, pufferpanel.ScopeLogin) {
-		c.AbortWithStatus(http.StatusForbidden)
+		response.HandleError(c, pufferpanel.ErrLoginNotPermitted, http.StatusForbidden)
 		return
 	}
 
