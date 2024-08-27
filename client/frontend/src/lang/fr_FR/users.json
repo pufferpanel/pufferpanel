@@ -37,5 +37,7 @@
   "OtpSetupHint": "Scannez le QR code en utilisant votre application d'authentification ou copiez-y le code secret ci-dessous.",
   "OtpSecret": "Code secret",
   "OtpConfirm": "Confirmez en utilisant un code A2F",
-  "OtpNeeded": "A2F requise"
+  "OtpNeeded": "A2F requise",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
