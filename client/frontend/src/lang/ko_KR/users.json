@@ -37,5 +37,7 @@
   "OtpSetupHint": "인증 애플리케이션을 사용하여 QR 코드를 스캔하거나 아래의 코드를 복사하십시오.",
   "OtpSecret": "비밀 코드",
   "OtpConfirm": "2단계 인증 코드를 이용하여 계속하기",
-  "OtpNeeded": "2단계 인증 필요"
+  "OtpNeeded": "2단계 인증 필요",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
