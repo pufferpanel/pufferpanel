@@ -24,5 +24,6 @@
     "host": "Host",
     "username": "Nome utente",
     "password": "Password"
-  }
+  },
+  "Saved": "Saved"
 }
