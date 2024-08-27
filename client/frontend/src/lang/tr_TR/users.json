@@ -37,5 +37,7 @@
   "OtpSetupHint": "Doğrulayıcı uygulamanızı kullanarak QR kodunu tarayın veya aşağıdaki gizli kodu içine kopyalayın.",
   "OtpSecret": "Gizli kod",
   "OtpConfirm": "İki aşamalı doğrulama kullanarak doğrula",
-  "OtpNeeded": "İki aşamalı doğrulama gerekli"
+  "OtpNeeded": "İki aşamalı doğrulama gerekli",
+  "UserInvited": "User invited",
+  "DeleteSuccess": "User deleted successfully"
 }
