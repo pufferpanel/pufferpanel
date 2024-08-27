@@ -15,8 +15,8 @@
   "Collapse": "Collapse",
   "Expand": "Expand",
   "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copied": "คัดลอกเข้าคลิปบอร์ด",
+  "Back": "กลับ",
   "Next": "Next",
   "Details": "Details",
   "ErrorDetails": "Error Details",
@@ -47,5 +47,6 @@
       "Grid": "Grid",
       "List": "List"
     }
-  }
+  },
+  "NoResults": "No Results"
 }
