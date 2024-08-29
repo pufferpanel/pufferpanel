@@ -38,6 +38,6 @@
   "OtpSecret": "Code secret",
   "OtpConfirm": "Confirmez en utilisant un code A2F",
   "OtpNeeded": "A2F requise",
-  "UserInvited": "User invited",
-  "DeleteSuccess": "User deleted successfully"
+  "UserInvited": "Utilisateur invité",
+  "DeleteSuccess": "Utilisateur supprimé avec succès"
 }
