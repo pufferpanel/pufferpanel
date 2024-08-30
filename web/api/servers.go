@@ -94,11 +94,15 @@ func registerServers(g *gin.RouterGroup) {
 	g.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServerStats), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/stats", response.CreateOptions("GET"))
 
+	g.POST("/:serverId/query", middleware.RequiresPermission(pufferpanel.ScopeServerStats), middleware.ResolveServerPanel, proxyServerRequest)
+	g.OPTIONS("/:serverId/query", response.CreateOptions("POST"))
+
 	g.GET("/:serverId/status", middleware.RequiresPermission(pufferpanel.ScopeServerStatus), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/status", response.CreateOptions("GET"))
 
+	g.HEAD("/:serverId/archive/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit), middleware.ResolveServerPanel, proxyServerRequest)
 	g.POST("/:serverId/archive/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit), middleware.ResolveServerPanel, proxyServerRequest)
-	g.OPTIONS("/:serverId/archive/*filename", response.CreateOptions("POST"))
+	g.OPTIONS("/:serverId/archive/*filename", response.CreateOptions("HEAD", "POST"))
 
 	g.POST("/:serverId/extract/*filename", middleware.RequiresPermission(pufferpanel.ScopeServerFileEdit), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/extract/*filename", response.CreateOptions("POST"))

@@ -894,7 +894,7 @@ func queryServer(c *gin.Context) {
 		return
 	}
 
-	var result map[string]interface{}
+	result := make(map[string]interface{})
 
 	switch server.Query.Type {
 	case "minecraft":
@@ -904,7 +904,7 @@ func queryServer(c *gin.Context) {
 			return
 		}
 
-		port := cast.ToInt(server.GetData()["port"])
+		port := cast.ToInt(server.DataToMap()["port"])
 		if port <= 0 {
 			c.Status(http.StatusNoContent)
 			return
