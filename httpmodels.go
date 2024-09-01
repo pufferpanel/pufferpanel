@@ -10,12 +10,6 @@ type ServerStats struct {
 	Jvm    *JvmStats `json:"jvm,omitempty"`
 } //@name ServerStats
 
-type JvmStats struct {
-	HeapUsed      int64 `json:"heapUsed"`
-	HeapTotal     int64 `json:"heapTotal"`
-	MetaspaceUsed int64 `json:"metaspaceUsed"`
-}
-
 type ServerLogs struct {
 	Epoch int64  `json:"epoch"`
 	Logs  []byte `json:"logs"`

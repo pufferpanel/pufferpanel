@@ -62,6 +62,9 @@ func ParseJCMDResponse(data []byte) *JvmStats {
 			if num, exists := results["used"]; exists {
 				stats.MetaspaceUsed += num
 			}
+			if num, exists := results["reserved"]; exists {
+				stats.MetaspaceTotal += num
+			}
 		}
 	}
 
@@ -82,7 +85,18 @@ func parseLine(line string) map[string]int64 {
 			d := strings.TrimPrefix(v, "total ")
 			d = strings.TrimSuffix(d, "K")
 			result["total"] = cast.ToInt64(d) * 1024
+		} else if strings.HasPrefix(v, "reserved ") {
+			d := strings.TrimPrefix(v, "reserved ")
+			d = strings.TrimSuffix(d, "K")
+			result["reserved"] = cast.ToInt64(d) * 1024
 		}
 	}
 	return result
+}
+
+type JvmStats struct {
+	HeapUsed       int64 `json:"heapUsed"`
+	HeapTotal      int64 `json:"heapTotal"`
+	MetaspaceUsed  int64 `json:"metaspaceUsed"`
+	MetaspaceTotal int64 `json:"metaspaceTotal"`
 }

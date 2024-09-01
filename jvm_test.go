@@ -15,7 +15,7 @@ func TestParseJCMDResponse(t *testing.T) {
 		want *JvmStats
 	}{
 		{
-			name: "expected",
+			name: "java 16",
 			args: args{
 				data: []byte(`5236:
  garbage-first heap   total 1086464K, used 973437K [0x0000000080000000, 0x0000000100000000)
@@ -24,10 +24,10 @@ func TestParseJCMDResponse(t *testing.T) {
   class space    used 47768K, committed 49472K, reserved 1048576K
 `),
 			},
-			want: &JvmStats{HeapUsed: 973437 * 1024, HeapTotal: 1086464 * 1024, MetaspaceUsed: 385449 * 1024},
+			want: &JvmStats{HeapUsed: 973437 * 1024, HeapTotal: 1086464 * 1024, MetaspaceUsed: 385449 * 1024, MetaspaceTotal: 1441792 * 1024},
 		},
 		{
-			name: "expected java 21 aikar",
+			name: "java 21",
 			args: args{
 				data: []byte(`0
  def new generation   total 104576K, used 36054K [0x0000000080000000, 0x0000000087170000, 0x00000000aaaa0000)
@@ -39,7 +39,7 @@ func TestParseJCMDResponse(t *testing.T) {
  Metaspace       used 79381K, committed 80384K, reserved 1179648K
   class space    used 12067K, committed 12480K, reserved 1048576K`),
 			},
-			want: &JvmStats{HeapUsed: (36054 + 145245) * 1024, HeapTotal: (104576 + 232236) * 1024, MetaspaceUsed: 79381 * 1024},
+			want: &JvmStats{HeapUsed: (36054 + 145245) * 1024, HeapTotal: (104576 + 232236) * 1024, MetaspaceUsed: 79381 * 1024, MetaspaceTotal: 1179648 * 1024},
 		},
 	}
 	for _, tt := range tests {
