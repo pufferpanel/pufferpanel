@@ -8,7 +8,7 @@
   "ChangePassword": "Passwort ändern",
   "ChangeInfo": "Kontodaten ändern",
   "InfoChanged": "Deine Kontoinformationen wurden geändert",
-  "PreferencesUpdated": "Your preferences has been updated",
+  "PreferencesUpdated": "Deine Einstellungen wurden aktualisiert",
   "PasswordChanged": "Dein Passwort wurde geändert",
   "AccountPassword": "Konto-Passwort",
   "Edit": "Benutzer bearbeiten",
@@ -19,7 +19,7 @@
   "RegisterLink": "Oder registriere dich hier",
   "Username": "Nutzername",
   "Password": "Passwort",
-  "Email": "Email",
+  "Email": "E-Mail",
   "UpdateDetails": "Benutzerdetails bearbeiten",
   "UpdatePermissions": "Benutzerberechtigungen bearbeiten",
   "Delete": "Benutzer löschen",
@@ -38,6 +38,6 @@
   "OtpSecret": "Geheimcode",
   "OtpConfirm": "Bestätigung für die Nutzung der 2FA",
   "OtpNeeded": "2FA erforderlich",
-  "UserInvited": "User invited",
-  "DeleteSuccess": "User deleted successfully"
+  "UserInvited": "Nutzer eingeladen",
+  "DeleteSuccess": "Nutzer erfolgreich gelöscht"
 }
