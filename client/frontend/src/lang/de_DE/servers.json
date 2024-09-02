@@ -26,7 +26,7 @@
   "AdminOnlySetting": "Diese Einstellung ist nur für Administratoren sichtbar",
   "NoSettings": "Dieser Server hat keine Einstellungen die Sie ändern können",
   "Delete": "Server löschen",
-  "ConfirmDelete": "Willst du diesen Server wirklich löschen? (Dies kann nicht rückgängig gemacht werden)",
+  "ConfirmDelete": "Willst du den Server \"{name}\" wirklich löschen? (Dies kann nicht rückgängig gemacht werden)",
   "Deleted": "Server gelöscht",
   "SftpConnection": "Mit SFTP verbinden",
   "EditDefinition": "Server-Definition bearbeiten",
@@ -40,7 +40,7 @@
   "Command": "Befehl",
   "CreateMissingPermissions": "Sie haben nicht die Berechtigung, Knoten oder Vorlagen anzusehen. Diese werden für die Server-Erstellung benötigt. Bitte sprechen Sie mit dem Administrator",
   "FlagsHeader": "Autostart-Bedingungen",
-  "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
+  "SocketWarnConsole": "Die Websocket-Verbindung ist fehlgeschlagen, die Konsole wird nur alle paar Sekunden aktualisiert",
   "flags": {
     "autoStart": "Server starten, wenn der Knoten startet",
     "autoRestartOnGraceful": "Server neu starten, wenn er gewöhnlich gestoppt ist",
