@@ -91,10 +91,16 @@ func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
 		return nil, err
 	}
 	if !running {
-		return &pufferpanel.ServerStats{
+		stats := &pufferpanel.ServerStats{
 			Cpu:    0,
 			Memory: 0,
-		}, nil
+		}
+
+		if t.Server.Stats.Type == "jcmd" {
+			stats.Jvm = &pufferpanel.JvmStats{}
+		}
+
+		return stats, nil
 	}
 
 	t.statLocker.Lock()

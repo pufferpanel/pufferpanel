@@ -165,10 +165,16 @@ func (d *Docker) GetStats() (*pufferpanel.ServerStats, error) {
 	}
 
 	if !running {
-		return &pufferpanel.ServerStats{
+		stats := &pufferpanel.ServerStats{
 			Cpu:    0,
 			Memory: 0,
-		}, nil
+		}
+
+		if d.Server.Stats.Type == "jcmd" {
+			stats.Jvm = &pufferpanel.JvmStats{}
+		}
+
+		return stats, nil
 	}
 
 	d.statLocker.Lock()
