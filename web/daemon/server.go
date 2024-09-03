@@ -97,7 +97,7 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.POST("/:serverId/extract/*filename", middleware.ResolveServerNode, extract)
 
 		l.HEAD("/:serverId/query", middleware.ResolveServerNode, canQueryServer)
-		l.POST("/:serverId/query", middleware.ResolveServerNode, queryServer)
+		l.GET("/:serverId/query", middleware.ResolveServerNode, queryServer)
 
 		p := l.Group("/:serverId/socket")
 		{
@@ -884,7 +884,7 @@ func canQueryServer(c *gin.Context) {
 // @Success 200 {object} interface{}
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
-// @Router /api/servers/{id}/query [post]
+// @Router /api/servers/{id}/query [get]
 // @Security OAuth2Application[server.query]
 func queryServer(c *gin.Context) {
 	server := getServerFromGin(c)
