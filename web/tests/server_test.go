@@ -10,7 +10,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
-	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/stretchr/testify/assert"
@@ -178,8 +177,8 @@ func TestServers(t *testing.T) {
 			msgData := msg["data"]
 
 			switch msg["type"].(string) {
-			case messages.Console{}.Key():
-				var ms messages.Console
+			case pufferpanel.MessageTypeLog:
+				var ms pufferpanel.ServerLogs
 				err = pufferpanel.UnmarshalTo(msgData, &ms)
 				if err != nil {
 					fmt.Printf("Failed to decode message: %s\n", err.Error())
@@ -191,9 +190,9 @@ func TestServers(t *testing.T) {
 				}
 
 				messageReceived = true
-			case messages.Status{}.Key():
+			case pufferpanel.MessageTypeStatus:
 				statusReceived = true
-			case messages.Stat{}.Key():
+			case pufferpanel.MessageTypeStats:
 				statsReceived = true
 			default:
 				fmt.Printf("unknown message type: %s\n", msg["type"])
@@ -295,12 +294,12 @@ func TestServers(t *testing.T) {
 		//we expect it to take more than 100ms, so ensure there is an install occurring
 		response = CallAPI("GET", "/api/servers/"+serverId+"/status", nil, session)
 		assert.Equal(t, http.StatusOK, response.Code)
-		var status messages.Status
-		err := json.NewDecoder(response.Body).Decode(&status)
+		var msg pufferpanel.ServerRunning
+		err := json.NewDecoder(response.Body).Decode(&msg)
 		if !assert.NoError(t, err) {
 			return
 		}
-		if !assert.True(t, status.Installing) {
+		if !assert.True(t, msg.Installing) {
 			return
 		}
 
@@ -311,12 +310,12 @@ func TestServers(t *testing.T) {
 			time.Sleep(time.Second)
 			response = CallAPI("GET", "/api/servers/"+serverId+"/status", nil, session)
 			assert.Equal(t, http.StatusOK, response.Code)
-			var status messages.Status
-			err = json.NewDecoder(response.Body).Decode(&status)
+			err = json.NewDecoder(response.Body).Decode(&msg)
 			if !assert.NoError(t, err) {
 				return
 			}
-			if status.Installing {
+
+			if msg.Installing {
 				counter++
 			} else {
 				break
@@ -347,12 +346,13 @@ func TestServers(t *testing.T) {
 			time.Sleep(time.Second)
 			response = CallAPI("GET", "/api/servers/"+serverId+"/status", nil, session)
 			assert.Equal(t, http.StatusOK, response.Code)
-			var status messages.Status
-			err = json.NewDecoder(response.Body).Decode(&status)
+			var msg pufferpanel.ServerRunning
+			err = json.NewDecoder(response.Body).Decode(&msg)
 			if !assert.NoError(t, err) {
 				return
 			}
-			if status.Running {
+
+			if msg.Running {
 				counter++
 			} else {
 				break

@@ -94,6 +94,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServerStats), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/stats", response.CreateOptions("GET"))
 
+	g.HEAD("/:serverId/query", middleware.RequiresPermission(pufferpanel.ScopeServerStats), middleware.ResolveServerPanel, proxyServerRequest)
 	g.POST("/:serverId/query", middleware.RequiresPermission(pufferpanel.ScopeServerStats), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/query", response.CreateOptions("POST"))
 
