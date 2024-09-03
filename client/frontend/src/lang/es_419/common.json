@@ -15,8 +15,8 @@
   "Collapse": "Colapsar",
   "Expand": "Ampliar",
   "Copy": "Copiar al portapapeles",
-  "Copied": "คัดลอกเข้าคลิปบอร์ด",
-  "Back": "กลับ",
+  "Copied": "Copied to clipboard",
+  "Back": "Back",
   "Next": "Siguiente",
   "Details": "Detalles",
   "ErrorDetails": "Detalles del error",
@@ -48,5 +48,5 @@
       "List": "Lista"
     }
   },
-  "NoResults": "No Results"
+  "NoResults": "No hay resultados"
 }
