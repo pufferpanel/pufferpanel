@@ -62,7 +62,7 @@ func ParseJCMDResponse(data []byte) *JvmStats {
 			if num, exists := results["used"]; exists {
 				stats.MetaspaceUsed += num
 			}
-			if num, exists := results["reserved"]; exists {
+			if num, exists := results["committed"]; exists {
 				stats.MetaspaceTotal += num
 			}
 		}
@@ -89,6 +89,10 @@ func parseLine(line string) map[string]int64 {
 			d := strings.TrimPrefix(v, "reserved ")
 			d = strings.TrimSuffix(d, "K")
 			result["reserved"] = cast.ToInt64(d) * 1024
+		} else if strings.HasPrefix(v, "committed ") {
+			d := strings.TrimPrefix(v, "committed ")
+			d = strings.TrimSuffix(d, "K")
+			result["committed"] = cast.ToInt64(d) * 1024
 		}
 	}
 	return result

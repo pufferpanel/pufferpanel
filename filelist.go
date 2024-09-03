@@ -1,4 +1,4 @@
-package messages
+package pufferpanel
 
 type FileList struct {
 	CurrentPath string     `json:"path"`
@@ -16,7 +16,3 @@ type FileDesc struct {
 	File      bool   `json:"isFile"`
 	Extension string `json:"extension,omitempty"`
 } //@name FileDescription
-
-func (m FileList) Key() string {
-	return "file"
-}

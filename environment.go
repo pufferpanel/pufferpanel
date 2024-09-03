@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"io"
 	"log"
 	"os"
@@ -276,7 +275,12 @@ func (e *BaseEnvironment) IsInstalling() bool {
 
 func (e *BaseEnvironment) SetInstalling(flag bool) {
 	e.Installing = flag
-	_ = e.StatusTracker.WriteMessage(&messages.Status{Installing: flag})
+	_ = e.StatusTracker.WriteMessage(Transmission{
+		Message: ServerRunning{
+			Installing: flag,
+		},
+		Type: MessageTypeStatus,
+	})
 }
 
 func (e *BaseEnvironment) ExecuteInMainProcess(cmd string) (err error) {

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"io"
 	"sync"
 )
@@ -24,8 +23,8 @@ func (ws *Tracker) Register(conn *Socket) {
 	ws.sockets = append(ws.sockets, conn)
 }
 
-func (ws *Tracker) WriteMessage(msg messages.Message) error {
-	d, err := json.Marshal(&messages.Transmission{Message: msg, Type: msg.Key()})
+func (ws *Tracker) WriteMessage(msg Transmission) error {
+	d, err := json.Marshal(&msg)
 	if err != nil {
 		return err
 	}
@@ -55,8 +54,11 @@ func (ws *Tracker) WriteMessage(msg messages.Message) error {
 }
 
 func (ws *Tracker) Write(source []byte) (n int, e error) {
-	packet := messages.Console{Logs: source}
-	e = ws.WriteMessage(packet)
+	packet := ServerLogs{Logs: source}
+	e = ws.WriteMessage(Transmission{
+		Message: packet,
+		Type:    MessageTypeLog,
+	})
 	n = len(source)
 	return
 }
@@ -71,8 +73,8 @@ type Socket struct {
 	io.WriteCloser
 }
 
-func (s *Socket) WriteMessage(msg messages.Message) error {
-	return s.WriteJSON(messages.Transmission{Type: msg.Key(), Message: msg})
+func (s *Socket) WriteMessage(msg Transmission) error {
+	return s.WriteJSON(&msg)
 }
 
 func (s *Socket) Write(data []byte) (int, error) {

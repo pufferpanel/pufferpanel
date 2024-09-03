@@ -24,7 +24,7 @@ let unbindEvent = null
 let task = null
 onMounted(async () => {
   worker.addEventListener("message", onWorkerMessage)
-  unbindEvent = props.server.on('console', onMessage)
+  unbindEvent = props.server.on('logs', onMessage)
 
   onMessage(await props.server.getConsole())
   task = props.server.startTask(async () => {

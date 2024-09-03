@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
 	"os"
@@ -51,14 +50,24 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	s.Log(logging.Info, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 	s.DisplayToConsole(true, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 
-	msg := messages.Status{Running: true, Installing: s.IsInstalling()}
-	_ = s.StatusTracker.WriteMessage(msg)
+	_ = s.StatusTracker.WriteMessage(pufferpanel.Transmission{
+		Message: pufferpanel.ServerRunning{
+			Running:    true,
+			Installing: s.IsInstalling(),
+		},
+		Type: pufferpanel.MessageTypeStatus,
+	})
 
 	err = s.mainProcess.Start()
 	if err != nil && err.Error() != "exit status 1" {
 		s.Wait.Done()
-		msg := messages.Status{Running: false, Installing: s.IsInstalling()}
-		_ = s.StatusTracker.WriteMessage(msg)
+		_ = s.StatusTracker.WriteMessage(pufferpanel.Transmission{
+			Message: pufferpanel.ServerRunning{
+				Running:    false,
+				Installing: s.IsInstalling(),
+			},
+			Type: pufferpanel.MessageTypeStatus,
+		})
 		s.Log(logging.Info, "Process failed to start: %s", err)
 		return
 	} else {
@@ -139,8 +148,12 @@ func (s *standard) GetGid() int {
 func (s *standard) handleClose(callback func(exitCode int)) {
 	err := s.mainProcess.Wait()
 
-	msg := messages.Status{Running: false}
-	_ = s.StatusTracker.WriteMessage(msg)
+	_ = s.StatusTracker.WriteMessage(pufferpanel.Transmission{
+		Message: pufferpanel.ServerRunning{
+			Running: false,
+		},
+		Type: pufferpanel.MessageTypeStatus,
+	})
 
 	_ = s.Console.Close()
 

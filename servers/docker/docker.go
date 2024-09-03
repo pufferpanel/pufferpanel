@@ -19,7 +19,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/spf13/cast"
 	"io"
 	"os"
@@ -104,8 +103,13 @@ func (d *Docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 
 	startOpts := container.StartOptions{}
 
-	msg := messages.Status{Running: true, Installing: d.IsInstalling()}
-	_ = d.StatusTracker.WriteMessage(msg)
+	_ = d.StatusTracker.WriteMessage(pufferpanel.Transmission{
+		Message: pufferpanel.ServerRunning{
+			Running:    true,
+			Installing: d.IsInstalling(),
+		},
+		Type: pufferpanel.MessageTypeStatus,
+	})
 
 	d.DisplayToConsole(true, "Starting container\n")
 	err = dockerClient.ContainerStart(ctx, d.ContainerId, startOpts)
@@ -238,6 +242,9 @@ func (d *Docker) GetStats() (*pufferpanel.ServerStats, error) {
 				stats.Jvm = pufferpanel.ParseJCMDResponse(jcmdData)
 			}
 		}
+		if stats.Jvm == nil {
+			stats.Jvm = &pufferpanel.JvmStats{}
+		}
 	}
 
 	d.lastStats = stats
@@ -270,7 +277,7 @@ func (d *Docker) doesContainerExist(client *client.Client, ctx context.Context) 
 	}
 
 	for _, v := range existingContainers {
-		if slices.Contains(v.Names, d.ContainerId) {
+		if slices.Contains(v.Names, "/"+d.ContainerId) {
 			return true, nil
 		}
 	}
@@ -558,8 +565,13 @@ func (d *Docker) handleClose(client *client.Client, callback func(int)) {
 
 	d.Wait.Done()
 
-	msg := messages.Status{Running: false, Installing: d.IsInstalling()}
-	_ = d.StatusTracker.WriteMessage(msg)
+	_ = d.StatusTracker.WriteMessage(pufferpanel.Transmission{
+		Message: pufferpanel.ServerRunning{
+			Running:    false,
+			Installing: d.IsInstalling(),
+		},
+		Type: pufferpanel.MessageTypeStatus,
+	})
 
 	_ = d.BaseEnvironment.Console.Close()
 

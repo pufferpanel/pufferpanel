@@ -9,7 +9,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/conditions"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/spf13/cast"
 	"io"
 	"log"
@@ -114,18 +113,11 @@ func SendStatsForServers() {
 			if err != nil {
 				return
 			}
-			m := &messages.Stat{
-				Memory: stats.Memory,
-				Cpu:    stats.Cpu,
-			}
-			if stats.Jvm != nil {
-				m.Jvm = &messages.JvmStats{
-					HeapUsed:      stats.Jvm.HeapUsed,
-					MetaspaceUsed: stats.Jvm.MetaspaceUsed,
-					HeapTotal:     stats.Jvm.HeapTotal,
-				}
-			}
-			_ = p.GetEnvironment().GetStatsTracker().WriteMessage(m)
+
+			_ = p.GetEnvironment().GetStatsTracker().WriteMessage(pufferpanel.Transmission{
+				Message: stats,
+				Type:    pufferpanel.MessageTypeStats,
+			})
 		}(v)
 	}
 	wg.Wait()
@@ -134,7 +126,7 @@ func SendStatsForServers() {
 type FileData struct {
 	Contents      io.ReadCloser
 	ContentLength int64
-	FileList      []messages.FileDesc
+	FileList      []pufferpanel.FileDesc
 	Name          string
 }
 
@@ -551,13 +543,13 @@ func (p *Server) GetItem(name string) (*FileData, error) {
 
 	if info.IsDir() {
 		files, _ := p.GetFileServer().ReadDir(name)
-		var fileNames []messages.FileDesc
+		var fileNames []pufferpanel.FileDesc
 		offset := 0
 		if name == "" || name == "." || name == "/" {
-			fileNames = make([]messages.FileDesc, len(files))
+			fileNames = make([]pufferpanel.FileDesc, len(files))
 		} else {
-			fileNames = make([]messages.FileDesc, len(files)+1)
-			fileNames[0] = messages.FileDesc{
+			fileNames = make([]pufferpanel.FileDesc, len(files)+1)
+			fileNames[0] = pufferpanel.FileDesc{
 				Name: "..",
 				File: false,
 			}
@@ -567,7 +559,7 @@ func (p *Server) GetItem(name string) (*FileData, error) {
 		//validate any symlinks are valid
 
 		for i, file := range files {
-			newFile := messages.FileDesc{
+			newFile := pufferpanel.FileDesc{
 				Name: file.Name(),
 				File: !file.IsDir(),
 			}

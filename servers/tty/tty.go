@@ -8,7 +8,6 @@ import (
 	"github.com/creack/pty"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
 	"io"
@@ -50,8 +49,13 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	t.DisplayToConsole(true, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 	t.Log(logging.Info, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 
-	msg := messages.Status{Running: true, Installing: t.IsInstalling()}
-	_ = t.StatusTracker.WriteMessage(msg)
+	_ = t.StatusTracker.WriteMessage(pufferpanel.Transmission{
+		Message: pufferpanel.ServerRunning{
+			Running:    true,
+			Installing: t.IsInstalling(),
+		},
+		Type: pufferpanel.MessageTypeStatus,
+	})
 
 	processTty, err := pty.Start(pr)
 	if err != nil {
@@ -135,6 +139,9 @@ func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
 				stats.Jvm = pufferpanel.ParseJCMDResponse(jcmdData)
 			}
 		}
+		if stats.Jvm == nil {
+			stats.Jvm = &pufferpanel.JvmStats{}
+		}
 	}
 
 	t.lastStats = stats
@@ -210,8 +217,13 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 
 	t.Wait.Done()
 
-	msg := messages.Status{Running: false, Installing: t.IsInstalling()}
-	_ = t.StatusTracker.WriteMessage(msg)
+	_ = t.StatusTracker.WriteMessage(pufferpanel.Transmission{
+		Message: pufferpanel.ServerRunning{
+			Running:    false,
+			Installing: t.IsInstalling(),
+		},
+		Type: pufferpanel.MessageTypeStatus,
+	})
 
 	if callback != nil {
 		callback(exitCode)
