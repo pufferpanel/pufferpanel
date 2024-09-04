@@ -1,7 +1,7 @@
 {
   "Name": "Name",
   "Language": "Sprache",
-  "Online": "online",
+  "Online": "Online",
   "Offline": "Offline",
   "Installing": "Installiere",
   "Unknown": "Unbekannt",
@@ -15,8 +15,8 @@
   "Collapse": "Einklappen",
   "Expand": "Erweitern",
   "Copy": "Kopieren",
-  "Copied": "In die Zwischenablage kopiert",
-  "Back": "Zurück",
+  "Copied": "Copied to clipboard",
+  "Back": "Back",
   "Next": "Weiter",
   "Details": "Details",
   "ErrorDetails": "Fehlerdetails",
@@ -48,5 +48,5 @@
       "List": "Liste"
     }
   },
-  "NoResults": "No Results"
+  "NoResults": "Keine Ergebnisse"
 }

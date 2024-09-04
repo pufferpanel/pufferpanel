@@ -16,7 +16,7 @@
   "Expand": "Développer",
   "Copy": "Copier dans le Presse-papier",
   "Copied": "Copié dans le presse-papier",
-  "Back": "Précédent",
+  "Back": "Retour",
   "Next": "Suivant",
   "Details": "Détails",
   "ErrorDetails": "Détails de l'erreur",
@@ -48,5 +48,5 @@
       "List": "Liste"
     }
   },
-  "NoResults": "No Results"
+  "NoResults": "Aucun résultat"
 }

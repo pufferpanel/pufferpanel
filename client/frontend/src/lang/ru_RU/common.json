@@ -3,7 +3,7 @@
   "Language": "Язык",
   "Online": "Онлайн",
   "Offline": "Офлайн",
-  "Installing": "Installing",
+  "Installing": "Устанавливается",
   "Unknown": "Неизвестно",
   "Loading": "Загрузка...",
   "Description": "Описание",
@@ -14,7 +14,7 @@
   "Port": "Порт",
   "Collapse": "Свернуть",
   "Expand": "Раскрыть",
-  "Copy": "Copy to clipboard",
+  "Copy": "Копировать в буфер обмена",
   "Copied": "Скопировано в буфер обмена",
   "Back": "Назад",
   "Next": "Дальше",
@@ -48,5 +48,5 @@
       "List": "Список"
     }
   },
-  "NoResults": "No Results"
+  "NoResults": "Нет результатов"
 }

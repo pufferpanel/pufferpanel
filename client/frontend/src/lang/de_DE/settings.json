@@ -5,7 +5,7 @@
   "EmailSettings": "Email Einstellungen",
   "SaveEmailSettings": "E-Mail Einstellungen speichern",
   "MasterUrl": "Haupt URL",
-  "MasterUrlHint": "Die Haupt URL des Panels kann unter http://localhost:8080 erreicht werden",
+  "MasterUrlHint": "Die Haupt-URL des Panels kann unter http://localhost:8080 erreicht werden",
   "CompanyName": "Firmenname",
   "DefaultTheme": "Standarddesign",
   "RegistrationEnabled": "Benutzern erlauben, sich zu registrieren",
@@ -25,5 +25,5 @@
     "username": "Benutzername",
     "password": "Passwort"
   },
-  "Saved": "Saved"
+  "Saved": "Gespeichert"
 }
