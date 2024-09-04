@@ -28,7 +28,7 @@
   "ErrDatabaseNotAvailable": "База данных недоступна",
   "ErrNoNodes": "Нет доступных хостов",
   "ErrNoTemplates": "Нет доступных шаблонов",
-  "ErrPasswordRequirements": "Пароль должен состоять из как минимум {min} символов",
+  "ErrPasswordRequirements": "Пароль должен состоять из как минимум 8 символов",
   "ErrUsernameRequirements": "Имя пользователя должно быть не менее {min} символов и содержать только буквы, _, или -",
   "ErrPasswordsNotIdentical": "Пароли не совпадают",
   "ErrEmailInvalid": "Недействительный email",
