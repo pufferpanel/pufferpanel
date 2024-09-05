@@ -8,10 +8,10 @@ import (
 )
 
 type Server struct {
-	Name       string `gorm:"size:40;NOT NULL" json:"-" validate:"required,printascii"`
-	Identifier string `gorm:"UNIQUE;NOT NULL;primaryKey;size:8" json:"-" validate:"required,printascii"`
+	Name       string `gorm:"column:name;not null;size:40" json:"-" validate:"required,printascii"`
+	Identifier string `gorm:"column:identifier;primaryKey;size:20" json:"-" validate:"required,printascii"`
 
-	RawNodeID *uint `gorm:"column:node_id" json:"-" validate:"-"`
+	RawNodeID *uint `gorm:"column:node_id;index" json:"-" validate:"-"`
 	NodeID    uint  `gorm:"-" json:"-" validate:"-"`
 	Node      Node  `gorm:"ASSOCIATION_SAVE_REFERENCE:false;foreignKey:RawNodeID" json:"-" validate:"-"`
 

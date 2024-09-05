@@ -9,12 +9,12 @@ import (
 )
 
 type User struct {
-	ID             uint   `json:"-"`
-	Username       string `gorm:"UNIQUE;NOT NULL;size:100" json:"-" validate:"required,printascii,max=100,min=5"`
-	Email          string `gorm:"UNIQUE;NOT NULL;size:255" json:"-" validate:"required,email,max=255"`
+	ID             uint   `gorm:"column:id;primaryKey;autoIncrement" json:"-"`
+	Username       string `gorm:"column:username;not null;size:100;uniqueIndex;" json:"-" validate:"required,printascii,max=100,min=5"`
+	Email          string `gorm:"column:email;not null;size:255;uniqueIndex" json:"-" validate:"required,email,max=255"`
 	HashedPassword string `gorm:"column:password;NOT NULL;size:200" json:"-" validate:"required,max=200"`
-	OtpSecret      string `gorm:"size:32" json:"-"`
-	OtpActive      bool   `gorm:"NOT NULL;DEFAULT:0" json:"-"`
+	OtpSecret      string `gorm:"column:otp_secret;size:32" json:"-"`
+	OtpActive      bool   `gorm:"column:otp_active;not null;DEFAULT:0" json:"-"`
 
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`

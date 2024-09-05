@@ -8,20 +8,20 @@ import (
 )
 
 type Client struct {
-	ID                 uint   `gorm:"PRIMARY_KEY,AUTO_INCREMEMT" json:"-"`
-	ClientId           string `gorm:"NOT NULL;uniqueIndex;size:100" json:"client_id"`
-	HashedClientSecret string `gorm:"column:client_secret;NOT NULL" json:"-"`
+	ID                 uint   `gorm:"column:id;primaryKey;autoIncrement" json:"-"`
+	ClientId           string `gorm:"column:client_id;not null;size:100;uniqueIndex" json:"client_id"`
+	HashedClientSecret string `gorm:"column:client_secret;not null;size:100" json:"-"`
 
 	ClientSecret string `gorm:"-" json:"client_secret"`
 
-	UserId uint  `gorm:"NOT NULL" json:"-"`
+	UserId uint  `gorm:"column:user_id;not null;index" json:"-"`
 	User   *User `json:"-"`
 
-	ServerId *uint   `gorm:"" json:"-"`
+	ServerId *uint   `gorm:"column:server_id" json:"-"`
 	Server   *Server `json:"-"`
 
-	Name        string `gorm:"column:name;NOT NULL;size:100;default\"\"" json:"name"`
-	Description string `gorm:"column:description;NOT NULL;size:4000;default:\"\"" json:"description"`
+	Name        string `gorm:"column:name;not null;size:100;default:''" json:"name"`
+	Description string `gorm:"column:description;not null;size:4000;default:''" json:"description"`
 }
 
 func (c *Client) SetClientSecret(secret string) error {

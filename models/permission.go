@@ -7,20 +7,20 @@ import (
 )
 
 type Permissions struct {
-	ID uint `gorm:"primaryKey,autoIncrement" json:"-"`
+	ID uint `gorm:"column:id;primaryKey;autoIncrement" json:"-"`
 
 	//owners of this permission set
-	UserId *uint `json:"-"`
+	UserId *uint `gorm:"column:user_id;index" json:"-"`
 	User   User  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
-	ClientId *uint  `json:"-"`
+	ClientId *uint  `gorm:"column:client_id;index" json:"-"`
 	Client   Client `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
 	//if this set is for a server, what server
-	ServerIdentifier *string `json:"-"`
+	ServerIdentifier *string `gorm:"column:server_identifier;index" json:"-"`
 	Server           Server  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
-	RawScopes string               `gorm:"column:scopes;NOT NULL;DEFAULT:''" json:"-" validate:"required"`
+	RawScopes string               `gorm:"column:scopes;not null;size:1000;default:''" json:"-" validate:"required"`
 	Scopes    []*pufferpanel.Scope `gorm:"-" json:"-"`
 }
 

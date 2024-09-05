@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	uuid "github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"gopkg.in/go-playground/validator.v9"
@@ -11,14 +12,14 @@ import (
 
 type Node struct {
 	ID          uint   `json:"-"`
-	Name        string `gorm:"size:100;UNIQUE;NOT NULL" json:"-" validate:"required,printascii"`
-	PublicHost  string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|fqdn|hostname"`
-	PrivateHost string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|fqdn|hostname"`
-	PublicPort  uint16 `gorm:"DEFAULT:8080;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
-	PrivatePort uint16 `gorm:"DEFAULT:8080;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
-	SFTPPort    uint16 `gorm:"DEFAULT:5657;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=PublicPort,nefield=PrivatePort"`
+	Name        string `gorm:"column:name;not null;size:100;uniqueIndex" json:"-" validate:"required,printascii"`
+	PublicHost  string `gorm:"column:public_host;not null;size:100" json:"-" validate:"required,ip|fqdn|hostname"`
+	PrivateHost string `gorm:"column:private_host;not null;size:100" json:"-" validate:"required,ip|fqdn|hostname"`
+	PublicPort  uint16 `gorm:"column:public_port;not null;default:8080" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
+	PrivatePort uint16 `gorm:"column:private_port;not null;default:8080" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
+	SFTPPort    uint16 `gorm:"column:sftp_port;not null;default:5657" json:"-" validate:"required,min=1,max=65535,nefield=PublicPort,nefield=PrivatePort"`
 
-	Secret string `gorm:"size=36;NOT NULL" json:"-" validate:"required"`
+	Secret string `gorm:"column:secret;not null;size=36" json:"-" validate:"required"`
 
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
@@ -34,11 +35,17 @@ func (n *Node) IsValid() (err error) {
 
 func (n *Node) BeforeSave(*gorm.DB) (err error) {
 	err = n.IsValid()
+	if err != nil {
+		return err
+	}
+	if n.IsLocal() {
+		return errors.New("cannot save local node")
+	}
 	return
 }
 
 func (n *Node) IsLocal() bool {
-	return n.ID == LocalNode.ID
+	return n.ID == LocalNode.ID || n.Name == LocalNode.Name
 }
 
 var LocalNode = &Node{

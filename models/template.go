@@ -10,10 +10,10 @@ import (
 type Template struct {
 	pufferpanel.Server `gorm:"-"`
 
-	Name     string `gorm:"type:varchar(100);primaryKey" json:"name"`
-	RawValue string `gorm:"type:text" json:"-"`
+	Name     string `gorm:"column:name;size:100;primaryKey" json:"name"`
+	RawValue string `gorm:"column:raw_value;not null;size:4000" json:"-"`
 
-	Readme string `gorm:"type:text" json:"readme,omitempty"`
+	Readme string `gorm:"column:readme;size:4000" json:"readme,omitempty"`
 } //@name Template
 
 func (t *Template) AfterFind(*gorm.DB) error {
