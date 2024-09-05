@@ -266,21 +266,6 @@ func Migrate(dbConn *gorm.DB) error {
 				return nil
 			},
 		},
-		{
-			ID: "1725551921",
-			Migrate: func(db *gorm.DB) error {
-				logging.Info.Printf("Migrate id:1725551921")
-
-				var data []models.Session
-				err := db.Find(&data).Error
-				if err != nil {
-					return err
-				}
-				for _, v := range data {
-
-				}
-			},
-		},
 	})
 
 	return m.Migrate()
