@@ -110,6 +110,15 @@ func TestServers(t *testing.T) {
 		if !assert.Equal(t, EditServerNewPort, server.Port) {
 			return
 		}
+
+		var count int64
+		err = db.Model(&models.Node{}).Count(&count).Error
+		if !assert.NoError(t, err) {
+			return
+		}
+		if !assert.Equal(t, int64(0), count) {
+			return
+		}
 	})
 
 	t.Run("AdminDataUpdate", func(t *testing.T) {
@@ -128,6 +137,15 @@ func TestServers(t *testing.T) {
 			return
 		}
 		if !assert.Equal(t, NewVariableChangePort, server.Port) {
+			return
+		}
+
+		var count int64
+		err = db.Model(&models.Node{}).Count(&count).Error
+		if !assert.NoError(t, err) {
+			return
+		}
+		if !assert.Equal(t, int64(0), count) {
 			return
 		}
 	})

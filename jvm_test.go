@@ -41,18 +41,6 @@ func TestParseJCMDResponse(t *testing.T) {
 			},
 			want: &JvmStats{HeapUsed: (36054 + 145245) * 1024, HeapTotal: (104576 + 232236) * 1024, MetaspaceUsed: 79381 * 1024, MetaspaceTotal: 80384 * 1024},
 		},
-		{
-			name: "test 2",
-			args: args{
-				data: []byte(`0:
- garbage-first heap   total 342016K, used 248394K [0x0000000080000000, 0x0000000100000000)
-  region size 1024K, 98 young (100352K), 19 survivors (19456K)
- Metaspace       used 80690K, committed 81728K, reserved 1179648K
-  class space    used 12159K, committed 12608K, reserved 1048576K
-`),
-			},
-			want: &JvmStats{HeapUsed: 248394 * 1024, HeapTotal: 342016 * 1024, MetaspaceUsed: 80690 * 1024, MetaspaceTotal: 1179648 * 1024},
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

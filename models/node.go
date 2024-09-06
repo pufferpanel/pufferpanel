@@ -2,7 +2,7 @@ package models
 
 import (
 	"errors"
-	uuid "github.com/gofrs/uuid/v5"
+	"github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
