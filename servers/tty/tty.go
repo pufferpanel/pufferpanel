@@ -239,11 +239,14 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 func activateAttachAPI(pid int) error {
 	// It's not, lets do a quick ceremony of touching a file and
 	// sending SIGQUIT to activate this feature
-
-	attachpath := fmt.Sprintf("/proc/%v/cwd/.attach_pid%v", pid, pid)
+	attachpath := attachPath(pid)
 	if err := os.WriteFile(attachpath, nil, 0660); err != nil {
 		return fmt.Errorf("could not touch file to activate attach api: %w", err)
 	}
+
+	defer func() {
+		_ = os.Remove(attachpath)
+	}()
 
 	proc, err := os.FindProcess(pid)
 	if err != nil { // can't happen on unix
@@ -258,7 +261,6 @@ func activateAttachAPI(pid int) error {
 	sock := socketPath(pid)
 	for i := 1; i < 10; i++ {
 		if _, err = os.Stat(sock); err != nil && !os.IsNotExist(err) {
-			_ = os.Remove(attachpath)
 			return err
 		}
 
@@ -268,6 +270,10 @@ func activateAttachAPI(pid int) error {
 
 	//if we got here, then the file wasn't available or otherwise not good anymore
 	return err
+}
+
+func attachPath(pid int) string {
+	return fmt.Sprintf("/proc/%v/cwd/.attach_pid%v", pid, pid)
 }
 
 func socketPath(pid int) string {
