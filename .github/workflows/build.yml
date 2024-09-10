@@ -149,7 +149,7 @@ jobs:
         with:
           go-version: ^${{ env.GO_VERSION }}
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: pufferpanel_build_artifact
 
@@ -177,7 +177,7 @@ jobs:
           CGO_ENABLED: 1
 
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: pufferpanel_${{ env.VERSION }}_windows_amd64
           path: build-artifacts/
@@ -303,7 +303,7 @@ jobs:
         run: |
           sudo apt-get install -y rpm
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: pufferpanel_build_artifact
 
@@ -402,13 +402,13 @@ jobs:
           path: build-artifacts/
 
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: pufferpanel_${{ env.VERSION }}_amd64.deb
           path: pufferpanel_${{ env.VERSION }}_amd64.deb
 
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
           path: ${{ steps.rpmamd64.outputs.file }}
