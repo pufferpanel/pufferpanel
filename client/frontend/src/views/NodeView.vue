@@ -131,8 +131,7 @@ function getDeployConfig() {
         ...deploymentData
       },
       data: {
-        cache: '/var/lib/pufferpanel/cache',
-        servers: '/var/lib/pufferpanel/servers'
+        root: '/var/lib/pufferpanel'
       },
       sftp: {
         host: `0.0.0.0:${sftpPort.value}`
