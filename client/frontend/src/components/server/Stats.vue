@@ -1,160 +1,321 @@
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Chart from 'vue3-apexcharts'
+import Chart, { _adapters, Tooltip } from 'chart.js/auto'
+import 'chartjs-adapter-date-fns'
 
-const { t } = useI18n()
-const wrapper = ref(null)
-const apex = ref(null)
-const width = ref('100%')
+const fromCss = (el, prop) => {
+  return getComputedStyle(el).getPropertyValue(prop).trim()
+}
 
-const cpu = []
-const mem = []
-
-const series = [
-  {
-    name: t('servers.CPU'),
-    data: []
-  },
-  {
-    name: t('servers.Memory'),
-    data: []
-  }
-]
+const defaultFamily = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+// const defaultBorderColors = ['#07a7e3', '#ff6283', '#4bbfbf', '#ff9e40', '#9865ff', '#ffcc55']
+// const defaultBackgroundColors = defaultBorderColors.map(e => e + '20')
+// const getDefaultBorderColor = (i) => defaultBorderColors[i % defaultBorderColors.length]
+// const getDefaultBackgroundColor = (i) => defaultBackgroundColors[i % defaultBackgroundColors.length]
 
 const props = defineProps({
   server: { type: Object, required: true }
 })
 
-const numFormat = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 })
+const { t, locale } = useI18n()
 
-const options = {
-  chart: {
-    toolbar: {
-      show: false
-    },
-    zoom: {
-      enabled: false
-    },
-    animations: {
-      enabled: true,
-      easing: 'linear',
-      dynamicAnimation: {
-        speed: 1000
-      }
+const numFormat = new Intl.NumberFormat(
+  [locale.value.replace('_', '-'), 'en'],
+  { maximumFractionDigits: 2 }
+)
+
+const formatCpu = (value) => {
+  return numFormat.format(value) + ' %'
+}
+
+const formatMemory = (value) => {
+  if (!value) return numFormat.format(0) + ' B'
+  if (value < Math.pow(2, 10)) return numFormat.format(value) + ' B'
+  if (value < Math.pow(2, 20)) return numFormat.format(value / Math.pow(2, 10)) + ' KiB'
+  if (value < Math.pow(2, 30)) return numFormat.format(value / Math.pow(2, 20)) + ' MiB'
+  if (value < Math.pow(2, 40)) return numFormat.format(value / Math.pow(2, 30)) + ' GiB'
+  return numFormat.format(value / Math.pow(2, 40)) + ' TiB'
+}
+
+// date-fns localization approach takes importing an object per locale
+// which is both a lot of data and annoying to have to handle as that
+// means manually dealing with fallbacks, dynamic imports, etc
+// so instead we just force the adapter to use the browsers built in
+// date localization tooling and just let date-fns do the logic parts
+const intl = new Intl.DateTimeFormat(
+  [locale.value.replace('_', '-'), 'en'],
+  { hour: 'numeric', minute: 'numeric', second: 'numeric' }
+)
+_adapters._date.prototype.format = (time) => {
+  return intl.format(time)
+}
+
+Tooltip.positioners.cursor = (_, eventPosition) => {
+  return { x: eventPosition.x, y: eventPosition.y }
+}
+
+const cpuChartEl = ref(null)
+const memoryChartEl = ref(null)
+let cpuChart = null
+let memoryChart = null
+const cpu = []
+const memory = []
+const jvmHeapUsed = []
+const jvmHeapAlloc = []
+const jvmMetaUsed = []
+const jvmMetaAlloc = []
+
+function addData(d) {
+  const x = new Date().getTime()
+
+  cpu.push({ x, y: d.cpu })
+  memory.push({ x, y: d.memory })
+
+  if (d.jvm) {
+    jvmHeapUsed.push({ x, y: d.jvm.heapUsed })
+    jvmHeapAlloc.push({ x, y: d.jvm.heapTotal - d.jvm.heapUsed })
+    jvmMetaUsed.push({ x, y: d.jvm.metaspaceUsed })
+    jvmMetaAlloc.push({ x, y: d.jvm.metaspaceTotal - d.jvm.metaspaceUsed })
+
+    memoryChart.show(memoryChart.data.datasets.findIndex(set => set.label === t('servers.JvmMetaUsed')))
+    memoryChart.show(memoryChart.data.datasets.findIndex(set => set.label === t('servers.JvmMetaAlloc')))
+    memoryChart.show(memoryChart.data.datasets.findIndex(set => set.label === t('servers.JvmHeapUsed')))
+    memoryChart.show(memoryChart.data.datasets.findIndex(set => set.label === t('servers.JvmHeapAlloc')))
+    memoryChart.hide(memoryChart.data.datasets.findIndex(set => set.label === t('servers.Memory')))
+  }
+
+  for (let graph of [cpu, memory, jvmHeapUsed, jvmHeapAlloc, jvmMetaUsed, jvmMetaAlloc]) {
+    while (graph.length > 60) {
+      graph.shift()
     }
-  },
-  dataLabels: {
-    enabled: false
-  },
-  stroke: {
-    curve: 'smooth'
-  },
-  markers: {
-    size: 0
-  },
-  legend: {
-    show: false
-  },
-  xaxis: {
-    type: 'datetime',
-    range: 60000, // show last 60 seconds on chart
-    labels: {
-      formatter: value => new Date(value).toLocaleTimeString()
-    }
-  },
-  yaxis: [
-    {
-      title: {
-        text: t('servers.CPU')
-      },
-      min: 0,
-      // force nice scale with max 100 causes chart to display max 120
-      // so default max to 99 to actually get the max to default to 100
-      max: (dataMax) => Math.max(99, dataMax),
-      forceNiceScale: true,
-      labels: {
-        formatter: x => x + ' %'
-      }
-    },
-    {
-      opposite: true,
-      logarithmic: false,
-      logBase: 2,
-      title: {
-        text: t('servers.Memory')
-      },
-      min: 0,
-      max: (dataMax) => Math.max(1024*1024, dataMax),
-      labels: {
-        formatter: x => {
-          if (x < Math.pow(2, 10)) return numFormat.format(x) + ' B'
-          if (x < Math.pow(2, 20)) return numFormat.format(x / Math.pow(2, 10)) + ' KiB'
-          if (x < Math.pow(2, 30)) return numFormat.format(x / Math.pow(2, 20)) + ' MiB'
-          if (x < Math.pow(2, 40)) return numFormat.format(x / Math.pow(2, 30)) + ' GiB'
-          return numFormat.format(x / Math.pow(2, 40)) + ' TiB'
-        }
-      }
-    }
-  ],
-  tooltip: {
-    followCursor: true,
-    x: {
-      show: false
-    }
+  }
+
+  for (let chart of [cpuChart, memoryChart]) {
+    chart.options.scales.x.min = x - (60 * 1000)
+    chart.update()
   }
 }
 
-function addData(d) {
-  const ts = new Date().getTime()
-  let animate = true
-
-  cpu.push([ts, d.cpu])
-  if (cpu.length > 600) {
-    animate = false
-    while (cpu.length > 60) {
-      cpu.shift()
+const chartOptions = (mode) => {
+  const options = {
+    responsive: true,
+    aspectRatio: (ctx) => {
+      if (ctx.chart.canvas) {
+        return parseFloat(fromCss(ctx.chart.canvas.parentElement, 'aspect-ratio')) || 2
+      } else return 2
+    },
+    parsing: false,
+    locale: locale.value.split('_')[0] || 'en',
+    interaction: {
+      mode: 'x',
+      intersect: false
+    },
+    animations: {
+      y: {
+        duration: 0
+      }
+    },
+    plugins: {
+      tooltip: {
+        position: 'cursor',
+        usePointStyle: true,
+        callbacks: {
+          label: (ctx) => {
+            return ' ' + ctx.dataset.label + ': ' + ctx.chart.scales[ctx.dataset.yAxisID].options.ticks.callback(ctx.parsed.y)
+          },
+          labelPointStyle: () => 'circle'
+        },
+        itemSort: (a, b) => {
+          return a.datasetIndex < b.datasetIndex
+        },
+        multiKeyBackground: (ctx) => fromCss(ctx.chart.canvas, 'background-color') || '#fff',
+        padding: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-padding') || 6,
+        backgroundColor: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-background-color') || 'rgba(0, 0, 0, 0.8)',
+        cornerRadius: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-corner-radius') || 6,
+        borderColor: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-border-color') || 'rgba(0, 0, 0, 0)',
+        borderWidth: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-border-width') || 0,
+        titleAlign: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-title-align') || 'left',
+        titleColor: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-font-color') || '#fff',
+        bodyColor: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-font-color') || '#fff',
+        bodySpacing: (ctx) => parseInt(fromCss(ctx.chart.canvas, '--chartjs-tooltip-body-spacing')) || 2,
+        titleFont: {
+          family: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-title-font-family') || fromCss(ctx.chart.canvas, '--chartjs-font-family') || defaultFamily,
+          size: (ctx) => parseInt(fromCss(ctx.chart.canvas, '--chartjs-tooltip-title-font-size') || fromCss(ctx.chart.canvas, '--chartjs-font-size')) || 12,
+          weight: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-title-font-weight') || 'bold'
+        },
+        bodyFont: {
+          family: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-body-font-family') || fromCss(ctx.chart.canvas, '--chartjs-font-family') || defaultFamily,
+          size: (ctx) => parseInt(fromCss(ctx.chart.canvas, '--chartjs-tooltip-body-font-size') || fromCss(ctx.chart.canvas, '--chartjs-font-size')) || 12,
+          weight: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-tooltip-body-font-weight') || fromCss(ctx.chart.canvas, '--chartjs-font-weight')
+        }
+      },
+      legend: {
+        display: false
+      },
+      title: {
+        display: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-title-display') == 'true',
+        align: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-title-align') || 'center',
+        color: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-title-font-color') || fromCss(ctx.chart.canvas, '--chartjs-color') || fromCss(ctx.chart.canvas, 'color'),
+        position: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-title-position') || 'top',
+        font: {
+          family: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-title-font-family') || fromCss(ctx.chart.canvas, '--chartjs-font-family') || defaultFamily,
+          size: (ctx) => parseInt(fromCss(ctx.chart.canvas, '--chartjs-title-font-size') || fromCss(ctx.chart.canvas, '--chartjs-font-size')) || 12,
+          weight: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-title-font-weight') || 'bold'
+        }
+      }
+    },
+    scales: {
+      x: {
+        type: 'timeseries',
+        min: new Date().getTime() - (60 * 1000),
+        grid: {
+          color: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-grid-color')
+        },
+        ticks: {
+          min: 12,
+          source: 'data',
+          color: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-font-color') || fromCss(ctx.chart.canvas, '--chartjs-color') || fromCss(ctx.chart.canvas, 'color'),
+          font: {
+            family: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-font-family') || fromCss(ctx.chart.canvas, '--chartjs-font-family') || defaultFamily,
+            size: (ctx) => parseInt(fromCss(ctx.chart.canvas, '--chartjs-axis-font-size') || fromCss(ctx.chart.canvas, '--chartjs-font-size')) || 12,
+            weight: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-font-weight') || fromCss(ctx.chart.canvas, '--chartjs-font-weight')
+          }
+        }
+      }
+    },
+    elements: {
+      line: {
+        tension: 0.3
+      },
+      point: {
+        pointStyle: false,
+        hoverRadius: 20
+      }
     }
   }
 
-  mem.push([ts, d.memory])
-  if (mem.length > 600) {
-    animate = false
-    while (mem.length > 60) {
-      mem.shift()
+  if (mode === 'memory') {
+    options.plugins.title.text = t('servers.Memory')
+    options.scales.memory = {
+      type: 'linear',
+      position: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-y-position') || 'left',
+      min: 0,
+      suggestedMax: 1024 * 1024,
+      grid: {
+        display: true,
+        color: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-grid-color')
+      },
+      ticks: {
+        callback: formatMemory,
+        color: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-font-color') || fromCss(ctx.chart.canvas, '--chartjs-color') || fromCss(ctx.chart.canvas, 'color'),
+        font: {
+          family: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-font-family') || fromCss(ctx.chart.canvas, '--chartjs-font-family') || defaultFamily,
+          size: (ctx) => parseInt(fromCss(ctx.chart.canvas, '--chartjs-axis-font-size') || fromCss(ctx.chart.canvas, '--chartjs-font-size')) || 12,
+          weight: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-font-weight') || fromCss(ctx.chart.canvas, '--chartjs-font-weight')
+        }
+      }
     }
   }
 
-  apex.value.chart.updateSeries([
-    { data: cpu },
-    { data: mem }
-  ], animate)
+  if (mode === 'cpu') {
+    options.plugins.title.text = t('servers.CPU')
+    options.scales.cpu = {
+      type: 'linear',
+      position: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-y-position') || 'left',
+      min: 0,
+      suggestedMax: 100,
+      grid: {
+        color: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-grid-color')
+      },
+      ticks: {
+        callback: formatCpu,
+        color: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-font-color') || fromCss(ctx.chart.canvas, '--chartjs-color') || fromCss(ctx.chart.canvas, 'color'),
+        font: {
+          family: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-font-family') || fromCss(ctx.chart.canvas, '--chartjs-font-family') || defaultFamily,
+          size: (ctx) => parseInt(fromCss(ctx.chart.canvas, '--chartjs-axis-font-size') || fromCss(ctx.chart.canvas, '--chartjs-font-size')) || 12,
+          weight: (ctx) => fromCss(ctx.chart.canvas, '--chartjs-axis-font-weight') || fromCss(ctx.chart.canvas, '--chartjs-font-weight')
+        }
+      }
+    }
+  }
+
+  return options
 }
 
 let task = null
 let stopListener = null
-
 onMounted(() => {
-  nextTick(() => {
-    width.value = wrapper.value.clientWidth
-    const observer = new ResizeObserver(elems => {
-      // eslint doesn't understand iteration syntax
-      // eslint-disable-next-line no-unused-vars
-      for (let _ of elems) {
-        if (wrapper.value) width.value = wrapper.value.clientWidth
-      }
-    })
-    observer.observe(wrapper.value)
+  cpuChart = new Chart(cpuChartEl.value, {
+    type: 'line',
+    options: chartOptions('cpu'),
+    data: {
+      datasets: [
+        {
+          label: t('servers.CPU'),
+          yAxisID: 'cpu',
+          borderColor: fromCss(cpuChartEl.value, '--chartjs-series-line-cpu'),
+          backgroundColor: fromCss(cpuChartEl.value, '--chartjs-series-fill-cpu'),
+          data: cpu
+        }
+      ]
+    }
+  })
 
-    const font = getComputedStyle(apex.value.$el).getPropertyValue('--apex-font').trim() || 'sans-serif'
-    const backgroundColor = getComputedStyle(apex.value.$el).getPropertyValue('--apex-background-color').trim() || '#fff'
-    const textColor = getComputedStyle(apex.value.$el).getPropertyValue('--apex-text-color').trim() || '#000'
-    const seriesColors = getComputedStyle(apex.value.$el).getPropertyValue('--apex-series-colors').split(',').map(c => c.trim()).filter(c => /#[a-fA-F0-9]{3,6}/.test(c))
-
-    options.chart.fontFamily = font
-    options.chart.background = backgroundColor
-    options.chart.foreColor = textColor
-    if (seriesColors.length > 0) options.colors = seriesColors
+  memoryChart = new Chart(memoryChartEl.value, {
+    type: 'line',
+    options: chartOptions('memory'),
+    data: {
+      datasets: [
+      {
+          label: t('servers.JvmMetaUsed'),
+          yAxisID: 'memory',
+          fill: 'origin',
+          borderColor: fromCss(memoryChartEl.value, '--chartjs-series-line-jvm-metaspace-used'),
+          backgroundColor: fromCss(memoryChartEl.value, '--chartjs-series-fill-jvm-metaspace-used'),
+          stack: 'jvmMemory',
+          hidden: true,
+          data: jvmMetaUsed
+        },
+        {
+          label: t('servers.JvmMetaAlloc'),
+          yAxisID: 'memory',
+          fill: '-1',
+          borderColor: fromCss(memoryChartEl.value, '--chartjs-series-line-jvm-metaspace-allocated'),
+          backgroundColor: fromCss(memoryChartEl.value, '--chartjs-series-fill-jvm-metaspace-allocated'),
+          stack: 'jvmMemory',
+          hidden: true,
+          data: jvmMetaAlloc
+        },
+        {
+          label: t('servers.JvmHeapUsed'),
+          yAxisID: 'memory',
+          fill: '-1',
+          borderColor: fromCss(memoryChartEl.value, '--chartjs-series-line-jvm-heapspace-used'),
+          backgroundColor: fromCss(memoryChartEl.value, '--chartjs-series-fill-jvm-heapspace-used'),
+          stack: 'jvmMemory',
+          hidden: true,
+          data: jvmHeapUsed
+        },
+        {
+          label: t('servers.JvmHeapAlloc'),
+          yAxisID: 'memory',
+          fill: '-1',
+          borderColor: fromCss(memoryChartEl.value, '--chartjs-series-line-jvm-heapspace-allocated'),
+          backgroundColor: fromCss(memoryChartEl.value, '--chartjs-series-fill-jvm-heapspace-allocated'),
+          stack: 'jvmMemory',
+          hidden: true,
+          data: jvmHeapAlloc
+        },
+        {
+          label: t('servers.Memory'),
+          yAxisID: 'memory',
+          borderColor: fromCss(memoryChartEl.value, '--chartjs-series-line-memory'),
+          backgroundColor: fromCss(memoryChartEl.value, '--chartjs-series-fill-memory'),
+          data: memory
+        }
+      ]
+    }
   })
 
   stopListener = props.server.on('stat', addData)
@@ -167,14 +328,18 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  if (cpuChart) cpuChart.destroy()
+  if (memoryChart) memoryChart.destroy()
   if (task) props.server.stopTask(task)
   if (stopListener) stopListener()
 })
 </script>
 
 <template>
-  <div ref="wrapper" class="statistics">
-    <h2 v-text="t('servers.Statistics')" />
-    <chart ref="apex" dir="ltr" :width="width" height="500" :options="options" :series="series" />
+  <div class="chart memory">
+    <canvas ref="memoryChartEl"/>
+  </div>
+  <div class="chart cpu">
+    <canvas ref="cpuChartEl"/>
   </div>
 </template>

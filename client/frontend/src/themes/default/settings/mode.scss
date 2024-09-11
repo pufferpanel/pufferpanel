@@ -14,8 +14,8 @@
   --text-disabled: rgba(240, 240, 240, 0.5);
   --servertype-icon-filter: brightness(0.625);
   --ace-theme: monokai;
-  --apex-background-color: var(--background);
-  --apex-text-color: var(--text);
+  --chartjs-tooltip-background-color: rgba(30, 30, 30, 0.7);
+  --chartjs-grid-color: rgba(0, 0, 0, 0.3);
 }
 
 @mixin light {
@@ -34,8 +34,8 @@
   --text-disabled: rgba(16, 16, 16, 0.5);
   --servertype-icon-filter: saturate(0.85);
   --ace-theme: github;
-  --apex-background-color: var(--background);
-  --apex-text-color: var(--text);
+  --chartjs-tooltip-background-color: rgba(220, 220, 220, 0.7);
+  --chartjs-grid-color: rgba(220, 220, 220, 0.7);
 }
 
 .mode-dark {

@@ -13,7 +13,40 @@
 }
 
 #root {
-  --apex-series-colors: var(--primary), var(--primary-complement);
+  --chartjs-font-family: var(--standard-font);
+  --chartjs-color: var(--text);
+  --chartjs-tooltip-font-color: var(--text);
+  --chartjs-tooltip-title-font-size: 15;
+  --chartjs-tooltip-title-align: center;
+  --chartjs-tooltip-body-font-size: 15;
+  --chartjs-tooltip-body-spacing: 8;
+  --chartjs-tooltip-corner-radius: 12;
+  --chartjs-tooltip-padding: 12;
+  --chartjs-title-display: true;
+  --chartjs-title-font-size: 16;
+  --chartjs-title-position: left;
+  --chartjs-axis-y-position: right;
+
+  --chartjs-series-line-cpu: #07a7e3;
+  --chartjs-series-fill-cpu: #07a7e320;
+  --chartjs-series-line-memory: #07a7e3;
+  --chartjs-series-fill-memory: #07a7e320;
+  --chartjs-series-line-jvm-metaspace-allocated: #9f5cb0;
+  --chartjs-series-fill-jvm-metaspace-allocated: #9f5cb020;
+  --chartjs-series-line-jvm-metaspace-used: #b982c7;
+  --chartjs-series-fill-jvm-metaspace-used: #b982c720;
+  --chartjs-series-line-jvm-heapspace-allocated: #ff8f00;
+  --chartjs-series-fill-jvm-heapspace-allocated: #ff8f0020;
+  --chartjs-series-line-jvm-heapspace-used: #ffb300;
+  --chartjs-series-fill-jvm-heapspace-used: #ffb30020;
+}
+
+.chart {
+  aspect-ratio: 3.75;
+}
+
+.chart ~ .chart {
+  margin-top: 0.25em;
 }
 
 * {
@@ -216,15 +249,6 @@ hr {
     transform: translateY(0);
   }
 }
-
-
-
-.apexcharts-tooltip, .apexcharts-xaxistooltip {
-  font-family: var(--standard-font) !important;
-  background-color: var(--background) !important;
-  color: var(--text) !important;
-}
-
 
 
 #template-json {

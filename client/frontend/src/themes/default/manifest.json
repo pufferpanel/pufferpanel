@@ -36,11 +36,6 @@
           "type": "opacity",
           "opacity": 0.15,
           "var": "--primary-hover"
-        },
-        {
-          "type": "hueShift",
-          "hueShift": 180,
-          "var": "--primary-complement"
         }
       ],
       "tkey": "common.theme.BaseColor"
