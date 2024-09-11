@@ -9,10 +9,6 @@ const fromCss = (el, prop) => {
 }
 
 const defaultFamily = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
-// const defaultBorderColors = ['#07a7e3', '#ff6283', '#4bbfbf', '#ff9e40', '#9865ff', '#ffcc55']
-// const defaultBackgroundColors = defaultBorderColors.map(e => e + '20')
-// const getDefaultBorderColor = (i) => defaultBorderColors[i % defaultBorderColors.length]
-// const getDefaultBackgroundColor = (i) => defaultBackgroundColors[i % defaultBackgroundColors.length]
 
 const props = defineProps({
   server: { type: Object, required: true }
