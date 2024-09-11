@@ -66,6 +66,14 @@ export class ApiClient {
     return headers
   }
 
+  async head(url, params = {}, headers = {}, options = {}) {
+    try {
+      return await this._axios.head(this._host + url, { params, ...options, headers: this._enhanceHeaders(headers) })
+    } catch (e) {
+      if (!Array.isArray(options.unhandledErrors) || options.unhandledErrors.indexOf(e.response.status) === -1) this._handleError(e)
+    }
+  }
+
   async get(url, params = {}, headers = {}, options = {}) {
     try {
       return await this._axios.get(this._host + url, { params, ...options, headers: this._enhanceHeaders(headers) })

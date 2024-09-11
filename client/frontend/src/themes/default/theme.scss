@@ -45,6 +45,12 @@
   aspect-ratio: 3.75;
 }
 
+@include breakpoint-only(xs) {
+  .chart {
+    aspect-ratio: 1.25;
+  }
+}
+
 .chart ~ .chart {
   margin-top: 0.25em;
 }
@@ -573,6 +579,56 @@ html[dir="rtl"] .menu.open {
     background-image: -webkit-linear-gradient(145deg, transparent, transparent 30%, rgba(0,0,0,.1) 30%, rgba(0,0,0,.1) 66%, transparent 66%), -webkit-linear-gradient(left, var(--primary), var(--primary));
     background-size: 3.5em 2em, 100% 100%, 100% 100%;
     animation: animate-stripes 5s linear infinite;
+  }
+}
+
+
+
+.query {
+  progress {
+    width: calc(100% - 4em);
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0px solid transparent;
+    background-color: var(--backdrop);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    height: 1.5em;
+    margin: 0 2em;
+  }
+  progress::-moz-progress-bar {
+    background-color: var(--primary);
+  }
+  progress::-webkit-progress-value {
+    background-color: var(--primary);
+  }
+  .playerCountText {
+    position: absolute;
+    width: calc(100% - 4em);
+    text-align: center;
+    line-height: 1.5em;
+    margin: 0 2em;
+    cursor: default;
+  }
+  .players {
+    opacity: 0;
+    display: block;
+    position: absolute;
+    background-color: var(--backdrop);
+    border-radius: var(--border-radius);
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.5s ease-in-out;
+    div {
+      display: inline-block;
+      padding: 0.5em 1em;
+      line-height: 1.5em;
+    }
+  }
+  .playerCountBar:hover ~ .players, .playerCountText:hover ~ .players,
+  .playerCountBar:active ~ .players, .playerCountText:active ~ .players {
+    opacity: 0.9;
   }
 }
 

@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Chart, { _adapters, Tooltip } from 'chart.js/auto'
 import 'chartjs-adapter-date-fns'
+import Query from './Query.vue'
 
 const fromCss = (el, prop) => {
   return getComputedStyle(el).getPropertyValue(prop).trim()
@@ -332,6 +333,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <Query :server="server" />
   <div class="chart memory">
     <canvas ref="memoryChartEl"/>
   </div>

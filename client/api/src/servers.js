@@ -42,6 +42,16 @@ export class ServerApi {
     return res.data
   }
 
+  async getQuery(id) {
+    const res = await this._api.get(`/api/servers/${id}/query`)
+    return res.data
+  }
+
+  async canQuery(id) {
+    await this._api.head(`/api/servers/${id}/query`)
+    return true
+  }
+
   async action(id, action, wait = false) {
     await this._api.post(`/api/servers/${id}/${action}?wait=${wait}`)
     return true
@@ -380,6 +390,14 @@ class Server {
 
   async getStats() {
     return await this._api.server.getStats(this.id)
+  }
+
+  async getQuery() {
+    return await this._api.server.getQuery(this.id)
+  }
+
+  async canQuery() {
+    return await this._api.server.canQuery(this.id)
   }
 
   async start() {
