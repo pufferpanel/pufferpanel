@@ -45,6 +45,7 @@
   "CreateMissingPermissions": "Nemáte oprávnění k zobrazení uzlů nebo šablon, tyto jsou potřebné pro vytvoření serveru, prosím mluvte se správcem",
   "FlagsHeader": "Podmínky automatického spuštění",
   "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
+  "NumPlayersOnline": "{current}/{max} players online",
   "flags": {
     "autoStart": "Spustit server při spuštění uzlu",
     "autoRestartOnGraceful": "Restartovat server, když se normálně zastaví",
