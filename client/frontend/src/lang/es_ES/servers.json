@@ -45,6 +45,7 @@
   "CreateMissingPermissions": "No tienes permisos para ver los nodos o plantillas, los cuales son necesarios para la creación de servidores. Por favor, comunícate con un administrador",
   "FlagsHeader": "Condiciones de inicio automático",
   "SocketWarnConsole": "La conexión WebSocket falló, la consola solo se actualizará cada pocos segundos",
+  "NumPlayersOnline": "{current}/{max} players online",
   "flags": {
     "autoStart": "Iniciar el servidor cuando el nodo arranque",
     "autoRestartOnGraceful": "Reiniciar el servidor cuando se detenga",
