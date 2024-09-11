@@ -45,6 +45,7 @@
   "CreateMissingPermissions": "Não tens permissão para ver os nós ou modelos, que são necessários para criar servidores. Contacta o teu administrador",
   "FlagsHeader": "Condições de início automático",
   "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
+  "NumPlayersOnline": "{current}/{max} players online",
   "flags": {
     "autoStart": "Iniciar o servidor quando o nó inicia",
     "autoRestartOnGraceful": "Reiniciar o servidor quando pára normalmente",
