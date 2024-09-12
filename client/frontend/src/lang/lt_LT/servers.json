@@ -48,7 +48,7 @@
   "NumPlayersOnline": "{current}/{max} players online",
   "flags": {
     "autoStart": "Start the server when the node starts",
-    "autoRestartOnGraceful": "Restart the server when it stops normally",
-    "autoRestartOnCrash": "Restart the server when it crashes"
+    "autoRestartOnGraceful": "Perkrauti serverį kai jis įprastai sustoja",
+    "autoRestartOnCrash": "Perkrauti serverį kai jis sutrinka"
   }
 }
