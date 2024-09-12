@@ -1,42 +1,42 @@
 {
-  "Node": "Node",
-  "Nodes": "Nodes",
-  "Edit": "Edit Node",
-  "Add": "Add Node",
-  "Create": "Create Node",
-  "Update": "Update Node",
-  "Delete": "Delete Node",
-  "ConfirmDelete": "Do you really want to delete the node {name}?",
-  "Created": "Created Node",
-  "Updated": "Updated Node",
-  "Deleted": "Deleted Node",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "Node": "Taškas",
+  "Nodes": "Taškai",
+  "Edit": "Redaguoti tašką",
+  "Add": "Pridėti tašką",
+  "Create": "Kurti tašką",
+  "Update": "Atnaujinti tašką",
+  "Delete": "Ištrinti tašką",
+  "ConfirmDelete": "Ar tikrai norite ištrinti tašką „{name}“?",
+  "Created": "Sukurtas taškas",
+  "Updated": "Atnaujintas taškas",
+  "Deleted": "Ištrintas taškas",
+  "Reachable": "Šis taškas yra taisyklingai paruoštas ir veikia",
+  "Unreachable": "Šis taškas yra arba netaisyklingai paruoštas arba šiuo metu nepasiekiamas",
   "features": {
     "os": {
-      "label": "Operating System",
-      "linux": "Linux",
-      "windows": "Windows"
+      "label": "Operacinė sistema",
+      "linux": "„Linux“",
+      "windows": "„Windows“"
     },
     "arch": {
-      "label": "CPU Architecture",
+      "label": "Procesoriaus architektūra",
       "amd64": "x86 64bit",
       "arm": "ARM 32bit",
       "arm64": "ARM 64bit"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "„Docker“ pasiekiamas",
+      "false": "„Docker“ nepasiekiamas"
     },
-    "envs": "Available Environments"
+    "envs": "Pasiekiamos aplinkos"
   },
-  "PublicHost": "Public Host",
-  "PublicPort": "Public Port",
-  "PrivateHost": "Private Host",
-  "PrivatePort": "Private Port",
-  "SftpPort": "SFTP Port",
-  "WithPrivateAddress": "Use a different host/port for server to server communication",
-  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
+  "PublicHost": "Viešas hostas",
+  "PublicPort": "Viešas portas",
+  "PrivateHost": "Privatus hostas",
+  "PrivatePort": "Privatus portas",
+  "SftpPort": "SFTP portas",
+  "WithPrivateAddress": "Naudoti skirtingą hostą/portą serverio į serverį komunikacijai",
+  "WithPrivateAddressHint": "Šis atskiras adresas yra naudojamas kai pagrindiniui taškui reikia susikalbėti su nauju tašku. Naudinga, pavyzdžiui, kai taškai yra tam pačiam tinkle už NAT.",
   "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
   "Deploy": "Deploy Node",
   "deploy": {
