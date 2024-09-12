@@ -8,7 +8,7 @@
   "ChangePassword": "Keisti slaptažodį",
   "ChangeInfo": "Redaguoti paskyros informaciją",
   "InfoChanged": "Jūsų informacija buvo pakeista",
-  "PreferencesUpdated": "Your preferences has been updated",
+  "PreferencesUpdated": "Jūsų pasirinkimai buvo išsaugoti",
   "PasswordChanged": "Jūsų slaptažodis buvo pakeistas",
   "AccountPassword": "Paskyros slaptažodis",
   "Edit": "Redaguoti vartotoją",
@@ -38,6 +38,6 @@
   "OtpSecret": "Slaptas kodas",
   "OtpConfirm": "Patvirtinkite naudojant 2FA kodą",
   "OtpNeeded": "2FA privaloma",
-  "UserInvited": "User invited",
-  "DeleteSuccess": "User deleted successfully"
+  "UserInvited": "Vartotojas pakviestas",
+  "DeleteSuccess": "Vartotojas sėkmingai ištrintas"
 }
