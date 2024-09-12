@@ -42,7 +42,7 @@
   "InviteUser": "Pakviesti vartotoją",
   "EnvironmentEditHint": "Pakeitimai šiems nustatymams įsigalios tik po serverio definicijos perkrovimo",
   "Command": "Komanda",
-  "CreateMissingPermissions": "You don't have permission to view nodes or templates, these are needed for server creation, please talk to your admin",
+  "CreateMissingPermissions": "Jūs neturite leidimo peržiūrėti taškus ar šablonus, šie yra reikalingi serverio kūrimui, prašome kreiptis pas administratorius",
   "FlagsHeader": "Automatinio startavimo sąlygos",
   "SocketWarnConsole": "Ryšyje WebSocket įvyko klaida, konsolė atsinaujins tik kai kelias sekundes",
   "NumPlayersOnline": "{current}/{max} žaidėjų prisijungę",
