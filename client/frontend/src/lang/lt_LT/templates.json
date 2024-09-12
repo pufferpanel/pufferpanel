@@ -55,7 +55,7 @@
     "Type": "Tipas",
     "Value": "Numatytoji reikšmė",
     "Required": "Šis kintamasis yra privalomas",
-    "UserEdit": "Non-admin users can edit this variable",
+    "UserEdit": "Vartotojai, be administratorių teisių, gali redaguoti šį kintamąjį",
     "Internal": "Vidinis (niekada nerodomas vartotojams ar administratoriams)",
     "Options": "Nustatymai",
     "ConditionHint": "Rodyti šią grupę tik jei atitinka šią sąlygą",
@@ -79,14 +79,14 @@
     "Command": "Tai yra komanda kuri bus įvykdyta, kad startuoti serverį",
     "StopCommand": "Parašyti komandą serverio konsolei, kai vartotojas paspaudžia serverio stabdymo mygtuką",
     "StopSignal": "Išsiųsti signalą serveriui, kai vartotojas paspaudžia serverio stabdymo mygtuką, tai gali, pavyzdžiui, būti naudojama emuliuoti CTRL+C paspaudimą",
-    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
-    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+    "PreRunHook": "Čia jūs galite nustatyti kelis žingsnius kurie bus paleisti, kiekvieną kartą, prieš startuojant serveriui",
+    "PostRunHook": "Čia jūs galite nustatyti kelis žingsnius kurie bus paleisti, kiekvieną kartą, serveriui sustojus"
   },
-  "WorkingDirectory": "Working Directory",
-  "General": "General",
-  "Hooks": "Hooks",
-  "Import": "Import template",
+  "WorkingDirectory": "Darbinė direktorija",
+  "General": "Bendra",
+  "Hooks": "Užkabiai",
+  "Import": "Įkelti šabloną",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties"
+    "CommunityWarning": "Šie šablonai yra sukurti bendruomenės ir tiekiami be jokių garantijų"
   }
 }
