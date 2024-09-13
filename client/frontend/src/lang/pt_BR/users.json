@@ -23,7 +23,7 @@
   "UpdateDetails": "Atualizar detalhes do usuário",
   "UpdatePermissions": "Atualizar Permissões de Usuário",
   "Delete": "Excluir Usuário",
-  "ConfirmDelete": "Do you really want to delete the user {name}?",
+  "ConfirmDelete": "Você realmente deseja excluir o usuario {name}?",
   "UpdateSuccess": "Usuário Atualizado",
   "Details": "Detalhes do Usuário",
   "Permissions": "Permissões",
