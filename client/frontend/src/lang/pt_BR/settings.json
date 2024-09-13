@@ -9,7 +9,7 @@
   "CompanyName": "Nome da empresa",
   "DefaultTheme": "Tema Padrão",
   "RegistrationEnabled": "Permitir que os usuários se registrem",
-  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabledHint": "Usuários registrados sozinhos não podem fazer nada até que determinadas permissões\n\nDesabilitar isso apenas impede o registro direto, convite para um servidor e a página de usuários não são afetados",
   "EmailProvider": "Provedor de e-mail",
   "emailProviders": {
     "none": "Nenhum",
@@ -18,12 +18,12 @@
     "mailjet": "Mailjet"
   },
   "email": {
-    "from": "Sender Address",
-    "domain": "Domain",
-    "key": "API Key",
+    "from": "Endereço do remetente",
+    "domain": "Domínio",
+    "key": "Chave de API",
     "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "username": "Nome do usuário",
+    "password": "Senha"
   },
-  "Saved": "Saved"
+  "Saved": "Salvo"
 }
