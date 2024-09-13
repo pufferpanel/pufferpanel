@@ -1,16 +1,16 @@
 {
-  "Title": "Keyboard Shortcuts",
+  "Title": "Spartieji klavišai",
   "Global": {
-    "Title": "Global",
-    "g a": "Go to Account",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "Title": "Globaliniai",
+    "g a": "Eiti į paskyrą",
+    "g c": "Eiti į panelės konfigūraciją",
+    "g n": "Eiti į taškus",
+    "g s": "Eiti į serverius",
+    "g t": "Eiti į šablonus",
+    "g u": "Eiti į vartotojus"
   },
   "Self": {
-    "Title": "Account",
+    "Title": "Paskyra",
     "t 2": "Go to 2-Factor-Auth tab",
     "t a": "Go to Account Details tab",
     "t o": "Go to OAuth tab",
