@@ -1,8 +1,8 @@
 {
   "ConditionHint": "Only execute this step if this condition is met",
   "mojangdl": {
-    "generic": "Download Minecraft",
-    "formatted": "Download Minecraft"
+    "generic": "Baixar Minecraft",
+    "formatted": "Baixar Minecraft"
   },
   "writefile": {
     "generic": "Write to file",
@@ -63,6 +63,6 @@
   },
   "curseforge": {
     "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "formatted": "Baixar do CurseForge"
   }
 }
