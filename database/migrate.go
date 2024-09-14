@@ -6,7 +6,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
-	"reflect"
 )
 
 func Migrate(dbConn *gorm.DB) error {
@@ -22,11 +21,9 @@ func Migrate(dbConn *gorm.DB) error {
 		&models.TemplateRepo{},
 	}
 
-	for _, v := range dbObjects {
-		logging.Info.Printf("Migrating model: " + reflect.TypeOf(v).Elem().Name())
-		if err := dbConn.AutoMigrate(v); err != nil {
-			return err
-		}
+	dbConn.DisableForeignKeyConstraintWhenMigrating = true
+	if err := dbConn.AutoMigrate(dbObjects...); err != nil {
+		return err
 	}
 
 	m := gormigrate.New(dbConn, &gormigrate.Options{TableName: "migrations", IDColumnName: "id", IDColumnSize: 255, UseTransaction: true, ValidateUnknownMigrations: false}, []*gormigrate.Migration{
