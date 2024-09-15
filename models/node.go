@@ -23,6 +23,8 @@ type Node struct {
 
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
+
+	Local bool `gorm:"-" json:"-"`
 }
 
 func (n *Node) IsValid() (err error) {
@@ -45,7 +47,7 @@ func (n *Node) BeforeSave(*gorm.DB) (err error) {
 }
 
 func (n *Node) IsLocal() bool {
-	return n.ID == LocalNode.ID || n.Name == LocalNode.Name
+	return n.Local
 }
 
 var LocalNode = &Node{
@@ -56,6 +58,7 @@ var LocalNode = &Node{
 	PublicPort:  8080,
 	PrivatePort: 8080,
 	SFTPPort:    5657,
+	Local:       true,
 }
 
 func init() {
