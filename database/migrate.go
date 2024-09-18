@@ -21,26 +21,28 @@ func Migrate(dbConn *gorm.DB) error {
 		&models.TemplateRepo{},
 	}
 
+	session := dbConn.Session(&gorm.Session{})
+
 	//for now... screw databases
 	switch GetDialect() {
 	case "mysql":
-		err := dbConn.Raw("SET GLOBAL FOREIGN_KEY_CHECKS=0").Error
+		err := session.Exec("SET FOREIGN_KEY_CHECKS=0").Error
 		if err != nil {
 			logging.Error.Printf("Error disabling FKs to do migration: %s", err.Error())
 		}
 	}
 
-	if err := dbConn.AutoMigrate(dbObjects...); err != nil {
+	if err := session.AutoMigrate(dbObjects...); err != nil {
 		return err
 	}
 
 	switch GetDialect() {
 	case "mysql":
-		err := dbConn.Raw("SET GLOBAL FOREIGN_KEY_CHECKS=1").Error
+		err := session.Exec("SET FOREIGN_KEY_CHECKS=1").Error
 		logging.Error.Printf("Error re-enabling FKs: %s", err.Error())
 	}
 
-	m := gormigrate.New(dbConn, &gormigrate.Options{TableName: "migrations", IDColumnName: "id", IDColumnSize: 255, UseTransaction: true, ValidateUnknownMigrations: false}, []*gormigrate.Migration{
+	m := gormigrate.New(session, &gormigrate.Options{TableName: "migrations", IDColumnName: "id", IDColumnSize: 255, UseTransaction: true, ValidateUnknownMigrations: false}, []*gormigrate.Migration{
 		{
 			ID: "1658926619",
 			Migrate: func(db *gorm.DB) error {
