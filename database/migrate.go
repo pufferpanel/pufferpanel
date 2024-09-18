@@ -6,6 +6,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
+	"strings"
 )
 
 func Migrate(dbConn *gorm.DB) error {
@@ -22,24 +23,48 @@ func Migrate(dbConn *gorm.DB) error {
 	}
 
 	session := dbConn.Session(&gorm.Session{})
+	migrator := session.Migrator()
 
-	//for now... screw databases
-	switch GetDialect() {
-	case "mysql":
-		err := session.Exec("SET FOREIGN_KEY_CHECKS=0").Error
-		if err != nil {
-			logging.Error.Printf("Error disabling FKs to do migration: %s", err.Error())
-		}
-	}
+	z := gormigrate.New(session, &gormigrate.Options{TableName: "migrations", IDColumnName: "id", IDColumnSize: 255, UseTransaction: true, ValidateUnknownMigrations: false}, []*gormigrate.Migration{
+		{
+			ID: "1726675832",
+			Migrate: func(db *gorm.DB) error {
+				//delete all indices, because we need to just recreate them
+				logging.Info.Printf("Migrate id:1726675832")
+				for _, v := range dbObjects {
+					m := db.Migrator()
+					indices, err := m.GetIndexes(v)
+					if err != nil {
+						return err
+					}
 
-	if err := session.AutoMigrate(dbObjects...); err != nil {
+					for _, z := range indices {
+						if isPrim, ok := z.PrimaryKey(); ok && isPrim {
+							continue
+						}
+
+						if strings.HasPrefix(z.Name(), "fk_") {
+							if err = m.DropConstraint(v, z.Name()); err != nil {
+								return err
+							}
+						}
+
+						if err = m.DropIndex(v, z.Name()); err != nil {
+							return err
+						}
+					}
+				}
+				return nil
+			},
+		},
+	})
+
+	if err := z.Migrate(); err != nil {
 		return err
 	}
 
-	switch GetDialect() {
-	case "mysql":
-		err := session.Exec("SET FOREIGN_KEY_CHECKS=1").Error
-		logging.Error.Printf("Error re-enabling FKs: %s", err.Error())
+	if err := migrator.AutoMigrate(dbObjects...); err != nil {
+		return err
 	}
 
 	m := gormigrate.New(session, &gormigrate.Options{TableName: "migrations", IDColumnName: "id", IDColumnSize: 255, UseTransaction: true, ValidateUnknownMigrations: false}, []*gormigrate.Migration{
