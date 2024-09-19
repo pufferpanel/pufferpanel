@@ -12,7 +12,7 @@ import (
 
 type Node struct {
 	ID          uint   `json:"-"`
-	Name        string `gorm:"column:name;not null;size:100;uniqueIndex" json:"-" validate:"required,printascii"`
+	Name        string `gorm:"column:name;not null;size:100;uniqueIndex;unique" json:"-" validate:"required,printascii"`
 	PublicHost  string `gorm:"column:public_host;not null;size:100" json:"-" validate:"required,ip|fqdn|hostname"`
 	PrivateHost string `gorm:"column:private_host;not null;size:100" json:"-" validate:"required,ip|fqdn|hostname"`
 	PublicPort  uint16 `gorm:"column:public_port;not null;default:8080" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`

@@ -6,7 +6,7 @@ import (
 
 type Session struct {
 	ID             uint      `gorm:"column:id;primaryKey;autoIncrement" json:"-"`
-	Token          string    `gorm:"column:token;not null;size:64;uniqueIndex" json:"-"`
+	Token          string    `gorm:"column:token;not null;size:64;uniqueIndex;unique" json:"-"`
 	ExpirationTime time.Time `gorm:"column:expiration_time;not null;index" json:"-"`
 
 	UserId *uint `gorm:"column:user_id;index" json:"-"`

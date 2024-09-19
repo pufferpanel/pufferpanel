@@ -8,7 +8,7 @@ import (
 )
 
 type Server struct {
-	Name       string `gorm:"column:name;not null;size:40" json:"-" validate:"required,printascii"`
+	Name       string `gorm:"column:name;not null;size:40;unique" json:"-" validate:"required,printascii"`
 	Identifier string `gorm:"column:identifier;primaryKey;size:20" json:"-" validate:"required,printascii"`
 
 	RawNodeID *uint `gorm:"column:node_id;index" json:"-" validate:"-"`
