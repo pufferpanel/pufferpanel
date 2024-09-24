@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/spf13/viper"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 )
@@ -41,6 +42,15 @@ func LoadConfigFile(configFile string) error {
 
 	if err := viper.ReadInConfig(); err != nil {
 		if !errors.As(err, &configFileNotFoundError) {
+			return err
+		}
+	}
+
+	if DataRootFolder.Value() == "" {
+		//we need to set root and save it
+		serversDir := ServersFolder.Value()
+		err := DataRootFolder.Set(filepath.Dir(serversDir), true)
+		if err != nil {
 			return err
 		}
 	}
