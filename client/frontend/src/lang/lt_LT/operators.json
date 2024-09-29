@@ -1,68 +1,68 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Vykdyti šį žingsnį tik jei atitinka šią sąlygą",
   "mojangdl": {
-    "generic": "Download Minecraft",
-    "formatted": "Download Minecraft"
+    "generic": "Parsiųsti „Minecraft“",
+    "formatted": "Parsiųsti „Minecraft“"
   },
   "writefile": {
-    "generic": "Write to file",
-    "formatted": "Write to file {target}"
+    "generic": "Rašyti į failą",
+    "formatted": "Rašyti į failą {target}"
   },
   "resolveforgeversion": {
     "generic": "Resolve Minecraft Forge Version",
     "formatted": "Resolve Minecraft Forge Version"
   },
   "download": {
-    "generic": "Download file(s)",
-    "formatted": "Download {file} | Download {n} files",
-    "files": "Files"
+    "generic": "Parsiųsti failą(-us)",
+    "formatted": "Parsiųsti {file} | Parsiųsti {n} failus",
+    "files": "Failai"
   },
   "command": {
-    "generic": "Run command(s)",
-    "formatted": "Run {command} | Run {n} commands",
-    "commands": "Commands"
+    "generic": "Vykdyti komandą(-as)",
+    "formatted": "Vykdyti {command} | Vykdyti {n} komandas",
+    "commands": "Komandos"
   },
   "alterfile": {
-    "generic": "Modify a file",
-    "formatted": "Modify file {target}",
+    "generic": "Redaguoti failą",
+    "formatted": "Redaguoti failą {target}",
     "regex": "Treat search string as regular expression",
-    "search": "Search",
-    "replace": "Replace matches with"
+    "search": "Ieškoti",
+    "replace": "Sukeisti atitikmenis su"
   },
   "move": {
-    "generic": "Move or rename a file",
-    "formatted": "Move file {source} to {target}",
-    "source": "Source Path",
-    "target": "Target Path"
+    "generic": "Perkelti ar pervadinti failą",
+    "formatted": "Perkelti failą {source} į {target}",
+    "source": "Šaltinio takas",
+    "target": "Taikinio takas"
   },
   "mkdir": {
-    "generic": "Create a directory",
-    "formatted": "Create directory {target}"
+    "generic": "Kurti direktoriją",
+    "formatted": "Kurti direktoriją {target}"
   },
   "steamgamedl": {
-    "generic": "Install from Steam",
-    "formatted": "Install Steam App ID {appId}",
-    "appId": "Steam App ID"
+    "generic": "Instaliuoti iš „Steam“",
+    "formatted": "Instaliuoti „Steam App“ ID {appId}",
+    "appId": "„Steam App“ ID"
   },
   "javadl": {
-    "generic": "Install Java",
-    "formatted": "Install Java {version}"
+    "generic": "Instaliuoti „Java“",
+    "formatted": "Instaliuoti „Java“ {version}"
   },
   "forgedl": {
-    "generic": "Download Minecraft Forge",
-    "formatted": "Download Minecraft Forge"
+    "generic": "Parsiųsti „Minecraft Forge“",
+    "formatted": "Parsiųsti „Minecraft Forge“"
   },
   "spongeforgedl": {
-    "generic": "Download Minecraft SpongeForge",
-    "formatted": "Download Minecraft SpongeForge",
+    "generic": "Parsiųsti „Minecraft SpongeForge“",
+    "formatted": "Parsiųsti „Minecraft SpongeForge“",
     "releaseType": "Release Type"
   },
   "fabricdl": {
-    "generic": "Download Minecraft Fabric",
-    "formatted": "Download Minecraft Fabric"
+    "generic": "Parsiųsti „Minecraft Fabric“",
+    "formatted": "Parsiųsti „Minecraft Fabric“"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "generic": "Parsiųsti iš „CurseForge“",
+    "formatted": "Parsiųsti iš „CurseForge“"
   }
 }

@@ -1,50 +1,50 @@
 {
-  "Node": "Node",
-  "Nodes": "Nodes",
-  "Edit": "Edit Node",
-  "Add": "Add Node",
-  "Create": "Create Node",
-  "Update": "Update Node",
-  "Delete": "Delete Node",
-  "ConfirmDelete": "Do you really want to delete the node {name}?",
-  "Created": "Created Node",
-  "Updated": "Updated Node",
-  "Deleted": "Deleted Node",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "Node": "Taškas",
+  "Nodes": "Taškai",
+  "Edit": "Redaguoti tašką",
+  "Add": "Pridėti tašką",
+  "Create": "Kurti tašką",
+  "Update": "Atnaujinti tašką",
+  "Delete": "Ištrinti tašką",
+  "ConfirmDelete": "Ar tikrai norite ištrinti tašką „{name}“?",
+  "Created": "Sukurtas taškas",
+  "Updated": "Atnaujintas taškas",
+  "Deleted": "Ištrintas taškas",
+  "Reachable": "Šis taškas yra taisyklingai paruoštas ir veikia",
+  "Unreachable": "Šis taškas yra arba netaisyklingai paruoštas arba šiuo metu nepasiekiamas",
   "features": {
     "os": {
-      "label": "Operating System",
-      "linux": "Linux",
-      "windows": "Windows"
+      "label": "Operacinė sistema",
+      "linux": "„Linux“",
+      "windows": "„Windows“"
     },
     "arch": {
-      "label": "CPU Architecture",
+      "label": "Procesoriaus architektūra",
       "amd64": "x86 64bit",
       "arm": "ARM 32bit",
       "arm64": "ARM 64bit"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "„Docker“ pasiekiamas",
+      "false": "„Docker“ nepasiekiamas"
     },
-    "envs": "Available Environments"
+    "envs": "Pasiekiamos aplinkos"
   },
-  "PublicHost": "Public Host",
-  "PublicPort": "Public Port",
-  "PrivateHost": "Private Host",
-  "PrivatePort": "Private Port",
-  "SftpPort": "SFTP Port",
-  "WithPrivateAddress": "Use a different host/port for server to server communication",
-  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
-  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
+  "PublicHost": "Viešas hostas",
+  "PublicPort": "Viešas portas",
+  "PrivateHost": "Privatus hostas",
+  "PrivatePort": "Privatus portas",
+  "SftpPort": "SFTP portas",
+  "WithPrivateAddress": "Naudoti skirtingą hostą/portą serverio į serverį komunikacijai",
+  "WithPrivateAddressHint": "Šis atskiras adresas yra naudojamas kai pagrindiniui taškui reikia susikalbėti su nauju tašku. Naudinga, pavyzdžiui, kai taškai yra tam pačiam tinkle už NAT.",
+  "LocalNodeEdit": "Vietinis taškas neturi jokių redaguojamų nustatymų\n\nKad pakeisti rodomą hostą su serveriais hostintais šiuose taškuose, pakeiskite panelės pagrindinį url panelės nustatymuose",
   "Deploy": "Deploy Node",
   "deploy": {
-    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
-    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
-    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
-    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
-    "Step5": "### Your new node is now set up and ready to go"
+    "Step1": "## 1 žingsnis\n\nInstaliuokite „PufferPanel“ naujame serveryje, [pasiskaitykite dokumentaciją](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## 2 žingsnis\n\nSustabdykite „PufferPanel“ paslaugą naujame serveryje, jeigu buvo pradėta instaliacijos metu, įvedant `sudo systemctl stop pufferpanel`",
+    "Step3": "## 3 žingsnis\n\nPakeiskite „PufferPanel“ nustatymų failo turinį naujame serveryje su kodu žemiau\n\nNustatymų failas dažniausiai randamas `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## 4 žingsnis\n\nĮgalinkit ir perkraukit/startuokite „PufferPanel“ paslaugą naujame serveryje, įvedant `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Jūsų naujas taškas dabar jau sureguliuotas ir paruoštas naudojimui"
   },
   "DeploymentInstruction": "To deploy the node, install PufferPanel on the new server and place the code below in `/etc/pufferpanel/config.json`  \nRestart PufferPanel on the new server afterwards."
 }

@@ -12,6 +12,10 @@
   "Statistics": "Statistikos",
   "CPU": "Procesorius",
   "Memory": "Atmintis",
+  "JvmHeapAlloc": "Heapspace allocated",
+  "JvmHeapUsed": "Heapspace in use",
+  "JvmMetaAlloc": "Metaspace allocated",
+  "JvmMetaUsed": "Metaspace in use",
   "Files": "Failai",
   "Name": "Serverio pavadinimas",
   "EditName": "Redaguoti serverio pavadinimą",
@@ -23,7 +27,7 @@
   "Settings": "Nustatymai",
   "SaveSettings": "Išsaugoti nustatymus",
   "SettingsSaved": "Nustatymai išsaugoti",
-  "AdminOnlySetting": "This setting is only visible to admins",
+  "AdminOnlySetting": "Šis nustatymas matomas tiktais administratoriams",
   "NoSettings": "Šis serveris neturi jokių nustatymų, kuriuos galėtumėte redaguoti",
   "Delete": "Ištrinti serverį",
   "ConfirmDelete": "Ar tikrai norite ištrinti serverį, pavadinimu \"{name}\"?",
@@ -38,12 +42,13 @@
   "InviteUser": "Pakviesti vartotoją",
   "EnvironmentEditHint": "Pakeitimai šiems nustatymams įsigalios tik po serverio definicijos perkrovimo",
   "Command": "Komanda",
-  "CreateMissingPermissions": "You don't have permission to view nodes or templates, these are needed for server creation, please talk to your admin",
-  "FlagsHeader": "Autostart conditions",
-  "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
+  "CreateMissingPermissions": "Jūs neturite leidimo peržiūrėti taškus ar šablonus, šie yra reikalingi serverio kūrimui, prašome kreiptis pas administratorius",
+  "FlagsHeader": "Automatinio startavimo sąlygos",
+  "SocketWarnConsole": "Ryšyje WebSocket įvyko klaida, konsolė atsinaujins tik kai kelias sekundes",
+  "NumPlayersOnline": "{current}/{max} žaidėjų prisijungę",
   "flags": {
-    "autoStart": "Start the server when the node starts",
-    "autoRestartOnGraceful": "Restart the server when it stops normally",
-    "autoRestartOnCrash": "Restart the server when it crashes"
+    "autoStart": "Startuoti serverį kai startuoja taškas",
+    "autoRestartOnGraceful": "Perkrauti serverį kai jis įprastai sustoja",
+    "autoRestartOnCrash": "Perkrauti serverį kai jis sutrinka"
   }
 }

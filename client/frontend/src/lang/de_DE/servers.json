@@ -12,6 +12,10 @@
   "Statistics": "Statistiken",
   "CPU": "CPU",
   "Memory": "Arbeitsspeicher",
+  "JvmHeapAlloc": "Heapspace allocated",
+  "JvmHeapUsed": "Heapspace in use",
+  "JvmMetaAlloc": "Metaspace allocated",
+  "JvmMetaUsed": "Metaspace in use",
   "Files": "Dateien",
   "Name": "Servername",
   "EditName": "Servername bearbeiten",
@@ -41,6 +45,7 @@
   "CreateMissingPermissions": "Sie haben nicht die Berechtigung, Knoten oder Vorlagen anzusehen. Diese werden für die Server-Erstellung benötigt. Bitte sprechen Sie mit dem Administrator",
   "FlagsHeader": "Autostart-Bedingungen",
   "SocketWarnConsole": "Die Websocket-Verbindung ist fehlgeschlagen, die Konsole wird nur alle paar Sekunden aktualisiert",
+  "NumPlayersOnline": "{current}/{max} players online",
   "flags": {
     "autoStart": "Server starten, wenn der Knoten startet",
     "autoRestartOnGraceful": "Server neu starten, wenn er gewöhnlich gestoppt ist",

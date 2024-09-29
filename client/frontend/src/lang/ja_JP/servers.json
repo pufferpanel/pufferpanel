@@ -12,6 +12,10 @@
   "Statistics": "統計",
   "CPU": "CPU",
   "Memory": "メモリ",
+  "JvmHeapAlloc": "Heapspace allocated",
+  "JvmHeapUsed": "Heapspace in use",
+  "JvmMetaAlloc": "Metaspace allocated",
+  "JvmMetaUsed": "Metaspace in use",
   "Files": "ファイル",
   "Name": "サーバー名",
   "EditName": "サーバー名を編集",
@@ -41,6 +45,7 @@
   "CreateMissingPermissions": "ノードやテンプレートを表示する権限がありません。サーバーの作成に必要です。管理者に連絡してください。",
   "FlagsHeader": "自動開始条件",
   "SocketWarnConsole": "WebSocket接続に失敗しました。コンソールは数秒ごとに更新されます",
+  "NumPlayersOnline": "{current}/{max} players online",
   "flags": {
     "autoStart": "ノード開始時にサーバーを起動する",
     "autoRestartOnGraceful": "正常に停止したらサーバーを再起動します",

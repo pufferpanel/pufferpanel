@@ -3,7 +3,7 @@
   "Language": "Kalba",
   "Online": "Įjungtas",
   "Offline": "Išjungtas",
-  "Installing": "Installing",
+  "Installing": "Instaliuojama",
   "Unknown": "Nežinomas",
   "Loading": "Kraunasi...",
   "Description": "Aprašymas",
@@ -14,9 +14,9 @@
   "Port": "Portas",
   "Collapse": "Suskleisti",
   "Expand": "Išskleisti",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copy": "Kopijuoti į iškarpinę",
+  "Copied": "Nukopijuota į iškarpinę",
+  "Back": "Atgal",
   "Next": "Toliau",
   "Details": "Išsamiau",
   "ErrorDetails": "Klaidos informacija",
@@ -26,8 +26,8 @@
   "Apply": "Taikyti",
   "Confirm": "Patvirtinti",
   "Condition": "Būklė",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Discard": "Atsikratyti",
+  "ConfirmLeave": "Jūs turite neišsaugotų pakeitimų, ar norite atsikratyti šių pakeitimų ir palikti puslapį?",
   "theme": {
     "Theme": "Tema",
     "Mode": "Režimas",
@@ -48,5 +48,5 @@
       "List": "Sąrašas"
     }
   },
-  "NoResults": "No Results"
+  "NoResults": "Nėra rezultatų"
 }

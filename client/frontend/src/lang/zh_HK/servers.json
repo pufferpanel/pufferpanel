@@ -12,6 +12,10 @@
   "Statistics": "Statistics",
   "CPU": "CPU",
   "Memory": "記憶體",
+  "JvmHeapAlloc": "Heapspace allocated",
+  "JvmHeapUsed": "Heapspace in use",
+  "JvmMetaAlloc": "Metaspace allocated",
+  "JvmMetaUsed": "Metaspace in use",
   "Files": "Files",
   "Name": "伺服器名稱",
   "EditName": "Edit server name",
@@ -41,6 +45,7 @@
   "CreateMissingPermissions": "You don't have permission to view nodes or templates, these are needed for server creation, please talk to your admin",
   "FlagsHeader": "Autostart conditions",
   "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
+  "NumPlayersOnline": "{current}/{max} players online",
   "flags": {
     "autoStart": "Start the server when the node starts",
     "autoRestartOnGraceful": "Restart the server when it stops normally",

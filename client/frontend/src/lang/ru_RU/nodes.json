@@ -46,5 +46,5 @@
     "Step4": "## Шаг 4\n\nВключите и (пере)запустите службу PufferPanel на новом сервере, выполнив команду `sudo systemctl enable --now pufferpanel`",
     "Step5": "### Ваш новый хост теперь настроен и готов к работе"
   },
-  "DeploymentInstruction": "Чтобы развернуть хост, установите PufferPanel на новый сервер и поместите конфигурационный файл в `/etc/pufferpanel/`<br/>После, перезагрузите PufferPanel на сервере."
+  "DeploymentInstruction": "Чтобы развернуть хост, установите PufferPanel на новый сервер и поместите конфигурационный файл в `/etc/pufferpanel/`  \nПосле этого перезагрузите PufferPanel на новом сервере."
 }

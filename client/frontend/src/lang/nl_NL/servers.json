@@ -12,6 +12,10 @@
   "Statistics": "Statistieken",
   "CPU": "CPU",
   "Memory": "Geheugen",
+  "JvmHeapAlloc": "Heapspace allocated",
+  "JvmHeapUsed": "Heapspace in use",
+  "JvmMetaAlloc": "Metaspace allocated",
+  "JvmMetaUsed": "Metaspace in use",
   "Files": "Bestanden",
   "Name": "Server Naam",
   "EditName": "Edit server name",
@@ -41,6 +45,7 @@
   "CreateMissingPermissions": "You don't have permission to view nodes or templates, these are needed for server creation, please talk to your admin",
   "FlagsHeader": "Autostart conditions",
   "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
+  "NumPlayersOnline": "{current}/{max} players online",
   "flags": {
     "autoStart": "Start the server when the node starts",
     "autoRestartOnGraceful": "Restart the server when it stops normally",

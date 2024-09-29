@@ -12,6 +12,10 @@
   "Statistics": "Statistikk",
   "CPU": "Prosessor",
   "Memory": "Minne",
+  "JvmHeapAlloc": "Heapspace allocated",
+  "JvmHeapUsed": "Heapspace in use",
+  "JvmMetaAlloc": "Metaspace allocated",
+  "JvmMetaUsed": "Metaspace in use",
   "Files": "Filer",
   "Name": "Server Navn",
   "EditName": "Edit server name",
@@ -41,6 +45,7 @@
   "CreateMissingPermissions": "Du har ikke tilatelse til å se noder eller maler, disse trengs for opprettelse av servere, hør med din administrator",
   "FlagsHeader": "Vilkår for autostart",
   "SocketWarnConsole": "The websocket connection failed, the console will only update every few seconds",
+  "NumPlayersOnline": "{current}/{max} players online",
   "flags": {
     "autoStart": "Start serveren når noden starter",
     "autoRestartOnGraceful": "Start serveren på nyttnår den stopper normalt",

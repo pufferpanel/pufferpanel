@@ -1,37 +1,37 @@
 {
-  "Title": "Keyboard Shortcuts",
+  "Title": "Spartieji klavišai",
   "Global": {
-    "Title": "Global",
-    "g a": "Go to Account",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "Title": "Globaliniai",
+    "g a": "Eiti į paskyrą",
+    "g c": "Eiti į panelės konfigūraciją",
+    "g n": "Eiti į taškus",
+    "g s": "Eiti į serverius",
+    "g t": "Eiti į šablonus",
+    "g u": "Eiti į vartotojus"
   },
   "Self": {
-    "Title": "Account",
+    "Title": "Paskyra",
     "t 2": "Go to 2-Factor-Auth tab",
     "t a": "Go to Account Details tab",
     "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
-    "t s": "Go to Preferences tab"
+    "t p": "Eiti į slaptažodžių skiltį",
+    "t s": "Eiti į nustatymų skiltį"
   },
   "ServerList": {
-    "Title": "Servers",
-    "c": "Create a new server",
-    "l": "Focus the first server in the list"
+    "Title": "Serveriai",
+    "c": "Kurti naują serverį",
+    "l": "Fokusuoti pirmą serverį sąraše"
   },
   "ServerView": {
-    "Title": "Server",
-    "t c": "Go to Console tab",
-    "t i": "Go to Statistics tab",
-    "t f": "Go to Files tab",
-    "t s": "Go to Settings tab",
-    "t u": "Go to Users tab",
-    "t 6": "Go to SFTP tab",
-    "t 7": "Go to Api tab",
-    "t a": "Go to Admin tab",
+    "Title": "Serveris",
+    "t c": "Eiti į konsolės skiltį",
+    "t i": "Eiti į statistikų skiltį",
+    "t f": "Eiti į failų skiltį",
+    "t s": "Eiti į nustatymų skiltį",
+    "t u": "Eiti į vartotojų skiltį",
+    "t 6": "Eiti į SFTP skiltį",
+    "t 7": "Eiti į API skiltį",
+    "t a": "Eiti į administratoriaus skiltį",
     "c c": "Clear Console",
     "r r": "Start Server",
     "r s": "Stop Server",
