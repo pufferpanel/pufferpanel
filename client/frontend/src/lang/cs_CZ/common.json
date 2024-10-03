@@ -1,5 +1,5 @@
 {
-  "Name": "Jméno",
+  "Name": "Jméno ",
   "Language": "Jazyk",
   "Online": "Zapnut",
   "Offline": "Vypnut",
@@ -15,8 +15,8 @@
   "Collapse": "Sbalit",
   "Expand": "Rozbalit",
   "Copy": "Kopírovat",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copied": "Zkopírováno",
+  "Back": "Zpět",
   "Next": "Další",
   "Details": "Podrobnosti",
   "ErrorDetails": "Podrobnosti o chybě",
@@ -48,5 +48,5 @@
       "List": "Seznam"
     }
   },
-  "NoResults": "No Results"
+  "NoResults": "Žádné výsledky"
 }
