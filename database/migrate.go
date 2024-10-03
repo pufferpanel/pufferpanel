@@ -3,6 +3,7 @@ package database
 import (
 	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
@@ -31,6 +32,7 @@ func Migrate(dbConn *gorm.DB) error {
 			Migrate: func(db *gorm.DB) error {
 				//delete all indices, because we need to just recreate them
 				logging.Info.Printf("Migrate id:1726675832")
+
 				for _, v := range dbObjects {
 					m := db.Migrator()
 					indices, err := m.GetIndexes(v)
@@ -44,8 +46,15 @@ func Migrate(dbConn *gorm.DB) error {
 						}
 
 						if strings.HasPrefix(z.Name(), "fk_") {
-							if err = m.DropConstraint(v, z.Name()); err != nil {
-								return err
+							switch config.DatabaseDialect.Value() {
+							case "mysql":
+								if err = db.Exec("alter table " + z.Table() + " drop foreign key " + z.Name()).Error; err != nil {
+									return err
+								}
+							default:
+								if err = m.DropConstraint(v, z.Name()); err != nil {
+									return err
+								}
 							}
 						}
 
@@ -54,6 +63,7 @@ func Migrate(dbConn *gorm.DB) error {
 						}
 					}
 				}
+
 				return nil
 			},
 		},
