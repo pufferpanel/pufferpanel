@@ -66,7 +66,7 @@ func (t *multiWriter) WriteString(s string) (n int, err error) {
 // If a listed writer returns an error, that overall write operation
 // stops and returns the error; it does not continue down the list.
 func MultiWriter(writers ...io.Writer) io.Writer {
-	allWriters := make([]io.Writer, len(writers))
+	allWriters := make([]io.Writer, 0, len(writers))
 	for _, w := range writers {
 		if isNull(w) {
 			continue
