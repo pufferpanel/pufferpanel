@@ -7,7 +7,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
-	"strings"
 )
 
 func Migrate(dbConn *gorm.DB) error {
@@ -28,6 +27,36 @@ func Migrate(dbConn *gorm.DB) error {
 
 	z := gormigrate.New(session, &gormigrate.Options{TableName: "migrations", IDColumnName: "id", IDColumnSize: 255, UseTransaction: true, ValidateUnknownMigrations: false}, []*gormigrate.Migration{
 		{
+			ID: "1726675832-mysql",
+			Migrate: func(db *gorm.DB) error {
+				logging.Info.Printf("Migrate id:1726675832-mysql")
+
+				if config.DatabaseDialect.Value() != "mysql" {
+					return nil
+				}
+
+				//at this point for mysql, just manually do the queries...
+
+				type FKs struct {
+					Table string `gorm:"column:TABLE_NAME"`
+					Name  string `gorm:"column:CONSTRAINT_NAME"`
+				}
+				var results []FKs
+				err := db.Raw("SELECT TABLE_NAME, CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = (SELECT DATABASE())").Scan(&results).Error
+				if err != nil {
+					return err
+				}
+
+				for _, v := range results {
+					if err = db.Exec("alter table " + v.Table + " drop foreign key " + v.Name).Error; err != nil {
+						return err
+					}
+				}
+
+				return nil
+			},
+		},
+		{
 			ID: "1726675832",
 			Migrate: func(db *gorm.DB) error {
 				//delete all indices, because we need to just recreate them
@@ -43,19 +72,6 @@ func Migrate(dbConn *gorm.DB) error {
 					for _, z := range indices {
 						if isPrim, ok := z.PrimaryKey(); ok && isPrim {
 							continue
-						}
-
-						if strings.HasPrefix(z.Name(), "fk_") {
-							switch config.DatabaseDialect.Value() {
-							case "mysql":
-								if err = db.Exec("alter table " + z.Table() + " drop foreign key " + z.Name()).Error; err != nil {
-									return err
-								}
-							default:
-								if err = m.DropConstraint(v, z.Name()); err != nil {
-									return err
-								}
-							}
 						}
 
 						if err = m.DropIndex(v, z.Name()); err != nil {
