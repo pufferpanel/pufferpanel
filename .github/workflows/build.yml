@@ -116,17 +116,17 @@ jobs:
             web/swagger/swagger.yaml
           if-no-files-found: error
 
-      - name: Generate folders and remove excess files
-        run: |
-          rm -rf .git .github web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
-          zip -r pufferpanel_build_artifact.zip *     
-          
-      - name: Prep
+      - name: Set CurseForge Key
         env:
           secret_set: ${{ secrets.CURSEFORGE_CODE != '' }}
         if: ${{ env.secret_set }}
         run: |
           echo '${{ secrets.CURSEFORGE_CODE }}' > config/curseforge.go
+
+      - name: Generate folders and remove excess files
+        run: |
+          rm -rf .git .github web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/client/frontend/dist/*.map
+          zip -r pufferpanel_build_artifact.zip *
 
       - name: Generate job artifact
         uses: actions/upload-artifact@v3
