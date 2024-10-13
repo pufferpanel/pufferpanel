@@ -492,19 +492,16 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		hostConfig.PortBindings = nat.PortMap{}
 	}
 
-	_, bindings, err := nat.ParsePortSpecs(d.Ports)
+	_, hostConfig.PortBindings, err = nat.ParsePortSpecs(d.Ports)
 	if err != nil {
 		return err
-	}
-
-	for k, v := range bindings {
-		hostConfig.PortBindings[k] = v
 	}
 
 	if containerConfig.ExposedPorts == nil {
 		containerConfig.ExposedPorts = make(nat.PortSet)
 	}
-	for k := range bindings {
+
+	for k := range hostConfig.PortBindings {
 		containerConfig.ExposedPorts[k] = struct{}{}
 	}
 
