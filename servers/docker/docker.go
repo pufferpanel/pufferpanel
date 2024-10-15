@@ -383,13 +383,6 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 		return err
 	}
 
-	//newEnv := os.Environ()
-	newEnv := []string{"HOME=" + containerRoot}
-
-	for k, v := range data.Environment {
-		newEnv = append(newEnv, fmt.Sprintf("%s=%s", k, v))
-	}
-
 	cmdSlice := strslice.StrSlice{}
 	if data.Command != "" {
 		cmdSlice = append(cmdSlice, data.Command)
@@ -430,7 +423,29 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 	}
 
 	//append anything the container config added
-	containerConfig.Env = append(newEnv, containerConfig.Env...)
+	var envVars = make(map[string]string)
+
+	for _, v := range containerConfig.Env {
+		key, value, valid := strings.Cut(v, "=")
+		if !valid {
+			continue
+		}
+		if strings.HasPrefix(key, "PUFFER_") {
+			continue
+		}
+		envVars[key] = value
+	}
+	envVars["HOME"] = containerRoot
+	envVars["TERM"] = "xterm-256color"
+
+	for k, v := range data.Environment {
+		envVars[k] = v
+	}
+
+	containerConfig.Env = make([]string, 0)
+	for k, v := range envVars {
+		containerConfig.Env = append(containerConfig.Env, fmt.Sprintf("%s=%s", k, v))
+	}
 
 	if len(containerConfig.Entrypoint) == 0 && len(cmdSlice) > 0 {
 		containerConfig.Entrypoint = cmdSlice

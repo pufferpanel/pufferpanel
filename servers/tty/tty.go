@@ -34,13 +34,26 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 
 	pr := exec.Command(steps.Command, steps.Arguments...)
 	pr.Dir = t.GetRootDirectory()
+
+	var envVars = make(map[string]string)
+
 	for _, v := range os.Environ() {
-		if !strings.HasPrefix(v, "PUFFER_") {
-			pr.Env = append(pr.Env, v)
+		key, value, valid := strings.Cut(v, "=")
+		if !valid {
+			continue
 		}
+		if strings.HasPrefix(key, "PUFFER_") {
+			continue
+		}
+		envVars[key] = value
 	}
-	pr.Env = append(pr.Env, "HOME="+t.GetRootDirectory(), "TERM=xterm-256color")
+	envVars["HOME"] = t.GetRootDirectory()
+	envVars["TERM"] = "xterm-256color"
 	for k, v := range steps.Environment {
+		envVars[k] = v
+	}
+
+	for k, v := range envVars {
 		pr.Env = append(pr.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 

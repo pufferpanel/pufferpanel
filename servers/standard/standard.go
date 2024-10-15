@@ -25,13 +25,25 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	s.mainProcess = exec.Command(steps.Command, steps.Arguments...)
 	s.mainProcess.Dir = s.GetRootDirectory()
 
+	var envVars = make(map[string]string)
+
 	for _, v := range os.Environ() {
-		if !strings.HasPrefix(v, "PUFFER_") {
-			s.mainProcess.Env = append(s.mainProcess.Env, v)
+		key, value, valid := strings.Cut(v, "=")
+		if !valid {
+			continue
 		}
+		if strings.HasPrefix(key, "PUFFER_") {
+			continue
+		}
+		envVars[key] = value
 	}
-	s.mainProcess.Env = append(s.mainProcess.Env, "HOME="+s.GetRootDirectory(), "TERM=xterm-256color")
+	envVars["HOME"] = s.GetRootDirectory()
+	envVars["TERM"] = "xterm-256color"
 	for k, v := range steps.Environment {
+		envVars[k] = v
+	}
+
+	for k, v := range envVars {
 		s.mainProcess.Env = append(s.mainProcess.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
