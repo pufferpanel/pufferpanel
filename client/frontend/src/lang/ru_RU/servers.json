@@ -15,7 +15,7 @@
   "JvmHeapAlloc": "Выделенная куча",
   "JvmHeapUsed": "Используемое место в куче",
   "JvmMetaAlloc": "Выделенное место метаданных",
-  "JvmMetaUsed": "Metaspace in use",
+  "JvmMetaUsed": "Занято памяти метаданными",
   "Files": "Файлы",
   "Name": "Имя сервера",
   "EditName": "Изменить имя сервера",
@@ -45,7 +45,7 @@
   "CreateMissingPermissions": "У вас нет разрешения на просмотр хостов или шаблонов, они необходимы для создания сервера, пожалуйста, свяжитесь с вашим администратором",
   "FlagsHeader": "Условия автозапуска",
   "SocketWarnConsole": "Ошибка подключения WebSocket, консоль будет обновляться только каждые несколько секунд",
-  "NumPlayersOnline": "{current}/{max} players online",
+  "NumPlayersOnline": "{current}/{max} игроков в сети",
   "flags": {
     "autoStart": "Запускать сервер при запуске хоста",
     "autoRestartOnGraceful": "Перезагружать сервер когда он нормально останавливается",
