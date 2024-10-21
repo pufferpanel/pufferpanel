@@ -1,8 +1,8 @@
 {
   "ConditionHint": "Proveďte tento krok pouze v případě, že je tato podmínka splněna",
   "mojangdl": {
-    "generic": "Stáhnout Minecraft",
-    "formatted": "Stáhnout Minecraft"
+    "generic": "Stáhnout Minecraft ",
+    "formatted": "Minecraft"
   },
   "writefile": {
     "generic": "Zapsat do souboru",
@@ -18,7 +18,7 @@
     "files": "Soubory"
   },
   "command": {
-    "generic": "Spustit příkaz(y)",
+    "generic": "Spustit příkaz(s)",
     "formatted": "Spustit {command} | Spustit {n} příkazy",
     "commands": "Příkazy"
   },
@@ -62,7 +62,7 @@
     "formatted": "Stáhnout Minecraft Fabric"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "generic": "Stáhnout přes CurseForge",
+    "formatted": "Stáhnout přes CurseForge"
   }
 }

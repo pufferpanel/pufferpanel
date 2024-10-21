@@ -8,7 +8,7 @@
   "ChangePassword": "Změnit heslo",
   "ChangeInfo": "Změnit podrobnosti účtu",
   "InfoChanged": "Vaše údaje byly změněny",
-  "PreferencesUpdated": "Your preferences has been updated",
+  "PreferencesUpdated": "Předvolby byli aktualizovány",
   "PasswordChanged": "Vaše heslo bylo změněno",
   "AccountPassword": "Heslo k účtu",
   "Edit": "Upravit uživatele",
@@ -38,6 +38,6 @@
   "OtpSecret": "Tajný kód",
   "OtpConfirm": "Potvrdit pomocí kódu 2FA",
   "OtpNeeded": "Vyžadováno 2 fázové ověření",
-  "UserInvited": "User invited",
-  "DeleteSuccess": "User deleted successfully"
+  "UserInvited": "Pozvánka odeslána",
+  "DeleteSuccess": "Uživatel odstraněn"
 }

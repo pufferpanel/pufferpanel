@@ -28,7 +28,7 @@
     "server-definition-edit": "Lze upravit definici serveru",
     "server-data-view": "Může zobrazit nastavení serveru",
     "server-data-edit": "Může změnit nastavení serveru",
-    "server-data-edit-admin": "Can change admin-only server settings",
+    "server-data-edit-admin": "Můžete změnit pouze s admin-only právy",
     "server-flags-view": "Možnost zobrazení nastavení automatického spuštění",
     "server-flags-edit": "Může změnit nastavení automatického spuštění",
     "server-name-edit": "Může změnit název serveru",

@@ -3,7 +3,7 @@
   "Language": "Langue",
   "Online": "En ligne",
   "Offline": "Hors-ligne",
-  "Installing": "Installation en cours",
+  "Installing": "Installation en cours...",
   "Unknown": "Inconnu",
   "Loading": "Chargement ...",
   "Description": "Description",
@@ -40,7 +40,7 @@
     "ServerTypeDisplay": "Affichage du type de serveur",
     "serverTypeDisplay": {
       "Icon": "Icône",
-      "None": "Nulle"
+      "None": "Nul"
     },
     "ListType": "Type de liste",
     "listType": {
