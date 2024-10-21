@@ -100,6 +100,9 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 		Callback: func(exitCode int) {
 			ch <- exitCode
 		},
+		Environment: map[string]string{
+			"TERM": "pufferpanel", //we use a fake TERM because DD will use a display that is not supported by us directly
+		},
 	}
 	err = env.Execute(steps)
 	if err != nil {
