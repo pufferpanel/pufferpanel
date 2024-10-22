@@ -513,10 +513,12 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 	}
 
 	if data.StdInConfig.Port != "" {
-		//we have a port defined for stdin, we need to also export it
-		hostConfig.PortBindings[nat.Port(data.StdInConfig.Port+"/tcp")] = []nat.PortBinding{{
-			HostIP: "127.0.0.1", HostPort: data.StdInConfig.Port,
-		}}
+		if _, exists := hostConfig.PortBindings[nat.Port(data.StdInConfig.Port+"/tcp")]; !exists {
+			//we have a port defined for stdin, we need to also export it
+			hostConfig.PortBindings[nat.Port(data.StdInConfig.Port+"/tcp")] = []nat.PortBinding{{
+				HostIP: "127.0.0.1", HostPort: data.StdInConfig.Port,
+			}}
+		}
 	}
 
 	if containerConfig.ExposedPorts == nil {
