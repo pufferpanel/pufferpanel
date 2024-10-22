@@ -46,5 +46,5 @@
     "Step4": "## Krok 4\n\nPovolit a (re)spusťte službu PufferPanel na novém serveru spuštěním `sudo systemctl povolit --now pufferpanel`",
     "Step5": "### Váš nový uzel je nyní nastaven a připraven k přechodu"
   },
-  "DeploymentInstruction": "Pro nasazení uzlu nainstalujte PufferPanel na nový server a umístěte konfigurační soubor do `/etc/pufferpanel/`<br/>Poté restartujte PufferPanel na novém serveru."
+  "DeploymentInstruction": "Pro nasazení uzlu nainstalujte PufferPanel  na nový server a umístěte konfigurační soubor do `/etc/pufferpanel/`<br/>Poté restartujte PufferPanel na novém serveru."
 }
