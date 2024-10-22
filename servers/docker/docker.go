@@ -498,12 +498,12 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 	hostConfig := &baseConfig
 	hostConfig.AutoRemove = true
 	if hostConfig.NetworkMode == "" {
-		hostConfig.NetworkMode = container.NetworkMode(d.Network)
+		hostConfig.NetworkMode = container.NetworkMode(pufferpanel.ReplaceTokens(d.Network, data.Variables))
 	}
 
 	hostConfig.Binds = append(hostConfig.Binds, bindDirs...)
 
-	_, hostConfig.PortBindings, err = nat.ParsePortSpecs(d.Ports)
+	_, hostConfig.PortBindings, err = nat.ParsePortSpecs(pufferpanel.ReplaceTokensInArr(d.Ports, data.Variables))
 	if err != nil {
 		return err
 	}
