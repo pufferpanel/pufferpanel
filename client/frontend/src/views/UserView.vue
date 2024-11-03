@@ -103,7 +103,6 @@ const permissions = ref([])
 
 onMounted(async () => {
   const user = await api.user.get(route.params.id)
-
   username.value = user.username
   email.value = user.email
   permissions.value = await api.user.getPermissions(route.params.id)
