@@ -10,7 +10,7 @@ type UserView struct {
 	Id       uint   `json:"id,omitempty"`
 	Username string `json:"username,omitempty"`
 	Email    string `json:"email,omitempty"`
-	OtpActive bool `json:"otpactive"` // Defaults to False
+	OtpActive bool `json:"otpactive"`
 	//ONLY SHOW WHEN COPYING
 	Password    string `json:"password,omitempty"`
 	NewPassword string `json:"newPassword,omitempty"`
