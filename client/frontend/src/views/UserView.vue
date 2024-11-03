@@ -107,7 +107,7 @@ onMounted(async () => {
   username.value = user.username
   email.value = user.email
   permissions.value = await api.user.getPermissions(route.params.id)
-  otpactive.value = user.otpactive
+  otpactive.value = user.otpactive !== undefined ? user.otpactive : false
 })
 
 function scopeLabel(scope) {
