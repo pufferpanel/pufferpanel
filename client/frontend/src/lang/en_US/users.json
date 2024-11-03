@@ -26,6 +26,8 @@
   "ConfirmDelete": "Do you really want to delete the user {name}?",
   "UpdateSuccess": "Updated User",
   "Details": "User Details",
+  "TwoFactor": "2FA",
+  "Authentication": "Authentication",
   "Permissions": "Permissions",
   "Preferences": "Preferences",
   "SavePreferences": "Save Preferences",

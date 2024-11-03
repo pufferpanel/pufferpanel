@@ -73,7 +73,7 @@ function focusList() {
           <div class="user">
             <img :src="'https://www.gravatar.com/avatar/' + md5(user.email) + '?d=mp'" class="avatar" />
             <div>
-              <span class="title">{{user.username}}</span>
+              <span class="title">{{user.username}}{{ user.otpactive ? ' (' + t('users.TwoFactor') + ')' : '' }}</span>
               <span class="subline">{{user.email}}</span>
             </div>
           </div>
