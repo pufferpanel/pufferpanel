@@ -17,7 +17,7 @@
   "JvmMetaAlloc": "Metaspace allocated",
   "JvmMetaUsed": "Metaspace in use",
   "Files": "Ficheiros",
-  "Name": "Server Name",
+  "Name": "Nome do servidor",
   "EditName": "Editar o nome do servidor",
   "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectTemplate": "Seleciona um modelo",
