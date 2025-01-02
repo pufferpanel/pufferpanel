@@ -19,7 +19,7 @@
   "Install": "Install",
   "Filename": "Filename",
   "Version": "Version",
-  "Environment": "Environment",
+  "Environment": "Ambiente",
   "EnvEnabled": "Environment Enabled",
   "AddEnvVar": "Add env variable",
   "EnvVars": "Environment variables",
