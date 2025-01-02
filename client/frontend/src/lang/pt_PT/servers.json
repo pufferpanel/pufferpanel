@@ -1,6 +1,6 @@
 {
   "Servers": "Servidores",
-  "Add": "Add Server",
+  "Add": "Adicionar servidor",
   "Console": "Consola",
   "SFTPInfo": "Info. SFTP",
   "Start": "Iniciar",
@@ -20,7 +20,7 @@
   "Name": "Server Name",
   "EditName": "Editar o nome do servidor",
   "NameInvalid": "The server name cannot be empty or contain special characters",
-  "SelectTemplate": "Please select template",
+  "SelectTemplate": "Seleciona um modelo",
   "SelectThisTemplate": "Use this template",
   "Environment": "Environment",
   "Admin": "Admin",
