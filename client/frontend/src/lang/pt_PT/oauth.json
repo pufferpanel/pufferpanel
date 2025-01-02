@@ -6,7 +6,7 @@
   "Create": "Create new OAuth2 Client",
   "UnnamedClient": "Unnamed OAuth2 Client",
   "Docs": "Find API documentation here",
-  "Clients": "OAuth2 Clients",
+  "Clients": "Clientes OAuth2",
   "Delete": "Delete {clientName}?",
   "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
   "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions"
