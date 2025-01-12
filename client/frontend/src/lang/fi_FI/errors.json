@@ -45,5 +45,7 @@
   "ErrMissingBinary": "Puuttuva binääri: ${expected}",
   "ErrUnsupportedOS": "Käyttöjärjestelmää (${actual}) ei tueta. Tuettu käyttöjärjestelmä: ${expected}",
   "ErrUnsupportedArch": "Arkkitehtuuria ${actual} ei tueta. Tuetut arkkitehtuurit: ${expected}",
-  "ErrNoCommand": "Tälle palvelimelle ei voitu määrittää mitään komentoa"
+  "ErrNoCommand": "Tälle palvelimelle ei voitu määrittää mitään komentoa",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
