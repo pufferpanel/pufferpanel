@@ -28,7 +28,7 @@
     "server-definition-edit": "Puede editar la definición del servidor",
     "server-data-view": "Puede ver la configuración del servidor",
     "server-data-edit": "Puede cambiar la configuración del servidor",
-    "server-data-edit-admin": "Can change admin-only server settings",
+    "server-data-edit-admin": "Puede cambiar la configuración solo para administradores",
     "server-flags-view": "Puede ver los ajustes de inicio automático",
     "server-flags-edit": "Puede cambiar la configuración de inicio automático",
     "server-name-edit": "Puede cambiar el nombre del servidor",
@@ -46,7 +46,11 @@
     "server-console": "Puede ver la consola",
     "server-console-send": "Puede enviar comandos a la consola",
     "server-stats": "Puede ver el uso de recursos",
-    "server-status": "Puede ver el estado actual del servidor"
+    "server-status": "Puede ver el estado actual del servidor",
+    "server-backup-view": "View and download backups",
+    "server-backup-create": "Create a new backup",
+    "server-backup-restore": "Restore server from a backup",
+    "server-backup-delete": "Delete a backup"
   },
   "hint": {
     "admin": "Conceder todos los permisos",
