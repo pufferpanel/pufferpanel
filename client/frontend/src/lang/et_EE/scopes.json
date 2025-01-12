@@ -46,7 +46,11 @@
     "server-console": "Saab konsooli vaatelda",
     "server-console-send": "Saab käske konsooli saata",
     "server-stats": "Saab näha ressursikasutust",
-    "server-status": "Saab näha selle serveri oleku"
+    "server-status": "Saab näha selle serveri oleku",
+    "server-backup-view": "View and download backups",
+    "server-backup-create": "Create a new backup",
+    "server-backup-restore": "Restore server from a backup",
+    "server-backup-delete": "Delete a backup"
   },
   "hint": {
     "admin": "Annab kõik õigused",
