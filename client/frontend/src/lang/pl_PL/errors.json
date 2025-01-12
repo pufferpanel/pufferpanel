@@ -45,5 +45,7 @@
   "ErrMissingBinary": "Brakujący plik binarny: ${expected}",
   "ErrUnsupportedOS": "System operacyjny (${actual}) nie jest wspierany. Wspierane systemy operacyjne: ${expected}",
   "ErrUnsupportedArch": "Architektura ${actual} nie jest wspierana. Wspierane architektury: ${expected}",
-  "ErrNoCommand": "Nie można określić komendy"
+  "ErrNoCommand": "Nie można określić komendy",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
