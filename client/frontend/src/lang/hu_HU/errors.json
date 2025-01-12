@@ -43,7 +43,7 @@
   "ErrDirectoryUploadNotSupported": "Sikertelen fájlfeltöltés",
   "ErrDockerNotSupported": "A Docker nem támogatott ezen a csomóponton",
   "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedOS": "Operációs rendszer (${actual}) nem támogatott! Támogatott rendszer: ${expected}",
   "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
   "ErrNoCommand": "No command could be determined to be used for this server"
 }
