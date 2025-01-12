@@ -45,5 +45,7 @@
   "ErrMissingBinary": "Відсутній бінарний файл: ${expected}",
   "ErrUnsupportedOS": "ОС (${actual}) не підтримується. Підтримувані ОС: ${expected}",
   "ErrUnsupportedArch": "Архітектура ${actual} не підтримується. Підтримуються наступні архітектури: ${expected}",
-  "ErrNoCommand": "No command could be determined to be used for this server"
+  "ErrNoCommand": "No command could be determined to be used for this server",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
