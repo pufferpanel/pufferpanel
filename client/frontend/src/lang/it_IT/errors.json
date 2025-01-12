@@ -45,5 +45,7 @@
   "ErrMissingBinary": "Binario mancante: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) non supportato. Sistema operativo supportato: ${expected}",
   "ErrUnsupportedArch": "Architettura ${actual} non supportata. Architetture supportate: ${expected}",
-  "ErrNoCommand": "Non è stato possibile determinare un comando da usare per questo server"
+  "ErrNoCommand": "Non è stato possibile determinare un comando da usare per questo server",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
