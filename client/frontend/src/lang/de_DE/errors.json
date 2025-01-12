@@ -45,5 +45,7 @@
   "ErrMissingBinary": "Fehlende Binärdatei: ${expected}",
   "ErrUnsupportedOS": "Betriebssystem (${actual}) wird nicht unterstützt. Unterstütztes Betriebssystem: ${expected}",
   "ErrUnsupportedArch": "Architektur ${actual} wird nicht unterstützt. Unterstützte Architekturen: ${expected}",
-  "ErrNoCommand": "Es konnte kein Befehl für diesen Server bestimmt werden"
+  "ErrNoCommand": "Es konnte kein Befehl für diesen Server bestimmt werden",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
