@@ -45,5 +45,7 @@
   "ErrMissingBinary": "バイナリがありません：${expected}",
   "ErrUnsupportedOS": "OS (${actual}) はサポートされていません。サポートOS：${expected}",
   "ErrUnsupportedArch": "アーキテクチャ ${actual} はサポートされていません。サポートされているアーキテクチャ: ${expected}",
-  "ErrNoCommand": "このサーバーで使用するコマンドが見つかりませんでした"
+  "ErrNoCommand": "このサーバーで使用するコマンドが見つかりませんでした",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
