@@ -45,5 +45,7 @@
   "ErrMissingBinary": "Puudub binäär: ${expected}",
   "ErrUnsupportedOS": "OS(${actual}) pole toetatud. Toetatud OS: ${expected}",
   "ErrUnsupportedArch": "Arhhitektuur ${actual} pole toetatud. Toetatud Arhhitektuurid: ${expected}",
-  "ErrNoCommand": "Serverile ei leitud ühtegi kasutatavat käsku"
+  "ErrNoCommand": "Serverile ei leitud ühtegi kasutatavat käsku",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
