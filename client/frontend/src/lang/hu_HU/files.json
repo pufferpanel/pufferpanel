@@ -1,8 +1,8 @@
 {
-  "Refresh": "Refresh",
+  "Refresh": "Újratöltés",
   "CreateFile": "Fájl létrehozása",
   "CreateFolder": "Mappa létrehozása",
-  "ArchiveCurrent": "Archive current folder",
+  "ArchiveCurrent": "Jelenlegi mappa archíválása",
   "UploadFile": "Upload file",
   "UploadFolder": "Upload folder",
   "Archive": "Archive",
