@@ -45,5 +45,7 @@
   "ErrMissingBinary": "Chybějící binární soubor: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) není podporován. Doporučený OS: ${expected}",
   "ErrUnsupportedArch": "Architektura ${actual} není podporována. Podporované architektury: ${expected}",
-  "ErrNoCommand": "Žádný příkaz nemohl být určen k použití pro tento server"
+  "ErrNoCommand": "Žádný příkaz nemohl být určen k použití pro tento server",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
