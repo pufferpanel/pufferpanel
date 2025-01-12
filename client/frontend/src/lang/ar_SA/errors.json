@@ -45,5 +45,7 @@
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
   "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
-  "ErrNoCommand": "لا يوجد أمر يمكن تحديده لاستخدامه لهذا الخادم"
+  "ErrNoCommand": "لا يوجد أمر يمكن تحديده لاستخدامه لهذا الخادم",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
