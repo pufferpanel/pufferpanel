@@ -45,5 +45,7 @@
   "ErrMissingBinary": "Program lipsă: ${expected}",
   "ErrUnsupportedOS": "Sistemul de operare actual (${actual}) nu poate fi folosit. Sistem de operare suportat: ${expected}",
   "ErrUnsupportedArch": "Arhitectura ${actual} nu poate fi folosită. Arhitecturi suportate: ${expected}",
-  "ErrNoCommand": "Nicio comandă nu a putut fi determinată pentru utilizarea pe acest server"
+  "ErrNoCommand": "Nicio comandă nu a putut fi determinată pentru utilizarea pe acest server",
+  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
 }
