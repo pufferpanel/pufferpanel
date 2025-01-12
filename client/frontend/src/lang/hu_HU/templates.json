@@ -20,7 +20,7 @@
   "Filename": "Fájlnév",
   "Version": "Verzió",
   "Environment": "Környezet",
-  "EnvEnabled": "Environment Enabled",
+  "EnvEnabled": "",
   "AddEnvVar": "Új környezeti változó hozzáadása",
   "EnvVars": "Környezeti változók",
   "DockerImage": "Docker kép",
