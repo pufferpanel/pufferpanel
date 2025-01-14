@@ -11,6 +11,6 @@
     "Download": "Скачать",
     "Delete": "Удалить",
     "Deleted": "Резервная копия успешно удалена",
-    "DeletePrompt": "Permanently delete backup",
-    "DeletePromptBody": "Do you really want to delete the backup permanently?"
+    "DeletePrompt": "Удалить резервную копию безвозвратно",
+    "DeletePromptBody": "Вы действительно хотите удалить резервную копию безвозвратно?"
 }
