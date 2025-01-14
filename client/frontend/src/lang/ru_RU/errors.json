@@ -46,6 +46,6 @@
   "ErrUnsupportedOS": "ОС (${actual}) не поддерживается. Поддерживаемая ОС: ${expected}",
   "ErrUnsupportedArch": "Архитектура ${actual} не поддерживается. Поддерживаемые архитектуры: ${expected}",
   "ErrNoCommand": "Ни одна команда не может быть определена для этого сервера",
-  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupInProgress": "В настоящее время сервер выполняет резервное копирование или восстановление. Пожалуйста, подождите его завершения",
+  "ErrBackupServerRunning": "Сервер в данный момент работает. Пожалуйста, остановите сервер перед выполнением резервного копирования или восстановления"
 }
