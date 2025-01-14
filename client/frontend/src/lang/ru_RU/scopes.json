@@ -47,10 +47,10 @@
     "server-console-send": "Может отправлять команды в консоль",
     "server-stats": "Может видеть использование ресурсов",
     "server-status": "Может видеть текущий статус сервера",
-    "server-backup-view": "View and download backups",
-    "server-backup-create": "Create a new backup",
-    "server-backup-restore": "Restore server from a backup",
-    "server-backup-delete": "Delete a backup"
+    "server-backup-view": "Просмотр и загрузка резервных копий",
+    "server-backup-create": "Создать новую резервную копию",
+    "server-backup-restore": "Восстановить сервер из резервной копии",
+    "server-backup-delete": "Удалить резервную копию"
   },
   "hint": {
     "admin": "Даёт все разрешения",
