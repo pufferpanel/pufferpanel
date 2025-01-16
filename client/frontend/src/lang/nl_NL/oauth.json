@@ -1,12 +1,12 @@
 {
   "Credentials": "OAuth2 Client gegevens",
-  "ClientId": "Client ID",
+  "ClientId": "Klant-ID",
   "ClientSecret": "Client geheim",
   "NewClientWarning": "Noteer de client secret, na het sluiten van dit dialoogvenster wordt het nooit meer getoond. Als u deze verliest of vergeet, wordt deze client volledig onbruikbaar.",
   "Create": "Creeer nieuwe OAuth2 Client",
   "UnnamedClient": "Naamloze OAuth2 Client",
   "Docs": "API Documentaties",
-  "Clients": "OAuth2 Clients",
+  "Clients": "OAuth2 klanten",
   "Delete": "{clientName} verwijderen?",
   "ConfirmDelete": "Ik ben me bewust van de effecten die het verwijderen van deze OAuth2 cliënt zal hebben en verder wil gaan.",
   "AccountDescription": "De vermelde OAuth2 Clients erven al uw account-machtigingen"
