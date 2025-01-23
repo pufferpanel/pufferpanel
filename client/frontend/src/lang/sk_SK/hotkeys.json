@@ -1,35 +1,35 @@
 {
-  "Title": "Keyboard Shortcuts",
+  "Title": "Klávesové skratky",
   "Global": {
-    "Title": "Global",
-    "g a": "Go to Account",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "Title": "Globálne",
+    "g a": "Prejsť na účet",
+    "g c": "Prejsť do konfiguračného panela",
+    "g n": "Prejsť k uzlom",
+    "g s": "Prejsť k serverom",
+    "g t": "Prejsť k šablonám",
+    "g u": "Prejsť k užívateľom"
   },
   "Self": {
-    "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
-    "t s": "Go to Preferences tab"
+    "Title": "Účet",
+    "t 2": "Prejsť na záložku s 2-faktorovou autentifikáciou",
+    "t a": "Prejsť na záložku s detailami účtu",
+    "t o": "Prejsť na záložku s OAuth",
+    "t p": "Prejsť na záložku s heslami",
+    "t s": "Prejsť na záložku s nastaveniami"
   },
   "ServerList": {
-    "Title": "Servers",
-    "c": "Create a new server",
-    "l": "Focus the first server in the list"
+    "Title": "Servery",
+    "c": "Vytvoriť nový server",
+    "l": "Zameraj prvý server v zozname"
   },
   "ServerView": {
     "Title": "Server",
-    "t c": "Go to Console tab",
-    "t i": "Go to Statistics tab",
-    "t f": "Go to Files tab",
-    "t s": "Go to Settings tab",
-    "t u": "Go to Users tab",
-    "t 6": "Go to SFTP tab",
+    "t c": "Prejsť na záložku s konzolou",
+    "t i": "Prejsť na záložku so štatistikami",
+    "t f": "Prejsť na záložku so súbormi",
+    "t s": "Prejsť na záložku s nastaveniami",
+    "t u": "Prejsť na záložku s užívateľmi",
+    "t 6": "Prejsť na záložku s SFTP",
     "t 7": "Go to Api tab",
     "t a": "Go to Admin tab",
     "c c": "Clear Console",
