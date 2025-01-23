@@ -45,7 +45,7 @@
   "ErrMissingBinary": "Chýbajúce binárne údaje: ${expected}",
   "ErrUnsupportedOS": "Operačný systém (${actual}) nieje podporovaný. Podporované operačné systémy sú: ${expected}",
   "ErrUnsupportedArch": "Architektúra ${actual} nie je podporovaná. Podporovane architektúry sú: ${expected}",
-  "ErrNoCommand": "No command could be determined to be used for this server",
-  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrNoCommand": "Pre tento server sa nedal použiť žiadny príkaz",
+  "ErrBackupInProgress": "Server práve vykonáva zálohovanie alebo obnovu. Počkajte, kým sa tento proces dokončí",
+  "ErrBackupServerRunning": "Server je práve spustený. Pred zálohovaním, alebo obnovou zastavte server"
 }
