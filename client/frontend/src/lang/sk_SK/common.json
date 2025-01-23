@@ -3,10 +3,10 @@
   "Language": "Jazyk",
   "Online": "Online",
   "Offline": "Offline",
-  "Installing": "Installing",
+  "Installing": "Inštalácia",
   "Unknown": "Neznáme",
   "Loading": "Načítavanie...",
-  "Description": "Description",
+  "Description": "Popis",
   "Save": "Uložiť",
   "Cancel": "Zrušiť",
   "Close": "Zatvoriť",
@@ -14,9 +14,9 @@
   "Port": "Port",
   "Collapse": "Zbaliť",
   "Expand": "Rozšíriť",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copy": "Kopíruj do schránky",
+  "Copied": "Skopírované do schránky",
+  "Back": "Naspäť",
   "Next": "Ďalej",
   "Details": "Podrobnosti",
   "ErrorDetails": "Detaily chyby",
@@ -24,17 +24,17 @@
   "Protocol": "Protokol",
   "Add": "Pridať",
   "Apply": "Použiť",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Confirm": "Potvrdiť",
+  "Condition": "Podmienky",
+  "Discard": "Vymazať",
+  "ConfirmLeave": "Máte neuložené zmeny, chcete ich zrušiť a opustiť túto stránku?",
   "theme": {
     "Theme": "Motív",
     "Mode": "Režim",
     "mode": {
       "Light": "Svetlý",
       "Dark": "Tmavý",
-      "Auto": "Auto"
+      "Auto": "Automatický"
     },
     "BaseColor": "Základná farba",
     "ServerTypeDisplay": "Zobrazenie typu servera",
@@ -48,7 +48,7 @@
       "List": "Zoznam"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "Žiadne výsledky",
+  "Yes": "Áno",
+  "No": "Nie"
 }
