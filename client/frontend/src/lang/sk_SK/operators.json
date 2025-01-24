@@ -58,11 +58,11 @@
     "releaseType": "Release Type"
   },
   "fabricdl": {
-    "generic": "Download Minecraft Fabric",
-    "formatted": "Download Minecraft Fabric"
+    "generic": "Stiahnuť Minecraft Fabric",
+    "formatted": "Stiahnuť Minecraft Fabric"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "generic": "Stiahnuť z CurseForge",
+    "formatted": "Stiahnuť z CurseForge"
   }
 }
