@@ -68,6 +68,7 @@ RUN mkdir -p /etc/pufferpanel && \
     #chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/lib/pufferpanel /var/log/pufferpanel
 
 ENV GIN_MODE=release \
+    PUFFER_PLATFORM="docker" \
     PUFFER_DOCKER_ROOT=""
 
 #COPY --from=builder --chown=pufferpanel:pufferpanel --chmod=755 /pufferpanel /pufferpanel/bin

@@ -63,6 +63,13 @@ func internalRun() (terminate chan bool, success bool) {
 
 	utils.DetermineKernelSupport()
 
+	err := utils.InitContainerMountSource()
+	if err != nil {
+		logging.Error.Printf("getting host root returned an error\n%s", err)
+		terminate <- true
+		return
+	}
+
 	router := gin.New()
 	router.Use(gin.Recovery())
 	router.Use(gin.LoggerWithWriter(logging.Info.Writer()))
