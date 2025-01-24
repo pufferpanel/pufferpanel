@@ -40,7 +40,7 @@
   "ErrSavingInviteduser": "Nastala chyba pri vytváraní účtu",
   "ErrDuplicateServerName": "Server s týmto názvom už existuje",
   "ErrDuplicateNodeName": "Uzol s týmto názvom už existuje",
-  "ErrDirectoryUploadNotSupported": "Nie je možné nahrať súbory",
+  "ErrDirectoryUploadNotSupported": "Nie je možné nahrať priečinky",
   "ErrDockerNotSupported": "Docker nie je podporovaný na tomto uzle",
   "ErrMissingBinary": "Chýbajúce binárne údaje: ${expected}",
   "ErrUnsupportedOS": "Operačný systém (${actual}) nieje podporovaný. Podporované operačné systémy sú: ${expected}",
