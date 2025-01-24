@@ -1,61 +1,61 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Tento krok spustite, len ak je táto podmienka splnená",
   "mojangdl": {
-    "generic": "Download Minecraft",
-    "formatted": "Download Minecraft"
+    "generic": "Stiahnuť Minecraft",
+    "formatted": "Stiahnuť Minecraft"
   },
   "writefile": {
-    "generic": "Write to file",
-    "formatted": "Write to file {target}"
+    "generic": "Zapísať do súboru",
+    "formatted": "Zapísať do súboru {target}"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
-    "formatted": "Resolve Minecraft Forge Version"
+    "generic": "Vyriešiť verziu Minecraft Forge",
+    "formatted": "Vyriešiť verziu Minecraft Forge"
   },
   "download": {
-    "generic": "Download file(s)",
-    "formatted": "Download {file} | Download {n} files",
-    "files": "Files"
+    "generic": "Stiahnuť súbor(y)",
+    "formatted": "Stiahnuť {file} | Stiahnuť {n} súborov",
+    "files": "Súbory"
   },
   "command": {
-    "generic": "Run command(s)",
-    "formatted": "Run {command} | Run {n} commands",
-    "commands": "Commands"
+    "generic": "Spustiť príkaz(y)",
+    "formatted": "Spustiť {command} | Spustiť {n} príkazov",
+    "commands": "Príkazy"
   },
   "alterfile": {
-    "generic": "Modify a file",
-    "formatted": "Modify file {target}",
-    "regex": "Treat search string as regular expression",
-    "search": "Search",
-    "replace": "Replace matches with"
+    "generic": "Upraviť súbor",
+    "formatted": "Upraviť súbor {target}",
+    "regex": "Považovať hľadaný reťazec za regulárny výraz",
+    "search": "Hľadať",
+    "replace": "Nahradiť výsledky"
   },
   "move": {
-    "generic": "Move or rename a file",
-    "formatted": "Move file {source} to {target}",
-    "source": "Source Path",
-    "target": "Target Path"
+    "generic": "Presunúť, alebo premenovať súbor",
+    "formatted": "Presunúť súbor {source} do {target}",
+    "source": "Zdrojová cesta",
+    "target": "Cieľová cesta"
   },
   "mkdir": {
-    "generic": "Create a directory",
-    "formatted": "Create directory {target}"
+    "generic": "Vytvoriť priečinok",
+    "formatted": "Vytvoriť priečinok {target}"
   },
   "steamgamedl": {
-    "generic": "Install from Steam",
-    "formatted": "Install Steam App ID {appId}",
-    "appId": "Steam App ID"
+    "generic": "Nainštalovať zo Steamu",
+    "formatted": "Nainštalovať Steam aplikáciu s ID {appId}",
+    "appId": "ID Steam aplikácie"
   },
   "javadl": {
-    "generic": "Install Java",
-    "formatted": "Install Java {version}"
+    "generic": "Nainštalovať Javu",
+    "formatted": "Nainštalovať Javu {version}"
   },
   "forgedl": {
-    "generic": "Download Minecraft Forge",
-    "formatted": "Download Minecraft Forge"
+    "generic": "Stiahnuť Minecraft Forge",
+    "formatted": "Stiahnuť Minecraft Forge"
   },
   "spongeforgedl": {
-    "generic": "Download Minecraft SpongeForge",
-    "formatted": "Download Minecraft SpongeForge",
-    "releaseType": "Release Type"
+    "generic": "Stiahnuť Minecraft SpongeForge",
+    "formatted": "Stiahnuť Minecraft SpongeForge",
+    "releaseType": "Typ vydania"
   },
   "fabricdl": {
     "generic": "Stiahnuť Minecraft Fabric",
