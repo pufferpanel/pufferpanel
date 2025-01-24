@@ -41,10 +41,10 @@
   "Deploy": "Uvoľniť uzol",
   "deploy": {
     "Step1": "## Krok 1\n\nNainštalujte PufferPanel na nový server, [viď. dokumentácia](https://docs.pufferpanel.com/en/latest/installing.html)",
-    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
-    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
-    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
-    "Step5": "### Your new node is now set up and ready to go"
+    "Step2": "## Krok 2\n\nZastavte PufferPanel servis v prípade, že bol počas inštalácie spustený, príkazom `sudo systemctl stop pufferpanel`",
+    "Step3": "## Krok 3\n\nNahraďte konfiguračný súbor na novom serveri nasledovným kódom\n\nKonfiguračný súbor sa obvykle nachádza v `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## Krok 4\n\nPovoľte a (re)štartuje PufferPanel servis na novom serveri príkazom `sudo systemctl enable --now pufferpanel`",
+    "Step5": "### Tvoj novy uzol je nastavený a pripravený na spustenie"
   },
   "DeploymentInstruction": "To deploy the node, install PufferPanel on the new server and place the config file in `/etc/pufferpanel/`<br/>Restart PufferPanel on the new server afterwards."
 }
