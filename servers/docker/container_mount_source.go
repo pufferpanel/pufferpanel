@@ -1,4 +1,4 @@
-package utils
+package docker
 
 import (
 	"context"
@@ -14,6 +14,7 @@ import (
 	"github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 var NotUniqueError = errors.New("Multiple containers found that could be us")
@@ -21,10 +22,11 @@ var NoneFoundError = errors.New("No container found")
 var NoMountFound = errors.New("No mount found that matches the data root")
 var UnsupportedMount = errors.New("Unsupported mount type found")
 
-var ContainerMountSource string = config.DockerRootPath.Value()
+var containerMountSource string
 
 func InitContainerMountSource() (err error) {
-	if ContainerMountSource != "" || os.Getenv("PUFFER_PLATFORM") == "" {
+	containerMountSource = config.DockerRootPath.Value()
+	if containerMountSource != "" || os.Getenv("PUFFER_PLATFORM") == "" {
 		// either the path was set from env or we're not in a container
 		return
 	}
@@ -50,20 +52,14 @@ func InitContainerMountSource() (err error) {
 	}
 
 	// we only need the file to exist, we never read or write, so close it right away
-	err = file.Close()
-	if err != nil {
-		return
-	}
+	utils.Close(file)
 
 	docker, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return
 	}
 	defer func() {
-		errC := docker.Close()
-		if err == nil {
-			err = errC
-		}
+		utils.Close(docker)
 	}()
 	ctx := context.Background()
 	docker.NegotiateAPIVersion(ctx)
@@ -82,7 +78,7 @@ func InitContainerMountSource() (err error) {
 			continue
 		}
 		// not interested in the contents, just need to know the file existed in the container
-		rc.Close()
+		utils.Close(rc)
 		found = append(found, c.ID)
 		self = c
 	}
@@ -107,7 +103,7 @@ func InitContainerMountSource() (err error) {
 		dataRoot, e := filepath.Abs(config.DataRootFolder.Value())
 		if e != nil {
 			logging.Debug.Println("Failed normalizing data root path, trying without normalizing")
-			mountPath = config.DataRootFolder.Value()
+			dataRoot = config.DataRootFolder.Value()
 		}
 
 		if mountPath == dataRoot {
@@ -125,7 +121,7 @@ func InitContainerMountSource() (err error) {
 		return UnsupportedMount
 	}
 
-	ContainerMountSource = dataMount.Source
+	containerMountSource = dataMount.Source
 	logging.Debug.Printf("Found own container id %s and host path %s\n", self.ID, dataMount.Source)
 	return
 }
