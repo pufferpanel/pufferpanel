@@ -1,16 +1,16 @@
 {
     "Backup": "Backup",
     "Name": "Name",
-    "Create": "Create backup",
-    "BackupStarted": "Backup started",
-    "BackupsHeader": "Available backups",
-    "Restore": "Restore",
-    "RestoreStarted": "Restore started",
-    "RestorePrompt": "Restore from backup",
-    "RestorePromptBody": "Do you really want to restore from this backup? \r\n This will delete any existing data so it is highly recommended to create a backup first.",
-    "Download": "Download",
-    "Delete": "Delete",
-    "Deleted": "Backup deleted successfully",
-    "DeletePrompt": "Permanently delete backup",
-    "DeletePromptBody": "Do you really want to delete the backup permanently?"
+    "Create": "Backup erstellen",
+    "BackupStarted": "Backup gestartet",
+    "BackupsHeader": "Verfügbare Backups",
+    "Restore": "Wiederherstellen",
+    "RestoreStarted": "Wiederherstellung gestartet",
+    "RestorePrompt": "Vom Backup wiederherstellen",
+    "RestorePromptBody": "Möchten Sie wirklich dieses Backup Wiederherstellen? \n Dies löscht alle existierenden Daten, daher wird dringend empfohlen, zuerst ein Backup zu erstellen.",
+    "Download": "Herunterladen",
+    "Delete": "Löschen",
+    "Deleted": "Backup erfolgreich gelöscht",
+    "DeletePrompt": "Backup dauerhaft löschen",
+    "DeletePromptBody": "Möchten Sie das Backup wirklich dauerhaft löschen?"
 }
