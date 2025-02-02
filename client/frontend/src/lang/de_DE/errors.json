@@ -47,5 +47,5 @@
   "ErrUnsupportedArch": "Architektur ${actual} wird nicht unterstützt. Unterstützte Architekturen: ${expected}",
   "ErrNoCommand": "Es konnte kein Befehl für diesen Server bestimmt werden",
   "ErrBackupInProgress": "Der Server führt gerade ein Backup oder eine Wiederherstellung durch. Bitte warten Sie, bis dieser Prozess abgeschlossen ist",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupServerRunning": "Der Server wird gerade ausgeführt. Bitte stoppen Sie den Server, bevor Sie ein Backup oder eine Wiederherstellung durchführen"
 }
