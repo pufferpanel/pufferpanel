@@ -48,7 +48,7 @@
     "server-stats": "Kann die Ressourcennutzung sehen",
     "server-status": "Kann den aktuellen Serverstatus sehen",
     "server-backup-view": "View and download backups",
-    "server-backup-create": "Create a new backup",
+    "server-backup-create": "Neues Backup erstellen",
     "server-backup-restore": "Restore server from a backup",
     "server-backup-delete": "Delete a backup"
   },
