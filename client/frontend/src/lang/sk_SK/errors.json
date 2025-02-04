@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Údaje json sú neplatné",
   "ErrSocketFailed": "Pripojenie WebSocket narazilo na chybu, niektoré funkcie môžu byť pomalé alebo nefunkčné",
   "ErrInviteLinkInvalid": "Váš odkaz sa zdá byť neplatný",
-  "ErrSavingInviteduser": "Nastala chyba pri vytváraní účtu",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "Server s týmto názvom už existuje",
   "ErrDuplicateNodeName": "Uzol s týmto názvom už existuje",
   "ErrDirectoryUploadNotSupported": "Nie je možné nahrať priečinky",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Architektúra ${actual} nie je podporovaná. Podporovane architektúry sú: ${expected}",
   "ErrNoCommand": "Pre tento server sa nedal použiť žiadny príkaz",
   "ErrBackupInProgress": "Server práve vykonáva zálohovanie alebo obnovu. Počkajte, kým sa tento proces dokončí",
-  "ErrBackupServerRunning": "Server je práve spustený. Pred zálohovaním, alebo obnovou zastavte server"
+  "ErrBackupServerRunning": "Server je práve spustený. Pred zálohovaním, alebo obnovou zastavte server",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }
