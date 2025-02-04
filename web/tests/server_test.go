@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"github.com/pkg/sftp"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
@@ -15,6 +16,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/ssh"
 	"io"
 	"net/http"
 	"os"
@@ -441,6 +443,32 @@ func TestServers(t *testing.T) {
 		}
 
 		if !assert.Equal(t, expectedHash, h.Sum(nil), "File hashes do not match") {
+			return
+		}
+	})
+
+	t.Run("SFTPAdmin", func(t *testing.T) {
+		sshConfig := &ssh.ClientConfig{
+			User: loginAdminUser.Email + "#" + serverId,
+			Auth: []ssh.AuthMethod{
+				ssh.Password(loginAdminUserPassword),
+			},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		}
+		client, err := ssh.Dial("tcp", "localhost:5657", sshConfig)
+		defer utils.Close(client)
+		if !assert.NoError(t, err) {
+			return
+		}
+		sftpClient, err := sftp.NewClient(client)
+		if !assert.NoError(t, err) {
+			return
+		}
+		files, err := sftpClient.ReadDir("/")
+		if !assert.NoError(t, err) {
+			return
+		}
+		if !assert.NotEmpty(t, files) {
 			return
 		}
 	})

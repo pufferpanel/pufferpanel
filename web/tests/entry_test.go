@@ -11,6 +11,8 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/services"
+	"github.com/pufferpanel/pufferpanel/v3/sftp"
 	"github.com/pufferpanel/pufferpanel/v3/web"
 	"math/rand"
 	"net"
@@ -31,7 +33,7 @@ func TestMain(m *testing.M) {
 	config.DatabaseUrl.Set("file:testing.db", false)
 	config.DaemonEnabled.Set(true, false)
 	config.PanelEnabled.Set(true, false)
-	config.DatabaseLoggingEnabled.Set(false, false)
+	config.DatabaseLoggingEnabled.Set(true, false)
 
 	_ = os.Remove("testing.db")
 	_ = os.RemoveAll("cache")
@@ -86,8 +88,13 @@ func TestMain(m *testing.M) {
 			}
 		}()
 
-		//sleep just to give time for the web service to start
-		time.Sleep(time.Second)
+		go func() {
+			sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
+			sftp.Run()
+		}()
+
+		//sleep just to give time for the services to start
+		time.Sleep(5 * time.Second)
 
 		exitCode = m.Run()
 		database.Close()
@@ -96,6 +103,7 @@ func TestMain(m *testing.M) {
 	}
 
 	_ = os.Remove("testing.db")
+	_ = os.Remove("sftp.key")
 	_ = os.RemoveAll("cache")
 	_ = os.RemoveAll("servers")
 	_ = os.RemoveAll("binaries")

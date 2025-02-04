@@ -33,12 +33,8 @@ func (s *DatabaseSFTPAuthorization) Validate(username, password string) (perms *
 	}
 
 	ss := &Permission{DB: db}
-	serverPerms, err := ss.GetForUserAndServer(user.ID, serverId)
-	if err != nil {
-		return nil, errors.New("incorrect username or password")
-	}
-
-	if !scopes.ContainsScope(serverPerms.Scopes, scopes.ScopeServerSftp) {
+	allowed, err := ss.HasPermission(user.ID, serverId, scopes.ScopeServerSftp)
+	if err != nil || !allowed {
 		return nil, errors.New("incorrect username or password")
 	}
 

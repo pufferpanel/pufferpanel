@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -52,6 +53,44 @@ func (ps *Permission) GetForUserAndServer(userId uint, serverId string) (*models
 	}
 
 	return permissions, err
+}
+
+func (ps *Permission) HasPermission(userId uint, serverId string, permission *scopes.Scope) (bool, error) {
+	var query *gorm.DB
+
+	if serverId != "" {
+		query = ps.DB.Preload(clause.Associations).Where(&models.Permissions{
+			UserId:           &userId,
+			ServerIdentifier: &serverId,
+		}).Or(
+			&models.Permissions{
+				UserId:           &userId,
+				ServerIdentifier: nil,
+			})
+	} else {
+		query = ps.DB.Preload(clause.Associations).Where(&models.Permissions{
+			UserId:           &userId,
+			ServerIdentifier: nil,
+		})
+	}
+
+	var perms []*models.Permissions
+
+	err := query.Find(&perms).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+		return false, err
+	}
+
+	for _, perm := range perms {
+		if scopes.ContainsScope(perm.Scopes, permission) {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 func (ps *Permission) GetForClient(id uint) ([]*models.Permissions, error) {

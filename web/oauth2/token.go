@@ -149,33 +149,23 @@ func handleTokenRequest(c *gin.Context) {
 				return
 			}
 
+			//validate their credentials
+			var token string
+			user, _, err = us.ValidateLogin(user.Email, request.Password)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
+				return
+			}
+
 			//confirm user has access to this server
 			ps := &services.Permission{DB: db}
-			perms, err := ps.GetForUserAndServer(user.ID, server.Identifier)
+			allowed, err := ps.HasPermission(user.ID, server.Identifier, scopes.ScopeServerSftp)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 				return
 			}
 
-			if perms.ID == 0 || !scopes.ContainsScope(perms.Scopes, scopes.ScopeServerSftp) {
-				//also grab global, in case it's an admin or it's a perm that's granted globally
-				perms, err = ps.GetForUserAndServer(user.ID, "")
-				if err != nil {
-					c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: err.Error()})
-					return
-				}
-
-				if perms.ID == 0 || !scopes.ContainsScope(perms.Scopes, scopes.ScopeServerSftp) {
-					c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
-					return
-				}
-			}
-
-			//validate their credentials
-
-			var token string
-			user, _, err = us.ValidateLogin(user.Email, request.Password)
-			if err != nil {
+			if !allowed {
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
 			}
@@ -187,12 +177,6 @@ func handleTokenRequest(c *gin.Context) {
 				logging.Error.Printf("Error generating token: %s", err.Error())
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
-			}
-
-			mappedScopes := make([]string, 0)
-
-			for _, p := range perms.Scopes {
-				mappedScopes = append(mappedScopes, server.Identifier+":"+p.Value)
 			}
 
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
