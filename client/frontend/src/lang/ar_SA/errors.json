@@ -37,7 +37,7 @@
   "ErrInvalidJson": "بيانات ال json غير صحيحة",
   "ErrSocketFailed": "واجهه اتصال WebSocket حدث لها خطأ، بعض الميزات قد تكون بطيئة او لا تعمل",
   "ErrInviteLinkInvalid": "يبدو أن رابط دعوتك غير صالح",
-  "ErrSavingInviteduser": "حدث خطأ أثناء إنشاء حسابك",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "يوجد خادم بهذا الاسم مسبقاً",
   "ErrDuplicateNodeName": "يوجد نود بالفعل بهذا الاسم",
   "ErrDirectoryUploadNotSupported": "لا يمكن تحميل المجلدات",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
   "ErrNoCommand": "لا يوجد أمر يمكن تحديده لاستخدامه لهذا الخادم",
   "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }
