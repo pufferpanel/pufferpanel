@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Неприпустимі дані json",
   "ErrSocketFailed": "З'єднання WebSocket зіткнулося з помилкою, деякі функції можуть працювати повільно",
   "ErrInviteLinkInvalid": "Схоже, що ваше посилання на запрошення недійсне",
-  "ErrSavingInviteduser": "Виникла помилка під час створення вашого облікового запису",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "Сервер з таким ім'ям вже існує",
   "ErrDuplicateNodeName": "Вузол з таким ім'ям вже існує",
   "ErrDirectoryUploadNotSupported": "Неможливо завантажити папки",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Архітектура ${actual} не підтримується. Підтримуються наступні архітектури: ${expected}",
   "ErrNoCommand": "No command could be determined to be used for this server",
   "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }
