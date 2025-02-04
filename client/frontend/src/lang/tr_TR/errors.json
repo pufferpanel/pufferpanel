@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Json verisi geçersiz",
   "ErrSocketFailed": "WebSocket bağlantısı bir hatayla karşılaştı, bazı özellikler yavaş veya bozuk olabilir",
   "ErrInviteLinkInvalid": "Bu bağlantı geçersiz görünüyor",
-  "ErrSavingInviteduser": "Hesabınız oluşturulurken bir hata meydana geldi",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "Bu isimde bir sunucu zaten var",
   "ErrDuplicateNodeName": "Bu ada sahip bir düğüm zaten var",
   "ErrDirectoryUploadNotSupported": "Klasör yüklenemez",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
   "ErrNoCommand": "No command could be determined to be used for this server",
   "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }
