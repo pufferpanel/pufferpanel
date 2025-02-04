@@ -37,7 +37,7 @@
   "ErrInvalidJson": "JSON-dataen er ugyldigt",
   "ErrSocketFailed": "WebSocket forbindelsen stødte på en fejl, nogle funktioner kan være langsom eller afbrudt",
   "ErrInviteLinkInvalid": "Dit invitationslink er ugyldigt",
-  "ErrSavingInviteduser": "Der opstod en fejl under oprettelsen af din konto",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "A server with this name already exists",
   "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Kan ikke uploade mapper",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
   "ErrNoCommand": "No command could be determined to be used for this server",
   "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }
