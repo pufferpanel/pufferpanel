@@ -37,7 +37,7 @@
   "ErrInvalidJson": "De json gegevens zijn ongeldig",
   "ErrSocketFailed": "De WebSocket verbinding heeft een error aangetroffen! Sommige functies zijn misschien sloom of werken niet",
   "ErrInviteLinkInvalid": "Uw uitnodigings-link is ongeldig",
-  "ErrSavingInviteduser": "Er is een fout opgetreden tijdens het maken van uw account",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "Een server met deze naam bestaat al",
   "ErrDuplicateNodeName": "Er is al een bestand met deze naam",
   "ErrDirectoryUploadNotSupported": "Kan geen folders uploaden",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
   "ErrNoCommand": "No command could be determined to be used for this server",
   "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }
