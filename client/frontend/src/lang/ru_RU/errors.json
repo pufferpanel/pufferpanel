@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Json данные недействительны",
   "ErrSocketFailed": "Соединение WebSocket обнаружило ошибку, некоторые функции могут работать медленно или не работать",
   "ErrInviteLinkInvalid": "Ваша пригласительная ссылка недействительна",
-  "ErrSavingInviteduser": "Во время создания аккаунта произошла ошибка",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "Сервер с таким именем уже существует",
   "ErrDuplicateNodeName": "Узел с таким именем уже существует",
   "ErrDirectoryUploadNotSupported": "Не удается загрузить папки",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Архитектура ${actual} не поддерживается. Поддерживаемые архитектуры: ${expected}",
   "ErrNoCommand": "Ни одна команда не может быть определена для этого сервера",
   "ErrBackupInProgress": "В настоящее время сервер выполняет резервное копирование или восстановление. Пожалуйста, подождите его завершения",
-  "ErrBackupServerRunning": "Сервер в данный момент работает. Пожалуйста, остановите сервер перед выполнением резервного копирования или восстановления"
+  "ErrBackupServerRunning": "Сервер в данный момент работает. Пожалуйста, остановите сервер перед выполнением резервного копирования или восстановления",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }
