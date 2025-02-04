@@ -14,6 +14,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
+	"github.com/pufferpanel/pufferpanel/v3/servers/docker"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/pufferpanel/pufferpanel/v3/sftp"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
@@ -177,6 +178,11 @@ func daemon() error {
 	sftp.Run()
 
 	var err error
+
+	err = docker.InitContainerMountSource()
+	if err != nil {
+		return err
+	}
 
 	if _, err = os.Stat(config.ServersFolder.Value()); os.IsNotExist(err) {
 		logging.Info.Printf("No server directory found, creating")

@@ -457,8 +457,8 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 	}
 
 	var dir string
-	if config.DockerRootPath.Value() != "" {
-		dir = filepath.Join(config.DockerRootPath.Value(), "servers", d.ServerId)
+	if containerMountSource != "" {
+		dir = filepath.Join(containerMountSource, "servers", d.ServerId)
 	} else {
 		dir = d.GetRootDirectory()
 	}
@@ -474,8 +474,8 @@ func (d *Docker) createContainer(ctx context.Context, data pufferpanel.Execution
 	bindDirs := []string{convertToBind(dir) + ":" + containerRoot}
 
 	binaryFolder := config.BinariesFolder.Value()
-	if config.DockerRootPath.Value() != "" {
-		binaryFolder = filepath.Join(config.DockerRootPath.Value(), "binaries")
+	if containerMountSource != "" {
+		binaryFolder = filepath.Join(containerMountSource, "binaries")
 	} else {
 		if !filepath.IsAbs(binaryFolder) {
 			var ef error
