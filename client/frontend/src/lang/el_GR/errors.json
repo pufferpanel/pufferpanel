@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Τα δεδομένα json δεν είναι έγκυρα",
   "ErrSocketFailed": "Η σύνδεση WebSocket αντιμετώπισε ένα σφάλμα, ορισμένες λειτουργίες μπορεί να είναι αργές ή χαλασμένες",
   "ErrInviteLinkInvalid": "Ο σύνδεσμος πρόσκλησής σας φαίνεται να μην είναι έγκυρος",
-  "ErrSavingInviteduser": "Παρουσιάστηκε σφάλμα κατά τη δημιουργία του λογαριασμού σας",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "Υπάρχει ήδη ένας διακομιστής με αυτό το όνομα",
   "ErrDuplicateNodeName": "Υπάρχει ήδη ένας κόμβος με αυτό το όνομα",
   "ErrDirectoryUploadNotSupported": "Αδυναμία μεταφόρτωσης φακέλων",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
   "ErrNoCommand": "No command could be determined to be used for this server",
   "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }
