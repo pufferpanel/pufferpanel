@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Die json-Daten sind ungültig",
   "ErrSocketFailed": "Bei der WebSocket-Verbindung ist ein Fehler aufgetreten. Einige Funktionen sind möglicherweise langsam oder fehlerhaft",
   "ErrInviteLinkInvalid": "Der Einladungslink scheint ungültig zu sein",
-  "ErrSavingInviteduser": "Bei der Erstellung des Kontos ist ein Fehler aufgetreten",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "Ein Server mit diesem Namen existiert bereits",
   "ErrDuplicateNodeName": "Ein Knoten mit diesem Namen existiert bereits",
   "ErrDirectoryUploadNotSupported": "Dateien können nicht hochgeladen werden",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Architektur ${actual} wird nicht unterstützt. Unterstützte Architekturen: ${expected}",
   "ErrNoCommand": "Es konnte kein Befehl für diesen Server bestimmt werden",
   "ErrBackupInProgress": "Der Server führt gerade ein Backup oder eine Wiederherstellung durch. Bitte warten Sie, bis dieser Prozess abgeschlossen ist",
-  "ErrBackupServerRunning": "Der Server wird gerade ausgeführt. Bitte stoppen Sie den Server, bevor Sie ein Backup oder eine Wiederherstellung durchführen"
+  "ErrBackupServerRunning": "Der Server wird gerade ausgeführt. Bitte stoppen Sie den Server, bevor Sie ein Backup oder eine Wiederherstellung durchführen",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }
