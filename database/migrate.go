@@ -9,6 +9,8 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"gorm.io/gorm"
+	"os"
+	"path/filepath"
 )
 
 func Migrate(dbConn *gorm.DB) error {
@@ -124,7 +126,16 @@ func Migrate(dbConn *gorm.DB) error {
 					var rawMap pufferpanel.MetadataType
 					err = utils.UnmarshalTo(v.Environment, &rawMap)
 					if err != nil {
-						return err
+						logging.Error.Printf("Failed to migrate template %s, template saved off. %s", v.Name, err)
+						err = saveToFile("template-"+v.Name+".json", []byte(v.RawValue))
+						if err != nil {
+							return err
+						}
+						//return err
+						err = db.Delete(&v).Error
+						if err != nil {
+							return err
+						}
 					}
 					if rawMap.Type == "tty" || rawMap.Type == "standard" {
 						rawMap.Type = "host"
@@ -336,4 +347,19 @@ func Migrate(dbConn *gorm.DB) error {
 	})
 
 	return m.Migrate()
+}
+
+func saveToFile(filename string, data []byte) error {
+	//just dump it into working dir
+	err := os.MkdirAll("migrations", 0755)
+	if err != nil {
+		return err
+	}
+	file, err := os.OpenFile(filepath.Join("migrations", filename), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	if err != nil {
+		return err
+	}
+	defer utils.Close(file)
+	_, err = file.Write(data)
+	return err
 }

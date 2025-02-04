@@ -2,7 +2,7 @@ package docker
 
 import (
 	"context"
-	"errors"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,11 +16,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
-
-var NotUniqueError = errors.New("Multiple containers found that could be us")
-var NoneFoundError = errors.New("No container found")
-var NoMountFound = errors.New("No mount found that matches the data root")
-var UnsupportedMount = errors.New("Unsupported mount type found")
 
 var containerMountSource string
 
@@ -36,9 +31,7 @@ func InitContainerMountSource() (err error) {
 	if err != nil {
 		return
 	}
-	defer func(path string) {
-		_ = os.Remove(path)
-	}(path)
+	defer os.Remove(path)
 
 	id, err := uuid.NewV4()
 	if err != nil {
@@ -58,9 +51,7 @@ func InitContainerMountSource() (err error) {
 	if err != nil {
 		return
 	}
-	defer func() {
-		utils.Close(docker)
-	}()
+	defer utils.Close(docker)
 	ctx := context.Background()
 	docker.NegotiateAPIVersion(ctx)
 
@@ -85,11 +76,11 @@ func InitContainerMountSource() (err error) {
 
 	if len(found) > 1 {
 		logging.Debug.Printf("Multiple containers found that could be us: %s\n", strings.Join(found, ", "))
-		return NotUniqueError
+		return pufferpanel.ErrContainerNotUnique
 	}
 
 	if len(found) == 0 {
-		return NoneFoundError
+		return pufferpanel.ErrNoContainerFound
 	}
 
 	var dataMount *types.MountPoint = nil
@@ -113,12 +104,12 @@ func InitContainerMountSource() (err error) {
 	}
 
 	if dataMount == nil {
-		return NoMountFound
+		return pufferpanel.ErrNoMountFound
 	}
 
 	if dataMount.Type != mountType.TypeBind && dataMount.Type != mountType.TypeVolume {
 		logging.Debug.Printf("Unsupported mount type found: %s\n", dataMount.Type)
-		return UnsupportedMount
+		return pufferpanel.ErrUnsupportedMountType
 	}
 
 	containerMountSource = dataMount.Source

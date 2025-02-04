@@ -160,7 +160,10 @@ func closePanel() {
 	servers.ShutdownService()
 	for _, p := range servers.GetAll() {
 		_ = p.Stop()
-		p.RunningEnvironment.WaitForMainProcessFor(time.Minute) //wait 60 seconds
+		err := p.RunningEnvironment.WaitForMainProcessFor(time.Minute) //wait 60 seconds
+		if err != nil {
+			logging.Error.Printf("error stopping server: %s", err.Error())
+		}
 	}
 
 	logging.Debug.Printf("stopping database connections")
