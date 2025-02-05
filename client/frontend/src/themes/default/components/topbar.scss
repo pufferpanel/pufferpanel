@@ -123,6 +123,26 @@
   }
 }
 
+@include high-contrast-mode {
+  .topbar .global-search {
+    .input-field-wrapper .input-field {
+      input {
+        caret-color: var(--text);
+      }
+      .icon:before {
+        color: var(--text);
+      }
+    }
+    .results {
+      border: 3px solid var(--text);
+      .result.selected {
+        background-color: var(--background);
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
 .sidebar-toggle {
   display: none;
 }
@@ -138,6 +158,23 @@
       &::before {
         color: var(--text-primary);
       }
+    }
+  }
+}
+
+@include high-contrast-mode {
+  .topbar {
+    background-color: var(--background);
+    border-bottom: 3px solid var(--text);
+    box-shadow: none;
+    .name:not([data-name="PufferPanel"]) {
+      color: var(--text);
+    }
+    .name[data-name="PufferPanel"] {
+      background-color: var(--text);
+    }
+    .avatar {
+      border-color: var(--text);
     }
   }
 }

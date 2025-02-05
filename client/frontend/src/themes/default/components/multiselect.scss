@@ -110,6 +110,14 @@
   }
 }
 
+@include high-contrast-mode {
+  .multiselect-tag {
+    background-color: var(--background);
+    border: 3px solid var(--text);
+    color: var(--text);
+  }
+}
+
 .multiselect-tag-remove {
   display: flex;
   align-items: center;
@@ -128,6 +136,12 @@
   @include icon-name(close-circle);
   &::before {
     color: var(--text-primary);
+  }
+}
+
+@include high-contrast-mode {
+  .multiselect-tag-remove-icon::before {
+    color: var(--text);
   }
 }
 
@@ -289,6 +303,26 @@
     background: var(--primary);
     span {
       color: var(--text-primary);
+    }
+  }
+}
+
+@include high-contrast-mode {
+  .multiselect-option {
+    &.is-pointed {
+      background: var(--background);
+      span {
+        color: var(--text);
+        text-decoration: underline dashed;
+      }
+    }
+
+    &.is-selected {
+      background-color: var(--background);
+      span {
+        color: var(--text);
+        text-decoration: underline;
+      }
     }
   }
 }

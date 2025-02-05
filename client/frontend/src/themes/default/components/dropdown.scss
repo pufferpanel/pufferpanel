@@ -121,3 +121,13 @@ html[dir="rtl"] {
     color: var(--primary);
   }
 }
+
+@include high-contrast-mode {
+  .dropdown .is-open .multiselect-dropdown {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    border: 3px solid var(--primary);
+  }
+}

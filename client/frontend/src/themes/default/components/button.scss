@@ -51,6 +51,21 @@ html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
   filter: brightness(0.9);
 }
 
+@include high-contrast-mode {
+  .button.primary {
+    background-color: var(--background);
+    border: 3px solid var(--primary);
+    color: var(--primary);
+    font-weight: bold;
+    .icon::before {
+      color: var(--primary);
+    }
+    &:hover {
+      background-color: var(--primary-hover);
+    }
+  }
+}
+
 .button.error {
   background-color: var(--error);
   color: var(--text-primary);
@@ -63,6 +78,21 @@ html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
   filter: brightness(0.9);
 }
 
+@include high-contrast-mode {
+  .button.error {
+    background-color: var(--background);
+    border: 3px solid var(--error);
+    color: var(--error);
+    font-weight: bold;
+    .icon::before {
+      color: var(--error);
+    }
+    &:hover {
+      background-color: var(--error-bg);
+    }
+  }
+}
+
 .button.text {
   background-color: transparent;
 }
@@ -72,11 +102,17 @@ html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
 }
 
 .button.disabled:not(.icon) {
-  background-color: rgba(0, 0, 0, 0.1) !important;
-  color: var(--text-disabled) !important;
-  box-shadow: none !important;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: var(--text-disabled);
+  box-shadow: none;
   .icon::before {
-    color: var(--text-disabled) !important;
+    color: var(--text-disabled);
+  }
+}
+
+@include high-contrast-mode {
+  .button.disabled:not(.icon) {
+    border: 3px solid var(--text-disabled);
   }
 }
 

@@ -121,6 +121,48 @@
   }
 }
 
+@include high-contrast-mode {
+  .sidebar .list .list-item:hover {
+    background-color: var(--background);
+    text-decoration: underline dashed;
+  }
+
+  .sidebar .list .active .list-item {
+    background-color: var(--background);
+    text-decoration: underline;
+  }
+
+  @include breakpoint-down(md) {
+    .main::before {
+      background-color: #000e;
+    }
+  }
+}
+
+html[dir="ltr"] {
+  @include high-contrast-mode {
+    .sidebar {
+      border-right: 3px solid var(--text);
+      box-shadow: none;
+      &.closed {
+        transform: translateX(-3px);
+      }
+    }
+  }
+}
+
+html[dir="rtl"] {
+  @include high-contrast-mode {
+    .sidebar {
+      border-left: 3px solid var(--text);
+      box-shadow: none;
+      &.closed {
+        transform: translateX(3px);
+      }
+    }
+  }
+}
+
 html[dir="rtl"] .sidebar-content-bottom .list .list-item:first-child .icon::before {
   transform: rotate(180deg);
 }

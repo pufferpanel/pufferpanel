@@ -79,6 +79,27 @@
   }
 }
 
+@include high-contrast-mode {
+  .switch:before {
+    background-color: var(--background);
+    border: 3px solid var(--text);
+    width: calc(3em - 6px);
+    height: calc(1.6em - 6px);
+  }
+
+  .switch:after {
+    box-shadow: none;
+  }
+
+  input:checked + .switch:before {
+    background-color: var(--background);
+  }
+
+  .switch:after {
+    background-color: var(--text);
+  }
+}
+
 html[dir="rtl"] {
   .switch-wrapper .label, .switch-wrapper .hint {
     margin-left: .5em;

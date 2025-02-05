@@ -18,6 +18,26 @@
   --chartjs-grid-color: rgba(0, 0, 0, 0.3);
 }
 
+@mixin dark-highcontrast {
+  --success-bg: #4caf5040;
+  --success: #4caf50;
+  --info-bg: #3b8db840;
+  --info: #3b8db8;
+  --warning-bg: #fbac0040;
+  --warning: #fbac00;
+  --error-bg: #fe424240;
+  --error: #fe4242;
+  --backdrop: #000;
+  --background: #000;
+  --code-background: #1d1d1d;
+  --text: rgba(240, 240, 240, 1);
+  --text-disabled: rgba(240, 240, 240, 0.66);
+  --servertype-icon-filter: none;
+  --ace-theme: vibrant_ink;
+  --chartjs-tooltip-background-color: rgba(30, 30, 30, 0.7);
+  --chartjs-grid-color: rgba(0, 0, 0, 0.3);
+}
+
 @mixin light {
   --success-bg: #4caf5040;
   --success: #4caf50;
@@ -42,6 +62,10 @@
   @include dark;
 }
 
+.mode-dark-highcontrast {
+  @include dark-highcontrast;
+}
+
 .mode-light, .mode-auto {
   @include light;
 }
@@ -49,5 +73,9 @@
 .mode-auto {
   @media (prefers-color-scheme: dark) {
     @include dark;
+  }
+
+  @media (prefers-contrast: more) {
+    @include dark-highcontrast;
   }
 }

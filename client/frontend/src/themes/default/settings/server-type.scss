@@ -168,3 +168,9 @@ html[dir="rtl"] {
     }
   }
 }
+
+@include high-contrast-mode {
+  .server[data-online="offline"]::before {
+    color: var(--text);
+  }
+}

@@ -18,6 +18,10 @@
         {
           "value": "mode-dark",
           "tkey": "common.theme.mode.Dark"
+        },
+        {
+          "value": "mode-dark-highcontrast",
+          "tkey": "common.theme.mode.DarkHighContrast"
         }
       ]
     },

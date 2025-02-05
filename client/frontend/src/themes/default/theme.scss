@@ -430,6 +430,12 @@ hr {
   }
 }
 
+@include high-contrast-mode {
+  .status.offline::before, .status.unknown::before {
+    color: var(--text);
+  }
+}
+
 .status.online ~ .server-controls .start {
   display: none;
 }
@@ -501,6 +507,18 @@ hr {
 
   .kill .icon::before {
     color: var(--error);
+  }
+}
+
+@include high-contrast-mode {
+  .menu.open {
+    border: 3px solid var(--text);
+    .button {
+      border: 2px solid var(--text);
+      &:not(:first-child) {
+        margin-top: .5rem;
+      }
+    }
   }
 }
 
@@ -1168,6 +1186,12 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   }
 }
 
+@include high-contrast-mode {
+  .servercreate .template {
+    border: 2px solid var(--text);
+  }
+}
+
 .serverview, .usercreate, .templatecreate, .templateview {
   @include cols(12);
   @include card;
@@ -1290,6 +1314,12 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+@include high-contrast-mode {
+  .console-wrapper {
+    border: 2px solid var(--text);
   }
 }
 

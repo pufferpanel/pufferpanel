@@ -6611,10 +6611,10 @@ $mdi-icons: (
   @include icon-name(account-star);
 }
 .icon-server {
-  @include icon-name(server);
+  @include icon-name(console);
 }
 .icon-node {
-  @include icon-name(server-network);
+  @include icon-name(server);
 }
 .icon-template {
   @include icon-name(file-code);

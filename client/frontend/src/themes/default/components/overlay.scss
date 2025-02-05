@@ -32,3 +32,12 @@
     }
   }
 }
+
+@include high-contrast-mode {
+  .overlay-backdrop {
+    background-color: #000e;
+    .overlay {
+      border: 3px solid var(--text);
+    }
+  }
+}

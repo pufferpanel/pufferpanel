@@ -78,6 +78,47 @@
   }
 }
 
+@include high-contrast-mode {
+  &.list-type-grid {
+    @each $t in ('server', 'node', 'user', 'template') {
+      .#{$t}list {
+        .list {
+          .list-item a:focus-visible {
+            outline: none;
+            .#{$t}, .createLink {
+              outline: 3px solid var(--primary);
+              outline-offset: -3px;
+            }
+            .#{$t} .title, .createLink {
+              text-decoration: underline;
+            }
+          }
+          @include breakpoint(md) {
+            .#{$t} {
+              border: 2px solid var(--text);
+              font-weight: bold;
+            }
+            .#{$t}.disabled {
+              border-color: var(--text-disabled);
+            }
+          }
+
+          @include breakpoint-only(xs) {
+            .#{$t} {
+              @include card;
+              border: 2px solid var(--text);
+              font-weight: bold;
+            }
+            .#{$t}.disabled {
+              border-color: var(--text-disabled);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 .list-type-list {
   .main .list {
     @include baselist;

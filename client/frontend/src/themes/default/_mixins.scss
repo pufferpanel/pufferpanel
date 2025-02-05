@@ -213,3 +213,15 @@ html[dir="rtl"] .list-item .list-item-icon {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@mixin high-contrast-mode {
+  .mode-dark-highcontrast {
+    @content;
+  }
+
+  .mode-auto {
+    @media (prefers-contrast: more) {
+      @content;
+    }
+  }
+}
