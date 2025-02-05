@@ -55,12 +55,36 @@ var loginOAuth2AdminPermissions = &models.Permissions{
 
 const loginOAuth2AdminSecret = "rawr"
 
+var loginSftpUser = &models.User{
+	Username: "loginSftpUser",
+	Email:    "sftp@example.com",
+}
+
+var loginSftpUserPermissions = &models.Permissions{
+	Scopes: []*scopes.Scope{scopes.ScopeServerSftp},
+}
+
+const loginSftpUserPassword = "sftpPassword"
+
+var loginDifferentServerUser = &models.User{
+	Username: "user2",
+	Email:    "user2@example.com",
+}
+
+var loginDifferentServerUserPermissions = &models.Permissions{
+	Scopes: []*scopes.Scope{scopes.ScopeServerAdmin},
+}
+
+var loginDifferentServerUserPassword = "user2"
+
 func init() {
 	_ = loginNoLoginUser.SetPassword(loginNoLoginUserPassword)
 	_ = loginNoServerViewUser.SetPassword(loginNoServerViewUserPassword)
 	_ = loginAdminUser.SetPassword(loginAdminUserPassword)
 	_ = loginNoAdminWithServersUser.SetPassword(loginNoAdminWithServersUserPassword)
 	_ = loginOAuth2Admin.SetClientSecret(loginOAuth2AdminSecret)
+	_ = loginSftpUser.SetPassword(loginSftpUserPassword)
+	_ = loginDifferentServerUser.SetPassword(loginDifferentServerUserPassword)
 }
 
 func prepareUsers(db *gorm.DB) error {
@@ -85,6 +109,16 @@ func prepareUsers(db *gorm.DB) error {
 	}
 
 	err = initOauth2Client(db)
+	if err != nil {
+		return err
+	}
+
+	err = initLoginSftp(db)
+	if err != nil {
+		return err
+	}
+
+	err = initLoginDifferentUser(db)
 	if err != nil {
 		return err
 	}
@@ -126,6 +160,28 @@ func initLoginAdminUser(db *gorm.DB) error {
 
 func initLoginNoAdminWithServersUser(db *gorm.DB) error {
 	return db.Create(loginNoAdminWithServersUser).Error
+}
+
+func initLoginSftp(db *gorm.DB) error {
+	err := db.Create(loginSftpUser).Error
+	if err != nil {
+		return err
+	}
+	loginSftpUserPermissions.UserId = &loginSftpUser.ID
+	var str = ServerId
+	loginSftpUserPermissions.ServerIdentifier = &str
+	return db.Create(loginSftpUserPermissions).Error
+}
+
+func initLoginDifferentUser(db *gorm.DB) error {
+	err := db.Create(loginDifferentServerUser).Error
+	if err != nil {
+		return err
+	}
+	loginDifferentServerUserPermissions.UserId = &loginDifferentServerUser.ID
+	var str = "server2"
+	loginDifferentServerUserPermissions.ServerIdentifier = &str
+	return db.Create(loginDifferentServerUserPermissions).Error
 }
 
 func initOauth2Client(db *gorm.DB) error {

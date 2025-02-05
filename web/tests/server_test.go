@@ -25,8 +25,9 @@ import (
 	"time"
 )
 
+const ServerId = "testserver"
+
 func TestServers(t *testing.T) {
-	serverId := "testserver"
 	db, err := database.GetConnection()
 	if !assert.NoError(t, err) {
 		return
@@ -38,13 +39,13 @@ func TestServers(t *testing.T) {
 	}
 
 	t.Run("CreateServer", func(t *testing.T) {
-		response := CallAPIRaw("PUT", "/api/servers/"+serverId, CreateServerData, session)
+		response := CallAPIRaw("PUT", "/api/servers/"+ServerId, CreateServerData, session)
 		if !assert.Equal(t, http.StatusOK, response.Code) {
 			return
 		}
 
 		var count int64
-		err := db.Model(&models.Server{}).Where(&models.Server{Identifier: serverId}).Count(&count).Error
+		err := db.Model(&models.Server{}).Where(&models.Server{Identifier: ServerId}).Count(&count).Error
 		if !assert.NoError(t, err) {
 			return
 		}
@@ -53,7 +54,7 @@ func TestServers(t *testing.T) {
 			return
 		}
 
-		if !assert.DirExists(t, filepath.Join(config.ServersFolder.Value(), serverId)) {
+		if !assert.DirExists(t, filepath.Join(config.ServersFolder.Value(), ServerId)) {
 			return
 		}
 
@@ -84,7 +85,7 @@ func TestServers(t *testing.T) {
 
 		serverExists := false
 		for _, v := range s.Servers {
-			if v.Identifier == serverId {
+			if v.Identifier == ServerId {
 				serverExists = true
 			}
 		}
@@ -93,14 +94,35 @@ func TestServers(t *testing.T) {
 		}
 	})
 
+	t.Run("EnsureSecondUserCannotSee", func(t *testing.T) {
+		sess, err := createSession(db, loginDifferentServerUser)
+		if !assert.NoError(t, err) {
+			return
+		}
+		response := CallAPI("GET", "/api/servers", nil, sess)
+		if !assert.Equal(t, http.StatusOK, response.Code) {
+			return
+		}
+
+		var s *models.ServerSearchResponse
+		err = json.NewDecoder(response.Body).Decode(&s)
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		if !assert.Empty(t, s.Servers) {
+			return
+		}
+	})
+
 	t.Run("AdminUpdate", func(t *testing.T) {
-		response := CallAPIRaw("PUT", "/api/servers/"+serverId+"/definition", EditServerData, session)
+		response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/definition", EditServerData, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
 
 		var server *models.Server
-		err := db.Model(&server).Where(&models.Server{Identifier: serverId}).Find(&server).Error
+		err := db.Model(&server).Where(&models.Server{Identifier: ServerId}).Find(&server).Error
 		if !assert.NoError(t, err) {
 			return
 		}
@@ -126,13 +148,13 @@ func TestServers(t *testing.T) {
 	})
 
 	t.Run("AdminDataUpdate", func(t *testing.T) {
-		response := CallAPIRaw("PUT", "/api/servers/"+serverId+"/data", NewVariableChanges, session)
+		response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/data", NewVariableChanges, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
 
 		var server *models.Server
-		err := db.Model(&server).Where(&models.Server{Identifier: serverId}).Find(&server).Error
+		err := db.Model(&server).Where(&models.Server{Identifier: ServerId}).Find(&server).Error
 		if !assert.NoError(t, err) {
 			return
 		}
@@ -166,7 +188,7 @@ func TestServers(t *testing.T) {
 
 	addr := fmt.Sprintf("%s:%d", models.LocalNode.PrivateHost, models.LocalNode.PrivatePort)
 
-	u := fmt.Sprintf("ws://%s/api/servers/%s/socket", addr, serverId)
+	u := fmt.Sprintf("ws://%s/api/servers/%s/socket", addr, ServerId)
 
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+session)
@@ -225,14 +247,14 @@ func TestServers(t *testing.T) {
 
 	t.Run("AddSubUser", func(t *testing.T) {
 		var data = []byte(`{"scopes": ["server.view", "server.data.view"]}`)
-		response := CallAPIRaw("PUT", "/api/servers/"+serverId+"/user/"+loginNoLoginUser.Email, data, session)
+		response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoLoginUser.Email, data, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
 	})
 
 	t.Run("GetSubUsers", func(t *testing.T) {
-		response := CallAPIRaw("GET", "/api/servers/"+serverId+"/user", nil, session)
+		response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
 		if !assert.Equal(t, http.StatusOK, response.Code) {
 			return
 		}
@@ -267,12 +289,12 @@ func TestServers(t *testing.T) {
 	t.Run("UpdateVariable", func(t *testing.T) {
 		motd := "This is a changed MOTD"
 		var variables = []byte(`{"motd": "` + motd + `" }`)
-		response := CallAPIRaw("POST", "/api/servers/"+serverId+"/data", variables, session)
+		response := CallAPIRaw("POST", "/api/servers/"+ServerId+"/data", variables, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
 
-		response = CallAPI("GET", "/api/servers/"+serverId+"/data", variables, session)
+		response = CallAPI("GET", "/api/servers/"+ServerId+"/data", variables, session)
 		if !assert.Equal(t, http.StatusOK, response.Code) {
 			return
 		}
@@ -292,8 +314,17 @@ func TestServers(t *testing.T) {
 	})
 
 	t.Run("GetStats", func(t *testing.T) {
-		response := CallAPI("GET", "/api/servers/"+serverId+"/stats", nil, session)
+		response := CallAPI("GET", "/api/servers/"+ServerId+"/stats", nil, session)
 		assert.Equal(t, http.StatusOK, response.Code)
+	})
+
+	t.Run("GetStatsSecondUserFail", func(t *testing.T) {
+		sess, err := createSession(db, loginDifferentServerUser)
+		if !assert.NoError(t, err) {
+			return
+		}
+		response := CallAPI("GET", "/api/servers/"+ServerId+"/stats", nil, sess)
+		assert.Equal(t, http.StatusForbidden, response.Code)
 	})
 
 	t.Run("SendStatsForServers", func(t *testing.T) {
@@ -301,12 +332,12 @@ func TestServers(t *testing.T) {
 	})
 
 	t.Run("GetEmptyFiles", func(t *testing.T) {
-		response := CallAPI("GET", "/api/servers/"+serverId+"/file/", nil, session)
+		response := CallAPI("GET", "/api/servers/"+ServerId+"/file/", nil, session)
 		assert.Equal(t, http.StatusOK, response.Code)
 	})
 
 	t.Run("InstallServer", func(t *testing.T) {
-		response := CallAPI("POST", "/api/servers/"+serverId+"/install", nil, session)
+		response := CallAPI("POST", "/api/servers/"+ServerId+"/install", nil, session)
 		if !assert.Equal(t, http.StatusAccepted, response.Code) {
 			return
 		}
@@ -314,7 +345,7 @@ func TestServers(t *testing.T) {
 		time.Sleep(100 * time.Millisecond)
 
 		//we expect it to take more than 100ms, so ensure there is an install occurring
-		response = CallAPI("GET", "/api/servers/"+serverId+"/status", nil, session)
+		response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
 		assert.Equal(t, http.StatusOK, response.Code)
 		var msg pufferpanel.ServerRunning
 		err := json.NewDecoder(response.Body).Decode(&msg)
@@ -330,7 +361,7 @@ func TestServers(t *testing.T) {
 		counter := 0
 		for counter < timeout {
 			time.Sleep(time.Second)
-			response = CallAPI("GET", "/api/servers/"+serverId+"/status", nil, session)
+			response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
 			assert.Equal(t, http.StatusOK, response.Code)
 			err = json.NewDecoder(response.Body).Decode(&msg)
 			if !assert.NoError(t, err) {
@@ -349,14 +380,14 @@ func TestServers(t *testing.T) {
 	})
 
 	t.Run("StartServer", func(t *testing.T) {
-		response := CallAPI("POST", "/api/servers/"+serverId+"/start", nil, session)
+		response := CallAPI("POST", "/api/servers/"+ServerId+"/start", nil, session)
 		assert.Equal(t, http.StatusAccepted, response.Code)
 
 		time.Sleep(1000 * time.Millisecond)
 	})
 
 	t.Run("StopServer", func(t *testing.T) {
-		response := CallAPI("POST", "/api/servers/"+serverId+"/stop", nil, session)
+		response := CallAPI("POST", "/api/servers/"+ServerId+"/stop", nil, session)
 		if !assert.Equal(t, http.StatusAccepted, response.Code) {
 			return
 		}
@@ -366,7 +397,7 @@ func TestServers(t *testing.T) {
 		counter := 0
 		for counter < timeout {
 			time.Sleep(time.Second)
-			response = CallAPI("GET", "/api/servers/"+serverId+"/status", nil, session)
+			response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
 			assert.Equal(t, http.StatusOK, response.Code)
 			var msg pufferpanel.ServerRunning
 			err = json.NewDecoder(response.Body).Decode(&msg)
@@ -390,7 +421,7 @@ func TestServers(t *testing.T) {
 
 	//create a fake file that we can use to both
 
-	dir := filepath.Join(config.ServersFolder.Value(), serverId, "testarchive")
+	dir := filepath.Join(config.ServersFolder.Value(), ServerId, "testarchive")
 	err = os.Mkdir(dir, 0755)
 	if !assert.NoError(t, err) {
 		return
@@ -415,7 +446,7 @@ func TestServers(t *testing.T) {
 
 	//test other functionality
 	t.Run("Archive", func(t *testing.T) {
-		response := CallAPI("POST", "/api/servers/"+serverId+"/archive/archive.zip", []string{"testarchive"}, session)
+		response := CallAPI("POST", "/api/servers/"+ServerId+"/archive/archive.zip", []string{"testarchive"}, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
@@ -423,7 +454,7 @@ func TestServers(t *testing.T) {
 	})
 
 	t.Run("Extract", func(t *testing.T) {
-		response := CallAPI("POST", "/api/servers/"+serverId+"/extract/archive.zip", nil, session)
+		response := CallAPI("POST", "/api/servers/"+ServerId+"/extract/archive.zip", nil, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
@@ -449,7 +480,7 @@ func TestServers(t *testing.T) {
 
 	t.Run("SFTPAdmin", func(t *testing.T) {
 		sshConfig := &ssh.ClientConfig{
-			User: loginAdminUser.Email + "#" + serverId,
+			User: loginAdminUser.Email + "#" + ServerId,
 			Auth: []ssh.AuthMethod{
 				ssh.Password(loginAdminUserPassword),
 			},
@@ -473,19 +504,60 @@ func TestServers(t *testing.T) {
 		}
 	})
 
+	t.Run("SFTPUser", func(t *testing.T) {
+		sshConfig := &ssh.ClientConfig{
+			User: loginSftpUser.Email + "#" + ServerId,
+			Auth: []ssh.AuthMethod{
+				ssh.Password(loginSftpUserPassword),
+			},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		}
+		client, err := ssh.Dial("tcp", "localhost:5657", sshConfig)
+		defer utils.Close(client)
+		if !assert.NoError(t, err) {
+			return
+		}
+		sftpClient, err := sftp.NewClient(client)
+		if !assert.NoError(t, err) {
+			return
+		}
+		files, err := sftpClient.ReadDir("/")
+		if !assert.NoError(t, err) {
+			return
+		}
+		if !assert.NotEmpty(t, files) {
+			return
+		}
+	})
+
+	t.Run("SFTPNonUser", func(t *testing.T) {
+		sshConfig := &ssh.ClientConfig{
+			User: loginDifferentServerUser.Email + "#" + ServerId,
+			Auth: []ssh.AuthMethod{
+				ssh.Password(loginDifferentServerUserPassword),
+			},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		}
+		client, err := ssh.Dial("tcp", "localhost:5657", sshConfig)
+		defer utils.Close(client)
+		if !assert.Error(t, err) {
+			return
+		}
+	})
+
 	t.Run("Delete", func(t *testing.T) {
-		response := CallAPIRaw("DELETE", "/api/servers/"+serverId, nil, session)
+		response := CallAPIRaw("DELETE", "/api/servers/"+ServerId, nil, session)
 		if !assert.Equal(t, http.StatusNoContent, response.Code) {
 			return
 		}
 
 		//ensure was actually removed
-		if !assert.NoDirExists(t, filepath.Join(config.ServersFolder.Value(), serverId)) {
+		if !assert.NoDirExists(t, filepath.Join(config.ServersFolder.Value(), ServerId)) {
 			return
 		}
 
 		var count int64
-		err := db.Model(&models.Server{}).Where(&models.Server{Identifier: serverId}).Count(&count).Error
+		err := db.Model(&models.Server{}).Where(&models.Server{Identifier: ServerId}).Count(&count).Error
 		if !assert.NoError(t, err) {
 			return
 		}
