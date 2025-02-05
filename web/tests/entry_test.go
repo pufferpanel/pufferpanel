@@ -71,6 +71,10 @@ func TestMain(m *testing.M) {
 		models.LocalNode.PublicHost = "127.0.0.1"
 		models.LocalNode.PrivateHost = "127.0.0.1"
 		models.LocalNode.PrivatePort = uint16(rand.Intn(50000) + 10000)
+
+		models.LocalNode.SFTPPort = uint16(rand.Intn(50000) + 10000)
+		RemoteNode.SFTPPort = models.LocalNode.SFTPPort
+		_ = config.SftpHost.Set(fmt.Sprintf("%s:%d", models.LocalNode.PrivateHost, models.LocalNode.SFTPPort), false)
 		_ = config.AuthUrl.Set(fmt.Sprintf("http://%s:%d/oauth2/token", models.LocalNode.PrivateHost, models.LocalNode.PrivatePort), false)
 
 		l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", models.LocalNode.PrivateHost, models.LocalNode.PrivatePort))

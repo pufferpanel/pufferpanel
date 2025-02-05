@@ -549,7 +549,7 @@ func TestServers(t *testing.T) {
 						},
 						HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 					}
-					client, err := ssh.Dial("tcp", "localhost:5657", sshConfig)
+					client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%d", test.Node.PrivateHost, test.Node.SFTPPort), sshConfig)
 					defer utils.Close(client)
 					if !assert.NoError(t, err) {
 						return
@@ -575,7 +575,7 @@ func TestServers(t *testing.T) {
 						},
 						HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 					}
-					client, err := ssh.Dial("tcp", "localhost:5657", sshConfig)
+					client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%d", test.Node.PrivateHost, test.Node.SFTPPort), sshConfig)
 					defer utils.Close(client)
 					if !assert.Error(t, err) {
 						return
