@@ -182,7 +182,7 @@ func handleTokenRequest(c *gin.Context) {
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
 				AccessToken: token,
 				TokenType:   "Bearer",
-				Scope:       scopes.ScopeServerSftp.String(),
+				Scope:       server.Identifier + ":" + scopes.ScopeServerSftp.String(),
 				ExpiresIn:   expiresIn,
 			})
 		}

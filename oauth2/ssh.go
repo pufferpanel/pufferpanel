@@ -56,7 +56,6 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 	sshPerms := &ssh.Permissions{}
 	grantedScopes := strings.Split(respArr["scope"].(string), " ")
 	for _, v := range grantedScopes {
-
 		t := strings.Split(v, ":")
 		if len(t) != 2 {
 			continue

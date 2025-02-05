@@ -11,7 +11,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/models"
-	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/pufferpanel/pufferpanel/v3/sftp"
 	"github.com/pufferpanel/pufferpanel/v3/web"
 	"math/rand"
@@ -29,11 +28,11 @@ func TestMain(m *testing.M) {
 	_ = os.Remove("testing.db")
 	var exitCode = 1
 
-	config.DatabaseDialect.Set("sqlite3", false)
-	config.DatabaseUrl.Set("file:testing.db", false)
-	config.DaemonEnabled.Set(true, false)
-	config.PanelEnabled.Set(true, false)
-	//config.DatabaseLoggingEnabled.Set(false, false)
+	_ = config.DatabaseDialect.Set("sqlite3", false)
+	_ = config.DatabaseUrl.Set("file:testing.db", false)
+	_ = config.DaemonEnabled.Set(true, false)
+	_ = config.PanelEnabled.Set(true, false)
+	//_ = config.DatabaseLoggingEnabled.Set(false, false)
 
 	_ = os.Remove("testing.db")
 	_ = os.RemoveAll("cache")
@@ -70,6 +69,7 @@ func TestMain(m *testing.M) {
 		web.RegisterRoutes(router)
 
 		models.LocalNode.PrivatePort = uint16(rand.Intn(50000) + 10000)
+		_ = config.AuthUrl.Set(fmt.Sprintf("http://localhost:%d/oauth2/token", models.LocalNode.PrivatePort), false)
 
 		l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", models.LocalNode.PrivateHost, models.LocalNode.PrivatePort))
 		if err != nil {
@@ -89,7 +89,6 @@ func TestMain(m *testing.M) {
 		}()
 
 		go func() {
-			sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
 			sftp.Run()
 		}()
 

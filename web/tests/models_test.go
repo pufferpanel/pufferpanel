@@ -49,19 +49,11 @@ var loginOAuth2Admin = &models.Client{
 	User:        loginAdminUser,
 }
 
-var loginOAuth2AdminPermissions = &models.Permissions{
-	Scopes: []*scopes.Scope{scopes.ScopeAdmin},
-}
-
 const loginOAuth2AdminSecret = "rawr"
 
 var loginSftpUser = &models.User{
 	Username: "loginSftpUser",
 	Email:    "sftp@example.com",
-}
-
-var loginSftpUserPermissions = &models.Permissions{
-	Scopes: []*scopes.Scope{scopes.ScopeServerSftp},
 }
 
 const loginSftpUserPassword = "sftpPassword"
@@ -71,11 +63,14 @@ var loginDifferentServerUser = &models.User{
 	Email:    "user2@example.com",
 }
 
-var loginDifferentServerUserPermissions = &models.Permissions{
-	Scopes: []*scopes.Scope{scopes.ScopeServerAdmin},
-}
-
 var loginDifferentServerUserPassword = "user2"
+
+var RemoteNode = &models.Node{
+	Name:        "remoteNode",
+	PublicHost:  "localhost",
+	PrivateHost: "localhost",
+	Secret:      "remote-node-secret",
+}
 
 func init() {
 	_ = loginNoLoginUser.SetPassword(loginNoLoginUserPassword)
@@ -123,7 +118,7 @@ func prepareUsers(db *gorm.DB) error {
 		return err
 	}
 
-	return nil
+	return err
 }
 
 func initNoLoginUser(db *gorm.DB) error {
@@ -167,10 +162,26 @@ func initLoginSftp(db *gorm.DB) error {
 	if err != nil {
 		return err
 	}
-	loginSftpUserPermissions.UserId = &loginSftpUser.ID
-	var str = ServerId
-	loginSftpUserPermissions.ServerIdentifier = &str
-	return db.Create(loginSftpUserPermissions).Error
+
+	var str = "testserver-local"
+	var perms = &models.Permissions{
+		Scopes:           []*scopes.Scope{scopes.ScopeServerSftp, scopes.ScopeLogin},
+		UserId:           &loginSftpUser.ID,
+		ServerIdentifier: &str,
+	}
+	err = db.Create(perms).Error
+	if err != nil {
+		return err
+	}
+
+	str = "testserver-remote"
+	perms = &models.Permissions{
+		Scopes:           []*scopes.Scope{scopes.ScopeServerSftp, scopes.ScopeLogin},
+		UserId:           &loginSftpUser.ID,
+		ServerIdentifier: &str,
+	}
+	err = db.Create(perms).Error
+	return err
 }
 
 func initLoginDifferentUser(db *gorm.DB) error {
@@ -178,10 +189,13 @@ func initLoginDifferentUser(db *gorm.DB) error {
 	if err != nil {
 		return err
 	}
-	loginDifferentServerUserPermissions.UserId = &loginDifferentServerUser.ID
-	var str = "server2"
-	loginDifferentServerUserPermissions.ServerIdentifier = &str
-	return db.Create(loginDifferentServerUserPermissions).Error
+	var str = "secondserver"
+	var perms = &models.Permissions{
+		Scopes:           []*scopes.Scope{scopes.ScopeLogin},
+		UserId:           &loginSftpUser.ID,
+		ServerIdentifier: &str,
+	}
+	return db.Create(perms).Error
 }
 
 func initOauth2Client(db *gorm.DB) error {
@@ -223,7 +237,8 @@ func createSessionAdmin() (string, error) {
 	return adminSession, err
 }
 
-var CreateServerData = []byte(`{
+var CreateServerData = `{
+  "node": {{{INSERTNODEID}}},
   "type": "minecraft-java",
   "data": {
     "eula": {
@@ -316,7 +331,7 @@ var CreateServerData = []byte(`{
     ],
     "stop": "stop"
   }
-}`)
+}`
 
 var TestServerData = []byte(`{
   "type": "testing",
