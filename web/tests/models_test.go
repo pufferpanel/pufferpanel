@@ -67,8 +67,8 @@ var loginDifferentServerUserPassword = "user2"
 
 var RemoteNode = &models.Node{
 	Name:        "remoteNode",
-	PublicHost:  "localhost",
-	PrivateHost: "localhost",
+	PublicHost:  "127.0.0.1",
+	PrivateHost: "127.0.0.1",
 	Secret:      "remote-node-secret",
 }
 

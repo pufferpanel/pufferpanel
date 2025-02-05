@@ -68,8 +68,10 @@ func TestMain(m *testing.M) {
 		gin.SetMode(gin.ReleaseMode)
 		web.RegisterRoutes(router)
 
+		models.LocalNode.PublicHost = "127.0.0.1"
+		models.LocalNode.PrivateHost = "127.0.0.1"
 		models.LocalNode.PrivatePort = uint16(rand.Intn(50000) + 10000)
-		_ = config.AuthUrl.Set(fmt.Sprintf("http://localhost:%d/oauth2/token", models.LocalNode.PrivatePort), false)
+		_ = config.AuthUrl.Set(fmt.Sprintf("http://%s:%d/oauth2/token", models.LocalNode.PrivateHost, models.LocalNode.PrivatePort), false)
 
 		l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", models.LocalNode.PrivateHost, models.LocalNode.PrivatePort))
 		if err != nil {
