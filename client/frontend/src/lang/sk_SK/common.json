@@ -34,6 +34,7 @@
     "mode": {
       "Light": "Svetlý",
       "Dark": "Tmavý",
+      "DarkHighContrast": "Dark (High Contrast)",
       "Auto": "Automatický"
     },
     "BaseColor": "Základná farba",
