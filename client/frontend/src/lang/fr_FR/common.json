@@ -34,7 +34,7 @@
     "mode": {
       "Light": "Lumineux",
       "Dark": "Sombre",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Sombre (Haut contraste)",
       "Auto": "Auto"
     },
     "BaseColor": "Couleur de base",
