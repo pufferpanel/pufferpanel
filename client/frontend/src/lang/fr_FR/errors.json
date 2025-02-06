@@ -48,8 +48,8 @@
   "ErrNoCommand": "Aucune commande n'a pu être déterminée à être utilisée pour ce serveur",
   "ErrBackupInProgress": "Le serveur effectue actuellement une sauvegarde ou une restauration. Veuillez attendre que ce processus soit terminé",
   "ErrBackupServerRunning": "Le serveur est en cours d'exécution. Veuillez arrêter le serveur avant de faire des sauvegardes ou de restaurer",
-  "ErrContainerNotUnique": "Multiple containers found",
-  "ErrNoContainerNoneFound": "No container found",
-  "ErrNoMountFound": "No mount found",
-  "ErrUnsupportedMountType": "Unsupported mount type"
+  "ErrContainerNotUnique": "Nombre conteneurs trouvé",
+  "ErrNoContainerNoneFound": "Aucun conteneur trouvé",
+  "ErrNoMountFound": "Aucun montage trouvé",
+  "ErrUnsupportedMountType": "Type de montage non supporté"
 }
