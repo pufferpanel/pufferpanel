@@ -557,7 +557,7 @@ func editServerAdmin(c *gin.Context) {
 func getFile(c *gin.Context) {
 	server := getServerFromGin(c)
 
-	targetPath := c.Param("filename")
+	targetPath := getFullFilename(c)
 
 	data, err := server.GetItem(targetPath)
 	defer func() {
@@ -606,7 +606,7 @@ func getFile(c *gin.Context) {
 func putFile(c *gin.Context) {
 	server := getServerFromGin(c)
 
-	targetPath := c.Param("filename")
+	targetPath := getFullFilename(c)
 
 	if targetPath == "" {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -659,7 +659,7 @@ func putFile(c *gin.Context) {
 func deleteFile(c *gin.Context) {
 	server := getServerFromGin(c)
 
-	targetPath := c.Param("filename")
+	targetPath := getFullFilename(c)
 
 	fi, err := server.GetFileServer().Stat(targetPath)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -1050,4 +1050,12 @@ func openSocket(c *gin.Context) {
 	if _, exists := c.GetQuery("status"); exists {
 		server.GetEnvironment().AddStatusListener(socket)
 	}
+}
+
+func getFullFilename(c *gin.Context) string {
+	filename := c.Param("filename")
+	if c.Request.URL.RawQuery != "" {
+		filename = filename + "?" + c.Request.URL.RawQuery
+	}
+	return filename
 }

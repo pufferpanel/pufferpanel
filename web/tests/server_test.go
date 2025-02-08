@@ -30,13 +30,13 @@ import (
 )
 
 func TestServers(t *testing.T) {
-	db, err := database.GetConnection()
-	if !assert.NoError(t, err) {
+	db, initErr := database.GetConnection()
+	if !assert.NoError(t, initErr) {
 		return
 	}
 
-	session, err := createSessionAdmin()
-	if !assert.NoError(t, err) {
+	session, initErr := createSessionAdmin()
+	if !assert.NoError(t, initErr) {
 		return
 	}
 
@@ -49,8 +49,8 @@ func TestServers(t *testing.T) {
 	RemoteNode.PrivatePort = models.LocalNode.PrivatePort
 	RemoteNode.SFTPPort = models.LocalNode.SFTPPort
 
-	err = db.Create(RemoteNode).Error
-	if !assert.NoError(t, err) {
+	initErr = db.Create(RemoteNode).Error
+	if !assert.NoError(t, initErr) {
 		return
 	}
 
@@ -70,6 +70,7 @@ func TestServers(t *testing.T) {
 			pufferSftp.SetAuthorization(test.SFTPAuth)
 			_ = config.ClientSecret.Set(test.Node.Secret, false)
 			var ServerId = "testserver-" + strings.ToLower(name)
+			serverDir := filepath.Join(config.ServersFolder.Value(), ServerId)
 			t.Run("CreateServer", func(t *testing.T) {
 				data := CreateServerData
 				data = strings.Replace(data, "{{{INSERTNODEID}}}", fmt.Sprintf("%d", test.Node.ID), 1)
@@ -227,8 +228,8 @@ func TestServers(t *testing.T) {
 			header := http.Header{}
 			header.Set("Authorization", "Bearer "+session)
 
-			c, _, err := websocket.DefaultDialer.Dial(u, header)
-			if !assert.NoError(t, err) {
+			c, _, webErr := websocket.DefaultDialer.Dial(u, header)
+			if !assert.NoError(t, webErr) {
 				return
 			}
 			listening := true
@@ -294,7 +295,7 @@ func TestServers(t *testing.T) {
 				}
 				//TODO: Check to make sure our user above was added
 				var data []*models.UserPermissionsView
-				err = json.NewDecoder(response.Body).Decode(&data)
+				err := json.NewDecoder(response.Body).Decode(&data)
 				if !assert.NoError(t, err) {
 					return
 				}
@@ -434,7 +435,7 @@ func TestServers(t *testing.T) {
 					response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
 					assert.Equal(t, http.StatusOK, response.Code)
 					var msg pufferpanel.ServerRunning
-					err = json.NewDecoder(response.Body).Decode(&msg)
+					err := json.NewDecoder(response.Body).Decode(&msg)
 					if !assert.NoError(t, err) {
 						return
 					}
@@ -454,66 +455,66 @@ func TestServers(t *testing.T) {
 			_ = c.Close()
 
 			//create a fake file that we can use to both
-
-			dir := filepath.Join(config.ServersFolder.Value(), ServerId, "testarchive")
-			err = os.Mkdir(dir, 0755)
-			if !assert.NoError(t, err) {
-				return
-			}
-
-			fileLocation := filepath.Join(dir, "file.img")
-			tmpFile, err := os.Create(fileLocation)
-			if !assert.NoError(t, err) {
-				return
-			}
-
-			hasher := sha256.New()
-			w := io.MultiWriter(tmpFile, hasher)
-
-			_, err = io.CopyN(w, rand.Reader, 1024*1024*1024)
-			if !assert.NoError(t, err) {
-				return
-			}
-
-			_ = tmpFile.Close()
-			expectedHash := hasher.Sum(nil)
-
-			//test other functionality
-			t.Run("Archive", func(t *testing.T) {
-				response := CallAPI("POST", "/api/servers/"+ServerId+"/archive/archive.zip", []string{"testarchive"}, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
-				_ = os.RemoveAll(dir)
-			})
-
-			t.Run("Extract", func(t *testing.T) {
-				response := CallAPI("POST", "/api/servers/"+ServerId+"/extract/archive.zip", nil, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
-				if !assert.FileExists(t, fileLocation) {
-					return
-				}
-
-				f, err := os.Open(fileLocation)
-				if !assert.NoError(t, err) {
-					return
-				}
-				defer utils.Close(f)
-				h := sha256.New()
-				_, err = io.Copy(h, f)
+			t.Run("Compression", func(t *testing.T) {
+				dir := filepath.Join(serverDir, "testarchive")
+				err := os.Mkdir(dir, 0755)
 				if !assert.NoError(t, err) {
 					return
 				}
 
-				if !assert.Equal(t, expectedHash, h.Sum(nil), "File hashes do not match") {
+				fileLocation := filepath.Join(dir, "file.img")
+				tmpFile, err := os.Create(fileLocation)
+				if !assert.NoError(t, err) {
 					return
 				}
+
+				hasher := sha256.New()
+				w := io.MultiWriter(tmpFile, hasher)
+
+				_, err = io.CopyN(w, rand.Reader, 1024*1024*1024)
+				if !assert.NoError(t, err) {
+					return
+				}
+
+				_ = tmpFile.Close()
+				expectedHash := hasher.Sum(nil)
+
+				//test other functionality
+				t.Run("Archive", func(t *testing.T) {
+					response := CallAPI("POST", "/api/servers/"+ServerId+"/archive/archive.zip", []string{"testarchive"}, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+					_ = os.RemoveAll(dir)
+				})
+
+				t.Run("Extract", func(t *testing.T) {
+					response := CallAPI("POST", "/api/servers/"+ServerId+"/extract/archive.zip", nil, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+					if !assert.FileExists(t, fileLocation) {
+						return
+					}
+
+					f, err := os.Open(fileLocation)
+					if !assert.NoError(t, err) {
+						return
+					}
+					defer utils.Close(f)
+					h := sha256.New()
+					_, err = io.Copy(h, f)
+					if !assert.NoError(t, err) {
+						return
+					}
+
+					if !assert.Equal(t, expectedHash, h.Sum(nil), "File hashes do not match") {
+						return
+					}
+				})
 			})
 
 			t.Run("SFTP", func(t *testing.T) {
-
 				t.Run("Admin", func(t *testing.T) {
 					sshConfig := &ssh.ClientConfig{
 						User: loginAdminUser.Email + "#" + ServerId,
@@ -581,6 +582,48 @@ func TestServers(t *testing.T) {
 						return
 					}
 				})
+			})
+
+			t.Run("DeleteFile", func(t *testing.T) {
+				filename := "file.delete.test"
+
+				fileLocation := filepath.Join(serverDir, filename)
+				tmpFile, err := os.Create(fileLocation)
+				if !assert.NoError(t, err) {
+					return
+				}
+				utils.Close(tmpFile)
+
+				response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+filename, nil, session)
+				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					return
+				}
+
+				_, err = os.Stat(fileLocation)
+				if !assert.ErrorIs(t, err, os.ErrNotExist) {
+					return
+				}
+			})
+
+			t.Run("DeleteFileWithURIEncoding", func(t *testing.T) {
+				filename := "file.delete.test?id=12345"
+
+				fileLocation := filepath.Join(serverDir, filename)
+				tmpFile, err := os.Create(fileLocation)
+				if !assert.NoError(t, err) {
+					return
+				}
+				utils.Close(tmpFile)
+
+				response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+filename, nil, session)
+				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					return
+				}
+
+				_, err = os.Stat(fileLocation)
+				if !assert.ErrorIs(t, err, os.ErrNotExist) {
+					return
+				}
 			})
 
 			t.Run("Delete", func(t *testing.T) {
