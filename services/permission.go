@@ -41,7 +41,10 @@ func (ps *Permission) GetForUserAndServer(userId uint, serverId string) (*models
 		id = &serverId
 	}
 
-	permissions := &models.Permissions{}
+	permissions := &models.Permissions{
+		UserId:           &userId,
+		ServerIdentifier: id,
+	}
 
 	err := ps.DB.Preload(clause.Associations).Where(map[string]interface{}{
 		"user_id":           userId,
