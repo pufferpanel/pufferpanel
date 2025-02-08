@@ -34,7 +34,7 @@
     "mode": {
       "Light": "Светлая",
       "Dark": "Тёмная",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Тёмная (высокая контрастность)",
       "Auto": "Авто"
     },
     "BaseColor": "Основной цвет",
