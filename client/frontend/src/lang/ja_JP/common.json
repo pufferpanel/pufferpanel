@@ -15,8 +15,8 @@
   "Collapse": "折りたたむ",
   "Expand": "開く",
   "Copy": "クリップボードにコピー",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copied": "クリップボードにコピーしました",
+  "Back": "戻る",
   "Next": "次",
   "Details": "結果",
   "ErrorDetails": "エラー結果",
@@ -34,7 +34,7 @@
     "mode": {
       "Light": "ライト",
       "Dark": "ダーク",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "ダーク（ハイコントラスト）",
       "Auto": "自動"
     },
     "BaseColor": "ベースカラー",
@@ -49,7 +49,7 @@
       "List": "一覧"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "結果なし",
+  "Yes": "はい",
+  "No": "いいえ"
 }
