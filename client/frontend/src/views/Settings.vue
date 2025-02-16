@@ -69,8 +69,8 @@ async function themeChanged() {
   themeSettings.value = await themeApi.getThemeSettings(theme.value)
 }
 
-function emailProviderChanged() {
-  emailFields.value = emailProviderConfigs[emailProvider.value]
+function emailProviderChanged(provider) {
+  emailFields.value = emailProviderConfigs[provider]
 }
 
 async function savePanelSettings() {
@@ -87,7 +87,7 @@ async function savePanelSettings() {
 async function saveEmailSettings() {
   const data = { 'panel.email.provider': emailProvider.value }
   emailFields.value.map(elem => {
-    data['panel.email.' + elem.key] = email[elem.key]
+    data['panel.email.' + elem.key] = email.value[elem.key]
   })
   await api.settings.set(data)
   toast.success(t('settings.Saved'))
@@ -100,6 +100,7 @@ onMounted(async () => {
   registrationEnabled.value = (regEnabled === "true" || regEnabled === true)
   theme.value = await api.settings.get('panel.settings.defaultTheme')
   emailProvider.value = await api.settings.get('panel.email.provider')
+  emailProviderChanged(emailProvider.value)
   Object.keys(email.value).map(async key => {
     email.value[key] = await api.settings.get('panel.email.' + key)
   })
@@ -131,7 +132,7 @@ function updateThemeSetting(name, newSetting) {
     </div>
     <div class="email">
       <h1 v-text="t('settings.EmailSettings')" />
-      <dropdown v-model="emailProvider" :options="emailProviders" :label="t('settings.EmailProvider')" @change="emailProviderChanged()" />
+      <dropdown v-model="emailProvider" :options="emailProviders" :label="t('settings.EmailProvider')" @change="emailProviderChanged" />
       <text-field v-for="elem in emailFields" :key="elem.key" v-model="email[elem.key]" :type="elem.type" :label="t('settings.email.' + elem.key)" />
       <btn color="primary" @click="saveEmailSettings()"><icon name="save" />{{ t('settings.SaveEmailSettings') }}</btn>
     </div>
