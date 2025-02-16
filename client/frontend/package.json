@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "clean": "vite clean",
-    "dev": "vite",
+    "dev": "vite build --mode development",
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",

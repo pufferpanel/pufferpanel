@@ -19,12 +19,12 @@ const emailProviderConfigs = {
   mailgun: [
     { key: 'domain', type: 'text' },
     { key: 'from', type: 'text' },
-    { key: 'key', type: 'text' }
+    { key: 'key', type: 'password' }
   ],
   mailjet: [
     { key: 'domain', type: 'text' },
     { key: 'from', type: 'text' },
-    { key: 'key', type: 'text' }
+    { key: 'key', type: 'password' }
   ]
 }
 
@@ -93,6 +93,11 @@ async function saveEmailSettings() {
   toast.success(t('settings.Saved'))
 }
 
+async function testEmailSettings() {
+  await api.settings.sendTestEmail()
+  toast.success(t('settings.TestEmailSent'))
+}
+
 onMounted(async () => {
   masterUrl.value = await api.settings.get('panel.settings.masterUrl')
   panelTitle.value = await api.settings.get('panel.settings.companyName')
@@ -135,6 +140,7 @@ function updateThemeSetting(name, newSetting) {
       <dropdown v-model="emailProvider" :options="emailProviders" :label="t('settings.EmailProvider')" @change="emailProviderChanged" />
       <text-field v-for="elem in emailFields" :key="elem.key" v-model="email[elem.key]" :type="elem.type" :label="t('settings.email.' + elem.key)" />
       <btn color="primary" @click="saveEmailSettings()"><icon name="save" />{{ t('settings.SaveEmailSettings') }}</btn>
+      <btn color="primary" @click="testEmailSettings()"><icon name="test" />{{ t('settings.TestEmail' )}}</btn>
     </div>
   </div>
 </template>

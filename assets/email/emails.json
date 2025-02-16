@@ -46,5 +46,9 @@
   "removedFromServer": {
     "subject": "You have been removed from a server",
     "body": "removed-from-server.html"
+  },
+  "test": {
+    "subject": "Email Test",
+    "body": "test.html"
   }
 }

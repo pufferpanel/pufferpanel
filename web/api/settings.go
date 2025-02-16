@@ -19,6 +19,9 @@ func registerSettings(g *gin.RouterGroup) {
 	g.Handle("GET", "/:key", middleware.RequiresPermission(scopes.ScopeSettingsEdit), getSetting)
 	g.Handle("PUT", "/:key", middleware.RequiresPermission(scopes.ScopeSettingsEdit), setSetting)
 	g.Handle("OPTIONS", "/:key", response.CreateOptions("GET", "PUT"))
+
+	g.Handle("POST", "/test/email", middleware.RequiresPermission(scopes.ScopeSettingsEdit), sendTestEmail)
+	g.Handle("OPTIONS", "/test/email", response.CreateOptions("POST"))
 }
 
 // @Summary Value a panel setting
@@ -154,6 +157,22 @@ func setSettings(c *gin.Context) {
 
 	services.SyncNodeToConfig()
 
+	c.Status(http.StatusNoContent)
+}
+
+// @Summary Email test
+// @Description Tests email settings by sending an email
+// @Success 204 {object} nil
+// @Router /api/settings/test/email [post]
+// @Security OAuth2Application[settings.edit]
+func sendTestEmail(c *gin.Context) {
+	user := c.MustGet("user").(*models.User)
+
+	es := services.GetEmailService()
+	err := es.SendEmail(user.Email, "test", nil, false)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
 	c.Status(http.StatusNoContent)
 }
 

@@ -2,6 +2,7 @@
   "private": true,
   "workspaces": ["api", "frontend"],
   "scripts": {
-    "build": "yarn workspaces run build"
+    "build": "yarn workspaces run build",
+    "dev": "yarn workspaces run dev"
   }
 }

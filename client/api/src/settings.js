@@ -11,7 +11,7 @@ export class SettingsApi {
   }
 
   async set(data) {
-    const res = await this._api.post('/api/settings/', data)
+    const res = await this._api.post('/api/settings', data)
     return res.data.value
   }
 
@@ -26,6 +26,11 @@ export class SettingsApi {
 
   async setUserSetting(key, value) {
     await this._api.put(`/api/userSettings/${key}`, { value })
+    return true
+  }
+
+  async sendTestEmail() {
+    await this._api.post(`/api/settings/test/email`)
     return true
   }
 }

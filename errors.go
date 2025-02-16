@@ -71,7 +71,7 @@ var ErrNoTemplate = func(template string) *Error {
 }
 
 var ErrServiceInvalidProvider = func(service, provider string) *Error {
-	return CreateError("{service} does not support ${provider}", "ErrServiceInvalidProvider").Metadata(map[string]interface{}{"service": service, "provider": provider})
+	return CreateError("${service} does not support ${provider}", "ErrServiceInvalidProvider").Metadata(map[string]interface{}{"service": service, "provider": provider})
 }
 
 var ErrFieldRequired = func(fieldName string) *Error {
