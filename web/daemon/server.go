@@ -518,6 +518,10 @@ func editServerAdmin(c *gin.Context) {
 	prg := getServerFromGin(c)
 	server := &prg.Server
 
+	if err := prg.IsIdle(); response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
 	replacement := &pufferpanel.Server{}
 	err := c.BindJSON(replacement)
 	if response.HandleError(c, err, http.StatusBadRequest) {
@@ -538,7 +542,12 @@ func editServerAdmin(c *gin.Context) {
 		return
 	}
 
+	err = servers.Reload(prg.Id())
+
 	if response.HandleError(c, err, http.StatusInternalServerError) {
+		//attempt to revert... but no promise this works
+		server.CopyFrom(backup)
+		_ = servers.Reload(prg.Id())
 		return
 	}
 

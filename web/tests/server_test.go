@@ -24,6 +24,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -606,6 +607,11 @@ func TestServers(t *testing.T) {
 			})
 
 			t.Run("DeleteFileWithURIEncoding", func(t *testing.T) {
+				if runtime.GOOS == "windows" {
+					t.Skipf("Windows doesn't support file with URI encoding")
+					return
+				}
+
 				filename := "file.delete.test?id=12345"
 
 				fileLocation := filepath.Join(serverDir, filename)
