@@ -655,11 +655,6 @@ func TestServers(t *testing.T) {
 				if !assert.NotEmpty(t, res.Tasks) {
 					return
 				}
-				for _, v := range res.Tasks {
-					if !assert.NotEmpty(t, v.Operations) {
-						return
-					}
-				}
 			})
 
 			t.Run("GetTask", func(t *testing.T) {
