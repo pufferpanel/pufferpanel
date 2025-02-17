@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Dữ liệu JSON không hợp lệ",
   "ErrSocketFailed": "Lỗi kết nối WebSocket, một số tính năng sẽ chậm hoặc không hoạt động",
   "ErrInviteLinkInvalid": "Link mời của bạn không hợp lệ",
-  "ErrSavingInviteduser": "Đã có lỗi khi tạo tài khoản của bạn",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "Máy chủ với tên này đã tồn tại",
   "ErrDuplicateNodeName": "Node với tên này đã tồn tại",
   "ErrDirectoryUploadNotSupported": "Không thể tải thư mục lên",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}",
   "ErrNoCommand": "No command could be determined to be used for this server",
   "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }

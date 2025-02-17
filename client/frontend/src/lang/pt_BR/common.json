@@ -34,6 +34,7 @@
     "mode": {
       "Light": "Claro",
       "Dark": "Escuro",
+      "DarkHighContrast": "Dark (High Contrast)",
       "Auto": "Automático"
     },
     "BaseColor": "Cor Principal",

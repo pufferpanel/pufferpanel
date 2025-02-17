@@ -25,5 +25,8 @@
     "username": "Nome do usuário",
     "password": "Senha"
   },
-  "Saved": "Salvo"
+  "Saved": "Salvo",
+  "TestEmail": "Test Email",
+  "TestEmailSent": "Test email sent",
+  "TestEmailFailed": "Test email failed to send"
 }

@@ -47,10 +47,10 @@
     "server-console-send": "コンソールにコマンドを送信できます。",
     "server-stats": "リソースの使用状況を確認できます。",
     "server-status": "現在のサーバーの状態を確認できます。",
-    "server-backup-view": "View and download backups",
-    "server-backup-create": "Create a new backup",
-    "server-backup-restore": "Restore server from a backup",
-    "server-backup-delete": "Delete a backup"
+    "server-backup-view": "バックアップの表示とダウンロード",
+    "server-backup-create": "新しいバックアップを作成",
+    "server-backup-restore": "サーバーをバックアップから復元する",
+    "server-backup-delete": "バックアップを削除"
   },
   "hint": {
     "admin": "すべての権限を付与",

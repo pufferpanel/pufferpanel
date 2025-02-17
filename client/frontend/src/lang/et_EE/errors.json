@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Json andmed on kehtetud",
   "ErrSocketFailed": "WebSocketi ühenduses ilmnes viga, mõned funktsioonid võivad olla aeglased või katki",
   "ErrInviteLinkInvalid": "Teie kutselink näib olevat vale",
-  "ErrSavingInviteduser": "Teie konto loomisel ilmnes viga",
+  "ErrSavingInvitedUser": "There was an error creating your account",
   "ErrDuplicateServerName": "Selle nimega server eksisteerib juba",
   "ErrDuplicateNodeName": "Selle nimega sõlm juba eksisteerib",
   "ErrDirectoryUploadNotSupported": "Kaustu ei saa üles laadida",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "Arhhitektuur ${actual} pole toetatud. Toetatud Arhhitektuurid: ${expected}",
   "ErrNoCommand": "Serverile ei leitud ühtegi kasutatavat käsku",
   "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores",
+  "ErrContainerNotUnique": "Multiple containers found",
+  "ErrNoContainerNoneFound": "No container found",
+  "ErrNoMountFound": "No mount found",
+  "ErrUnsupportedMountType": "Unsupported mount type"
 }

@@ -34,6 +34,7 @@
     "mode": {
       "Light": "Luminos",
       "Dark": "Întunecat",
+      "DarkHighContrast": "Dark (High Contrast)",
       "Auto": "Automat"
     },
     "BaseColor": "Culoarea de bază",

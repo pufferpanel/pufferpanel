@@ -25,5 +25,8 @@
     "username": "Vartotojo vardas",
     "password": "Slaptažodis"
   },
-  "Saved": "Išsaugota"
+  "Saved": "Išsaugota",
+  "TestEmail": "Test Email",
+  "TestEmailSent": "Test email sent",
+  "TestEmailFailed": "Test email failed to send"
 }

@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Les données JSON sont invalides",
   "ErrSocketFailed": "La connexion WebSocket a rencontré une erreur, certaines fonctionnalités peuvent être ralenties ou indisponibles",
   "ErrInviteLinkInvalid": "Votre lien d'invitation semble être invalide",
-  "ErrSavingInviteduser": "Une erreur s'est produite lors de la création du compte",
+  "ErrSavingInvitedUser": "Une erreur s'est produite lors de la création de votre compte",
   "ErrDuplicateServerName": "Un serveur avec ce nom existe déjà",
   "ErrDuplicateNodeName": "Un nœud avec ce nom existe déjà",
   "ErrDirectoryUploadNotSupported": "Impossible d'envoyer des dossiers",
@@ -47,5 +47,9 @@
   "ErrUnsupportedArch": "L'architecture ${actual} n'est pas supportée. Les architectures supportées sont : ${expected}",
   "ErrNoCommand": "Aucune commande n'a pu être déterminée à être utilisée pour ce serveur",
   "ErrBackupInProgress": "Le serveur effectue actuellement une sauvegarde ou une restauration. Veuillez attendre que ce processus soit terminé",
-  "ErrBackupServerRunning": "Le serveur est en cours d'exécution. Veuillez arrêter le serveur avant de faire des sauvegardes ou de restaurer"
+  "ErrBackupServerRunning": "Le serveur est en cours d'exécution. Veuillez arrêter le serveur avant de faire des sauvegardes ou de restaurer",
+  "ErrContainerNotUnique": "Nombre conteneurs trouvé",
+  "ErrNoContainerNoneFound": "Aucun conteneur trouvé",
+  "ErrNoMountFound": "Aucun montage trouvé",
+  "ErrUnsupportedMountType": "Type de montage non supporté"
 }

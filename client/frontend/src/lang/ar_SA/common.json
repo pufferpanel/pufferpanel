@@ -34,6 +34,7 @@
     "mode": {
       "Light": "ساطع",
       "Dark": "داكن",
+      "DarkHighContrast": "Dark (High Contrast)",
       "Auto": "تلقائي"
     },
     "BaseColor": "اللون الأساسي",

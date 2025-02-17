@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Json データが無効です",
   "ErrSocketFailed": "WebSocket接続でエラーが発生しました。一部の機能が遅くなったり壊れたりする可能性があります。",
   "ErrInviteLinkInvalid": "招待リンクが無効のようです",
-  "ErrSavingInviteduser": "アカウント作成時にエラーが発生しました",
+  "ErrSavingInvitedUser": "アカウント作成時にエラーが発生しました",
   "ErrDuplicateServerName": "この名前のサーバーは既に存在しています",
   "ErrDuplicateNodeName": "この名前のノードは既に存在しています",
   "ErrDirectoryUploadNotSupported": "フォルダはアップロードできません",
@@ -46,6 +46,10 @@
   "ErrUnsupportedOS": "OS (${actual}) はサポートされていません。サポートOS：${expected}",
   "ErrUnsupportedArch": "アーキテクチャ ${actual} はサポートされていません。サポートされているアーキテクチャ: ${expected}",
   "ErrNoCommand": "このサーバーで使用するコマンドが見つかりませんでした",
-  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores"
+  "ErrBackupInProgress": "サーバーは現在バックアップまたは復元を実行しています。このプロセスが完了するまでお待ちください。",
+  "ErrBackupServerRunning": "サーバーは現在実行中です。バックアップまたは復元する前にサーバーを停止してください",
+  "ErrContainerNotUnique": "複数のコンテナが見つかりました",
+  "ErrNoContainerNoneFound": "コンテナが見つかりません",
+  "ErrNoMountFound": "マウントが見つかりません",
+  "ErrUnsupportedMountType": "サポートされていないマウントタイプ"
 }

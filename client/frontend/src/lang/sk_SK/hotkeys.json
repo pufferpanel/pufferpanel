@@ -1,75 +1,75 @@
 {
-  "Title": "Keyboard Shortcuts",
+  "Title": "Klávesové skratky",
   "Global": {
-    "Title": "Global",
-    "g a": "Go to Account",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "Title": "Globálne",
+    "g a": "Prejsť na účet",
+    "g c": "Prejsť do konfiguračného panela",
+    "g n": "Prejsť k uzlom",
+    "g s": "Prejsť k serverom",
+    "g t": "Prejsť k šablonám",
+    "g u": "Prejsť k užívateľom"
   },
   "Self": {
-    "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
-    "t s": "Go to Preferences tab"
+    "Title": "Účet",
+    "t 2": "Prejsť na záložku s 2-faktorovou autentifikáciou",
+    "t a": "Prejsť na záložku s detailami účtu",
+    "t o": "Prejsť na záložku s OAuth",
+    "t p": "Prejsť na záložku s heslami",
+    "t s": "Prejsť na záložku s nastaveniami"
   },
   "ServerList": {
-    "Title": "Servers",
-    "c": "Create a new server",
-    "l": "Focus the first server in the list"
+    "Title": "Servery",
+    "c": "Vytvoriť nový server",
+    "l": "Zameraj prvý server v zozname"
   },
   "ServerView": {
     "Title": "Server",
-    "t c": "Go to Console tab",
-    "t i": "Go to Statistics tab",
-    "t f": "Go to Files tab",
-    "t s": "Go to Settings tab",
-    "t u": "Go to Users tab",
-    "t 6": "Go to SFTP tab",
-    "t 7": "Go to Api tab",
-    "t a": "Go to Admin tab",
-    "c c": "Clear Console",
-    "r r": "Start Server",
-    "r s": "Stop Server",
-    "r k": "Kill Server",
-    "r i": "Install Server",
-    "f a": "Archive current directory contents",
-    "f c d": "Create new directory",
-    "f c f": "Create new file",
-    "f d": "Upload directory",
-    "f l": "Focus first file/folder in the list",
-    "f r": "Reload file list",
-    "f u": "Upload files",
-    "a e": "Edit Server Definition",
-    "a r": "Reload Server Definiton from disk"
+    "t c": "Prejsť na záložku s konzolou",
+    "t i": "Prejsť na záložku so štatistikami",
+    "t f": "Prejsť na záložku so súbormi",
+    "t s": "Prejsť na záložku s nastaveniami",
+    "t u": "Prejsť na záložku s užívateľmi",
+    "t 6": "Prejsť na záložku s SFTP",
+    "t 7": "Prejsť na záložku s API",
+    "t a": "Prejsť na záložku správcu",
+    "c c": "Vyčistiť konzolu",
+    "r r": "Spustiť Server",
+    "r s": "Zastaviť server",
+    "r k": "Zabiť server",
+    "r i": "Nainštalovať server",
+    "f a": "Archivácia aktuálneho obsahu priečinka",
+    "f c d": "Vytvoriť nový priečnok",
+    "f c f": "Vytvoriť nový súbor",
+    "f d": "Nahraj adresár",
+    "f l": "Zameraj prvý súbor/priečinok v zozname",
+    "f r": "Znova načítať zoznam",
+    "f u": "Nahrať súbory",
+    "a e": "Upraviť definíciu servera",
+    "a r": "Opätovné načítanie nastavenia servera z disku"
   },
   "NodeList": {
-    "Title": "Nodes",
-    "c": "Create a new node",
-    "l": "Focus the first node in the list"
+    "Title": "Uzly",
+    "c": "Vytvoriť nový uzol",
+    "l": "Zameraj prvý uzol v zozname"
   },
   "UserList": {
-    "Title": "Users",
-    "c": "Create a new user",
-    "l": "Focus the first user in the list"
+    "Title": "Používatelia",
+    "c": "Vytvoriť nového používateľa",
+    "l": "Zameraj prvého používateľa zozname"
   },
   "TemplateList": {
-    "Title": "Templates",
-    "c": "Create a new template",
-    "l": "Focus the first template in the list"
+    "Title": "Šablóny",
+    "c": "Vytvoriť novú šablónu",
+    "l": "Zameraj prvú šablónu v zozname"
   },
   "Template": {
-    "Title": "Template Editor",
-    "t e": "Go to Environment tab",
-    "t g": "Go to General tab",
-    "t h": "Go to Hooks tab",
-    "t i": "Go to Install tab",
-    "t j": "Go to JSON tab",
-    "t r": "Go to Run Configuration tab",
-    "t v": "Go to Variables tab"
+    "Title": "Editor šablón",
+    "t e": "Prejsť na záložku prostredia",
+    "t g": "Prejsť na hlavnú záložku",
+    "t h": "Prejsť na záložku Hooks",
+    "t i": "Prejsť na záložku inštalácia",
+    "t j": "Prejsť na záložku JSON",
+    "t r": "Prejsť na záložku konfigurácie",
+    "t v": "Prejsť na záložku s premennými"
   }
 }
