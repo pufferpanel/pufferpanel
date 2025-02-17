@@ -100,6 +100,8 @@ func (s *Scheduler) Init() error {
 		return err
 	}
 
+	s.scheduler = gs
+
 	for k, v := range s.Tasks {
 		err = s.addTask(k, v)
 		if err != nil {
@@ -107,7 +109,6 @@ func (s *Scheduler) Init() error {
 		}
 	}
 
-	s.scheduler = gs
 	return nil
 }
 
