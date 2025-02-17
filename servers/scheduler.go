@@ -100,6 +100,13 @@ func (s *Scheduler) Init() error {
 		return err
 	}
 
+	for k, v := range s.Tasks {
+		err = s.addTask(k, v)
+		if err != nil {
+			return err
+		}
+	}
+
 	s.scheduler = gs
 	return nil
 }
@@ -120,6 +127,13 @@ func (s *Scheduler) IsRunning() bool {
 }
 
 func (s *Scheduler) AddTask(id string, task pufferpanel.Task) error {
+	if err := s.addTask(id, task); err != nil {
+		return err
+	}
+	return s.Save()
+}
+
+func (s *Scheduler) addTask(id string, task pufferpanel.Task) error {
 	var opt gocron.JobDefinition
 
 	if task.CronSchedule != "" {
@@ -132,9 +146,9 @@ func (s *Scheduler) AddTask(id string, task pufferpanel.Task) error {
 	if err != nil {
 		return err
 	}
-	
+
 	s.Tasks[id] = task
-	return s.Save()
+	return nil
 }
 
 func (s *Scheduler) RemoveTask(id string) error {
