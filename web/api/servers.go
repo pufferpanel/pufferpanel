@@ -60,13 +60,12 @@ func registerServers(g *gin.RouterGroup) {
 	g.OPTIONS("/:serverId/flags", response.CreateOptions("GET", "POST"))
 
 	g.GET("/:serverId/tasks", middleware.RequiresPermission(scopes.ScopeServerTaskView), middleware.ResolveServerPanel, proxyServerRequest)
-	g.POST("/:serverId/tasks", middleware.RequiresPermission(scopes.ScopeServerTaskCreate), middleware.ResolveServerPanel, proxyServerRequest)
 	g.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(scopes.ScopeServerTaskEdit), middleware.ResolveServerPanel, proxyServerRequest)
 	g.DELETE("/:serverId/tasks/:taskId", middleware.RequiresPermission(scopes.ScopeServerTaskDelete), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/tasks", response.CreateOptions("GET", "POST", "PUT", "DELETE"))
 
-	//g.POST("/:serverId/tasks/:taskId/run", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), RunServerTask)
-	//g.OPTIONS("/:serverId/tasks/:taskId/run", response.CreateOptions("POST"))
+	g.POST("/:serverId/tasks/:taskId/run", middleware.RequiresPermission(scopes.ScopeServerTaskRun), middleware.ResolveServerPanel, proxyServerRequest)
+	g.OPTIONS("/:serverId/tasks/:taskId/run", response.CreateOptions("POST"))
 
 	g.POST("/:serverId/reload", middleware.RequiresPermission(scopes.ScopeServerReload), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/reload", response.CreateOptions("POST"))

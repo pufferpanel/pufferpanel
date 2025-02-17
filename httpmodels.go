@@ -36,11 +36,11 @@ type DaemonRunning struct {
 } //@name DaemonRunning
 
 type ServerTasks struct {
-	Tasks map[string]ServerTask
+	Tasks map[string]ServerTask `json:"tasks"`
 } //@name ServerTasks
 
 type ServerTask struct {
-	IsRunning bool `json:"isRunning"`
+	//IsRunning bool `json:"isRunning"`
 	Task
 } //@name ServerTask
 

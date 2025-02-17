@@ -564,3 +564,16 @@ var NewVariableChanges = []byte(`{
 
 var NewVariableChangeIP = "1.2.3.4"
 var NewVariableChangePort uint16 = 5356
+
+var TaskDefinition = []byte(`{
+  "name": "test",
+  "cronSchedule": "* * * * *",
+  "description": "Test Task",
+  "operations": [
+	{
+      "target": "eula.txt",
+      "text": "eula=true",
+      "type": "writefile"
+    }
+  ]
+}`)

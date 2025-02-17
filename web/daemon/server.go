@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/go-co-op/gocron"
+	"github.com/go-co-op/gocron/v2"
 	"github.com/gofrs/uuid/v5"
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -339,7 +339,7 @@ func getServerTasks(c *gin.Context) {
 				CronSchedule: v.CronSchedule,
 				Description:  v.Description,
 			},
-			IsRunning: server.Scheduler.IsTaskRunning(k),
+			//IsRunning: server.Scheduler.IsTaskRunning(k),
 		}
 	}
 
@@ -358,10 +358,10 @@ func getServerTask(c *gin.Context) {
 
 	var result *pufferpanel.ServerTask
 
-	for k, v := range server.Scheduler.Tasks {
+	for _, v := range server.Scheduler.Tasks {
 		result = &pufferpanel.ServerTask{
-			Task:      v,
-			IsRunning: server.Scheduler.IsTaskRunning(k),
+			Task: v,
+			//IsRunning: server.Scheduler.IsTaskRunning(k),
 		}
 	}
 
@@ -385,7 +385,7 @@ func runServerTask(c *gin.Context) {
 	taskId := c.Param("taskId")
 
 	err := server.Scheduler.RunTask(taskId)
-	if errors.Is(err, gocron.ErrJobNotFoundWithTag) {
+	if errors.Is(err, gocron.ErrJobNotFound) {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -415,7 +415,7 @@ func editServerTask(c *gin.Context) {
 	}
 
 	err = server.Scheduler.RemoveTask(taskId)
-	if errors.Is(err, gocron.ErrJobNotFoundWithTag) {
+	if errors.Is(err, gocron.ErrJobNotFound) {
 		err = nil
 	}
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -441,14 +441,8 @@ func deleteServerTask(c *gin.Context) {
 
 	taskId := c.Param("taskId")
 
-	var task pufferpanel.Task
-	err := c.ShouldBindJSON(&task)
-	if response.HandleError(c, err, http.StatusBadRequest) {
-		return
-	}
-
-	err = server.Scheduler.RemoveTask(taskId)
-	if errors.Is(err, gocron.ErrJobNotFoundWithTag) {
+	err := server.Scheduler.RemoveTask(taskId)
+	if errors.Is(err, gocron.ErrJobNotFound) {
 		c.Status(http.StatusNotFound)
 		return
 	}

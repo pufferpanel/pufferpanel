@@ -632,6 +632,64 @@ func TestServers(t *testing.T) {
 				}
 			})
 
+			var taskId = "testtask"
+			t.Run("CreateTask", func(t *testing.T) {
+				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/tasks/"+taskId, TaskDefinition, session)
+				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					return
+				}
+			})
+
+			t.Run("GetTask", func(t *testing.T) {
+				response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks", nil, session)
+				if !assert.Equal(t, http.StatusOK, response.Code) {
+					return
+				}
+
+				var res pufferpanel.ServerTasks
+				err := json.NewDecoder(response.Body).Decode(&res)
+				if !assert.NoError(t, err) {
+					return
+				}
+				assert.NotEmpty(t, res.Tasks)
+			})
+
+			t.Run("RunTask", func(t *testing.T) {
+				eulaFile := filepath.Join(serverDir, "eula.txt")
+				err := os.Remove(eulaFile)
+				if !assert.NoError(t, err) {
+					return
+				}
+
+				response := CallAPIRaw("POST", "/api/servers/"+ServerId+"/tasks/"+taskId+"/run", nil, session)
+				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					return
+				}
+
+				time.Sleep(5 * time.Second)
+
+				assert.FileExists(t, eulaFile)
+			})
+
+			t.Run("DeleteTask", func(t *testing.T) {
+				response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/tasks/"+taskId, nil, session)
+				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					return
+				}
+
+				response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks", nil, session)
+				if !assert.Equal(t, http.StatusOK, response.Code) {
+					return
+				}
+
+				var res pufferpanel.ServerTasks
+				err := json.NewDecoder(response.Body).Decode(&res)
+				if !assert.NoError(t, err) {
+					return
+				}
+				assert.Empty(t, res.Tasks)
+			})
+
 			t.Run("Delete", func(t *testing.T) {
 				response := CallAPIRaw("DELETE", "/api/servers/"+ServerId, nil, session)
 				if !assert.Equal(t, http.StatusNoContent, response.Code) {

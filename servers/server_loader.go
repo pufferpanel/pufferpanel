@@ -100,7 +100,10 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 	data.Scheduler, _ = LoadScheduler(data.Id())
 	if data.Scheduler == nil {
 		data.Scheduler = NewDefaultScheduler(data.Id())
-		data.Scheduler.Init()
+		err = data.Scheduler.Init()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	fs, err := files.NewFileServer(data.RunningEnvironment.GetRootDirectory(), data.RunningEnvironment.GetUid(), data.RunningEnvironment.GetGid())
@@ -108,6 +111,8 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 		return nil, err
 	}
 	data.SetFileServer(fs)
+
+	data.Scheduler.Start()
 
 	return data, nil
 }
@@ -250,7 +255,7 @@ func Reload(id string) (err error) {
 	}
 
 	logging.Debug.Println("Starting scheduler")
-	newVersion.Scheduler.Start()
+	program.Scheduler.Start()
 
 	return
 }

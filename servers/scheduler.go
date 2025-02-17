@@ -2,7 +2,7 @@ package servers
 
 import (
 	"encoding/json"
-	"github.com/go-co-op/gocron"
+	"github.com/go-co-op/gocron/v2"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
@@ -13,12 +13,12 @@ import (
 )
 
 type Scheduler struct {
-	scheduler *gocron.Scheduler
+	scheduler gocron.Scheduler
 	serverId  string
 
 	Tasks           map[string]pufferpanel.Task `json:"tasks"`
 	Timezone        string                      `json:"timezone,omitempty"`
-	ConcurrentLimit int                         `json:"concurrentLimit"`
+	ConcurrentLimit uint                        `json:"concurrentLimit"`
 	LimitMode       string                      `json:"limitMode"`
 }
 
@@ -55,7 +55,10 @@ func NewDefaultScheduler(serverId string) *Scheduler {
 
 func (s *Scheduler) Init() error {
 	if s.scheduler != nil {
-		s.scheduler.Stop()
+		err := s.scheduler.StopJobs()
+		if err != nil {
+			return err
+		}
 	}
 
 	var timezone *time.Location
@@ -69,14 +72,21 @@ func (s *Scheduler) Init() error {
 		timezone = time.Local
 	}
 
-	gs := gocron.NewScheduler(timezone)
+	opts := []gocron.SchedulerOption{
+		gocron.WithLocation(timezone),
+	}
 
 	if s.ConcurrentLimit > 0 {
 		if s.LimitMode == "reschedule" {
-			gs.SetMaxConcurrentJobs(s.ConcurrentLimit, gocron.RescheduleMode)
+			opts = append(opts, gocron.WithLimitConcurrentJobs(s.ConcurrentLimit, gocron.LimitModeReschedule))
 		} else {
-			gs.SetMaxConcurrentJobs(s.ConcurrentLimit, gocron.WaitMode)
+			opts = append(opts, gocron.WithLimitConcurrentJobs(s.ConcurrentLimit, gocron.LimitModeWait))
 		}
+	}
+
+	gs, err := gocron.NewScheduler(opts...)
+	if err != nil {
+		return err
 	}
 
 	s.scheduler = gs
@@ -88,54 +98,59 @@ func (s *Scheduler) Save() error {
 }
 
 func (s *Scheduler) Stop() {
-	s.scheduler.Stop()
+	_ = s.scheduler.Shutdown()
 }
 
 func (s *Scheduler) Start() {
-	s.scheduler.StartAsync()
+	s.scheduler.Start()
 }
 
 func (s *Scheduler) IsRunning() bool {
 	if s.scheduler == nil {
 		return false
 	}
-	return s.scheduler.IsRunning()
-}
-
-func (s *Scheduler) IsTaskRunning(id string) bool {
-	jobs, _ := s.scheduler.FindJobsByTag(id)
-	for _, v := range jobs {
-		if v.IsRunning() {
-			return true
-		}
-	}
-	return false
+	return true
 }
 
 func (s *Scheduler) AddTask(id string, task pufferpanel.Task) error {
-	job := s.scheduler.Tag(id)
+	var opt gocron.JobDefinition
+
 	if task.CronSchedule != "" {
-		job = job.Cron(task.CronSchedule)
+		opt = gocron.CronJob(task.CronSchedule, true)
+	} else {
+		opt = gocron.OneTimeJob(gocron.OneTimeJobStartDateTime(time.Date(9999, 12, 31, 23, 59, 59, 0, time.UTC)))
 	}
-	_, err := job.Do(_executeTask, s.serverId, id, task)
+
+	_, err := s.scheduler.NewJob(opt, gocron.NewTask(_executeTask, s.serverId, id), gocron.WithName(id))
+	s.Tasks[id] = task
 	return err
 }
 
 func (s *Scheduler) RemoveTask(id string) error {
-	return s.scheduler.RemoveByTag(id)
+	s.scheduler.RemoveByTags(id)
+	delete(s.Tasks, id)
+	return nil
 }
 
 func (s *Scheduler) RunTask(id string) error {
-	return s.scheduler.RunByTag(id)
+	jobs := s.scheduler.Jobs()
+	for _, v := range jobs {
+		if v.Name() == id {
+			return v.RunNow()
+		}
+	}
+	return gocron.ErrJobNotFound
 }
 
 func (s *Scheduler) GetTasks() map[string]pufferpanel.Task {
 	return s.Tasks
 }
 
-func _executeTask(serverId string, id string, task pufferpanel.Task) {
+func _executeTask(serverId string, id string) {
 	p := GetFromCache(serverId)
 	var err error
+
+	task := p.Scheduler.Tasks[id]
 
 	ops := task.Operations
 	if len(ops) > 0 {
