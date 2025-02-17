@@ -5,8 +5,10 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"net/http"
 	"runtime"
 	"time"
@@ -53,6 +55,10 @@ func getFeatures(c *gin.Context) {
 
 	if testDocker() {
 		features = append(features, "docker")
+	}
+
+	if config.DockerDisallowHost.Value() {
+		features = utils.Remove(features, "host")
 	}
 
 	c.JSON(http.StatusOK, Features{Features: features, Environments: envs, OS: runtime.GOOS, Arch: runtime.GOARCH, Version: pufferpanel.Version})

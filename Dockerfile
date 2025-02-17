@@ -19,7 +19,7 @@ FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS builder
 RUN apk add clang lld
 COPY --from=xx / /
 
-ARG tags=nohost
+ARG tags
 ARG version=devel
 ARG sha=devel
 ARG swagversion=1.16.4
@@ -69,7 +69,8 @@ RUN mkdir -p /etc/pufferpanel && \
 
 ENV GIN_MODE=release \
     PUFFER_PLATFORM="docker" \
-    PUFFER_DOCKER_ROOT=""
+    PUFFER_DOCKER_ROOT="" \
+    PUFFER_DOCKER_DISALLOW_HOST=true
 
 #COPY --from=builder --chown=pufferpanel:pufferpanel --chmod=755 /pufferpanel /pufferpanel/bin
 #COPY --from=builder --chown=pufferpanel:pufferpanel --chmod=755 /build/pufferpanel/entrypoint.sh /pufferpanel/bin/entrypoint.sh

@@ -54,6 +54,7 @@ var SecurityForceOpenat2 = asBool("security.forceOpenat2", false)
 var SecurityForceOpenat = asBool("security.forceOpenat", false)
 
 var DockerRootPath = asString("docker.root", "")
+var DockerDisallowHost = asBool("docker.disallowHost", false)
 
 type entry[T ValueType] struct {
 	key string

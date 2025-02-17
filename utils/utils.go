@@ -34,3 +34,18 @@ func Union[T comparable](a, b []T) []T {
 
 	return result
 }
+
+func Remove[T comparable](a []T, b T) []T {
+	if a == nil {
+		return nil
+	}
+
+	replacement := make([]T, 0)
+	for _, v := range a {
+		if b == v {
+			continue
+		}
+		replacement = append(replacement, v)
+	}
+	return replacement
+}
