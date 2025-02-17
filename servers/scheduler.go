@@ -53,6 +53,17 @@ func NewDefaultScheduler(serverId string) *Scheduler {
 	}
 }
 
+func (s *Scheduler) Save() error {
+	file, err := os.OpenFile(filepath.Join(config.ServersFolder.Value(), s.serverId+".cron"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	if err != nil {
+		return err
+	}
+	defer utils.Close(file)
+
+	err = json.NewEncoder(file).Encode(s)
+	return err
+}
+
 func (s *Scheduler) Init() error {
 	if s.scheduler != nil {
 		err := s.scheduler.StopJobs()
@@ -93,10 +104,6 @@ func (s *Scheduler) Init() error {
 	return nil
 }
 
-func (s *Scheduler) Save() error {
-	return nil
-}
-
 func (s *Scheduler) Stop() {
 	_ = s.scheduler.Shutdown()
 }
@@ -122,14 +129,18 @@ func (s *Scheduler) AddTask(id string, task pufferpanel.Task) error {
 	}
 
 	_, err := s.scheduler.NewJob(opt, gocron.NewTask(_executeTask, s.serverId, id), gocron.WithName(id))
+	if err != nil {
+		return err
+	}
+	
 	s.Tasks[id] = task
-	return err
+	return s.Save()
 }
 
 func (s *Scheduler) RemoveTask(id string) error {
 	s.scheduler.RemoveByTags(id)
 	delete(s.Tasks, id)
-	return nil
+	return s.Save()
 }
 
 func (s *Scheduler) RunTask(id string) error {

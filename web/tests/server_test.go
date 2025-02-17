@@ -638,9 +638,10 @@ func TestServers(t *testing.T) {
 				if !assert.Equal(t, http.StatusNoContent, response.Code) {
 					return
 				}
+				assert.FileExists(t, filepath.Join(config.ServersFolder.Value(), ServerId+".cron"))
 			})
 
-			t.Run("GetTask", func(t *testing.T) {
+			t.Run("GetTasks", func(t *testing.T) {
 				response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks", nil, session)
 				if !assert.Equal(t, http.StatusOK, response.Code) {
 					return
@@ -652,6 +653,20 @@ func TestServers(t *testing.T) {
 					return
 				}
 				assert.NotEmpty(t, res.Tasks)
+			})
+
+			t.Run("GetTask", func(t *testing.T) {
+				response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks/"+taskId, nil, session)
+				if !assert.Equal(t, http.StatusOK, response.Code) {
+					return
+				}
+
+				var res pufferpanel.ServerTask
+				err := json.NewDecoder(response.Body).Decode(&res)
+				if !assert.NoError(t, err) {
+					return
+				}
+				assert.NotEmpty(t, res.Name)
 			})
 
 			t.Run("RunTask", func(t *testing.T) {
