@@ -26,6 +26,11 @@ func CreateFunctions(env pufferpanel.Environment) []cel.EnvOption {
 				cel.BoolType,
 				cel.UnaryBinding(cel_in_path(env)),
 			)),
+		cel.Function("is_server_running", cel.Overload("is_server_running_bool",
+			[]*cel.Type{},
+			cel.BoolType,
+			cel.FunctionBinding(cel_is_server_running(env)),
+		)),
 	}
 }
 
@@ -37,9 +42,16 @@ func cel_file_exists(env pufferpanel.Environment) functions.UnaryOp {
 	}
 }
 
-func cel_in_path(environment pufferpanel.Environment) functions.UnaryOp {
+func cel_in_path(env pufferpanel.Environment) functions.UnaryOp {
 	return func(fileName ref.Val) ref.Val {
 		_, err := exec.LookPath(fileName.Value().(string))
 		return types.Bool(err == nil || errors.Is(err, exec.ErrDot))
+	}
+}
+
+func cel_is_server_running(env pufferpanel.Environment) functions.FunctionOp {
+	return func(values ...ref.Val) ref.Val {
+		r, err := env.IsRunning()
+		return types.Bool(err == nil && r)
 	}
 }

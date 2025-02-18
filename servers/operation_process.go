@@ -23,6 +23,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/resolveneoforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/operations/sleep"
 	"github.com/pufferpanel/pufferpanel/v3/operations/spongedl"
+	"github.com/pufferpanel/pufferpanel/v3/operations/stdin"
 	"github.com/pufferpanel/pufferpanel/v3/operations/steamgamedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/writefile"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
@@ -50,6 +51,7 @@ var factories = []pufferpanel.OperationFactory{
 	resolveneoforgeversion.Factory,
 	sleep.Factory,
 	spongedl.Factory,
+	stdin.Factory,
 	steamgamedl.Factory,
 	writefile.Factory,
 }
