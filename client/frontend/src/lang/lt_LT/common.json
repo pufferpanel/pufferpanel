@@ -47,6 +47,15 @@
     "listType": {
       "Grid": "Tinklelis",
       "List": "Sąrašas"
+    },
+    "FontSize": "Font Size",
+    "fontSize": {
+      "Default": "Default"
+    },
+    "FontFace": "Font Face",
+    "fontFace": {
+      "Default": "Default",
+      "A11y": "Accessibility optimized"
     }
   },
   "NoResults": "Nėra rezultatų",
