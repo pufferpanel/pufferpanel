@@ -29,8 +29,9 @@ function appendStyle(style) {
 
 function getDefaultValue(name, definition) {
   switch (definition.type) {
+    case 'snippet':
     case 'class': {
-      const defaults =  definition.options.filter(e => e.default)
+      const defaults = definition.options.filter(e => e.default)
       if (defaults.length < 1) {
         if (!definition.options[0].value) console.error(`no default found for setting '${name}'`)
         return definition.options[0].value
@@ -63,6 +64,9 @@ function handleSetting(name, definition, value, extra = {}) {
           console.error('Applying color setting failed', e)
         }
       }
+      break
+    case 'snippet':
+      appendStyle(value)
       break
     default:
       throw new Error(`type '${definition.type}' for setting ${name} is not a valid setting type`)

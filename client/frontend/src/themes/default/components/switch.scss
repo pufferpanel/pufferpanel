@@ -33,12 +33,10 @@
     content: '';
     height: 1.4em;
     width: 1.4em;
-    left: 0.1em;
-    bottom: 0.1em;
     background-color: var(--text-primary);
     transition: 0.1s;
     border-radius: 50%;
-    top: 0.85em;
+    top: calc(12px + 0.1em);
     left: 0.2em;
   }
 

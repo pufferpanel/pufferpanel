@@ -1,5 +1,5 @@
 .sidebar {
-  font-size: 1.25em;
+  font-size: 20px;
   font-weight: bold;
 
   a {
@@ -18,7 +18,7 @@
   }
 
   .list {
-    @include baselist;
+    @include baselist($absolute: true);
   }
 
   @include raised;

@@ -37,12 +37,13 @@ $breakpoints: (
   grid-template-columns: repeat(12, 1fr);
   grid-gap: 1rem;
   gap: 1rem;
-  max-width: 72rem;
   margin-left: auto;
   margin-right: auto;
+  // prevent adjusted font sizes from causing ui to grow too wide
+  max-width: calc(72 * 16px);
   // detecting unscaled 1440p screens and similar situation
   @media (min-aspect-ratio: 16/10) and (min-height: 1250px) {
-    max-width: 96rem;
+    max-width: calc(96 * 16px);
   }
 }
 
@@ -61,7 +62,7 @@ $breakpoints: (
 
 
 // Lists
-@mixin baselist {
+@mixin baselist($absolute: false) {
   .list-header {
     margin: 0;
     padding: 0.75em 0.5em;
@@ -107,7 +108,11 @@ $breakpoints: (
     margin-left: 0.05em;
     margin-right: 0.5em;
     .icon {
-      font-size: 1.75rem;
+      @if ($absolute) {
+        font-size: 28px;
+      } @else {
+        font-size: 1.75rem;
+      }
     }
   }
 }

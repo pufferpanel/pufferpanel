@@ -34,6 +34,7 @@
   .global-search {
     max-width: 300px;
     transition: all 0.1s ease-in-out;
+    --text-field-base-size: 16px;
     .input-field-wrapper .input-field {
       margin: 5px 0;
       border-style: none;
@@ -42,7 +43,7 @@
       }
       .pre {
         cursor: pointer;
-        transform-origin: center;
+        transform-origin: center;///
       }
       .icon:before {
         color: var(--text-primary)

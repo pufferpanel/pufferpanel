@@ -88,8 +88,8 @@ $serverTypes: (
   @mixin status-indicator($rad: 0.75em) {
     @include icon-base;
     position: absolute;
-    top: 0.25em;
-    right: 0.25em;
+    top: 0.24em;
+    right: 0.24em;
     font-size: 1.5em;
     line-height: 1em;
     height: 1em;
@@ -159,7 +159,7 @@ html[dir="rtl"] {
     }
 
     @mixin status-indicator {
-      left: 0.25em;
+      left: 0.24em;
       right: unset;
     }
 

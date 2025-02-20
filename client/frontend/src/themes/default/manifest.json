@@ -73,6 +73,56 @@
           "tkey": "common.theme.listType.List"
         }
       ]
+    },
+    "fontSize": {
+      "type": "snippet",
+      "tkey": "common.theme.FontSize",
+      "options": [
+        {
+          "value": ":root{font-size: calc(100% + 8px)}",
+          "label": "+4"
+        },
+        {
+          "value": ":root{font-size: calc(100% + 6px)}",
+          "label": "+3"
+        },
+        {
+          "value": ":root{font-size: calc(100% + 4px)}",
+          "label": "+2"
+        },
+        {
+          "value": ":root{font-size: calc(100% + 2px)}",
+          "label": "+1"
+        },
+        {
+          "value": ":root{font-size: 100%}",
+          "tkey": "common.theme.fontSize.Default",
+          "default": true
+        },
+        {
+          "value": ":root{font-size: calc(100% - 2px)}",
+          "label": "-1"
+        },
+        {
+          "value": ":root{font-size: calc(100% - 4px)}",
+          "label": "-2"
+        }
+      ]
+    },
+    "fontFace": {
+      "type": "snippet",
+      "tkey": "common.theme.FontFace",
+      "options": [
+        {
+          "value": "",
+          "tkey": "common.theme.fontFace.Default",
+          "default": true
+        },
+        {
+          "value": "body{--standard-font:'Atkinson Hyperlegible Next', sans-serif;--headline-font:'Atkinson Hyperlegible Next', sans-serif;--monospace-font:'Atkinson Hyperlegible Mono', monospace}",
+          "tkey": "common.theme.fontFace.A11y"
+        }
+      ]
     }
   }
 }

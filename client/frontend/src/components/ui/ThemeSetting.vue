@@ -38,7 +38,7 @@ function withNormalizedLabels(options) {
 
 <template>
   <div class="theme-setting-wrapper">
-    <dropdown v-if="modelValue.type === 'class'" :model-value="modelValue.current" :options="withNormalizedLabels(modelValue.options)" :label="getSettingLabel(modelValue)" @update:modelValue="onInput($event)" />
+    <dropdown v-if="modelValue.type === 'class' || modelValue.type === 'snippet'" :model-value="modelValue.current" :options="withNormalizedLabels(modelValue.options)" :label="getSettingLabel(modelValue)" @update:modelValue="onInput($event)" />
     <label v-if="modelValue.type === 'color'" class="color-input">
       <span class="label"><span v-text="getSettingLabel(modelValue)" /></span>
       <input type="color" :value="modelValue.current" @input="onNativeInput" />

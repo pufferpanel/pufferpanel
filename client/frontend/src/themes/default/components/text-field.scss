@@ -16,9 +16,9 @@
     label {
       position: absolute;
       top: 0;
-      left: 0.75rem;
-      font-size: 1rem;
-      margin: 1rem 0;
+      left: calc(0.75 * var(--text-field-base-size, 1rem));
+      font-size: var(--text-field-base-size, 1rem);
+      margin: var(--text-field-base-size, 1rem) 0;
       pointer-events: none;
       transition: all 0.1s ease-in-out;
     }
@@ -26,8 +26,8 @@
       background-color: transparent;
       flex-grow: 1;
       box-sizing: border-box;
-      padding: 1rem 1rem;
-      font-size: 1rem;
+      padding: var(--text-field-base-size, 1rem) var(--text-field-base-size, 1rem);
+      font-size: var(--text-field-base-size, 1rem);
       border: none;
       outline: none;
       width: 1px; // acts more like a min-width, but min-width doesn't work here
@@ -37,14 +37,14 @@
       }
     }
     .icon.pre ~ input {
-      padding: 1rem 0;
+      padding: var(--text-field-base-size, 1rem) 0;
     }
     input::placeholder {
       color: transparent;
     }
     input:focus ~ label, input:not(:placeholder-shown) ~ label {
-      top: -1.5rem;
-      left: 0.75rem;
+      top: calc(-1.5 * var(--text-field-base-size, 1rem));
+      left: calc(0.75 * var(--text-field-base-size, 1rem));
       font-size: 0.85em;
       span {
         position: relative;
@@ -69,22 +69,22 @@
       @include clickable;
     }
     .icon.pre {
-      padding: 0.5rem 0.75rem;
-      font-size: 2rem;
+      padding: calc(0.5 * var(--text-field-base-size, 1rem)) calc(0.75 * var(--text-field-base-size, 1rem));
+      font-size: calc(2 * var(--text-field-base-size, 1rem));
       transition: all 0.1s ease-in-out;
     }
     .icon.pre ~ label {
-      top: 0.25rem;
-      left: 3.25rem;
+      top: calc(0.25 * var(--text-field-base-size, 1rem));
+      left: calc(3.25 * var(--text-field-base-size, 1rem));
     }
     .icon.pre ~ input:focus ~ label, .icon.pre ~ input:not(:placeholder-shown) ~ label {
-      top: -1.5rem;
+      top: calc(-1.5 * var(--text-field-base-size, 1rem));
       left: 0.75em;
     }
     .icon.post::before {
-      padding: 0.5rem 0.75rem;
+      padding: calc(0.5 * var(--text-field-base-size, 1rem)) calc(0.75 * var(--text-field-base-size, 1rem));
       padding-left: 0;
-      font-size: 2rem;
+      font-size: calc(2 * var(--text-field-base-size, 1rem));
     }
     .icon.post ~ .post-tooltip {
       position: absolute;
@@ -96,7 +96,7 @@
       border: 1px solid var(--primary);
       outline: 2px solid var(--primary);
       .icon.pre ~ label {
-        left: 0.5rem;
+        left: calc(0.5 * var(--text-field-base-size, 1rem));
       }
     }
   }
@@ -131,24 +131,24 @@
 html[dir="rtl"] .input-field-wrapper {
   .input-field {
     label {
-      right: 0.75rem;
+      right: calc(0.75 * var(--text-field-base-size, 1rem));
       left: unset;
     }
     input:focus ~ label, input:not(:placeholder-shown) ~ label {
-      right: 0.375rem;
+      right: calc(0.375 * var(--text-field-base-size, 1rem));
       left: unset;
     }
     .icon.pre ~ label {
-      right: 3rem;
+      right: calc(3 * var(--text-field-base-size, 1rem));
       left: unset;
     }
     .icon.pre ~ input:not(:placeholder-shown) ~ label {
-      right: 0.5rem;
+      right: calc(0.5 * var(--text-field-base-size, 1rem));
       left: unset;
     }
     &:focus-within {
       .icon.pre ~ label {
-        right: 0.5rem;
+        right: calc(0.5 * var(--text-field-base-size, 1rem));
         left: unset;
       }
     }

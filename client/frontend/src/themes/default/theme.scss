@@ -689,15 +689,15 @@ html[dir="rtl"] .menu.open {
     border: none;
     cursor: pointer;
     margin: 0.5em;
-    height: 3em;
+    height: 3rem;
     background: none;
     &::-moz-color-swatch {
       border: none;
-      border-radius: 16px;
+      border-radius: 10px;
     }
     &::-webkit-color-swatch {
       border: none;
-      border-radius: 16px;
+      border-radius: 10px;
     }
   }
 }

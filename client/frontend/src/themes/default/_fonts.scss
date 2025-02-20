@@ -30,6 +30,22 @@
   src: url(/fonts/UbuntuMono-Regular.woff2);
 }
 
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/AtkinsonHyperlegibleNext.woff2);
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/AtkinsonHyperlegibleMono.woff2);
+}
+
 :root {
   --standard-font: 'Quicksand', sans-serif;
   --headline-font: 'Comfortaa', sans-serif;
