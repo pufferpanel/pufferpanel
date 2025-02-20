@@ -109,7 +109,7 @@ api._errorHandler = e => {
   } else if (e.code === 'ErrUnknownError') {
     toast.error(t('errors.ErrUnknownError'), () => showErrorDetails(e), t('common.Details'))
   } else {
-    toast.error(t('errors.' + e.code))
+    toast.error(t('errors.' + e.code, e.response.error.metadata))
   }
 }
 
