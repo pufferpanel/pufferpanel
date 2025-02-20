@@ -43,6 +43,9 @@ var lock = sync.Mutex{}
 var startQueueTicker, statTicker *time.Ticker
 var running = false
 
+var ErrServerTypeRequired = errors.New("server type is required")
+var ErrEnvironmentTypeRequired = errors.New("environment type is required")
+
 func init() {
 	archiver.DefaultZip.OverwriteExisting = true
 	archiver.DefaultTarGz.OverwriteExisting = true
@@ -774,11 +777,11 @@ func (p *Server) GetBackupFile(fileName string) (*FileData, error) {
 func (p *Server) valid() error {
 	//we need a type at least, this is a safe check
 	if p.Type.Type == "" {
-		return errors.New("server type is required")
+		return ErrServerTypeRequired
 	}
 
 	if p.Environment.Type == "" {
-		return errors.New("environment type is required")
+		return ErrEnvironmentTypeRequired
 	}
 
 	return nil
