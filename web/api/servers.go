@@ -888,30 +888,13 @@ func removeServerUser(c *gin.Context) {
 // @Router /api/servers/{id}/name/{name} [put]
 // @Security OAuth2Application[server.name.edit]
 func renameServer(c *gin.Context) {
-	var err error
-
 	server := getServerFromGin(c)
-
-	name := c.Param("name")
-	t, exist := c.Get("db")
-	if !exist {
-		logging.Error.Printf("getting server for rename with err `%s`", err)
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	db, ok := t.(*gorm.DB)
-	if !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 
-	server.Name = name
-	err = ss.Update(server)
-	if err != nil {
-		logging.Error.Printf("renaming server with err `%s`", err)
-		c.AbortWithStatus(http.StatusBadRequest)
+	server.Name = c.Param("name")
+	err := ss.Update(server)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 

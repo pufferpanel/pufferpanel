@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"net/http"
@@ -65,13 +66,7 @@ func updateSelf(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	t, exist := c.Get("user")
-	user, ok := t.(*models.User)
-
-	if !exist || !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	user := c.MustGet("user").(*models.User)
 
 	var viewModel models.UserView
 	if err := c.BindJSON(&viewModel); response.HandleError(c, err, http.StatusBadRequest) {
@@ -140,13 +135,7 @@ func getOtpStatus(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	t, exist := c.Get("user")
-	user, ok := t.(*models.User)
-
-	if !exist || !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	user := c.MustGet("user").(*models.User)
 
 	otpEnabled, err := us.GetOtpStatus(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -162,13 +151,7 @@ func startOtpEnroll(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	t, exist := c.Get("user")
-	user, ok := t.(*models.User)
-
-	if !exist || !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	user := c.MustGet("user").(*models.User)
 
 	secret, img, err := us.StartOtpEnroll(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -185,13 +168,7 @@ func validateOtpEnroll(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	t, exist := c.Get("user")
-	user, ok := t.(*models.User)
-
-	if !exist || !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	user := c.MustGet("user").(*models.User)
 
 	request := &ValidateOtpRequest{}
 
@@ -201,7 +178,7 @@ func validateOtpEnroll(c *gin.Context) {
 	}
 
 	err = us.ValidateOtpEnroll(user.ID, request.Token)
-	if err == pufferpanel.ErrInvalidCredentials {
+	if errors.Is(err, pufferpanel.ErrInvalidCredentials) {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
@@ -220,16 +197,10 @@ func disableOtp(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	t, exist := c.Get("user")
-	user, ok := t.(*models.User)
-
-	if !exist || !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	user := c.MustGet("user").(*models.User)
 
 	err := us.DisableOtp(user.ID, c.Param("token"))
-	if err == pufferpanel.ErrInvalidCredentials {
+	if errors.Is(err, pufferpanel.ErrInvalidCredentials) {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}

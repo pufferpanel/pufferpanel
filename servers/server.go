@@ -3,6 +3,7 @@ package servers
 import (
 	"container/list"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/gofrs/uuid/v5"
 	"github.com/mholt/archiver/v3"
@@ -452,14 +453,15 @@ func (p *Server) Save() (err error) {
 
 	file := filepath.Join(config.ServersFolder.Value(), p.Id()+".json")
 
-	if !p.valid() {
+	if err = p.valid(); err != nil {
 		p.Log(logging.Error, "Server %s contained invalid data, this server is.... broken", p.Identifier)
 		//we can't even reload from disk....
 		//so, puke back, and for now we'll handle it later
-		return pufferpanel.ErrUnknownError
+		return err
 	}
 
-	data, err := json.MarshalIndent(p, "", "  ")
+	var data []byte
+	data, err = json.MarshalIndent(p, "", "  ")
 	if err != nil {
 		return
 	}
@@ -769,17 +771,17 @@ func (p *Server) GetBackupFile(fileName string) (*FileData, error) {
 	return &FileData{Contents: file, ContentLength: info.Size(), Name: info.Name()}, nil
 }
 
-func (p *Server) valid() bool {
+func (p *Server) valid() error {
 	//we need a type at least, this is a safe check
 	if p.Type.Type == "" {
-		return false
+		return errors.New("server type is required")
 	}
 
 	if p.Environment.Type == "" {
-		return false
+		return errors.New("environment type is required")
 	}
 
-	return true
+	return nil
 }
 
 func (p *Server) Log(l *log.Logger, format string, obj ...interface{}) {

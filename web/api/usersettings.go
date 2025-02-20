@@ -2,7 +2,6 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
@@ -27,13 +26,7 @@ func getUserSettings(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	uss := &services.UserSettings{DB: db}
 
-	t, exists := c.Get("user")
-	user, ok := t.(*models.User)
-
-	if !exists || !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	user := c.MustGet("user").(*models.User)
 
 	results, err := uss.GetAllForUser(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -57,13 +50,7 @@ func setUserSetting(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	uss := &services.UserSettings{DB: db}
 
-	t, exists := c.Get("user")
-	user, ok := t.(*models.User)
-
-	if !exists || !ok {
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
-		return
-	}
+	user := c.MustGet("user").(*models.User)
 
 	var model models.ChangeUserSetting
 	if err := c.BindJSON(&model); response.HandleError(c, err, http.StatusBadRequest) {
