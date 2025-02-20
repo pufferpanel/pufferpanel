@@ -47,6 +47,15 @@
     "listType": {
       "Grid": "Сетка",
       "List": "Список"
+    },
+    "FontSize": "Font Size",
+    "fontSize": {
+      "Default": "Default"
+    },
+    "FontFace": "Font Face",
+    "fontFace": {
+      "Default": "Default",
+      "A11y": "Accessibility optimized"
     }
   },
   "NoResults": "Нет результатов",
