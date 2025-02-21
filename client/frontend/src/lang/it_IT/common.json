@@ -47,6 +47,15 @@
     "listType": {
       "Grid": "Griglia",
       "List": "Lista"
+    },
+    "FontSize": "Font Size",
+    "fontSize": {
+      "Default": "Default"
+    },
+    "FontFace": "Font Face",
+    "fontFace": {
+      "Default": "Default",
+      "A11y": "Accessibility optimized"
     }
   },
   "NoResults": "Nessun risultato",

@@ -47,6 +47,15 @@
     "listType": {
       "Grid": "Grille",
       "List": "Liste"
+    },
+    "FontSize": "Taille de police",
+    "fontSize": {
+      "Default": "Défaut"
+    },
+    "FontFace": "Police de caractères",
+    "fontFace": {
+      "Default": "Défaut",
+      "A11y": "Accessibilité optimisée"
     }
   },
   "NoResults": "Aucun résultat",
