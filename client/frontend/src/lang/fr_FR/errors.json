@@ -42,7 +42,7 @@
   "ErrDuplicateNodeName": "Un nœud avec ce nom existe déjà",
   "ErrDirectoryUploadNotSupported": "Impossible d'envoyer des dossiers",
   "ErrDockerNotSupported": "Docker n'est pas pris en charge sur ce nœud",
-  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrMissingBinary": "Binaire manquant : {expected}",
   "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
   "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}",
   "ErrNoCommand": "Aucune commande n'a pu être déterminée à être utilisée pour ce serveur",
