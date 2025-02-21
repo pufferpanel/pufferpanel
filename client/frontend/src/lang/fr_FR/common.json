@@ -48,14 +48,14 @@
       "Grid": "Grille",
       "List": "Liste"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Taille de police",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Défaut"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Police de caractères",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Défaut",
+      "A11y": "Accessibilité optimisée"
     }
   },
   "NoResults": "Aucun résultat",
