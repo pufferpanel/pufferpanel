@@ -55,7 +55,7 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 	manifestFolder := filepath.Join(env.GetRootDirectory(), ".manifest")
 	_ = os.RemoveAll(manifestFolder)
 
-	cmdArgs := []string{"-app", c.AppId, "-dir", manifestFolder, "-loginid", loginId, "-manifest-only"}
+	cmdArgs := []string{"-app", c.AppId, "-dir", ".manifest", "-loginid", loginId, "-manifest-only"}
 	if c.Username != "" {
 		cmdArgs = append(cmdArgs, "-username", c.Username, "-remember-password")
 		if c.Password != "" {
@@ -83,7 +83,7 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 	}
 
 	//download game itself now
-	cmdArgs = []string{"-app", c.AppId, "-dir", env.GetRootDirectory(), "-loginid", loginId, "-validate"}
+	cmdArgs = []string{"-app", c.AppId, "-dir", ".", "-loginid", loginId, "-validate"}
 	if c.Username != "" {
 		cmdArgs = append(cmdArgs, "-username", c.Username, "-remember-password")
 		if c.Password != "" {

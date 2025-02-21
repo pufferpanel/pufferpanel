@@ -173,7 +173,7 @@ func handleConn(conn net.Conn, serverConfig *ssh.ServerConfig) error {
 			return nil
 		}
 
-		fs := CreateRequestPrefix(server.GetFileServer())
+		fs := CreateRequestPrefix(sc.Conn.RemoteAddr(), server.Id(), server.GetFileServer())
 		s := sftp.NewRequestServer(channel, fs)
 
 		if err = s.Serve(); err != nil {

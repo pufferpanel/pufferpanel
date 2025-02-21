@@ -3,18 +3,23 @@ package sftp
 import (
 	"fmt"
 	"github.com/pkg/sftp"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
+	"net"
 	"os"
 	"path/filepath"
 )
 
 type requestPrefix struct {
-	fs files.FileServer
+	fs         files.FileServer
+	remoteAddr net.Addr
+	serverId   string
 }
 
-func CreateRequestPrefix(fs files.FileServer) sftp.Handlers {
-	h := requestPrefix{fs: fs}
+func CreateRequestPrefix(remoteAddr net.Addr, serverId string, fs files.FileServer) sftp.Handlers {
+	h := requestPrefix{fs: fs, serverId: serverId, remoteAddr: remoteAddr}
 
 	return sftp.Handlers{FileCmd: h, FileGet: h, FileList: h, FilePut: h}
 }
@@ -72,12 +77,12 @@ func (rp requestPrefix) Filelist(request *sftp.Request) (sftp.ListerAt, error) {
 	switch request.Method {
 	case "List":
 		{
-			files, err := rp.fs.ReadDir(request.Filepath)
+			f, err := rp.fs.ReadDir(request.Filepath)
 			if err != nil {
 				return nil, err
 			}
 
-			return toListerAt(rp.fs, request.Filepath, files), nil
+			return toListerAt(rp.fs, request.Filepath, f), nil
 		}
 	case "Stat":
 		{
@@ -117,7 +122,9 @@ func (rp requestPrefix) Filelist(request *sftp.Request) (sftp.ListerAt, error) {
 }
 
 func (rp requestPrefix) log(request *sftp.Request) {
-	//logging.Debug.Printf("Op %s [%s] ", request.Method, request.Filepath)
+	if config.SftpDebugLog.Value() {
+		logging.Debug.Printf("[SFTP] [%s] [%s] [%s] [%s] ", rp.remoteAddr.String(), request.Method, rp.serverId, request.Filepath)
+	}
 }
 
 func (rp requestPrefix) getFile(path string, flags int, mode os.FileMode) (*os.File, error) {
