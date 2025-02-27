@@ -1,0 +1,30 @@
+Template: pufferpanel/install_type
+Type: select
+Choices: panel, node
+Description: Is this installation a full panel or only a node?
+  Select `panel` if you would like to have the full experience.
+  Select `node` if you are deploying this only as a node.
+
+Template: pufferpanel/create_user
+Type: boolean
+Description: Do you wish to create a new admin user?
+
+Template: pufferpanel/email
+Type: string
+Description: Email to assign to new user
+
+Template: pufferpanel/username
+Type: string
+Description: Username to assign to new user
+
+Template: pufferpanel/password
+Type: password
+Description: Password to assign to new user
+
+Template: pufferpanel/password_confirm
+Type: password
+Description: Confirm password
+
+Template: pufferpanel/password_mismatch
+Type: note
+Description: Passwords did not match
