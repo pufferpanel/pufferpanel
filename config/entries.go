@@ -13,7 +13,13 @@ var PanelEnabled = asBool("panel.enable", true)
 var DatabaseDialect = asString("panel.database.dialect", "sqlite3")
 var DatabaseUrl = asString("panel.database.url", "")
 var DatabaseLoggingEnabled = asBool("panel.database.log", false)
+
 var WebRoot = asString("panel.web.files", "www")
+
+var PanelWebCookiesSecure = asBool("panel.web.cookies.secure", false)
+var PanelWebCookiesHttpOnly = asBool("panel.web.cookies.httpOnly", false)
+var PanelWebCookiesDomain = asString("panel.web.cookies.domain", "")
+var PanelWebCookiesAge = asInt("panel.web.cookies.age", 86400*30)
 
 var EmailTemplateFolder = asString("panel.email.templateFolder", "")
 var EmailProvider = asString("panel.email.provider", "")

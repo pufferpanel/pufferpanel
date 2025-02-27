@@ -104,6 +104,14 @@ func internalRun() (terminate chan bool, success bool) {
 			return
 		}
 		sessionStore := cookie.NewStore(result)
+		sessionStore.Options(sessions.Options{
+			Path:     "/",
+			Domain:   config.PanelWebCookiesDomain.Value(),
+			MaxAge:   config.PanelWebCookiesAge.Value(),
+			Secure:   config.PanelWebCookiesSecure.Value(),
+			HttpOnly: config.PanelWebCookiesHttpOnly.Value(),
+			SameSite: http.SameSiteNoneMode,
+		})
 		router.Use(sessions.Sessions("session", sessionStore))
 
 		if config.DaemonEnabled.Value() {
