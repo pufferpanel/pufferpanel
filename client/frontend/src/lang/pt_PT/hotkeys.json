@@ -4,18 +4,18 @@
     "Title": "Global",
     "g a": "Ir para Conta",
     "g c": "Ir para Configuração do Painel",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
+    "g n": "Ir para Nós",
+    "g s": "Ir para Servidores",
     "g t": "Ir para Modelos",
-    "g u": "Go to Users"
+    "g u": "Ir para Utilizadores"
   },
   "Self": {
     "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
+    "t 2": "Ir para Autenticação de 2 Fatores",
+    "t a": "Ir para Detalhes da Conta",
+    "t o": "Ir para OAuth",
     "t p": "Ir para o separador Palavra-passe",
-    "t s": "Go to Preferences tab"
+    "t s": "Ir para Preferências"
   },
   "ServerList": {
     "Title": "Servidores",
@@ -24,14 +24,14 @@
   },
   "ServerView": {
     "Title": "Server",
-    "t c": "Go to Console tab",
-    "t i": "Go to Statistics tab",
-    "t f": "Go to Files tab",
-    "t s": "Go to Settings tab",
-    "t u": "Go to Users tab",
-    "t 6": "Go to SFTP tab",
-    "t 7": "Ir para o separador API",
-    "t a": "Ir para o separador Admin",
+    "t c": "Ir para Consola",
+    "t i": "Ir para Estatísticas",
+    "t f": "Ir para Ficheiros",
+    "t s": "Ir para Definições",
+    "t u": "Ir para Utilizadores",
+    "t 6": "Ir para STFP",
+    "t 7": "Ir para API",
+    "t a": "Ir para Administração",
     "c c": "Limpar a consola",
     "r r": "Iniciar servidor",
     "r s": "Parar servidor",
@@ -64,12 +64,12 @@
   },
   "Template": {
     "Title": "Template Editor",
-    "t e": "Ir para separador Ambiente",
-    "t g": "Ir para separador Geral",
-    "t h": "Ir para separador Hooks",
-    "t i": "Ir para separador Instalar",
-    "t j": "Ir para separador JSON",
-    "t r": "Ir para separador Configuração de Execução",
-    "t v": "Ir para separador Variáveis"
+    "t e": "Ir para Ambiente",
+    "t g": "Ir para Geral",
+    "t h": "Ir para Hooks",
+    "t i": "Ir para Instalar",
+    "t j": "Ir para JSON",
+    "t r": "Ir para Configuração de Execução",
+    "t v": "Ir para Variáveis"
   }
 }
