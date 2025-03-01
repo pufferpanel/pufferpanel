@@ -14,11 +14,9 @@ import (
 // @Router /api/config [get]
 // @Security OAuth2Application[none]
 func panelConfig(c *gin.Context) {
-	var themes []string
+	themes := make([]string, 0)
 	files, err := os.ReadDir(config.WebRoot.Value() + "/theme")
-	if err != nil {
-		themes = []string{"PufferPanel"}
-	} else {
+	if err == nil {
 		for _, f := range files {
 			if !f.IsDir() && strings.HasSuffix(f.Name(), ".tar") {
 				themes = append(themes, f.Name()[:len(f.Name())-4])
