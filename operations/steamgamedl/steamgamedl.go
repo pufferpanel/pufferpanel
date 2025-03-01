@@ -91,6 +91,10 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 		}
 	}
 
+	if !config.DepotDownloaderDisableLancache.Value() {
+		cmdArgs = append(cmdArgs, "-use-lancache")
+	}
+
 	if c.ExtraArgs != nil && len(c.ExtraArgs) > 0 {
 		cmdArgs = append(cmdArgs, c.ExtraArgs...)
 	}
