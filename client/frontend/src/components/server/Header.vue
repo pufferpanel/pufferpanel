@@ -27,8 +27,8 @@ async function updateName() {
     <Status :server="server" />
     <span class="name">
       {{ server.name }}
-      <btn v-if="server.hasScope('server.name.edit')" variant="icon" :tooltip="t('servers.EditName')" @click="edit = !edit"><icon name="edit" /></btn>
     </span>
+    <btn v-if="server.hasScope('server.name.edit')" class="rename" variant="icon" :tooltip="t('servers.EditName')" @click="edit = !edit"><icon name="edit" /></btn>
     <controls :server="server" />
   </h1>
   <overlay v-model="edit" :title="t('servers.EditName')" closable class="server-name">

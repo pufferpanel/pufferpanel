@@ -447,6 +447,8 @@ hr {
 .server-controls {
   position: relative;
   white-space: nowrap;
+  margin-top: -.1em;
+  margin-left: auto;
   .button {
     box-shadow: none;
     display: inline-block;
@@ -522,6 +524,11 @@ hr {
   }
 }
 
+html[dir="rtl"] .server-controls {
+  margin-left: unset;
+  margin-right: auto;
+}
+
 html[dir="rtl"] .menu.open {
   left: 0;
   right: unset;
@@ -538,16 +545,21 @@ html[dir="rtl"] .menu.open {
   margin-bottom: 0.25em;
   .name {
     display: flex;
-    flex-grow: 1;
     padding-left: 0.25em;
     padding-right: 0.25em;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    overflow-x: scroll;
+    overflow-y: hidden;
     white-space: nowrap;
     .button {
       margin: -4px 0.5rem 0;
       font-size: 2rem;
     }
+  }
+  .rename {
+    font-size: .9em;
+    width: 2rem;
+    min-width: 2rem;
+    height: 2rem;
   }
 }
 
