@@ -1,9 +1,9 @@
 {
   "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
+  "ClientId": "ID do cliente",
+  "ClientSecret": "Chave secreta do cliente",
   "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
+  "Create": "Criar novo cliente OAuth2",
   "UnnamedClient": "Unnamed OAuth2 Client",
   "Docs": "Find API documentation here",
   "Clients": "Clientes OAuth2",
