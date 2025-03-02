@@ -45,6 +45,7 @@ jobs:
                  -v template-tester-${{ matrix.template }}:/tester \
                  -v /var/run/docker.sock:/var/run/docker.sock \
                  -e PUFFER_DOCKER_ROOT=$mountPath \
+                 --user $(id -u):$(id -g) \
                  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} \ 
                  --workDir=/tester \ 
                  --files=${{ matrix.template }}
