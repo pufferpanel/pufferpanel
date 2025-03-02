@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"github.com/pquerna/otp/totp"
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"net/http"
@@ -198,12 +199,14 @@ func disableOtp(c *gin.Context) {
 	us := &services.User{DB: db}
 
 	user := c.MustGet("user").(*models.User)
+	token := c.Param("token")
 
-	err := us.DisableOtp(user.ID, c.Param("token"))
-	if errors.Is(err, pufferpanel.ErrInvalidCredentials) {
-		response.HandleError(c, err, http.StatusBadRequest)
+	if !totp.Validate(token, user.OtpSecret) {
+		response.HandleError(c, pufferpanel.ErrInvalidCredentials, http.StatusBadRequest)
 		return
 	}
+
+	err := us.DisableOtp(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

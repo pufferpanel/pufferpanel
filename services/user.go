@@ -206,14 +206,10 @@ func (us *User) ValidateOtpEnroll(userId uint, token string) error {
 	return us.Update(user)
 }
 
-func (us *User) DisableOtp(userId uint, token string) error {
+func (us *User) DisableOtp(userId uint) error {
 	user, err := us.GetById(userId)
 	if err != nil {
 		return err
-	}
-
-	if !totp.Validate(token, user.OtpSecret) {
-		return pufferpanel.ErrInvalidCredentials
 	}
 
 	user.OtpSecret = ""

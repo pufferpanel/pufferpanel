@@ -246,7 +246,7 @@ func editUser(cmd *cobra.Command, args []string) {
 	action := ""
 	_ = survey.AskOne(&survey.Select{
 		Message: "Select option to edit",
-		Options: []string{"Username", "Email", "Password", "Change Admin Status"},
+		Options: []string{"Username", "Email", "Password", "Change Admin Status", "Remove 2FA"},
 	}, &action)
 
 	switch action {
@@ -319,5 +319,18 @@ func editUser(cmd *cobra.Command, args []string) {
 				fmt.Printf("Error updating password: %s\n", err.Error())
 			}
 		}
+	case "Remove 2FA":
+		{
+			prompt := false
+			_ = survey.AskOne(&survey.Confirm{Message: "Confirm removal of 2FA?"}, &prompt)
+			if prompt {
+				us := &services.User{DB: db}
+				err = us.DisableOtp(user.ID)
+				if err != nil {
+					fmt.Printf("Error removing 2FA: %s\n", err.Error())
+				}
+			}
+		}
 	}
+
 }
