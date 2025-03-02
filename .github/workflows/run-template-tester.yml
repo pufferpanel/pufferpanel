@@ -33,11 +33,18 @@ jobs:
         run: |
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
           docker rm -f templatetester-${{ matrix.template }} || true
+          docker volume rm -rf template-tester ${{ matrix.template }} || true
           echo "::add-mask::${{ secrets.RUNNER_IP }}"
 
       - name: Run
         run: |
-          sudo rm -rf /tmp/pufferpanel-tester 
-          mkdir -p /tmp/pufferpanel-tester
-          sudo chown -R 1000:$(getent group docker | cut -f3 -d:) /tmp/pufferpanel-tester
-          docker run --rm --name templatetester-${{ matrix.template }} --network host -u "1000:$(getent group docker | cut -f3 -d:)" -v /tmp/pufferpanel-tester:/tmp/pufferpanel-tester -v /var/run/docker.sock:/var/run/docker.sock ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --workDir=/tmp/pufferpanel-tester --files=${{ matrix.template }}
+          docker volume create ${{ matrix.template }}
+          mountPath=$(docker volume inspect test | jq -r '.[0].["Mountpoint"]')
+          docker run --rm 
+                 --name templatetester-${{ matrix.template }} \
+                 -v ${{ matrix.template }}:/tester \
+                 -v /var/run/docker.sock:/var/run/docker.sock \
+                 -e PUFFER_DOCKER_ROOT=$mountPath
+                 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} \ 
+                 --workDir=/tester \ 
+                 --files=${{ matrix.template }}

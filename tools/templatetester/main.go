@@ -57,6 +57,9 @@ func main() {
 	flag.StringVar(&filesArg, "files", "", "")
 	flag.Parse()
 
+	//just forces the config init to run, so we can then load the config values from ENV
+	_ = config.LoadConfigFile("")
+
 	if skipStr != "" {
 		templatesToSkip = strings.Split(skipStr, ",")
 		fmt.Printf("Skip rules: %s\n", strings.Join(templatesToSkip, " "))
