@@ -33,18 +33,19 @@ jobs:
         run: |
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
           docker rm -f templatetester-${{ matrix.template }} || true
-          docker volume rm -rf template-tester ${{ matrix.template }} || true
+          docker volume rm -rf template-tester-${{ matrix.template }} || true
           echo "::add-mask::${{ secrets.RUNNER_IP }}"
 
       - name: Run
         run: |
-          docker volume create ${{ matrix.template }}
-          mountPath=$(docker volume inspect test | jq -r '.[0].["Mountpoint"]')
-          docker run --rm 
+          docker volume create template-tester-${{ matrix.template }}
+          mountPath=$(docker volume inspect template-tester-${{ matrix.template }} | jq -r '.[0].["Mountpoint"]')
+          docker run --rm \
                  --name templatetester-${{ matrix.template }} \
-                 -v ${{ matrix.template }}:/tester \
+                 -v template-tester-${{ matrix.template }}:/tester \
                  -v /var/run/docker.sock:/var/run/docker.sock \
-                 -e PUFFER_DOCKER_ROOT=$mountPath
+                 -e PUFFER_DOCKER_ROOT=$mountPath \
                  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} \ 
                  --workDir=/tester \ 
                  --files=${{ matrix.template }}
+          docker volume rm -rf template-tester-${{ matrix.template }}
