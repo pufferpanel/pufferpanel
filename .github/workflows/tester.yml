@@ -1,6 +1,12 @@
 name: Build Tool - Tester
 on:
   workflow_dispatch:
+    inputs:
+      skip-build:
+        description: 'Skips building of the image'
+        default: false
+        required: true
+        type: boolean
 
 env:
   TAG: templatetester
@@ -17,6 +23,7 @@ jobs:
     strategy:
       matrix:
         platform: [ "linux/amd64" ]
+    if: ${{ ! inputs.skip-build }}
 
     steps:
       - name: Checkout repository
@@ -63,6 +70,11 @@ jobs:
             curseforgeKey: ${{ secrets.CURSEFORGE_KEY }}
           platforms: ${{ matrix.platform }}
 
+  run-tool:
+    name: Run Tool
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
