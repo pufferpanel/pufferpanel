@@ -51,7 +51,7 @@ RUN apt-get update && \
 WORKDIR /home/pufferpanel
 COPY --from=go /home/pufferpanel/templatetester /home/pufferpanel/templatetester
 
-USER pufferpanel
+#USER pufferpanel
 
 ENTRYPOINT ["./templatetester"]
 CMD []
