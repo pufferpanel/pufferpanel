@@ -109,7 +109,6 @@ const themeApi = {
       if (themeData.css) {
         themeData.files.map(file => {
           const url = URL.createObjectURL(file.blob)
-          console.log('replace', file.name, url)
           themeData.css = themeData.css
             .split(`url('${file.name}')`).join(`url('${url}')`)
             .split(`url("${file.name}")`).join(`url("${url}")`)
@@ -120,6 +119,11 @@ const themeApi = {
     const manifest = newTheme === 'PufferPanel' ? defaultManifest : themeData.manifest
     styles.textContent = newTheme === 'PufferPanel' ? defaultStyles : (manifest.keepDefaultCss ? defaultStyles + '\n' + themeData.css : themeData.css)
     sidebarClosedBelow.value = manifest.sidebarClosedBelow || 1200
+    if (manifest.keepDefaultCss && newTheme !== 'PufferPanel') {
+      Object.keys(defaultManifest.settings).map(key => {
+        handleSetting(key, defaultManifest.settings[key])
+      })
+    }
     Object.keys(manifest.settings).map(key => {
       handleSetting(key, manifest.settings[key], settings[key])
     })
@@ -139,8 +143,8 @@ const themeApi = {
       definition = JSON.parse(manifest.content).settings
     }
     if (theme === activeTheme.value) {
-      for (const setting in themeSettings.value) {
-        definition[setting].current = themeSettings.value[setting]
+      for (const setting in definition) {
+        definition[setting].current = themeSettings.value[setting] || getDefaultValue(setting, definition[setting])
       }
     } else {
       for (const setting in definition) {
