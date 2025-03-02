@@ -39,7 +39,7 @@ jobs:
       - name: Run
         run: |
           docker volume create template-tester-${{ matrix.template }}
-          mountPath=$(docker volume inspect template-tester-${{ matrix.template }} | jq -r '.[0].["Mountpoint"]')
+          mountPath=$(docker volume inspect template-tester-${{ matrix.template }} | jq -r \'.[0].["Mountpoint"]\')
           docker run --rm \
                  --name templatetester-${{ matrix.template }} \
                  -v template-tester-${{ matrix.template }}:/tester \
