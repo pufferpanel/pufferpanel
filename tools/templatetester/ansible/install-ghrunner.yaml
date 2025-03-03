@@ -1,0 +1,178 @@
+- name: Install Github Runner
+  hosts: templatetesters
+  remote_user: root
+
+  vars:
+    ghPAT: ''
+    aptProxy: ''
+    orgName: 'pufferpanel'
+    runnerGroup: 'template-tester'
+
+    ghrunnerVersion: '2.322.0'
+    ghrunnerHash: 'b13b784808359f31bc79b08a191f5f83757852957dd8fe3dbfcc38202ccf5768'
+
+  tasks:
+    - name: Add APT proxy
+      when: aptProxy != ''
+      ansible.builtin.copy:
+        content: "Acquire::http::proxy \"{{ aptProxy }}\";"
+        dest: /etc/apt/apt.conf.d/00aptproxy
+        force: false
+
+    - name: Update APT
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: yes
+        autoremove: true
+
+    - name: Install extra packages
+      ansible.builtin.apt:
+        package:
+          - htop
+          - btop
+          - nano
+          - apt-transport-https
+          - ca-certificates
+          - lib32gcc-s1
+          - lib32stdc++6
+          - unzip
+          - zip
+          - tar
+          - gzip
+
+    - name: Install Docker Repo
+      block:
+        - name: Ensure directory exists for /etc/apt/keyrings
+          ansible.builtin.file:
+            path: /etc/apt/keyrings
+            state: directory
+            mode: "0755"
+            force: false
+
+        - name: Add Docker apt key.
+          ansible.builtin.get_url:
+            url: "https://download.docker.com/linux/ubuntu/gpg"
+            dest: /etc/apt/keyrings/docker.asc
+            mode: "0644"
+            force: false
+
+        - name: Add Repo
+          ansible.builtin.apt_repository:
+            repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+            state: present
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        package:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+
+    - name: Create ghrunner
+      ansible.builtin.user:
+        name: ghrunner
+        groups: docker
+        append: yes
+
+    - name: Add ghrunner to sudo
+      ansible.builtin.copy:
+        content: "ghrunner ALL=(ALL) NOPASSWD: ALL"
+        dest: /etc/sudoers.d/ghrunner
+        force: false
+
+    - name: Check if installed
+      ansible.builtin.stat:
+        path: /home/ghrunner/actions-runner/run.sh
+      register: installed
+
+    - name: Install Github Runner
+      when: not installed.stat.exists
+      block:
+        - name: Create directory
+          ansible.builtin.file:
+            path: /home/ghrunner/actions-runner
+            state: directory
+            mode: '0755'
+            owner: ghrunner
+            group: ghrunner
+
+        - name: Download file
+          ansible.builtin.get_url:
+            url: "https://github.com/actions/runner/releases/download/v{{ ghrunnerVersion }}/actions-runner-linux-x64-{{ ghrunnerVersion }}.tar.gz"
+            dest: /home/ghrunner/actions-runner/actions-runner.tar.gz
+            mode: "0644"
+            force: true
+
+        - name: Validate SHA256
+          when: ghrunnerHash != ''
+          block:
+            - name: Get file hash
+              ansible.builtin.stat:
+                path: /home/ghrunner/actions-runner/actions-runner.tar.gz
+                checksum_algorithm: sha256
+              register: sha
+
+            - name: Fail if hashes differ
+              ansible.builtin.fail:
+                msg: File hashes do not match
+              when: sha.stat.checksum != ghrunnerHash
+
+        - name: Extract
+          ansible.builtin.unarchive:
+            src: /home/ghrunner/actions-runner/actions-runner.tar.gz
+            dest: /home/ghrunner/actions-runner
+            owner: ghrunner
+            group: ghrunner
+            remote_src: yes
+
+        - name: Delete archive
+          ansible.builtin.file:
+            path: /home/ghrunner/actions-runner/actions-runner.tar.gz
+            state: absent
+
+    - name: Check if registered
+      ansible.builtin.stat:
+        path: /home/ghrunner/actions-runner/.runner
+      register: creds
+
+    - name: Register Github Runner
+      when: not creds.stat.exists and ghPAT != ''
+      block:
+        - name: Get Register Token
+          ansible.builtin.uri:
+            url: https://api.github.com/orgs/{{ orgName }}/actions/runners/registration-token
+            method: POST
+            body_format: json
+            headers:
+              Authorization: "Bearer {{ ghPAT }}"
+            status_code: 201
+          register: token
+
+        - name: Ensure token
+          ansible.builtin.fail:
+            msg: Failed to get a token to register with
+          when: token.json.token == ''
+
+        - name: Configure
+          ansible.builtin.command:
+            chdir: /home/ghrunner/actions-runner
+            cmd: ./config.sh --url https://github.com/{{ orgName }} --token {{ token.json.token }} --unattended --runnergroup {{ runnerGroup | default('Default') }}
+          become: yes
+          become_user: ghrunner
+
+    - name: Check if service installed
+      ansible.builtin.service_facts:
+
+    - name: Create Service
+      when: ansible_facts['services']['actions.runner.' + orgName + '.' + ansible_hostname + '.service']['status'] | default('not-found') == 'not-found'
+      ansible.builtin.command:
+        chdir: /home/ghrunner/actions-runner
+        cmd: ./svc.sh install ghrunner
+
+    - name: Start Service
+      when: ansible_facts['services']['actions.runner.' + orgName + '.' + ansible_hostname + '.service']['state'] | default('stopped') != 'running'
+      ansible.builtin.command:
+        chdir: /home/ghrunner/actions-runner
+        cmd: ./svc.sh start
