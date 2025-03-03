@@ -139,6 +139,8 @@ func main() {
 			_, err = git.PlainClone(templateFolder, false, &git.CloneOptions{
 				URL:           "https://github.com/PufferPanel/templates",
 				ReferenceName: plumbing.ReferenceName(gitRef),
+				SingleBranch:  true,
+				Depth:         1,
 			})
 			panicIf(err)
 		}

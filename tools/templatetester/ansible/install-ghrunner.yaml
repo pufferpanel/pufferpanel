@@ -7,6 +7,7 @@
     aptProxy: ''
     orgName: 'pufferpanel'
     runnerGroup: 'template-tester'
+    labels: 'template-tester'
 
     ghrunnerVersion: '2.322.0'
     ghrunnerHash: 'b13b784808359f31bc79b08a191f5f83757852957dd8fe3dbfcc38202ccf5768'
@@ -158,7 +159,7 @@
         - name: Configure
           ansible.builtin.command:
             chdir: /home/ghrunner/actions-runner
-            cmd: ./config.sh --url https://github.com/{{ orgName }} --token {{ token.json.token }} --unattended --runnergroup {{ runnerGroup | default('Default') }}
+            cmd: ./config.sh --url https://github.com/{{ orgName }} --token {{ token.json.token }} --unattended --runnergroup {{ runnerGroup | default('Default') }} --labels {{ labels }}
           become: yes
           become_user: ghrunner
 
