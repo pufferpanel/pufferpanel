@@ -3,7 +3,7 @@
   "Language": "Idioma",
   "Online": "Online",
   "Offline": "Offline",
-  "Installing": "Installing",
+  "Installing": "A instalar",
   "Unknown": "Desconhecido",
   "Loading": "A carregar...",
   "Description": "Descrição",
@@ -15,8 +15,8 @@
   "Collapse": "Esconder",
   "Expand": "Expandir",
   "Copy": "Copiar para área de transferência",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copied": "Copiado",
+  "Back": "Voltar",
   "Next": "Próximo",
   "Details": "Detalhes",
   "ErrorDetails": "Detalhes do erro",
@@ -27,14 +27,14 @@
   "Confirm": "Confirmar",
   "Condition": "Condição",
   "Discard": "Descartar",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "ConfirmLeave": "Tens alterações não guardadas. Queres cancelar estas alterações e sair desta página?",
   "theme": {
     "Theme": "Tema",
     "Mode": "Modo",
     "mode": {
       "Light": "Claro",
       "Dark": "Escuro",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Escuro (Contraste alto)",
       "Auto": "Automático"
     },
     "BaseColor": "Cor base",
@@ -48,17 +48,17 @@
       "Grid": "Grelha",
       "List": "Lista"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Tamanho da fonte",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Padrão"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Fonte",
     "fontFace": {
-      "Default": "Default",
+      "Default": "Padrão",
       "A11y": "Accessibility optimized"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "Sem resultados",
+  "Yes": "Sim",
+  "No": "Não"
 }

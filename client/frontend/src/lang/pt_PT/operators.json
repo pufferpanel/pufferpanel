@@ -1,8 +1,8 @@
 {
   "ConditionHint": "Only execute this step if this condition is met",
   "mojangdl": {
-    "generic": "Download Minecraft",
-    "formatted": "Download Minecraft"
+    "generic": "Transferir o Minecraft",
+    "formatted": "Transferir o Minecraft"
   },
   "writefile": {
     "generic": "Write to file",
@@ -62,7 +62,7 @@
     "formatted": "Transferir o Minecraft Fabric"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "generic": "Transferir do CurseForge",
+    "formatted": "Transferir do CurseForge"
   }
 }
