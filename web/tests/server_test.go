@@ -707,6 +707,53 @@ func TestServers(t *testing.T) {
 				assert.Empty(t, res.Tasks)
 			})
 
+			t.Run("FileManager", func(t *testing.T) {
+				var fileName = "test-file-to-make"
+				var folderName = "test-folder-creation"
+				var fileContents = []byte("this is a test file")
+
+				t.Run("CreateFolder", func(t *testing.T) {
+					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/file/"+folderName+"?folder=true", nil, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+					if !assert.DirExists(t, filepath.Join(serverDir, folderName)) {
+						return
+					}
+				})
+
+				t.Run("DeleteFolder", func(t *testing.T) {
+					response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+folderName, nil, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+					if !assert.NoDirExists(t, filepath.Join(serverDir, folderName)) {
+						return
+					}
+				})
+
+				t.Run("CreateFile", func(t *testing.T) {
+					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/file/"+fileName, fileContents, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+					if !assert.FileExists(t, filepath.Join(serverDir, fileName)) {
+						return
+					}
+				})
+
+				t.Run("DeleteFile", func(t *testing.T) {
+					response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+fileName, nil, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+
+					if !assert.NoFileExists(t, filepath.Join(serverDir, fileName)) {
+						return
+					}
+				})
+			})
+
 			t.Run("Delete", func(t *testing.T) {
 				response := CallAPIRaw("DELETE", "/api/servers/"+ServerId, nil, session)
 				if !assert.Equal(t, http.StatusNoContent, response.Code) {

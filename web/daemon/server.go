@@ -621,7 +621,10 @@ func putFile(c *gin.Context) {
 	_, mkFolder := c.GetQuery("folder")
 	if mkFolder {
 		err = server.GetFileServer().MkdirAll(targetPath, 0755)
-		response.HandleError(c, err, http.StatusInternalServerError)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+		c.Status(http.StatusNoContent)
 		return
 	}
 
@@ -1057,6 +1060,11 @@ func openSocket(c *gin.Context) {
 
 func getFullFilename(c *gin.Context) string {
 	filename := c.Param("filename")
+
+	if k := c.Query("folder"); k != "" {
+		return filename
+	}
+
 	if c.Request.URL.RawQuery != "" {
 		filename = filename + "?" + c.Request.URL.RawQuery
 	}
