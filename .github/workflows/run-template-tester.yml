@@ -42,7 +42,7 @@ jobs:
           mountPath=$(docker volume inspect -f {{.Mountpoint}} template-tester-${{ matrix.template }})
           echo "Docker will mount from $mountPath"
           docker run --rm \
-                 --network host
+                 --network host \
                  --name templatetester-${{ matrix.template }} \
                  -v template-tester-${{ matrix.template }}:/tester \
                  -v /var/run/docker.sock:/var/run/docker.sock \
