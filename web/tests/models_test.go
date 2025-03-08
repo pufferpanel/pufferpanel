@@ -547,7 +547,7 @@ var EditServerData = []byte(`{
     "command": [
       {
         "command": "java${javaversion} -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar",
-        "if": "in_path(\"java${javaversion}\")"
+        "if": "os != \"windows\""
       },
       {
         "command": "java -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar"

@@ -102,13 +102,11 @@ func main() {
 		defer os.RemoveAll(workingDir)
 	}
 
+	config.DataRootFolder.Set(workingDir, false)
+	config.LogsFolder.Set(filepath.Join(workingDir, "logs"), false)
 	config.DatabaseDialect.Set("sqlite3", false)
 	config.DatabaseUrl.Set("file:test.db?cache=shared&mode=memory", false)
 	config.ConsoleForward.Set(true, false)
-	config.ServersFolder.Set(filepath.Join(workingDir, "servers"), false)
-	config.BinariesFolder.Set(filepath.Join(workingDir, "binaries"), false)
-	config.CacheFolder.Set(filepath.Join(workingDir, "cache"), false)
-	config.LogsFolder.Set(filepath.Join(workingDir, "logs"), false)
 
 	_ = os.MkdirAll(config.ServersFolder.Value(), 0755)
 	_ = os.MkdirAll(config.BinariesFolder.Value(), 0755)

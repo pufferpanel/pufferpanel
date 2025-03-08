@@ -40,10 +40,11 @@ jobs:
         run: |
           docker volume create template-tester-${{ matrix.template }}
           mountPath=$(docker volume inspect -f {{.Mountpoint}} template-tester-${{ matrix.template }})
+          echo "Docker will mount from $mountPath"
           docker run --rm \
                  --name templatetester-${{ matrix.template }} \
                  -v template-tester-${{ matrix.template }}:/tester \
                  -v /var/run/docker.sock:/var/run/docker.sock \
-                 -e PUFFER_DOCKER_ROOT=$mountPath \
+                 -e PUFFER_DOCKER_ROOT="$mountPath" \
                  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --workDir=/tester --files=${{ matrix.template }}
           docker volume rm -f template-tester-${{ matrix.template }}

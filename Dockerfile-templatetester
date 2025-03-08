@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 as go
+FROM ubuntu:20.04 AS go
 
 ARG aptproxy=""
 ENV DEBIAN_FRONTEND=noninteractive
@@ -41,7 +41,7 @@ RUN apt-get update && \
     echo steam steam/question select "I AGREE" | debconf-set-selections && \
     echo steam steam/license note '' | debconf-set-selections && \
     apt-get update && \
-    apt-get install -y wget build-essential zip unzip tar git xz-utils nodejs lib32gcc1 libstdc++6 libstdc++6:i386 libtinfo5:i386 libncurses5:i386 libcurl3-gnutls:i386 mono-complete steamcmd && \
+    apt-get install -y wget build-essential zip unzip tar git xz-utils nodejs lib32gcc1 libstdc++6 libstdc++6:i386 libtinfo5:i386 libncurses5:i386 libcurl3-gnutls:i386 mono-complete && \
     apt-get clean && \
     rm -rf /var/cache/apt/archives && \
     useradd pufferpanel && \
