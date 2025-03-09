@@ -17,6 +17,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
+	docker2 "github.com/pufferpanel/pufferpanel/v3/servers/docker"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/spf13/cast"
 	"io/fs"
@@ -120,6 +121,7 @@ func main() {
 	}
 
 	logging.Initialize(false)
+	docker2.InitContainerMountSource()
 
 	//this may require a DB, so we are going to pretend we have one
 	//because of how code works, we're going to abuse our own system
