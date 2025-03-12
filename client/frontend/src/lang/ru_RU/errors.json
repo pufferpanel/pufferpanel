@@ -37,7 +37,7 @@
   "ErrInvalidJson": "Json данные недействительны",
   "ErrSocketFailed": "Соединение WebSocket обнаружило ошибку, некоторые функции могут работать медленно или не работать",
   "ErrInviteLinkInvalid": "Ваша пригласительная ссылка недействительна",
-  "ErrSavingInvitedUser": "There was an error creating your account",
+  "ErrSavingInvitedUser": "Произошла ошибка при создании вашего аккаунта",
   "ErrDuplicateServerName": "Сервер с таким именем уже существует",
   "ErrDuplicateNodeName": "Узел с таким именем уже существует",
   "ErrDirectoryUploadNotSupported": "Не удается загрузить папки",
