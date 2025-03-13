@@ -22,6 +22,7 @@ import (
 	"golang.org/x/crypto/ssh"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -585,53 +586,6 @@ func TestServers(t *testing.T) {
 				})
 			})
 
-			t.Run("DeleteFile", func(t *testing.T) {
-				filename := "file.delete.test"
-
-				fileLocation := filepath.Join(serverDir, filename)
-				tmpFile, err := os.Create(fileLocation)
-				if !assert.NoError(t, err) {
-					return
-				}
-				utils.Close(tmpFile)
-
-				response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+filename, nil, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
-
-				_, err = os.Stat(fileLocation)
-				if !assert.ErrorIs(t, err, os.ErrNotExist) {
-					return
-				}
-			})
-
-			t.Run("DeleteFileWithURIEncoding", func(t *testing.T) {
-				if runtime.GOOS == "windows" {
-					t.Skipf("Windows doesn't support file with URI encoding")
-					return
-				}
-
-				filename := "file.delete.test?id=12345"
-
-				fileLocation := filepath.Join(serverDir, filename)
-				tmpFile, err := os.Create(fileLocation)
-				if !assert.NoError(t, err) {
-					return
-				}
-				utils.Close(tmpFile)
-
-				response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+filename, nil, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
-
-				_, err = os.Stat(fileLocation)
-				if !assert.ErrorIs(t, err, os.ErrNotExist) {
-					return
-				}
-			})
-
 			var taskId = "testtask"
 			t.Run("CreateTask", func(t *testing.T) {
 				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/tasks/"+taskId, TaskDefinition, session)
@@ -686,6 +640,20 @@ func TestServers(t *testing.T) {
 				time.Sleep(5 * time.Second)
 
 				assert.FileExists(t, eulaFile)
+			})
+
+			t.Run("EditTask", func(t *testing.T) {
+				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/tasks/"+taskId, TaskDefinition, session)
+				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					return
+				}
+				if !assert.Len(t, servers.GetFromCache(ServerId).Scheduler.GetTasks(), 1) {
+					return
+				}
+				e := servers.GetFromCache(ServerId).Scheduler.GetExecutor()
+				if !assert.Len(t, e.Jobs(), 1) {
+					return
+				}
 			})
 
 			t.Run("DeleteTask", func(t *testing.T) {
@@ -749,6 +717,34 @@ func TestServers(t *testing.T) {
 					}
 
 					if !assert.NoFileExists(t, filepath.Join(serverDir, fileName)) {
+						return
+					}
+				})
+
+				t.Run("DeleteFileWithURIEncoding", func(t *testing.T) {
+					if runtime.GOOS == "windows" {
+						t.Skipf("Windows doesn't support file with URI encoding")
+						return
+					}
+
+					filename := "file.delete.test?id=12345"
+
+					fileLocation := filepath.Join(serverDir, filename)
+					tmpFile, err := os.Create(fileLocation)
+					if !assert.NoError(t, err) {
+						return
+					}
+					utils.Close(tmpFile)
+
+					u := url.QueryEscape(filename)
+
+					response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+u, nil, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+
+					_, err = os.Stat(fileLocation)
+					if !assert.ErrorIs(t, err, os.ErrNotExist) {
 						return
 					}
 				})

@@ -109,10 +109,14 @@ func main() {
 	config.DatabaseUrl.Set("file:test.db?cache=shared&mode=memory", false)
 	config.ConsoleForward.Set(true, false)
 
-	_ = os.MkdirAll(config.ServersFolder.Value(), 0755)
-	_ = os.MkdirAll(config.BinariesFolder.Value(), 0755)
-	_ = os.MkdirAll(config.CacheFolder.Value(), 0755)
-	_ = os.MkdirAll(config.LogsFolder.Value(), 0755)
+	err = os.MkdirAll(config.ServersFolder.Value(), 0755)
+	panicIf(err)
+	err = os.MkdirAll(config.BinariesFolder.Value(), 0755)
+	panicIf(err)
+	err = os.MkdirAll(config.CacheFolder.Value(), 0755)
+	panicIf(err)
+	err = os.MkdirAll(config.LogsFolder.Value(), 0755)
+	panicIf(err)
 
 	newPath := os.Getenv("PATH")
 	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
