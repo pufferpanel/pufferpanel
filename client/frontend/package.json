@@ -26,17 +26,17 @@
     "pufferpanel": "0.0.0",
     "pufferpanel-conditions": "^1.0.8",
     "vue": "^3.2.16",
-    "vue-i18n": "^9.2.0-beta.17",
+    "vue-i18n": "^10.0",
     "vue-router": "4"
   },
   "devDependencies": {
     "@intlify/vite-plugin-vue-i18n": "^3.2.1",
-    "@vitejs/plugin-vue": "^1.9.3",
+    "@vitejs/plugin-vue": "^5.2.1",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-vue": "^7.19.1",
     "prettier": "^2.4.1",
-    "vite": "^2.6.4",
+    "vite": "^5.4.14",
     "vite-plugin-eslint": "^1.3.0"
   }
 }
