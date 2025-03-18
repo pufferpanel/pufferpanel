@@ -33,7 +33,10 @@ func LoginPost(c *gin.Context) {
 		userSession := sessions.Default(c)
 		userSession.Set("user", user.Email)
 		userSession.Set("time", time.Now().Unix())
-		_ = userSession.Save()
+		err = userSession.Save()
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
 		c.JSON(http.StatusOK, &LoginResponse{
 			OtpNeeded: true,
 		})
