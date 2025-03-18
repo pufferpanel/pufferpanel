@@ -48,14 +48,14 @@
       "Grid": "Сетка",
       "List": "Список"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Размер шрифта",
     "fontSize": {
-      "Default": "Default"
+      "Default": "По умолчанию"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Шрифт",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "По умолчанию",
+      "A11y": "Оптимизированный для доступности"
     }
   },
   "NoResults": "Нет результатов",

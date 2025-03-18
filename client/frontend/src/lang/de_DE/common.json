@@ -48,13 +48,13 @@
       "Grid": "Raster",
       "List": "Liste"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Schriftgröße",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Standard"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Schriftart",
     "fontFace": {
-      "Default": "Default",
+      "Default": "Standard",
       "A11y": "Accessibility optimized"
     }
   },
