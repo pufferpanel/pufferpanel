@@ -20,6 +20,8 @@ var PanelWebCookiesSecure = asBool("panel.web.cookies.secure", false)
 var PanelWebCookiesHttpOnly = asBool("panel.web.cookies.httpOnly", true)
 var PanelWebCookiesDomain = asString("panel.web.cookies.domain", "")
 var PanelWebCookiesAge = asInt("panel.web.cookies.age", 86400*30)
+var PanelWebCookiesSameSite = asString("panel.web.cookies.sameSite", "Strict")
+var PanelWebCookiesPath = asString("panel.web.cookies.path", "/")
 
 var EmailTemplateFolder = asString("panel.email.templateFolder", "")
 var EmailProvider = asString("panel.email.provider", "")
