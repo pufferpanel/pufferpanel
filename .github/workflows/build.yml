@@ -454,7 +454,7 @@ jobs:
           package: pufferpanel
           version: ${{ env.VERSION }}
           license: Apache 2.0
-          architecture: arm64
+          architecture: aarch64
           maintainer: PufferPanel <dev@pufferpanel.com>
           website: https://pufferpanel.com
           summary: Game management server panel
@@ -491,7 +491,7 @@ jobs:
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: pufferpanel-${{ env.VERSION }}-1.arm64.rpm
+          name: pufferpanel-${{ env.VERSION }}-1.aarch64.rpm
           path: ${{ steps.rpmarm64.outputs.file }}
 
   cleanup:
