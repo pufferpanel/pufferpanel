@@ -349,6 +349,7 @@ jobs:
             systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
             RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
             RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
+            RPMBUILD/var/www/pufferpanel:/var/www/pufferpanel
           config: |
             /etc/pufferpanel/config.json:noreplace
           suggested-packages: |
@@ -473,6 +474,7 @@ jobs:
             systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
             RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
             RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
+            RPMBUILD/var/www/pufferpanel:/var/www/pufferpanel
           config: |
             /etc/pufferpanel/config.json:noreplace
 
