@@ -20,7 +20,7 @@ In addition to being a free and open source project, PufferPanel provides an eas
 If you need help with PufferPanel, or you'd like to help out, you can contact us on [Discord](https://discord.gg/v8dz49e). Check out our [Documentation](https://docs.pufferpanel.com/) for guides on how to install, update, and manage PufferPanel.
 
 ## Copyright Notices
-Some Javascript and CSS used within the panel is licensed under a MIT, Apache 2.0, or GPL license. Please check their header files for information.
+Some Javascript and CSS used is licensed under a MIT, Apache 2.0, or GPL license. Please check their header files for information.
 
 Some images used within PufferPanel are Copyright (c) their respective owners.
 
