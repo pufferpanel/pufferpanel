@@ -291,7 +291,7 @@ jobs:
 
       - name: Set up build folder
         run: |
-          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel
+          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel RPMBUILD/var/www/pufferpanel
           mkdir -p DEBBUILD/var/log/pufferpanel RPMBUILD/var/log/pufferpanel
           mkdir -p DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
           mkdir -p DEBBUILD/var/lib/pufferpanel/binaries RPMBUILD/var/lib/pufferpanel
@@ -417,8 +417,10 @@ jobs:
 
       - name: Set up build folder
         run: |
-          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel
-          mkdir -p DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+          mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel RPMBUILD/var/www/pufferpanel
+          mkdir -p DEBBUILD/var/log/pufferpanel RPMBUILD/var/log/pufferpanel
+          mkdir -p DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+          mkdir -p DEBBUILD/var/lib/pufferpanel/binaries RPMBUILD/var/lib/pufferpanel
           cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
           cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
           cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
@@ -444,8 +446,35 @@ jobs:
           after-purge: systemd/scripts/purge.sh
           user: pufferpanel
           group: pufferpanel
-          suggested-packages: |
-            lib32gcc1
+
+      - name: Build Package RPM ARM64
+        id: rpmarm64
+        uses: pufferpanel/build-rpm@master
+        with:
+          package: pufferpanel
+          version: ${{ env.VERSION }}
+          license: Apache 2.0
+          architecture: arm64
+          maintainer: PufferPanel <dev@pufferpanel.com>
+          website: https://pufferpanel.com
+          summary: Game management server panel
+          before-install: systemd/scripts/preinstall.sh
+          after-install: systemd/scripts/postinstall.sh
+          before-upgrade: systemd/scripts/preupgrade.sh
+          after-upgrade: systemd/scripts/postupgrade.sh
+          before-remove: systemd/scripts/preremove.sh
+          after-remove: systemd/scripts/postremove.sh
+          after-purge: systemd/scripts/purge.sh
+          user: pufferpanel
+          group: pufferpanel
+          files: |
+            build-artifacts/pufferpanel:/usr/sbin/pufferpanel
+            config.linux.json:/etc/pufferpanel/config.json
+            systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
+            RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
+            RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
+          config: |
+            /etc/pufferpanel/config.json:noreplace
 
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
@@ -458,6 +487,12 @@ jobs:
         with:
           name: pufferpanel_${{ env.VERSION }}_arm64.deb
           path: pufferpanel_${{ env.VERSION }}_arm64.deb
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pufferpanel-${{ env.VERSION }}-1.arm64.rpm
+          path: ${{ steps.rpmarm64.outputs.file }}
 
   cleanup:
     runs-on: ubuntu-latest
