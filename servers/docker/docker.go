@@ -609,19 +609,14 @@ func (d *Docker) handleClose(client *client.Client, callback func(int)) {
 }
 
 func calculateCPUPercent(v *container.StatsResponse) float64 {
-	// Max number of 100ns intervals between the previous time read and now
-	possIntervals := uint64(v.Read.Sub(v.PreRead).Nanoseconds()) // Start with number of ns intervals
-	possIntervals /= 100                                         // Convert to number of 100ns intervals
-	//possIntervals *= uint64(v.NumProcs)                          // Multiple by the number of processors
-
-	// Intervals used
-	intervalsUsed := v.CPUStats.CPUUsage.TotalUsage - v.PreCPUStats.CPUUsage.TotalUsage
-
-	// Percentage avoiding divide-by-zero
-	if possIntervals > 0 {
-		return float64(intervalsUsed) / float64(possIntervals)
+	//this math is from https://docs.docker.com/reference/api/engine/version/v1.45/#tag/Container/operation/ContainerStats
+	cpuDelta := v.CPUStats.CPUUsage.TotalUsage - v.PreCPUStats.CPUUsage.TotalUsage
+	systemCpuDelta := v.CPUStats.SystemUsage - v.PreCPUStats.SystemUsage
+	numCpus := int(v.CPUStats.OnlineCPUs)
+	if numCpus == 0 {
+		numCpus = len(v.CPUStats.CPUUsage.PercpuUsage)
 	}
-	return 0.00
+	return (float64(cpuDelta) / float64(systemCpuDelta)) * float64(numCpus) * 100.0
 }
 
 func calculateMemoryPercent(v *container.StatsResponse) float64 {
