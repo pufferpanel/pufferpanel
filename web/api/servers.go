@@ -671,7 +671,7 @@ func getServerUsers(c *gin.Context) {
 		p = append(p, v.Scopes...)
 
 		found := false
-		for z, _ := range users {
+		for z := range users {
 			if v.User.ID == z.ID {
 				//this is the user
 				users[z] = p

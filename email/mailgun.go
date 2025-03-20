@@ -31,10 +31,9 @@ func (mailgunProvider) Send(to, subject, body string) error {
 		return pufferpanel.ErrSettingNotConfigured(config.EmailKey.Key())
 	}
 
-	mgapi := mailgun.NewMailgun(domain, key)
-	message := mgapi.NewMessage(from, subject, "", to)
-	message.SetHtml(body)
+	message := mailgun.NewMessage(from, subject, "", to)
+	message.SetHTML(body)
 
-	_, _, err := mgapi.Send(context.Background(), message)
+	_, _, err := mailgun.NewMailgun(domain, key).Send(context.Background(), message)
 	return err
 }

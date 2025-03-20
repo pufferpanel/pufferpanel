@@ -203,7 +203,7 @@ func (d *Docker) GetStats() (*pufferpanel.ServerStats, error) {
 		return nil, err
 	}
 
-	data := &types.StatsJSON{}
+	data := &container.StatsResponse{}
 	err = json.NewDecoder(res.Body).Decode(&data)
 	if err != nil {
 		return nil, err
@@ -223,14 +223,14 @@ func (d *Docker) GetStats() (*pufferpanel.ServerStats, error) {
 			cmd = "jcmd"
 		}
 
-		r, e := dockerClient.ContainerExecCreate(context.Background(), d.ContainerId, types.ExecConfig{
+		r, e := dockerClient.ContainerExecCreate(context.Background(), d.ContainerId, container.ExecOptions{
 			AttachStderr: true,
 			AttachStdout: true,
 			Cmd:          []string{cmd, "1", "GC.heap_info"},
 		})
 
 		if e == nil {
-			rw, e := dockerClient.ContainerExecAttach(context.Background(), r.ID, types.ExecStartCheck{
+			rw, e := dockerClient.ContainerExecAttach(context.Background(), r.ID, container.ExecAttachOptions{
 				Detach: false,
 				Tty:    false,
 			})
@@ -608,7 +608,7 @@ func (d *Docker) handleClose(client *client.Client, callback func(int)) {
 	}
 }
 
-func calculateCPUPercent(v *types.StatsJSON) float64 {
+func calculateCPUPercent(v *container.StatsResponse) float64 {
 	// Max number of 100ns intervals between the previous time read and now
 	possIntervals := uint64(v.Read.Sub(v.PreRead).Nanoseconds()) // Start with number of ns intervals
 	possIntervals /= 100                                         // Convert to number of 100ns intervals
@@ -624,7 +624,7 @@ func calculateCPUPercent(v *types.StatsJSON) float64 {
 	return 0.00
 }
 
-func calculateMemoryPercent(v *types.StatsJSON) float64 {
+func calculateMemoryPercent(v *container.StatsResponse) float64 {
 	return float64(v.MemoryStats.Usage)
 }
 

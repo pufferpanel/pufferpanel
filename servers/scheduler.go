@@ -121,10 +121,7 @@ func (s *Scheduler) Start() {
 }
 
 func (s *Scheduler) IsRunning() bool {
-	if s.scheduler == nil {
-		return false
-	}
-	return true
+	return s.scheduler != nil
 }
 
 func (s *Scheduler) AddTask(id string, task pufferpanel.Task) error {

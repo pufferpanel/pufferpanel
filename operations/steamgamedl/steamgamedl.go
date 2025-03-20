@@ -95,7 +95,7 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 		cmdArgs = append(cmdArgs, "-use-lancache")
 	}
 
-	if c.ExtraArgs != nil && len(c.ExtraArgs) > 0 {
+	if len(c.ExtraArgs) > 0 {
 		cmdArgs = append(cmdArgs, c.ExtraArgs...)
 	}
 

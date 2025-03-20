@@ -79,9 +79,6 @@ type BoolEntry struct {
 type IntEntry struct {
 	entry[int]
 }
-type Int64Entry struct {
-	entry[int64]
-}
 type DataFolder struct {
 	StringEntry
 }
@@ -109,9 +106,6 @@ func (se BoolEntry) Value() bool {
 func (se IntEntry) Value() int {
 	return cast.ToInt(se.get())
 }
-func (se Int64Entry) Value() int64 {
-	return cast.ToInt64(se.get())
-}
 
 func (se entry[T]) Key() string {
 	return se.key
@@ -137,9 +131,6 @@ func asBool(key string, def bool) BoolEntry {
 }
 func asInt(key string, def int) IntEntry {
 	return IntEntry{entry: as[int](key, def)}
-}
-func asInt64(key string, def int64) Int64Entry {
-	return Int64Entry{entry: as[int64](key, def)}
 }
 
 func as[T ValueType](key string, def T) entry[T] {

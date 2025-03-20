@@ -158,12 +158,14 @@ func (p *OperationProcess) Run(server *Server) error {
 
 			if result.Error != nil {
 				logging.Error.Printf("Error running command: %s", result.Error.Error())
-				if firstError == nil {
+				//TODO: Implement success checking more accurately here
+				/*if firstError == nil {
 					firstError = result.Error
-					//TODO: Implement success checking more accurately here
 					return result.Error
 				}
-				extraData[conditions.VariableSuccess] = false
+				//extraData[conditions.VariableSuccess] = false
+				*/
+				return result.Error
 			} else {
 				extraData[conditions.VariableSuccess] = true
 			}

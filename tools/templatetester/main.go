@@ -100,14 +100,16 @@ func main() {
 	}
 
 	if deleteTemp {
-		defer os.RemoveAll(workingDir)
+		defer func() {
+			_ = os.RemoveAll(workingDir)
+		}()
 	}
 
-	config.DataRootFolder.Set(workingDir, false)
-	config.LogsFolder.Set(filepath.Join(workingDir, "logs"), false)
-	config.DatabaseDialect.Set("sqlite3", false)
-	config.DatabaseUrl.Set("file:test.db?cache=shared&mode=memory", false)
-	config.ConsoleForward.Set(true, false)
+	_ = config.DataRootFolder.Set(workingDir, false)
+	_ = config.LogsFolder.Set(filepath.Join(workingDir, "logs"), false)
+	_ = config.DatabaseDialect.Set("sqlite3", false)
+	_ = config.DatabaseUrl.Set("file:test.db?cache=shared&mode=memory", false)
+	_ = config.ConsoleForward.Set(true, false)
 
 	err = os.MkdirAll(config.ServersFolder.Value(), 0755)
 	panicIf(err)
@@ -125,7 +127,7 @@ func main() {
 	}
 
 	logging.Initialize(false)
-	docker2.InitContainerMountSource()
+	_ = docker2.InitContainerMountSource()
 
 	//this may require a DB, so we are going to pretend we have one
 	//because of how code works, we're going to abuse our own system
@@ -343,7 +345,7 @@ func main() {
 			}
 		}
 
-		if template.Environment != nil && len(template.Environment) > 0 {
+		if len(template.Environment) > 0 {
 			prg.Environment = pufferpanel.MetadataType{
 				Type:     cast.ToString(template.Environment["type"]),
 				Metadata: template.Environment,

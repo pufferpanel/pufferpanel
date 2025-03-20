@@ -191,7 +191,7 @@ func validatePassword(val interface{}) error {
 
 	us := &services.User{}
 	if !us.IsSecurePassword(pw) {
-		return errors.New("Password must be at least 8 characters")
+		return errors.New("password must be at least 8 characters")
 	}
 
 	var secondAttempt string

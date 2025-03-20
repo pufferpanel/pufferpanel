@@ -306,7 +306,3 @@ func (e *BaseEnvironment) IsRunning() (isRunning bool, err error) {
 func (e *BaseEnvironment) Kill() error {
 	return e.KillFunc()
 }
-
-func newLogger(prefix string) *log.Logger {
-	return log.New(logging.OriginalStdOut, "["+prefix+"] ", log.LstdFlags)
-}

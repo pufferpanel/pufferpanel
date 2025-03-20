@@ -215,9 +215,9 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 				return pufferpanel.OperationResult{Error: nil}
 			}
 			//err = installViaJar(env, jarFile, c.JavaBinary)
-			if err != nil {
-				return pufferpanel.OperationResult{Error: err}
-			}
+			//if err != nil {
+			//	return pufferpanel.OperationResult{Error: err}
+			//}
 
 			//now also grab the server wrapper, because screw the madness
 			env.DisplayToConsole(true, "Grabbing ServerStarter")
@@ -286,6 +286,9 @@ func installViaJar(env pufferpanel.Environment, jarFile string, javaBinary strin
 
 	//delete installer now
 	err = os.Remove(filepath.Join(env.GetRootDirectory(), jarFile))
+	if err != nil {
+		env.DisplayToConsole(true, "Failed to delete installer")
+	}
 	err = os.Remove(filepath.Join(env.GetRootDirectory(), jarFile+".log"))
 	if err != nil {
 		env.DisplayToConsole(true, "Failed to delete installer")
