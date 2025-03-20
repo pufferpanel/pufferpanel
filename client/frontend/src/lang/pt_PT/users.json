@@ -23,7 +23,7 @@
   "UpdateDetails": "Atualizar detalhes do utilizador",
   "UpdatePermissions": "Atualizar permissões do utilizador",
   "Delete": "Apagar",
-  "ConfirmDelete": "Do you really want to delete the user {name}?",
+  "ConfirmDelete": "Desejas realmente apagar o utilizador \"{name}\"?",
   "UpdateSuccess": "Atualização com sucesso",
   "Details": "User Details",
   "Authentication": "Authentication",
