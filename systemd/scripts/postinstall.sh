@@ -2,6 +2,7 @@
 
 systemctl daemon-reload
 
+mkdir -p /etc/pufferpanel /var/log/pufferpanel /var/lib/pufferpanel /var/www/pufferpanel
 if [ ! -f "/var/lib/pufferpanel/database.db" ]; then
   touch /var/lib/pufferpanel/database.db
 fi
