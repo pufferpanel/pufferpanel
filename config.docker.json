@@ -13,5 +13,8 @@
     "data": {
       "root": "/var/lib/pufferpanel"
     }
+  },
+  "docker": {
+    "disallowHost": true
   }
 }

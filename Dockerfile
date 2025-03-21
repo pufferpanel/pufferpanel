@@ -70,7 +70,7 @@ RUN mkdir -p /etc/pufferpanel && \
 ENV GIN_MODE=release \
     PUFFER_PLATFORM="docker" \
     PUFFER_DOCKER_ROOT="" \
-    PUFFER_DOCKER_DISALLOW_HOST=true
+    PUFFER_DOCKER_DISALLOWHOST=true
 
 #COPY --from=builder --chown=pufferpanel:pufferpanel --chmod=755 /pufferpanel /pufferpanel/bin
 #COPY --from=builder --chown=pufferpanel:pufferpanel --chmod=755 /build/pufferpanel/entrypoint.sh /pufferpanel/bin/entrypoint.sh

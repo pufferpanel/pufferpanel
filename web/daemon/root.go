@@ -58,7 +58,9 @@ func getFeatures(c *gin.Context) {
 	}
 
 	if config.DockerDisallowHost.Value() {
-		features = utils.Remove(features, "host")
+		envs = utils.Remove(envs, "host")
+		envs = utils.Remove(envs, "tty")
+		envs = utils.Remove(envs, "standard")
 	}
 
 	c.JSON(http.StatusOK, Features{Features: features, Environments: envs, OS: runtime.GOOS, Arch: runtime.GOARCH, Version: pufferpanel.Version})
