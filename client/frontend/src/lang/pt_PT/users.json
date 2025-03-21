@@ -25,11 +25,11 @@
   "Delete": "Apagar",
   "ConfirmDelete": "Desejas realmente apagar o utilizador \"{name}\"?",
   "UpdateSuccess": "Atualização com sucesso",
-  "Details": "User Details",
-  "Authentication": "Authentication",
+  "Details": "Detalhes do usuário",
+  "Authentication": "Autenticação",
   "Permissions": "Permissões",
   "Preferences": "Preferências",
-  "SavePreferences": "Save Preferences",
+  "SavePreferences": "Guardar preferências",
   "Otp": "Autenticação de 2 fatores",
   "OtpAbreviated": "2FA",
   "OtpEnabled": "2FA Enabled",
@@ -41,6 +41,6 @@
   "OtpSecret": "Secret Code",
   "OtpConfirm": "Confirm using a 2FA code",
   "OtpNeeded": "2FA required",
-  "UserInvited": "User invited",
+  "UserInvited": "Usuário convidado",
   "DeleteSuccess": "User deleted successfully"
 }
