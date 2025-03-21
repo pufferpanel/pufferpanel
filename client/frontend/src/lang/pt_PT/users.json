@@ -41,6 +41,6 @@
   "OtpSecret": "Secret Code",
   "OtpConfirm": "Confirm using a 2FA code",
   "OtpNeeded": "2FA required",
-  "UserInvited": "Usuário convidado",
-  "DeleteSuccess": "User deleted successfully"
+  "UserInvited": "Utilizador convidado",
+  "DeleteSuccess": "Utilizador apagado com sucesso"
 }
