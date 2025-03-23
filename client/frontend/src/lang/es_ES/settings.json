@@ -26,7 +26,7 @@
     "password": "Contraseña"
   },
   "Saved": "Guardado",
-  "TestEmail": "Test Email",
-  "TestEmailSent": "Test email sent",
-  "TestEmailFailed": "Test email failed to send"
+  "TestEmail": "Email de prueba",
+  "TestEmailSent": "Email de prueba enviado",
+  "TestEmailFailed": "No se ha podido enviar el email de prueba"
 }
