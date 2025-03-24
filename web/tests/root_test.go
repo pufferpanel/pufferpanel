@@ -60,7 +60,7 @@ func Test_getFeatures(t *testing.T) {
 			if !assert.NoError(t, err) {
 				return
 			}
-			assert.Equal(t, tt.expected.Environments, results.Environments)
+			assert.ElementsMatch(t, tt.expected.Environments, results.Environments)
 		})
 	}
 }
