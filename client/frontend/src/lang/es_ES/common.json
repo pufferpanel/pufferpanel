@@ -1,7 +1,7 @@
 {
   "Name": "Nombre",
   "Language": "Idioma",
-  "Online": "Encendido",
+  "Online": "En línea",
   "Offline": "Apagado",
   "Installing": "Instalando",
   "Unknown": "Desconocido",
@@ -34,7 +34,7 @@
     "mode": {
       "Light": "Claro",
       "Dark": "Oscuro",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Oscuro (Contraste Alto)",
       "Auto": "Auto"
     },
     "BaseColor": "Color Base",
@@ -48,17 +48,17 @@
       "Grid": "Cuadrícula",
       "List": "Lista"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Tamaño del texto",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Por defecto"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Cara del Texto",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Por defecto",
+      "A11y": "Accesibilidad optimizada"
     }
   },
   "NoResults": "No hay resultados",
-  "Yes": "Yes",
+  "Yes": "Si",
   "No": "No"
 }
