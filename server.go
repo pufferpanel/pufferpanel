@@ -9,10 +9,10 @@ type Server struct {
 	Identifier            string                    `json:"id,omitempty"`
 	Display               string                    `json:"display,omitempty"`
 	Icon                  string                    `json:"icon,omitempty"`
-	Variables             map[string]Variable       `json:"data,omitempty"`
+	Variables             map[string]Variable       `json:"data"`
 	Groups                []Group                   `json:"groups,omitempty"`
-	Installation          []ConditionalMetadataType `json:"install,omitempty"`
-	Uninstallation        []ConditionalMetadataType `json:"uninstall,omitempty"`
+	Installation          []ConditionalMetadataType `json:"install"`
+	Uninstallation        []ConditionalMetadataType `json:"uninstall"`
 	Execution             Execution                 `json:"run"`
 	Environment           MetadataType              `json:"environment"`
 	SupportedEnvironments []MetadataType            `json:"supportedEnvironments,omitempty"`
