@@ -17,9 +17,9 @@
 package resolveforgeversion
 
 import (
-	"errors"
 	"github.com/hashicorp/go-version"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -38,11 +38,13 @@ func (op ResolveForgeVersion) Run(args pufferpanel.RunOperatorArgs) pufferpanel.
 	if op.Version == "" {
 		dir := filepath.Join("libraries", "net", "minecraftforge", "forge")
 		folders, err := fs.ReadDir(dir)
+		if os.IsNotExist(err) {
+			return pufferpanel.OperationResult{VariableOverrides: map[string]interface{}{
+				op.OutputVariable: op.Version,
+			}}
+		}
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
-		}
-		if len(folders) == 0 {
-			return pufferpanel.OperationResult{Error: errors.New("forge not installed")}
 		}
 
 		var ver *version.Version
@@ -72,7 +74,9 @@ func (op ResolveForgeVersion) Run(args pufferpanel.RunOperatorArgs) pufferpanel.
 		}
 	}
 
-	env.DisplayToConsole(true, "Resolved Forge Version: %s", op.Version)
+	if op.Version != "" {
+		env.DisplayToConsole(true, "Resolved Forge Version: %s", op.Version)
+	}
 
 	return pufferpanel.OperationResult{VariableOverrides: map[string]interface{}{
 		op.OutputVariable: op.Version,
