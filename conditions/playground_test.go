@@ -38,11 +38,31 @@ func Test(t *testing.T) {
 			result:     false,
 			variables:  map[string]interface{}{"item": "exists"},
 		},
+		{
+			name:       "map keyword",
+			expression: `has(vars.map) && vars["map"] == "exists"`,
+			result:     true,
+			variables:  map[string]interface{}{"map": "exists"},
+		},
+		{
+			name:       "map keyword old reference",
+			expression: `notMap == "exists"`,
+			result:     true,
+			variables:  map[string]interface{}{"map": "something", "notMap": "exists"},
+		},
+		{
+			name:       "legacy reference",
+			expression: `item == "exists"`,
+			result:     true,
+			variables:  map[string]interface{}{"item": "exists"},
+		},
 	}
 
 	for _, tt := range ts {
 		t.Run(tt.name, func(t *testing.T) {
-			celVars := make([]cel.EnvOption, 0)
+			celVars := []cel.EnvOption{
+				cel.EagerlyValidateDeclarations(true),
+			}
 
 			inputData := map[string]interface{}{}
 
@@ -57,9 +77,16 @@ func Test(t *testing.T) {
 				return
 			}
 
+			for k := range inputData {
+				a, err := celEnv.Extend(cel.Variable(k, cel.DynType))
+				if err != nil {
+					continue
+				}
+				celEnv = a
+			}
+
 			ast, issues := celEnv.Compile(tt.expression)
-			if issues != nil && issues.Err() != nil {
-				assert.NoError(t, issues.Err())
+			if issues != nil && !assert.NoError(t, issues.Err()) {
 				return
 			}
 
@@ -68,9 +95,13 @@ func Test(t *testing.T) {
 				return
 			}
 
-			out, _, err := prg.Eval(map[string]any{
-				"vars": inputData,
-			})
+			var input = make(map[string]any)
+			for k, v := range inputData {
+				input[k] = v
+			}
+			input["vars"] = input
+
+			out, _, err := prg.Eval(input)
 			if !assert.NoError(t, err) {
 				return
 			}
