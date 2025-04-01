@@ -56,6 +56,12 @@ func Test(t *testing.T) {
 			result:     true,
 			variables:  map[string]interface{}{"item": "exists"},
 		},
+		{
+			name:       "string and map reference",
+			expression: `vars == "exists"`,
+			result:     true,
+			variables:  map[string]interface{}{"name": "exists"},
+		},
 	}
 
 	for _, tt := range ts {

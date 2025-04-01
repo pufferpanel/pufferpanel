@@ -12,6 +12,10 @@ import (
 	"path/filepath"
 )
 
+func CreateVariables(env pufferpanel.Environment) []cel.EnvOption {
+	return []cel.EnvOption{}
+}
+
 func CreateFunctions(env pufferpanel.Environment) []cel.EnvOption {
 	return []cel.EnvOption{
 		cel.Function("file_exists",

@@ -808,7 +808,7 @@ func (p *Server) RunCondition(condition string, extraData map[string]interface{}
 		}
 	}
 
-	return conditions.ResolveIf(condition, data, CreateFunctions(p.GetEnvironment()))
+	return conditions.Run[bool](condition, data, CreateFunctions(p.GetEnvironment()))
 }
 
 func (p *Server) GetFileServer() files.FileServer {

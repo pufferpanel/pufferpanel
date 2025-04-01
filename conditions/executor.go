@@ -9,45 +9,55 @@ import (
 	"strings"
 )
 
-var GlobalConstantValues = map[string]interface{}{
-	VariableOs:   runtime.GOOS,
-	VariableArch: runtime.GOARCH,
-}
-
-func ResolveIf(condition string, data map[string]interface{}, extraCels []cel.EnvOption) (bool, error) {
-	return Run[bool](condition, data, extraCels)
-}
-
-func Run[T interface{}](statement string, data map[string]interface{}, extras []cel.EnvOption) (T, error) {
+func Run[T string | bool](statement string, variables map[string]interface{}, extras []cel.EnvOption) (T, error) {
 	var res T
+
+	//if we didn't define a statement, then set as success if the map has one
+	if statement == "" {
+		switch any(res).(type) {
+		case bool:
+			res = any(true).(T)
+		case string:
+			res = any("").(T)
+		case int:
+			res = any(0).(T)
+		}
+		return res, nil
+	}
 
 	celVars := extras
 	if celVars == nil {
 		celVars = make([]cel.EnvOption, 0)
 	}
-
-	//if we didn't define a statement, then set as success if the map has one
-	if statement == "" {
-		if _, exists := data["success"]; exists {
-			statement = "success"
-		}
-	}
+	celVars = append(celVars,
+		cel.Variable("var", cel.MapType(cel.StringType, cel.DynType)),
+		cel.Variable("sys", cel.MapType(cel.StringType, cel.DynType)),
+		cel.Variable("os", cel.StringType),
+		cel.Variable("arch", cel.StringType))
 
 	inputData := map[string]interface{}{}
-
-	for k, v := range data {
-		celVars = append(celVars, cel.Variable(k, cel.AnyType))
-		inputData[k] = v
-	}
-
-	for k, v := range GlobalConstantValues {
-		celVars = append(celVars, cel.Variable(k, cel.AnyType))
+	for k, v := range variables {
 		inputData[k] = v
 	}
 
 	celEnv, err := cel.NewEnv(celVars...)
 	if err != nil {
 		return res, err
+	}
+
+	for k := range inputData {
+		a, err := celEnv.Extend(cel.Variable(k, cel.DynType))
+		if err != nil {
+			continue
+		}
+		celEnv = a
+	}
+
+	inputData["os"] = runtime.GOOS
+	inputData["arch"] = runtime.GOARCH
+	inputData["sys"] = map[string]string{
+		"type": runtime.GOOS,
+		"arch": runtime.GOARCH,
 	}
 
 	ast, issues := celEnv.Compile(statement)

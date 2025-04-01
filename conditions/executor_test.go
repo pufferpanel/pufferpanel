@@ -35,7 +35,7 @@ func TestResolveIf(t *testing.T) {
 				data:      map[string]interface{}{"success": false},
 				extraCels: nil,
 			},
-			want:    false,
+			want:    true,
 			wantErr: false,
 		},
 		{
@@ -101,7 +101,7 @@ func TestResolveIf(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ResolveIf(tt.args.condition, tt.args.data, tt.args.extraCels)
+			got, err := Run[bool](tt.args.condition, tt.args.data, tt.args.extraCels)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ResolveIf() error = %v, wantErr %v", err, tt.wantErr)
 				return
