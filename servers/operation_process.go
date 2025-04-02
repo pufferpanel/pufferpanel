@@ -130,13 +130,9 @@ func (p *OperationProcess) Run(server *Server) error {
 		return nil
 	}
 
-	extraData := map[string]interface{}{
-		conditions.VariableSuccess: true,
-	}
-
 	var firstError error
 	for _, v := range *p {
-		shouldRun, err := server.RunCondition(v.Condition, extraData)
+		shouldRun, err := conditions.Run[bool](v.Condition, conditions.CreateRunData(server.Server), CreateFunctions(server.GetEnvironment()))
 		if err != nil {
 			return err
 		}
@@ -158,16 +154,7 @@ func (p *OperationProcess) Run(server *Server) error {
 
 			if result.Error != nil {
 				logging.Error.Printf("Error running command: %s", result.Error.Error())
-				//TODO: Implement success checking more accurately here
-				/*if firstError == nil {
-					firstError = result.Error
-					return result.Error
-				}
-				//extraData[conditions.VariableSuccess] = false
-				*/
 				return result.Error
-			} else {
-				extraData[conditions.VariableSuccess] = true
 			}
 
 			if result.VariableOverrides != nil {

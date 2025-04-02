@@ -3,13 +3,29 @@ package conditions
 import (
 	"fmt"
 	"github.com/google/cel-go/cel"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"reflect"
 	"regexp"
 	"runtime"
 	"strings"
 )
 
-func Run[T string | bool](statement string, variables map[string]interface{}, extras []cel.EnvOption) (T, error) {
+type RunData struct {
+	Variables map[string]interface{}
+	Server    map[string]interface{}
+}
+
+func CreateRunData(server pufferpanel.Server) RunData {
+	return RunData{
+		Variables: server.DataToMap(),
+		Server: map[string]interface{}{
+			"env": server.Environment.Type,
+			"id":  server.Identifier,
+		},
+	}
+}
+
+func Run[T string | bool](statement string, data RunData, extras []cel.EnvOption) (T, error) {
 	var res T
 
 	//if we didn't define a statement, then set as success if the map has one
@@ -32,11 +48,12 @@ func Run[T string | bool](statement string, variables map[string]interface{}, ex
 	celVars = append(celVars,
 		cel.Variable("var", cel.MapType(cel.StringType, cel.DynType)),
 		cel.Variable("sys", cel.MapType(cel.StringType, cel.DynType)),
+		cel.Variable("server", cel.MapType(cel.StringType, cel.DynType)),
 		cel.Variable("os", cel.StringType),
 		cel.Variable("arch", cel.StringType))
 
 	inputData := map[string]interface{}{}
-	for k, v := range variables {
+	for k, v := range data.Variables {
 		inputData[k] = v
 	}
 
@@ -83,7 +100,7 @@ func Run[T string | bool](statement string, variables map[string]interface{}, ex
 
 var conditionalStatementRegex = regexp.MustCompile("{{.*?}}")
 
-func ReplaceInString(str string, data map[string]interface{}, extras []cel.EnvOption) (string, error) {
+func ReplaceInString(str string, data RunData, extras []cel.EnvOption) (string, error) {
 	var err error
 
 	result := conditionalStatementRegex.ReplaceAllStringFunc(str, func(part string) string {

@@ -223,7 +223,7 @@ func (p *Server) Start() error {
 			if v.If == "" {
 				continue
 			}
-			useThis, err := p.RunCondition(v.If, nil)
+			useThis, err := conditions.Run[bool](v.If, conditions.CreateRunData(p.Server), CreateFunctions(p.GetEnvironment()))
 			if err != nil {
 				p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
 				p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
@@ -790,25 +790,6 @@ func (p *Server) valid() error {
 func (p *Server) Log(l *log.Logger, format string, obj ...interface{}) {
 	msg := fmt.Sprintf("[%s] ", p.Id()) + format
 	l.Printf(msg, obj...)
-}
-
-func (p *Server) RunCondition(condition string, extraData map[string]interface{}) (bool, error) {
-	data := map[string]interface{}{
-		conditions.VariableEnv:      p.RunningEnvironment.GetBase().Type,
-		conditions.VariableServerId: p.Id(),
-	}
-
-	for k, v := range extraData {
-		data[k] = v
-	}
-
-	if p.Variables != nil {
-		for k, v := range p.Variables {
-			data[k] = v.Value
-		}
-	}
-
-	return conditions.Run[bool](condition, data, CreateFunctions(p.GetEnvironment()))
 }
 
 func (p *Server) GetFileServer() files.FileServer {
