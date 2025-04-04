@@ -48,14 +48,14 @@
       "Grid": "グリッド",
       "List": "一覧"
     },
-    "FontSize": "Font Size",
+    "FontSize": "文字の大きさ",
     "fontSize": {
-      "Default": "Default"
+      "Default": "既定"
     },
-    "FontFace": "Font Face",
+    "FontFace": "フォントの種類",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "既定",
+      "A11y": "アクセシビリティの最適化"
     }
   },
   "NoResults": "結果なし",
