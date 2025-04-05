@@ -550,6 +550,7 @@ html[dir="rtl"] .menu.open {
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
+    scrollbar-width: none;
     .button {
       margin: -4px 0.5rem 0;
       font-size: 2rem;
@@ -1330,11 +1331,6 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   padding: 0.5em;
   height: calc(100vh - 64px - 19em);
   position: relative;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 }
 
 @include high-contrast-mode {
@@ -1368,8 +1364,8 @@ html[dir="rtl"] .settings .panel .master-url .icon {
     @include clickable;
     color: #fff;
     position: absolute;
-    top: 0.5em;
-    right: 0.5em;
+    top: 0.75em;
+    right: 0.75em;
     font-size: 1.5em;
     background-color: #000;
     z-index: 1;
