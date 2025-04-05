@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Overlay from '@/components/ui/Overlay.vue'
 import TextField from '@/components/ui/TextField.vue'
+import OtpInput from '@/components/ui/OtpInput.vue'
+import Loader from '@/components/ui/Loader.vue'
 import Btn from '@/components/ui/Btn.vue'
 import defaultRoute from '@/router/defaultRoute'
 
@@ -13,6 +15,7 @@ const events = inject('events')
 const validate = inject('validate')
 const router = useRouter()
 
+const loading = ref(false)
 const email = ref('')
 const emailError = ref(false)
 const password = ref('')
@@ -31,11 +34,16 @@ function loggedIn() {
 }
 
 async function login() {
-  const res = await api.auth.login(email.value, password.value)
-  if (res === true) {
-    loggedIn()
-  } else if (res === 'otp') {
-    otpNeeded.value = true
+  loading.value = true
+  try {
+    const res = await api.auth.login(email.value, password.value)
+    if (res === true) {
+      loggedIn()
+    } else if (res === 'otp') {
+      otpNeeded.value = true
+    }
+  } finally {
+    loading.value = false
   }
 }
 
@@ -45,8 +53,13 @@ function resetOtp() {
 }
 
 async function submitOtp() {
-  await api.auth.loginOtp(token.value)
-  loggedIn()
+  loading.value = true
+  try {
+    await api.auth.loginOtp(token.value)
+    loggedIn()
+  } finally {
+    loading.value = false
+  }
 }
 
 function validateEmail(onChange = false) {
@@ -80,14 +93,16 @@ function passwordErrorMsg() {
   <div class="login">
     <h1 v-text="t('users.Login')" />
     <form @keydown.enter="login()">
-      <text-field v-model="email" type="email" name="email" :label="t('users.Email')" :error="emailErrorMsg()" icon="email" autofocus @blur="validateEmail" @change="validateEmail(true)" />
-      <text-field v-model="password" type="password" name="password" :label="t('users.Password')" :error="passwordErrorMsg()" icon="lock" @blur="validatePassword" @change="validatePassword(true)" />
-      <btn color="primary" :disabled="emailError || passwordError" @click="login()" v-text="t('users.Login')" />
+      <text-field v-model="email" type="email" name="email" :disabled="loading" :label="t('users.Email')" :error="emailErrorMsg()" icon="email" autofocus @blur="validateEmail" @change="validateEmail(true)" />
+      <text-field v-model="password" type="password" name="password" :disabled="loading" :label="t('users.Password')" :error="passwordErrorMsg()" icon="lock" @blur="validatePassword" @change="validatePassword(true)" />
+      <loader v-if="loading" />
+      <btn color="primary" :disabled="emailError || passwordError || loading" @click="login()" v-text="t('users.Login')" />
       <btn v-if="$config.registrationEnabled" variant="text" @click="$router.push({ name: 'Register' })" v-text="t('users.RegisterLink')" />
     </form>
-    <overlay v-model="otpNeeded" :title="t('users.OtpNeeded')" closable @close="resetOtp()">
-      <text-field v-model="token" autofocus />
-      <btn color="primary" @click="submitOtp()" v-text="t('users.Login')" />
+    <overlay v-model="otpNeeded" class="otp" :title="t('users.OtpNeeded')" closable @close="resetOtp()">
+      <otp-input :disabled="loading" @update:modelValue="token = $event" @complete="token = $event; submitOtp()" />
+      <loader v-if="loading" />
+      <btn color="primary" :disabled="loading" @click="submitOtp()" v-text="t('users.Login')" />
     </overlay>
   </div>
 </template>

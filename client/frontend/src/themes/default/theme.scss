@@ -826,6 +826,10 @@ html[dir="rtl"] .menu.open {
   }
 }
 
+.login .otp .overlay {
+  width: calc(3.5em * 8);
+}
+
 .self.loading {
   @include cols(12);
   @include row;
@@ -855,6 +859,10 @@ html[dir="rtl"] .menu.open {
 
     .description {
       display: block;
+    }
+
+    .otp-deactivation .overlay {
+      width: calc(3.5em * 8);
     }
 
     .otp-enroll-content, .otp-enroll-actions, .otp-deactivation-actions {

@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { updateLocale, locales } from '@/plugins/i18n'
 import Overlay from '@/components/ui/Overlay.vue'
 import TextField from '@/components/ui/TextField.vue'
+import OtpInput from '@/components/ui/OtpInput.vue'
 import Dropdown from '@/components/ui/Dropdown.vue'
 import Btn from '@/components/ui/Btn.vue'
 import Icon from '@/components/ui/Icon.vue'
@@ -193,7 +194,7 @@ function updateThemeSetting(name, newSetting) {
                 <div><b class="otp-enroll-secret" v-text="t('users.OtpSecret')" /></div>
                 <span class="otp-enroll-secret" v-text="otpSecret" />
                 <h3 class="otp-enroll-confirm" v-text="t('users.OtpConfirm')" />
-                <text-field v-model="token"/>
+                <otp-input @update:modelValue="token = $event" @complete="token = $event; confirmOtpEnroll()" />
               </div>
             </div>
             <div class="otp-enroll-actions">
@@ -203,7 +204,8 @@ function updateThemeSetting(name, newSetting) {
           </overlay>
           <overlay v-model="otpDisabling" class="otp-deactivation" :title="t('users.OtpDisable')" closable @close="resetOtpDeactivation()">
             <div class="otp-deactivation-content">
-              <text-field v-model="token" :label="t('users.OtpConfirm')" />
+              <span v-text="t('users.OtpConfirm')" />
+              <otp-input @update:modelValue="token = $event" @complete="token = $event; confirmOtpDeactivation()" />
             </div>
             <div class="otp-deactivation-actions">
               <btn color="error" @click="resetOtpDeactivation()" v-text="t('common.Cancel')" />
