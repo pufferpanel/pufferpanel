@@ -56,7 +56,17 @@ func DetermineIfSingleRoot(sourceFile string) (bool, error) {
 
 func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool, forcedType Walker) error {
 	if fs != nil {
-		sourceFile = filepath.Join(fs.Prefix(), sourceFile)
+		matches, err := fs.Glob(sourceFile)
+		if err != nil {
+			return err
+		} else if len(matches) == 0 {
+			return os.ErrNotExist
+		} else if len(matches) > 1 {
+			
+		}
+		sourceFile = filepath.Join(fs.Prefix(), matches[0])
+	} else {
+
 	}
 
 	if skipRoot {

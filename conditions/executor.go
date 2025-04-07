@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/google/cel-go/cel"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/spf13/cast"
 	"reflect"
 	"regexp"
 	"runtime"
@@ -46,7 +47,7 @@ func Run[T string | bool](statement string, data RunData, extras []cel.EnvOption
 		celVars = make([]cel.EnvOption, 0)
 	}
 	celVars = append(celVars,
-		cel.Variable("var", cel.MapType(cel.StringType, cel.DynType)),
+		cel.Variable("vars", cel.MapType(cel.StringType, cel.DynType)),
 		cel.Variable("sys", cel.MapType(cel.StringType, cel.DynType)),
 		cel.Variable("server", cel.MapType(cel.StringType, cel.DynType)),
 		cel.Variable("os", cel.StringType),
@@ -70,12 +71,17 @@ func Run[T string | bool](statement string, data RunData, extras []cel.EnvOption
 		celEnv = a
 	}
 
-	inputData["os"] = runtime.GOOS
-	inputData["arch"] = runtime.GOARCH
-	inputData["sys"] = map[string]string{
+	var evalData = make(map[string]any)
+	evalData["os"] = runtime.GOOS
+	evalData["arch"] = runtime.GOARCH
+	evalData["sys"] = map[string]string{
 		"type": runtime.GOOS,
 		"arch": runtime.GOARCH,
 	}
+	for k, v := range inputData {
+		evalData[k] = v
+	}
+	evalData["vars"] = inputData
 
 	ast, issues := celEnv.Compile(statement)
 	if issues != nil && issues.Err() != nil {
@@ -87,14 +93,25 @@ func Run[T string | bool](statement string, data RunData, extras []cel.EnvOption
 		return res, err
 	}
 
-	out, _, err := prg.Eval(inputData)
+	out, _, err := prg.Eval(evalData)
 	if err != nil {
 		return res, err
 	}
-	if cast, ok := out.Value().(T); ok {
-		return cast, nil
+	if result, ok := out.Value().(T); ok {
+		return result, nil
 	} else {
-		return res, fmt.Errorf("invalid return type, expected %s, got %s", reflect.TypeOf(res), reflect.TypeOf(cast))
+		switch any(res).(type) {
+		case bool:
+			res = any(cast.ToBool(out.Value())).(T)
+
+		case string:
+			res = any(cast.ToString(out.Value())).(T)
+		case int:
+			res = any(cast.ToInt(out.Value())).(T)
+		default:
+			return res, fmt.Errorf("invalid return type, expected %s, got %s", reflect.TypeOf(res), reflect.TypeOf(out.Value()))
+		}
+		return res, nil
 	}
 }
 

@@ -62,13 +62,13 @@ func init() {
 	}
 }
 
-func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, environment pufferpanel.Environment, dataMapping map[string]interface{}, env map[string]string) (OperationProcess, error) {
+func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, server *Server, dataMapping map[string]interface{}, env map[string]string) (OperationProcess, error) {
 	dataMap := make(map[string]interface{})
 	for k, v := range dataMapping {
 		dataMap[k] = v
 	}
 
-	dataMap["rootDir"] = environment.GetRootDirectory()
+	dataMap["rootDir"] = server.GetEnvironment().GetRootDirectory()
 	operationList := make(OperationProcess, 0)
 	for _, mapping := range directions {
 		mapCopy := make(map[string]interface{})
@@ -101,6 +101,10 @@ func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, environme
 			default:
 				mapCopy[k] = v
 			}
+		}
+
+		for k, v := range mapCopy {
+			mapCopy[k], _ = conditions.ReplaceInString(v, conditions.CreateRunData(server), CreateFunctions(server.GetEnvironment()))
 		}
 
 		envMap := utils.ReplaceTokensInMap(env, dataMap)

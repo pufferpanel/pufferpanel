@@ -9,7 +9,7 @@ import (
 func TestResolveIf(t *testing.T) {
 	type args struct {
 		condition string
-		data      map[string]interface{}
+		data      RunData
 		extraCels []cel.EnvOption
 	}
 	tests := []struct {
@@ -22,7 +22,7 @@ func TestResolveIf(t *testing.T) {
 			name: "empty condition with success true flag",
 			args: args{
 				condition: "",
-				data:      map[string]interface{}{"success": true},
+				data:      RunData{Variables: map[string]interface{}{"success": true}},
 				extraCels: nil,
 			},
 			want:    true,
@@ -32,7 +32,7 @@ func TestResolveIf(t *testing.T) {
 			name: "empty condition with success false flag",
 			args: args{
 				condition: "",
-				data:      map[string]interface{}{"success": false},
+				data:      RunData{Variables: map[string]interface{}{"success": false}},
 				extraCels: nil,
 			},
 			want:    true,
@@ -41,8 +41,8 @@ func TestResolveIf(t *testing.T) {
 		{
 			name: "success condition with success false flag",
 			args: args{
-				condition: "success",
-				data:      map[string]interface{}{"success": false},
+				condition: "vars.success",
+				data:      RunData{Variables: map[string]interface{}{"success": false}},
 				extraCels: nil,
 			},
 			want:    false,
@@ -51,8 +51,8 @@ func TestResolveIf(t *testing.T) {
 		{
 			name: "success condition with success false flag",
 			args: args{
-				condition: "success",
-				data:      map[string]interface{}{"success": false},
+				condition: "vars.success",
+				data:      RunData{Variables: map[string]interface{}{"success": false}},
 				extraCels: nil,
 			},
 			want:    false,
@@ -61,8 +61,8 @@ func TestResolveIf(t *testing.T) {
 		{
 			name: "string condition with variable true",
 			args: args{
-				condition: "loader == \"vanilla\"",
-				data:      map[string]interface{}{"loader": "vanilla"},
+				condition: "vars.loader == \"vanilla\"",
+				data:      RunData{Variables: map[string]interface{}{"loader": "vanilla"}},
 				extraCels: nil,
 			},
 			want:    true,
@@ -71,8 +71,8 @@ func TestResolveIf(t *testing.T) {
 		{
 			name: "string condition with variable true using 's",
 			args: args{
-				condition: "loader == 'vanilla'",
-				data:      map[string]interface{}{"loader": "vanilla"},
+				condition: "vars.loader == 'vanilla'",
+				data:      RunData{Variables: map[string]interface{}{"loader": "vanilla"}},
 				extraCels: nil,
 			},
 			want:    true,
@@ -81,18 +81,18 @@ func TestResolveIf(t *testing.T) {
 		{
 			name: "string condition with variable false",
 			args: args{
-				condition: "loader == \"vanilla\"",
-				data:      map[string]interface{}{"loader": "notvanilla"},
+				condition: "vars.loader == \"vanilla\"",
+				data:      RunData{Variables: map[string]interface{}{"loader": "notvanilla"}},
 				extraCels: nil,
 			},
 			want:    false,
 			wantErr: false,
 		},
 		{
-			name: "string condition with variable os",
+			name: "string condition with variable type",
 			args: args{
-				condition: "os == \"" + runtime.GOOS + "\"",
-				data:      nil,
+				condition: "sys.type == \"" + runtime.GOOS + "\"",
+				data:      RunData{},
 				extraCels: nil,
 			},
 			want:    true,
@@ -137,7 +137,7 @@ func TestReplaceInString(t *testing.T) {
 		{
 			name: "VariableReplace",
 			args: args{
-				str: "Hello {{ world }}",
+				str: "Hello {{ vars.world }}",
 				data: map[string]interface{}{
 					"world": "world!",
 				},
@@ -148,7 +148,7 @@ func TestReplaceInString(t *testing.T) {
 		{
 			name: "Multiple Variable Replace",
 			args: args{
-				str: "{{ hello }} {{ world }}",
+				str: "{{ vars.hello }} {{ vars.world }}",
 				data: map[string]interface{}{
 					"hello": "Hello",
 					"world": "world!",
@@ -160,7 +160,7 @@ func TestReplaceInString(t *testing.T) {
 		{
 			name: "Logic Replace",
 			args: args{
-				str: "{{ ishello ? 'Hello' : 'Goodbye'}} world!",
+				str: "{{ vars.ishello ? 'Hello' : 'Goodbye'}} world!",
 				data: map[string]interface{}{
 					"ishello": true,
 				},
@@ -182,7 +182,7 @@ func TestReplaceInString(t *testing.T) {
 		{
 			name: "Invalid",
 			args: args{
-				str: "Hello {{ asdf }}!",
+				str: "Hello {{ vars.asdf }}!",
 				data: map[string]interface{}{
 					"world": "and bye",
 				},
@@ -191,12 +191,28 @@ func TestReplaceInString(t *testing.T) {
 			want:    "Hello ERROR: <input>:1:2: undeclared reference to 'asdf' (in container '')\n |  asdf \n | .^!",
 			wantErr: true,
 		},
+		{
+			name: "Int variable return",
+			args: args{
+				str: "{{vars.item}}M",
+				data: map[string]interface{}{
+					"item": 4096,
+				},
+				extras: nil,
+			},
+			want: "4096M",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ReplaceInString(tt.args.str, tt.args.data, tt.args.extras)
+			got, err := ReplaceInString(tt.args.str, RunData{
+				Variables: tt.args.data,
+			}, tt.args.extras)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReplaceInString() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr {
 				return
 			}
 			if got != tt.want {

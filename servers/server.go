@@ -250,6 +250,12 @@ func (p *Server) Start() error {
 	data := p.DataToMap()
 
 	commandLine := utils.ReplaceTokens(command.Command, data)
+	commandLine, err = conditions.ReplaceInString(commandLine, conditions.CreateRunData(p.Server), nil)
+	if err != nil {
+		p.Log(logging.Error, "error starting server %s: %s", p.Id(), err)
+		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
+		return err
+	}
 
 	cmd, args := utils.SplitArguments(commandLine)
 	err = p.RunningEnvironment.ExecuteAsync(pufferpanel.ExecutionData{
@@ -654,7 +660,12 @@ func (p *Server) StartBackup() (string, error) {
 		}()
 		sourceFiles := []string{filepath.Join(p.GetFileServer().Prefix())}
 
-		err = files.Compress(nil, file, sourceFiles)
+		err = files.Compress(nil, file+".tmp", sourceFiles)
+		if err != nil {
+			p.Log(logging.Error, "Error creating backup file: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to create backup file")
+		}
+		err = os.Rename(file, backupFile)
 		if err != nil {
 			p.Log(logging.Error, "Error creating backup file: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to create backup file")
