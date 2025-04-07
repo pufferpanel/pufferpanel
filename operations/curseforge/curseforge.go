@@ -194,7 +194,7 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 				}
 				jarFile = forgeInstaller
 			}
-			err = installViaJar(env, jarFile, c.JavaBinary)
+			err = installViaJar(args.Server, env, jarFile, c.JavaBinary)
 			if err != nil {
 				return pufferpanel.OperationResult{Error: err}
 			}
@@ -266,7 +266,7 @@ func findInstallerJar(env pufferpanel.Environment) (string, error) {
 	return "", os.ErrNotExist
 }
 
-func installViaJar(env pufferpanel.Environment, jarFile string, javaBinary string) error {
+func installViaJar(server pufferpanel.DaemonServer, env pufferpanel.Environment, jarFile string, javaBinary string) error {
 	//installer found, we will run this one
 	result := make(chan int, 1)
 	err := env.Execute(pufferpanel.ExecutionData{
@@ -276,6 +276,7 @@ func installViaJar(env pufferpanel.Environment, jarFile string, javaBinary strin
 			result <- exitCode
 			env.DisplayToConsole(true, "Installer exit code: %d", exitCode)
 		},
+		Variables: server.DataToMap(),
 	})
 	if err != nil {
 		return err

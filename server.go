@@ -78,7 +78,6 @@ func (s *Server) DataToMap() map[string]interface{} {
 	for k, v := range s.Variables {
 		result[k] = v.Value
 	}
-	result["serverId"] = s.Identifier
 
 	return result
 }
@@ -89,4 +88,6 @@ type DaemonServer interface {
 	Extract(source, destination string) error
 
 	ArchiveItems(files []string, destination string) error
+
+	DataToMap() map[string]interface{}
 }
