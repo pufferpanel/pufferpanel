@@ -26,7 +26,7 @@
   "ConfirmDelete": "Você realmente deseja excluir o usuario {name}?",
   "UpdateSuccess": "Usuário Atualizado",
   "Details": "Detalhes do Usuário",
-  "Authentication": "Authentication",
+  "Authentication": "Autenticação",
   "Permissions": "Permissões",
   "Preferences": "Preferências",
   "SavePreferences": "Salvar preferências",
