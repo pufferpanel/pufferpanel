@@ -46,22 +46,22 @@ func TestSplitArguments(t *testing.T) {
 		{
 			args:          "java -jar \"test.jar\"",
 			wantCmd:       "java",
-			wantArguments: []string{"-jar", "\"test.jar\""},
+			wantArguments: []string{"-jar", "test.jar"},
 		},
 		{
 			args:          "java -jar \"test this.jar\"",
 			wantCmd:       "java",
-			wantArguments: []string{"-jar", "\"test this.jar\""},
+			wantArguments: []string{"-jar", "test this.jar"},
 		},
 		{
 			args:          "java -jar \"test this.jar\" noGui",
 			wantCmd:       "java",
-			wantArguments: []string{"-jar", "\"test this.jar\"", "noGui"},
+			wantArguments: []string{"-jar", "test this.jar", "noGui"},
 		},
 		{
 			args:          "\"C:\\\\Program Files\\\\Java\\\\bin\\\\java.exe\" -jar \"test this.jar\" noGui",
-			wantCmd:       "\"C:\\Program Files\\Java\\bin\\java.exe\"",
-			wantArguments: []string{"-jar", "\"test this.jar\"", "noGui"},
+			wantCmd:       "C:\\Program Files\\Java\\bin\\java.exe",
+			wantArguments: []string{"-jar", "test this.jar", "noGui"},
 		},
 		{
 			args:          "java",

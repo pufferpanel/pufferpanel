@@ -52,7 +52,6 @@ func SplitArguments(source string) (cmd string, arguments []string) {
 		case '"':
 			{
 				inQuote = !inQuote
-				results[len(results)-1] += "\""
 			}
 		case ' ':
 			{
