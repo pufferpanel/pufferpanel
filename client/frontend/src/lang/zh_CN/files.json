@@ -1,8 +1,8 @@
 {
-  "Refresh": "Refresh",
+  "Refresh": "刷新",
   "CreateFile": "新建文件",
   "CreateFolder": "新建文件夹",
-  "ArchiveCurrent": "Archive current folder",
+  "ArchiveCurrent": "存档当前文件夹",
   "UploadFile": "Upload file",
   "UploadFolder": "Upload folder",
   "Archive": "Archive",
