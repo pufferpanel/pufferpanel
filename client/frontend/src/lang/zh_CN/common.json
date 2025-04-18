@@ -3,62 +3,62 @@
   "Language": "语言",
   "Online": "在线",
   "Offline": "离线",
-  "Installing": "Installing",
+  "Installing": "安装中",
   "Unknown": "未知",
   "Loading": "载入中...",
-  "Description": "Description",
+  "Description": "描述",
   "Save": "保存",
   "Cancel": "取消",
-  "Close": "Close",
+  "Close": "关闭",
   "Host": "主机",
   "Port": "端口",
   "Collapse": "收起",
-  "Expand": "Expand",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Expand": "展开",
+  "Copy": "复制到剪贴板",
+  "Copied": "已复制到剪贴板",
+  "Back": "返回",
   "Next": "下一个",
   "Details": "详细信息",
   "ErrorDetails": "错误详情",
   "HelpTranslate": "帮助我们翻译 PufferPanel",
   "Protocol": "协议",
   "Add": "添加",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Apply": "应用",
+  "Confirm": "确认",
+  "Condition": "条件",
+  "Discard": "放弃",
+  "ConfirmLeave": "您有未保存的更改，是否要放弃这些更改并离开此页面？",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "主题",
+    "Mode": "模式",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "DarkHighContrast": "Dark (High Contrast)",
-      "Auto": "Auto"
+      "Light": "浅色",
+      "Dark": "深色",
+      "DarkHighContrast": "深色（高对比度）",
+      "Auto": "自动"
     },
-    "BaseColor": "Base Color",
-    "ServerTypeDisplay": "Server Type Display",
+    "BaseColor": "基本颜色",
+    "ServerTypeDisplay": "服务器类型显示",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "图标",
+      "None": "无"
     },
-    "ListType": "List Type",
+    "ListType": "列表类型",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "网格",
+      "List": "列表"
     },
-    "FontSize": "Font Size",
+    "FontSize": "字体大小",
     "fontSize": {
-      "Default": "Default"
+      "Default": "默认"
     },
-    "FontFace": "Font Face",
+    "FontFace": "字体",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "默认",
+      "A11y": "无障碍优化"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "无结果",
+  "Yes": "是",
+  "No": "否"
 }

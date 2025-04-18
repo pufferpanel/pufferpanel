@@ -1,15 +1,15 @@
 {
   "Settings": "设置",
   "PanelSettings": "面板设置",
-  "SavePanelSettings": "Save Panel Settings",
+  "SavePanelSettings": "保存面板设置",
   "EmailSettings": "邮件设置",
-  "SaveEmailSettings": "Save Email Settings",
+  "SaveEmailSettings": "保存邮件设置",
   "MasterUrl": "主 URL",
   "MasterUrlHint": "面板的基准地址，如 http://localhost:8080",
   "CompanyName": "企业名称",
   "DefaultTheme": "默认主题",
   "RegistrationEnabled": "允许用户自行注册",
-  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabledHint": "自行注册的用户在被授予权限前无法进行任何操作\n\n禁用此项仅防止直接注册，不影响服务器邀请和用户页面",
   "EmailProvider": "邮件供应商",
   "emailProviders": {
     "none": "无",
@@ -18,15 +18,15 @@
     "mailjet": "Mailjet"
   },
   "email": {
-    "from": "Sender Address",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "发件人地址",
+    "domain": "域名",
+    "key": "API 密钥",
+    "host": "主机",
+    "username": "用户名",
+    "password": "密码"
   },
-  "Saved": "Saved",
-  "TestEmail": "Test Email",
-  "TestEmailSent": "Test email sent",
-  "TestEmailFailed": "Test email failed to send"
+  "Saved": "已保存",
+  "TestEmail": "测试邮件",
+  "TestEmailSent": "测试邮件已发送",
+  "TestEmailFailed": "测试邮件发送失败"
 }
