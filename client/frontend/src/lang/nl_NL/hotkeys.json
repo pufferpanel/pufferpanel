@@ -1,34 +1,34 @@
 {
-  "Title": "Keyboard Shortcuts",
+  "Title": "Sneltoetsen",
   "Global": {
-    "Title": "Global",
-    "g a": "Go to Account",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "Title": "Algemeen",
+    "g a": "Ga naar account",
+    "g c": "Ga naar paneelconfiguratie",
+    "g n": "Ga naar Nodes",
+    "g s": "Ga naar servers",
+    "g t": "Ga naar Sjabloon",
+    "g u": "Ga naar gebruikers"
   },
   "Self": {
     "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
-    "t s": "Go to Preferences tab"
+    "t 2": "Ga naar 2-Factor-Authenticatie tabblad",
+    "t a": "Ga naar het accountgegevens tabblad",
+    "t o": "Ga naar OAuth tabblad",
+    "t p": "Ga naar het wachtwoord tabblad",
+    "t s": "Ga naar het Voorkeuren tabblad"
   },
   "ServerList": {
     "Title": "Servers",
-    "c": "Create a new server",
-    "l": "Focus the first server in the list"
+    "c": "Maak een nieuwe server",
+    "l": "Focus op de eerste server in de lijst"
   },
   "ServerView": {
     "Title": "Server",
-    "t c": "Go to Console tab",
-    "t i": "Go to Statistics tab",
-    "t f": "Go to Files tab",
-    "t s": "Go to Settings tab",
-    "t u": "Go to Users tab",
+    "t c": "Ga naar Console tabblad",
+    "t i": "Ga naar het Statistieken tabblad",
+    "t f": "Ga naar het Bestanden tabblad",
+    "t s": "Ga naar het Instellingen tabblad",
+    "t u": "Ga naar het Gebruikers tabblad",
     "t 6": "Go to SFTP tab",
     "t 7": "Go to Api tab",
     "t a": "Go to Admin tab",
