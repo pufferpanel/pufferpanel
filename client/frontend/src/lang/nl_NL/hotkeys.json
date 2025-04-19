@@ -29,41 +29,41 @@
     "t f": "Ga naar het Bestanden tabblad",
     "t s": "Ga naar het Instellingen tabblad",
     "t u": "Ga naar het Gebruikers tabblad",
-    "t 6": "Go to SFTP tab",
-    "t 7": "Go to Api tab",
-    "t a": "Go to Admin tab",
-    "c c": "Clear Console",
-    "r r": "Start Server",
-    "r s": "Stop Server",
-    "r k": "Kill Server",
-    "r i": "Install Server",
-    "f a": "Archive current directory contents",
-    "f c d": "Create new directory",
-    "f c f": "Create new file",
-    "f d": "Upload directory",
-    "f l": "Focus first file/folder in the list",
-    "f r": "Reload file list",
-    "f u": "Upload files",
-    "a e": "Edit Server Definition",
-    "a r": "Reload Server Definiton from disk"
+    "t 6": "Ga naar SFTP tabblad",
+    "t 7": "Ga naar de Api tabblad",
+    "t a": "Ga naar het Admin tabblad",
+    "c c": "Console wissen",
+    "r r": "Start server",
+    "r s": "Stop server",
+    "r k": "Server afsluiten",
+    "r i": "Server installeren",
+    "f a": "Archiveer huidige inhoud van map",
+    "f c d": "Nieuwe map aanmaken",
+    "f c f": "Nieuw bestand maken",
+    "f d": "Upload map",
+    "f l": "Focus eerste bestand/map in de lijst",
+    "f r": "Herlaad bestandslijst",
+    "f u": "Bestanden uploaden",
+    "a e": "Serverdefinitie bewerken",
+    "a r": "Herlaad server gegevens vanaf schijf"
   },
   "NodeList": {
     "Title": "Nodes",
-    "c": "Create a new node",
-    "l": "Focus the first node in the list"
+    "c": "Maak een nieuwe node",
+    "l": "Focus op de eerste node in de lijst"
   },
   "UserList": {
-    "Title": "Users",
-    "c": "Create a new user",
-    "l": "Focus the first user in the list"
+    "Title": "Gebruikers",
+    "c": "Maak een nieuwe gebruiker aan",
+    "l": "Focus op de eerste gebruiker in de lijst"
   },
   "TemplateList": {
-    "Title": "Templates",
-    "c": "Create a new template",
-    "l": "Focus the first template in the list"
+    "Title": "Sjablonen",
+    "c": "Een nieuwe sjabloon maken",
+    "l": "Focus op de eerste sjabloon in de lijst"
   },
   "Template": {
-    "Title": "Template Editor",
+    "Title": "Sjabloonbewerker",
     "t e": "Go to Environment tab",
     "t g": "Go to General tab",
     "t h": "Go to Hooks tab",
