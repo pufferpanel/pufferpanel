@@ -3,32 +3,32 @@
   "Nodes": "Csomópontok",
   "Edit": "Csomópont szerkesztése",
   "Add": "Új csomópont",
-  "Create": "Create Node",
+  "Create": "Csomópont létrehozzása",
   "Update": "Csomópont frissítése",
   "Delete": "Csomópont törlése",
-  "ConfirmDelete": "Do you really want to delete the node {name}?",
-  "Created": "Created Node",
-  "Updated": "Updated Node",
-  "Deleted": "Deleted Node",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "ConfirmDelete": "Tényleg szeretnéd törölni {name}?",
+  "Created": "Csomópont létrehozzva",
+  "Updated": "Csomópont frissítéstve",
+  "Deleted": "Csomópont törölve",
+  "Reachable": "Ez a csomópont helyesen van beállítva és működik",
+  "Unreachable": "Ez a csomópont vagy nem megfelelően van beállítva, vagy jelenleg nem elérhető",
   "features": {
     "os": {
-      "label": "Operating System",
+      "label": "Operációs rendszer",
       "linux": "Linux",
       "windows": "Windows"
     },
     "arch": {
-      "label": "CPU Architecture",
+      "label": "CPU architektúrája",
       "amd64": "x86 64bit",
       "arm": "ARM 32bit",
       "arm64": "ARM 64bit"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "Docker elérhető",
+      "false": "Docker nem elérhető"
     },
-    "envs": "Available Environments"
+    "envs": "Elérhető környezeti védelemek"
   },
   "PublicHost": "Nyilvános kiszolgáló",
   "PublicPort": "Nyilvános port",
@@ -37,14 +37,14 @@
   "SftpPort": "SFTP port",
   "WithPrivateAddress": "Használj másik ip/portot a két szerver közötti kommunikációhoz",
   "WithPrivateAddressHint": "Ez a külön cím akkor használatos, amikor a főcsomópont kommunikál az új csomóponttal. Olyan esetekben hasznos, mint pl.: a csomópontok azonos hálózaton vannak NAT mögött.",
-  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
-  "Deploy": "Deploy Node",
+  "LocalNodeEdit": "A helyi csomópont nem rendelkezik szerkeszthető beállításokkal\n\nAz ezen a csomóponton elhelyezett kiszolgálókkal megjelenített állomás megváltoztatásához állítsa be a panelek fő url-jét a panel beállításaiban.",
+  "Deploy": "Csomópont telepítése",
   "deploy": {
-    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
-    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
-    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
-    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
-    "Step5": "### Your new node is now set up and ready to go"
+    "Step1": "## 1. Lépés\n\nTelepítse a PufferPanelt az új szerverre, [lásd a dokumentumokat a részletekért](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## 2. Lépés\n\nÁllítsa le a PufferPanel szolgáltatást az új kiszolgálón, ha a telepítés során elindult a `sudo systemctl stop pufferpanel futtatásával.`",
+    "Step3": "## 3. Lépés\n\nCserélje ki a PufferPanel konfigurációs fájl tartalmát az új szerveren az alábbi kóddal:\n\nA konfigurációs fájl általában az `/etc/pufferpanel/config.json` címen található.\n\n```\n{config}\n```",
+    "Step4": "##4. Lépés\n\nEngedélyezze és (újra)indítsa a PufferPanel szolgáltatást az új szerveren a `sudo systemctl enable --now pufferpanel` futtatásával",
+    "Step5": "### A csomópontod be van állítva szabad vagy"
   },
   "DeploymentInstruction": "A csomópont berendezéséhez telepítse a PufferPanelt az új szerveren és helyezze a konfigurációs fájlt a következő helyre: `/etc/pufferpanel/`<br/>Majd indítsa újra a PufferPanelt az új szerveren."
 }
