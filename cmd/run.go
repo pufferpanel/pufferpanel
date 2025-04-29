@@ -81,7 +81,7 @@ func internalRun() (terminate chan bool, success bool) {
 			return
 		}
 
-		err = database.Migrate(db)
+		err = database.Upgrade(db, false)
 		if err != nil {
 			logging.Error.Printf("error upgrading database: %s", err.Error())
 			terminate <- true

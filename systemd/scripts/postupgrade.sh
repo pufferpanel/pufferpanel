@@ -2,10 +2,6 @@
 
 systemctl daemon-reload
 
-if [ -f "/var/lib/pufferpanel/database-RESTORE.db" ]; then
-  mv /var/lib/pufferpanel/database-RESTORE.db /var/lib/pufferpanel/database.db
-fi
-
 if [ ! -f "/var/lib/pufferpanel/database.db" ]; then
   touch /var/lib/pufferpanel/database.db
 fi
@@ -15,7 +11,7 @@ wasRunning=$?
 
 systemctl stop pufferpanel
 
-pufferpanel --config=/etc/pufferpanel/config.json dbmigrate
+pufferpanel --config=/etc/pufferpanel/config.json db upgrade
 exitCode=$?
 [ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
 

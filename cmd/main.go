@@ -34,6 +34,9 @@ func main() {
 var rootCmd = &cobra.Command{
 	Use:   "pufferpanel",
 	Short: "Game Server Management Panel",
+	CompletionOptions: cobra.CompletionOptions{
+		DisableDefaultCmd: true,
+	},
 }
 
 var configFile string
@@ -50,7 +53,7 @@ func init() {
 		versionCmd,
 		userCmd,
 		runServiceCmd,
-		migrateCmd,
+		dbCmd,
 	)
 }
 

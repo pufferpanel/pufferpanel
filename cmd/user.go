@@ -3,15 +3,16 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3/groups"
-	"github.com/pufferpanel/pufferpanel/v3/scopes"
-
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/pterm/pterm"
 	"github.com/pufferpanel/pufferpanel/v3/database"
+	"github.com/pufferpanel/pufferpanel/v3/groups"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/spf13/cobra"
 	"gorm.io/gorm"
+	"strings"
 )
 
 var AddUserCmd = &cobra.Command{
@@ -228,109 +229,130 @@ func editUser(cmd *cobra.Command, args []string) {
 	defer database.Close()
 
 	var username string
-	_ = survey.AskOne(&survey.Input{
-		Message: "Username:",
-	}, &username, survey.WithValidator(survey.Required))
+
+	username, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Enter Username").Show()
 
 	us := &services.User{DB: db}
 
 	user, err := us.Get(username)
-	if err != nil && err == gorm.ErrRecordNotFound {
-		fmt.Printf("No user with username '%s'\n", username)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		pterm.Error.Printfln("No user with username '%s'\n", username)
 		return
 	} else if err != nil {
-		fmt.Printf("Error getting user: %s\n", err.Error())
+		pterm.Error.Printfln("Error getting user: %s\n", err.Error())
 		return
 	}
 
-	action := ""
-	_ = survey.AskOne(&survey.Select{
-		Message: "Select option to edit",
-		Options: []string{"Username", "Email", "Password", "Change Admin Status", "Remove 2FA"},
-	}, &action)
+	var usernameAction = "Username"
+	var emailAction = "Email"
+	var passwordAction = "Password"
+	var adminAction = "Admin Status"
+	var remove2FAAction = "Remove 2FA"
+	var quitAction = "Quit"
 
-	switch action {
-	case "Username":
-		{
-			prompt := ""
-			_ = survey.AskOne(&survey.Input{
-				Message: "New Username:",
-			}, &prompt, survey.WithValidator(survey.Required))
-			user.Username = prompt
+	var currentAction string
 
-			err = us.Update(user)
-			if err != nil {
-				fmt.Printf("Error updating username: %s\n", err.Error())
-			}
-		}
-	case "Email":
-		{
-			prompt := ""
-			_ = survey.AskOne(&survey.Input{
-				Message: "New Email:",
-			}, &prompt, survey.WithValidator(survey.Required))
-			user.Email = prompt
+	for currentAction != quitAction {
+		currentAction, _ = pterm.DefaultInteractiveSelect.WithOptions([]string{
+			usernameAction,
+			emailAction,
+			passwordAction,
+			adminAction,
+			remove2FAAction,
+			quitAction,
+		}).WithFilter(false).WithMaxHeight(20).Show()
 
-			err = us.Update(user)
-			if err != nil {
-				fmt.Printf("Error updating email: %s\n", err.Error())
-			}
-		}
-	case "Password":
-		{
-			prompt := ""
-			_ = survey.AskOne(&survey.Password{
-				Message: "New Password:",
-			}, &prompt, survey.WithValidator(validatePassword))
+		switch currentAction {
+		case usernameAction:
+			{
+				oldValue := user.Username
+				user.Username, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Change username to").WithDefaultValue(oldValue).Show()
 
-			err = user.SetPassword(prompt)
-			if err != nil {
-				fmt.Printf("Error updating password: %s\n", err.Error())
-			}
-
-			err = us.Update(user)
-			if err != nil {
-				fmt.Printf("Error updating password: %s\n", err.Error())
-			}
-		}
-	case "Change Admin Status":
-		{
-			prompt := false
-			_ = survey.AskOne(&survey.Confirm{
-				Message: "Set Admin Status: ",
-			}, &prompt)
-
-			ps := &services.Permission{DB: db}
-			perms, err := ps.GetForUserAndServer(user.ID, "")
-			if err != nil {
-				fmt.Printf("Error updating permissions: %s\n", err.Error())
-				return
-			}
-
-			//perms.Admin = prompt
-			if prompt {
-				perms.Scopes = scopes.AddScope(perms.Scopes, scopes.ScopeAdmin)
-			} else {
-				perms.Scopes = scopes.RemoveScope(perms.Scopes, scopes.ScopeAdmin)
-			}
-
-			err = ps.UpdatePermissions(perms)
-			if err != nil {
-				fmt.Printf("Error updating password: %s\n", err.Error())
-			}
-		}
-	case "Remove 2FA":
-		{
-			prompt := false
-			_ = survey.AskOne(&survey.Confirm{Message: "Confirm removal of 2FA?"}, &prompt)
-			if prompt {
-				us := &services.User{DB: db}
-				err = us.DisableOtp(user.ID)
+				err = us.Update(user)
 				if err != nil {
-					fmt.Printf("Error removing 2FA: %s\n", err.Error())
+					pterm.Error.Printfln("Error updating username: %s", err.Error())
+				} else {
+					pterm.Info.Printfln("Username updated from %s to %s", oldValue, user.Username)
+				}
+			}
+		case emailAction:
+			{
+				oldValue := user.Username
+				user.Email, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Change email to").WithDefaultValue(oldValue).Show()
+
+				err = us.Update(user)
+				if err != nil {
+					pterm.Error.Printfln("Error updating email: %s", err.Error())
+				} else {
+					pterm.Info.Printfln("Email updated from %s to %s", oldValue, user.Username)
+				}
+			}
+		case passwordAction:
+			{
+				password, _ := pterm.DefaultInteractiveTextInput.WithMask("*").WithDefaultText("Change password to").Show()
+
+				err = user.SetPassword(password)
+				if err != nil {
+					pterm.Error.Printfln("Error updating password: %s", err.Error())
+					break
+				}
+				err = us.Update(user)
+				if err != nil {
+					pterm.Error.Printfln("Error updating password: %s", err.Error())
+				} else {
+					pterm.Info.Printfln("Password updated")
+				}
+			}
+		case adminAction:
+			{
+				result, _ := pterm.DefaultInteractiveContinue.WithDefaultText("Set as admin").WithOptions([]string{"yes", "no", "cancel"}).WithDefaultValue("cancel").Show()
+
+				if result == "cancel" {
+					break
+				}
+
+				ps := &services.Permission{DB: db}
+				perms, err := ps.GetForUserAndServer(user.ID, "")
+				if err != nil {
+					pterm.Error.Printfln("Error updating permissions: %s", err.Error())
+					break
+				}
+
+				//perms.Admin = prompt
+				result = strings.ToLower(result)
+				if result == "yes" || result == "y" {
+					perms.Scopes = scopes.AddScope(perms.Scopes, scopes.ScopeAdmin)
+				} else if result == "no" || result == "n" {
+					perms.Scopes = scopes.RemoveScope(perms.Scopes, scopes.ScopeAdmin)
+				} else {
+					break
+				}
+
+				err = ps.UpdatePermissions(perms)
+				if err != nil {
+					pterm.Error.Printfln("Error updating password: %s", err.Error())
+					break
+				}
+
+				if scopes.ContainsScope(perms.Scopes, scopes.ScopeAdmin) {
+					pterm.Info.Printfln("Admin status added")
+				} else {
+					pterm.Info.Printfln("Admin status removed")
+				}
+			}
+		case remove2FAAction:
+			{
+				result, _ := pterm.DefaultInteractiveConfirm.WithDefaultText("Remove 2FA").Show()
+				if result {
+					us := &services.User{DB: db}
+					err = us.DisableOtp(user.ID)
+					if err != nil {
+						fmt.Printf("Error removing 2FA: %s", err.Error())
+					} else {
+						pterm.Info.Printfln("2FA removed")
+					}
 				}
 			}
 		}
 	}
-
 }
