@@ -72,7 +72,7 @@ func executeDbUpgrade(cmd *cobra.Command, args []string) {
 	pterm.Info.Printfln("Starting database upgrade")
 	err = database.Upgrade(db, true)
 	if err != nil {
-		pterm.Error.Printfln("error upgrading database: %s", err.Error())
+		pterm.Error.Printfln("Database upgrade failed: %s", err.Error())
 		rollback(backupFile, currentFile)
 		os.Exit(1)
 		return

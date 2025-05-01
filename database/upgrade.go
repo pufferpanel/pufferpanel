@@ -12,46 +12,112 @@ import (
 	"gorm.io/gorm"
 	"os"
 	"path/filepath"
+	"time"
 )
 
-func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {
-	dbObjects := []interface{}{
-		&models.Node{},
-		&models.Server{},
-		&models.User{},
-		&models.Template{},
-		&models.Permissions{},
-		&models.Client{},
-		&models.UserSetting{},
-		&models.Session{},
-		&models.TemplateRepo{},
-		&models.Backup{},
-	}
+var dbObjects = []interface{}{
+	&models.Node{},
+	&models.Server{},
+	&models.User{},
+	&models.Template{},
+	&models.Permissions{},
+	&models.Client{},
+	&models.UserSetting{},
+	&models.Session{},
+	&models.TemplateRepo{},
+	&models.Backup{},
+}
 
+func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {
 	session := dbConn.Session(&gorm.Session{})
 	migrator := session.Migrator()
 
 	var printer *pterm.ProgressbarPrinter
 	if prettyPrint {
-		printer = pterm.DefaultProgressbar.WithTitle("Upgrading database")
+		size := 1 //include 1 for models
+		for _, z := range migrations {
+			size += len(z)
+		}
+
+		printer, _ = pterm.DefaultProgressbar.WithTitle("Upgrading database").WithTotal(size).Start()
+
+		defer func() {
+			_, _ = printer.Stop()
+		}()
 	}
 
-	var migrationsGroup1 = []*gormigrate.Migration{
+	options := &gormigrate.Options{TableName: "migrations", IDColumnName: "id", IDColumnSize: 255, UseTransaction: true, ValidateUnknownMigrations: false}
+
+	for k, v := range migrations {
+		for _, z := range v {
+			if printer != nil {
+				printer.UpdateTitle("Upgrading " + z.ID)
+			}
+
+			time.Sleep(time.Millisecond * 100)
+
+			if err := gormigrate.New(session, options, []*gormigrate.Migration{z}).Migrate(); err != nil {
+				return err
+			}
+			if printer != nil {
+				pterm.Success.Printfln("Upgrading %s", z.ID)
+				if printer.Total == printer.Current+1 {
+					printer.UpdateTitle("Upgrade complete")
+				}
+				_ = printer.Increment()
+			}
+		}
+
+		//these are migrations we need done first before we can do models
+		//now we can do the models directly
+		if k == 0 {
+			if printer != nil {
+				printer.UpdateTitle("Upgrading models")
+			}
+			if err := migrator.AutoMigrate(dbObjects...); err != nil {
+				return err
+			}
+			if printer != nil {
+				pterm.Success.Println("Upgrading models")
+				_ = printer.Increment()
+			}
+		}
+	}
+
+	if printer != nil {
+		_, _ = printer.Stop()
+		pterm.Success.Println("Database upgrade complete")
+	}
+
+	time.Sleep(time.Millisecond * 100)
+	return nil
+}
+
+func saveToFile(filename string, data []byte) error {
+	//just dump it into working dir
+	err := os.MkdirAll("migrations", 0755)
+	if err != nil {
+		return err
+	}
+	file, err := os.OpenFile(filepath.Join("migrations", filename), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	if err != nil {
+		return err
+	}
+	defer utils.Close(file)
+	_, err = file.Write(data)
+	return err
+}
+
+var migrations = [][]*gormigrate.Migration{
+	{
 		{
 			ID: "1726675832-mysql",
 			Migrate: func(db *gorm.DB) error {
-				if printer != nil {
-					printer.UpdateTitle("Running 1726675832-mysql")
-				} else {
-					logging.Info.Printf("Migrate id:1726675832-mysql")
-				}
-
 				if config.DatabaseDialect.Value() != "mysql" {
 					return nil
 				}
 
 				//at this point for mysql, just manually do the queries...
-
 				type FKs struct {
 					Table string `gorm:"column:TABLE_NAME"`
 					Name  string `gorm:"column:CONSTRAINT_NAME"`
@@ -67,24 +133,12 @@ func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {
 						return err
 					}
 				}
-
-				if printer != nil {
-					printer.Increment()
-					pterm.Success.Println("Migrated 1726675832-mysql")
-				}
-
 				return nil
 			},
 		},
 		{
 			ID: "1726675832",
 			Migrate: func(db *gorm.DB) error {
-				if printer != nil {
-					printer.UpdateTitle("Running 1726675832")
-				} else {
-					logging.Info.Printf("Migrate 1726675832")
-				}
-
 				for _, v := range dbObjects {
 					m := db.Migrator()
 					indices, err := m.GetIndexes(v)
@@ -103,50 +157,25 @@ func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {
 					}
 				}
 
-				if printer != nil {
-					printer.Increment()
-					pterm.Success.Println("Migrated 1726675832")
-				}
-
 				return nil
 			},
-		}}
-
-	var migrationsGroup2 = []*gormigrate.Migration{
+		},
+	},
+	{
 		{
 			ID: "1658926619",
 			Migrate: func(db *gorm.DB) error {
-				if printer != nil {
-					printer.UpdateTitle("Running 1658926619")
-				} else {
-					logging.Info.Printf("Migrate 1658926619")
-				}
-
 				err := db.Create(&models.TemplateRepo{
 					Name:   "community",
 					Url:    "https://github.com/pufferpanel/templates",
 					Branch: "v3",
 				}).Error
-				if err != nil {
-					return err
-				}
-
-				if printer != nil {
-					printer.Increment()
-					pterm.Success.Println("Migrated 1658926619")
-				}
-				return nil
+				return err
 			},
 		},
 		{
 			ID: "1677250619",
 			Migrate: func(db *gorm.DB) error {
-				if printer != nil {
-					printer.UpdateTitle("Running 1677250619")
-				} else {
-					logging.Info.Printf("Migrate 1677250619")
-				}
-
 				var templates []*models.Template
 				err := db.Find(&templates).Error
 				if err != nil {
@@ -178,11 +207,6 @@ func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {
 					}
 				}
 
-				if printer != nil {
-					printer.Increment()
-					pterm.Success.Println("Migrated 1677250619")
-				}
-
 				return nil
 			},
 		},
@@ -190,12 +214,6 @@ func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {
 			ID: "permissions-from-v2",
 			Migrate: func(db *gorm.DB) error {
 				//this is going to be a nightmare
-				if printer != nil {
-					printer.UpdateTitle("Running permissions-from-v2")
-				} else {
-					logging.Info.Printf("Migrate permissions-from-v2")
-				}
-
 				//go ahead and migrate the table, so that the columns we need are there
 				err := db.AutoMigrate(&models.Permissions{})
 				if err != nil {
@@ -381,62 +399,8 @@ func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {
 					}
 				}
 
-				if printer != nil {
-					printer.Increment()
-					pterm.Success.Println("Migrated permissions-from-v2")
-				}
-
 				return nil
 			},
-		}}
-
-	_, _ = printer.WithTotal(len(migrationsGroup1) + 1 + len(migrationsGroup2)).Start()
-	options := &gormigrate.Options{TableName: "migrations", IDColumnName: "id", IDColumnSize: 255, UseTransaction: true, ValidateUnknownMigrations: false}
-
-	if err := gormigrate.New(session, options, migrationsGroup1).Migrate(); err != nil {
-		if printer != nil {
-			_, _ = printer.Stop()
-			pterm.Error.Printfln("Failed to run migration: %s", err.Error())
-		}
-		return err
-	}
-
-	if printer != nil {
-		printer.UpdateTitle("Migrating tables")
-	}
-
-	if err := migrator.AutoMigrate(dbObjects...); err != nil {
-		if printer != nil {
-			_, _ = printer.Stop()
-			pterm.Error.Printfln("Failed to run migration: %s", err.Error())
-		}
-		return err
-	}
-	if printer != nil {
-		printer.Increment()
-	}
-
-	if err := gormigrate.New(session, options, migrationsGroup2).Migrate(); err != nil {
-		if printer != nil {
-			_, _ = printer.Stop()
-			pterm.Error.Printfln("Failed to run migration: %s", err.Error())
-		}
-		return err
-	}
-	return nil
-}
-
-func saveToFile(filename string, data []byte) error {
-	//just dump it into working dir
-	err := os.MkdirAll("migrations", 0755)
-	if err != nil {
-		return err
-	}
-	file, err := os.OpenFile(filepath.Join("migrations", filename), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
-	if err != nil {
-		return err
-	}
-	defer utils.Close(file)
-	_, err = file.Write(data)
-	return err
+		},
+	},
 }
