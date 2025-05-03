@@ -3,12 +3,13 @@ package curseforge
 import "time"
 
 type Addon struct {
-	Id           uint
-	Name         string
-	DateCreated  time.Time
-	DateModified time.Time
-	DateReleased time.Time
-	LatestFiles  []File `json:"latestFiles"`
+	Id                   uint
+	Name                 string
+	DateCreated          time.Time
+	DateModified         time.Time
+	DateReleased         time.Time
+	AllowModDistribution bool
+	LatestFiles          []File `json:"latestFiles"`
 }
 
 type File struct {
