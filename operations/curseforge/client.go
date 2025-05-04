@@ -18,53 +18,53 @@ func getAddonData(projectId uint) (AddonResponse, error)
 
 	response, err := callCurseForge(u)
 	if err != nil {
-		return nil, err
+		return AddonResponse{}, err
 	}
 	defer utils.CloseResponse(response)
 
 	if response.StatusCode == http.StatusNotFound {
-		return nil, nil
+		return AddonResponse{}, nil
 	}
 
 	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
+		return AddonResponse{}, pufferpanel.ErrCurseForgeStatus(response.Status)
 	}
 
 	d, err := io.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return AddonResponse{}, err
 	}
 
 	var addon AddonResponse
 	err = json.Unmarshal(d, &addon)
 	if err != nil {
-		return nil, err
+		return AddonResponse{}, err
 	}
 	return addon, nil
 }
 
-func getAddonFileData(projectId uint, fileId uint) (FileRespnse, error)
+func getAddonFileData(projectId uint, fileId uint) (FileResponse, error)
 {
 	u := fmt.Sprintf("https://api.curseforge.com/v1/mods/%d/files/%d", projectId, fileId)
 
 	response, err := callCurseForge(u)
 	if err != nil {
-		return nil, err
+		return FileResponse{}, err
 	}
 	defer utils.CloseResponse(response)
 
 	if response.StatusCode == http.StatusNotFound {
-		return nil, fmt.Errorf("file id %d not found", fileId)
+		return FileResponse{}, pufferpanel.ErrCurseForgeFile(projectId, fileId)
 	}
 
 	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
+		return FileResponse{}, pufferpanel.ErrCurseForgeStatus(response.Status)
 	}
 
 	var res FileResponse
 	err = json.NewDecoder(response.Body).Decode(&res)
 	if err != nil {
-		return nil, err
+		return FileResponse{}, err
 	}
 	return res, nil
 }
