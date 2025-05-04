@@ -12,8 +12,7 @@ import (
 	"net/url"
 )
 
-func getAddonData(projectId uint) (AddonResponse, error)
-{
+func getAddonData(projectId uint) (AddonResponse, error) {
 	u := fmt.Sprintf("https://api.curseforge.com/v1/mods/%d", projectId)
 
 	response, err := callCurseForge(u)
@@ -43,8 +42,7 @@ func getAddonData(projectId uint) (AddonResponse, error)
 	return addon, nil
 }
 
-func getAddonFileData(projectId uint, fileId uint) (FileResponse, error)
-{
+func getAddonFileData(projectId uint, fileId uint) (FileResponse, error) {
 	u := fmt.Sprintf("https://api.curseforge.com/v1/mods/%d/files/%d", projectId, fileId)
 
 	response, err := callCurseForge(u)
