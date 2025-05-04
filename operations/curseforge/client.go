@@ -12,7 +12,8 @@ import (
 	"net/url"
 )
 
-func getLatestFiles(projectId uint) ([]File, error) {
+func getAddonData(projectId uint) (AddonResponse, error)
+{
 	u := fmt.Sprintf("https://api.curseforge.com/v1/mods/%d", projectId)
 
 	response, err := callCurseForge(u)
@@ -39,29 +40,66 @@ func getLatestFiles(projectId uint) ([]File, error) {
 	if err != nil {
 		return nil, err
 	}
-	return addon.Data.LatestFiles, err
+	return addon, nil
 }
 
-func getFileById(projectId, fileId uint) (File, error) {
+func getAddonFileData(projectId uint, fileId uint) (FileRespnse, error)
+{
 	u := fmt.Sprintf("https://api.curseforge.com/v1/mods/%d/files/%d", projectId, fileId)
 
 	response, err := callCurseForge(u)
 	if err != nil {
-		return File{}, err
+		return nil, err
 	}
 	defer utils.CloseResponse(response)
 
 	if response.StatusCode == http.StatusNotFound {
-		return File{}, fmt.Errorf("file id %d not found", fileId)
+		return nil, fmt.Errorf("file id %d not found", fileId)
 	}
 
 	if response.StatusCode != http.StatusOK {
-		return File{}, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
+		return nil, fmt.Errorf("invalid status code from CurseForge: %s", response.Status)
 	}
 
 	var res FileResponse
 	err = json.NewDecoder(response.Body).Decode(&res)
-	return res.Data, err
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func getLatestFiles(projectId uint) ([]File, error) {
+	addon, err := getAddonData(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	if addon.Data.AllowModDistribution != nil && !addon.Data.AllowModDistribution {
+		return nil, fmt.ErrorF("modpack with project ID %d is not marked for third-party distribution", projectId)
+	}
+				       
+	return addon.Data.LatestFiles, err
+}
+
+func getFileById(projectId uint, fileId uint) (File, error) {
+	addon, addonErr := getaddonData(projectId, fileId)
+
+	if addonErr != nil {
+		return nil, addonErr
+	}
+
+	if addon.Data.AllowModDistribution != nil && !addon.Data.AllowModDistribution {
+		return nil, fmt.ErrorF("modpack with project ID %d is not marked for third-party distribution", projectId)
+	}
+	
+	file, fileErr := getAddonFileData(projectId, fileId)
+
+	if fileErr != nil {
+		return nil, fileErr
+	}
+				       
+	return file.Data, nil
 }
 
 func callCurseForge(u string) (*http.Response, error) {
