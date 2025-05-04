@@ -144,6 +144,10 @@ var ErrPathNotAbs = func(path string) *Error {
 	return CreateError("path not abs: ${path}", "ErrPathNotAbs").Metadata(map[string]interface{}{"path": path})
 }
 
+var ErrCurseForgeDistribution = func(projectId uint) *Error {
+	return CreateError("CurseForge modpack with project ID ${projectId} does not allow third-party distribution", "ErrCurseForgeDistribution").Metadata(map[string]interface{}("projectId": projectId))
+}
+
 func GenerateValidationMessage(err error) error {
 	var errs validator.ValidationErrors
 	if errors.As(err, &errs) {

@@ -75,8 +75,8 @@ func getLatestFiles(projectId uint) ([]File, error) {
 		return nil, err
 	}
 
-	if addon.Data.AllowModDistribution != nil && !addon.Data.AllowModDistribution {
-		return nil, fmt.ErrorF("modpack with project ID %d is not marked for third-party distribution", projectId)
+	if !addon.Data.AllowModDistribution {
+		return nil, pufferpanel.ErrCurseForgeDistribution(projectId)
 	}
 				       
 	return addon.Data.LatestFiles, err
@@ -86,17 +86,17 @@ func getFileById(projectId uint, fileId uint) (File, error) {
 	addon, addonErr := getaddonData(projectId, fileId)
 
 	if addonErr != nil {
-		return nil, addonErr
+		return File{}, addonErr
 	}
 
-	if addon.Data.AllowModDistribution != nil && !addon.Data.AllowModDistribution {
-		return nil, fmt.ErrorF("modpack with project ID %d is not marked for third-party distribution", projectId)
+	if !addon.Data.AllowModDistribution {
+		return File{}, pufferpanel.ErrCurseForgeDistribution(projectId)
 	}
 	
 	file, fileErr := getAddonFileData(projectId, fileId)
 
 	if fileErr != nil {
-		return nil, fileErr
+		return File{}, fileErr
 	}
 				       
 	return file.Data, nil
