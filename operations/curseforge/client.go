@@ -3,13 +3,14 @@ package curseforge
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"io"
-	"net/http"
-	"net/url"
 )
 
 func getAddonData(projectId uint) (AddonResponse, error) {
@@ -76,12 +77,12 @@ func getLatestFiles(projectId uint) ([]File, error) {
 	if !addon.Data.AllowModDistribution {
 		return nil, pufferpanel.ErrCurseForgeDistribution(projectId)
 	}
-				       
+
 	return addon.Data.LatestFiles, err
 }
 
 func getFileById(projectId uint, fileId uint) (File, error) {
-	addon, addonErr := getAddonData(projectId, fileId)
+	addon, addonErr := getAddonData(projectId)
 
 	if addonErr != nil {
 		return File{}, addonErr
@@ -90,13 +91,13 @@ func getFileById(projectId uint, fileId uint) (File, error) {
 	if !addon.Data.AllowModDistribution {
 		return File{}, pufferpanel.ErrCurseForgeDistribution(projectId)
 	}
-	
+
 	file, fileErr := getAddonFileData(projectId, fileId)
 
 	if fileErr != nil {
 		return File{}, fileErr
 	}
-				       
+
 	return file.Data, nil
 }
 
