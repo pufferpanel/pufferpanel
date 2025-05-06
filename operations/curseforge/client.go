@@ -83,7 +83,7 @@ func getLatestFiles(projectId uint) ([]File, error) {
 }
 
 func getFileById(projectId uint, fileId uint) (File, error) {
-	addon, addonErr := getaddonData(projectId, fileId)
+	addon, addonErr := getAddonData(projectId, fileId)
 
 	if addonErr != nil {
 		return File{}, addonErr
