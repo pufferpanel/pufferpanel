@@ -144,6 +144,18 @@ var ErrPathNotAbs = func(path string) *Error {
 	return CreateError("path not abs: ${path}", "ErrPathNotAbs").Metadata(map[string]interface{}{"path": path})
 }
 
+var ErrCurseForgeDistribution = func(projectId uint) *Error {
+	return CreateError("CurseForge modpack with project ID ${projectId} does not allow third-party distribution", "ErrCurseForgeDistribution").Metadata(map[string]interface{}{"projectId": projectId})
+}
+
+var ErrCurseForgeFile = func(projectId uint, fileId uint) *Error {
+	return CreateError("File ID ${fileId} under project ID ${projectId} not found", "ErrCurseForgeFile").Metadata(map[string]interface{}{"fileId": fileId, "projectId": projectId})
+}
+
+var ErrCurseForgeStatus = func(status string) *Error {
+	return CreateError("Invalid status code from CurseForge: ${status}", "ErrCurseForgeStatus").Metadata(map[string]interface{}{"status": status})
+}
+
 func GenerateValidationMessage(err error) error {
 	var errs validator.ValidationErrors
 	if errors.As(err, &errs) {
