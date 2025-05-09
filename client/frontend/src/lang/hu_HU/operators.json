@@ -6,19 +6,19 @@
   },
   "writefile": {
     "generic": "Write to file",
-    "formatted": "Write to file {target}"
+    "formatted": "Fájlba írása  {target}"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
-    "formatted": "Resolve Minecraft Forge Version"
+    "generic": "Minecraft Forge verzió megoldása",
+    "formatted": "Minecraft Forge verzió megoldása"
   },
   "download": {
-    "generic": "Download file(s)",
-    "formatted": "Download {file} | Download {n} files",
-    "files": "Files"
+    "generic": "Fájl(ok) letöltése",
+    "formatted": "{file} letölése | {n} fájlok letöltése",
+    "files": "Fájlok"
   },
   "command": {
-    "generic": "Run command(s)",
+    "generic": "Parancs(ok) Futtatása",
     "formatted": "Run {command} | Run {n} commands",
     "commands": "Commands"
   },
