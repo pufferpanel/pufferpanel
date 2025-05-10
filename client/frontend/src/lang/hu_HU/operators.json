@@ -1,11 +1,11 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Csak akkor hajtsa végre ezt a lépést, ha a következő feltétel teljesül",
   "mojangdl": {
-    "generic": "Download Minecraft",
-    "formatted": "Download Minecraft"
+    "generic": "Minecraft Letöltése",
+    "formatted": "Minecraft Letöltése"
   },
   "writefile": {
-    "generic": "Write to file",
+    "generic": "Fájlba írás",
     "formatted": "Fájlba írása  {target}"
   },
   "resolveforgeversion": {
