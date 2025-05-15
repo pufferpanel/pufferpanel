@@ -50,15 +50,15 @@
     },
     "FontSize": "Font Size",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Padrão"
     },
     "FontFace": "Font Face",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Padrão",
+      "A11y": "Acessibilidade otimizada"
     }
   },
   "NoResults": "Nenhum resultado encontrado",
-  "Yes": "Yes",
-  "No": "No"
+  "Yes": "Sim",
+  "No": "Não"
 }
