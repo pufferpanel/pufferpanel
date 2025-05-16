@@ -34,7 +34,7 @@
     "mode": {
       "Light": "Claro",
       "Dark": "Escuro",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Escuro (alto contraste)",
       "Auto": "Automático"
     },
     "BaseColor": "Cor Principal",
@@ -48,11 +48,11 @@
       "Grid": "Grade",
       "List": "Lista"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Tamanho da fonte",
     "fontSize": {
       "Default": "Padrão"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Tipo de fonte",
     "fontFace": {
       "Default": "Padrão",
       "A11y": "Acessibilidade otimizada"
