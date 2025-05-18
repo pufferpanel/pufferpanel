@@ -184,6 +184,11 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 }
 
 func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseWriter, request *http.Request) error {
+	conn, err := wsupgrader.Upgrade(writer, request, nil)
+	if err != nil {
+		return err
+	}
+
 	ssl, err := doesDaemonUseSSL(node)
 	if err != nil {
 		return err
@@ -212,11 +217,8 @@ func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseW
 
 	c, _, err := websocket.DefaultDialer.Dial(u, header)
 	if err != nil {
-		return err
-	}
-
-	conn, err := wsupgrader.Upgrade(writer, request, nil)
-	if err != nil {
+		//close the connection, because it failed
+		_ = conn.Close()
 		return err
 	}
 

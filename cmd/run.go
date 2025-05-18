@@ -67,6 +67,19 @@ func internalRun() (terminate chan bool, success bool) {
 	router := gin.New()
 	router.Use(gin.Recovery())
 	router.Use(gin.LoggerWithWriter(logging.Info.Writer()))
+
+	//do not trust proxies by default
+	router.SetTrustedProxies(nil)
+	if proxies := config.SecurityTrustedProxies.Value(); proxies != nil {
+		err := router.SetTrustedProxies(proxies)
+		if err != nil {
+			logging.Error.Printf("Failed to add trusted proxies: %s", err.Error())
+		}
+	}
+	if header := config.SecurityTrustedProxyHeader.Value(); header != "" {
+		router.TrustedPlatform = header
+	}
+
 	gin.DefaultWriter = logging.Info.Writer()
 	gin.DefaultErrorWriter = logging.Error.Writer()
 	pufferpanel.Engine = router
