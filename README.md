@@ -25,6 +25,6 @@ Some Javascript and CSS used is licensed under a MIT, Apache 2.0, or GPL license
 Some images used within PufferPanel are Copyright (c) their respective owners.
 
 ## Water Provided By
-Development tools provided by [JetBrains](https://www.jetbrains.com/?from=PufferPanel)
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
 
 Repositories hosted by [packagecloud](https://packagecloud.io)
