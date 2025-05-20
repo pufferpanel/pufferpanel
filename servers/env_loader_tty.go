@@ -1,4 +1,4 @@
-//go:build !windows && !nohost
+//go:build !nohost
 
 package servers
 

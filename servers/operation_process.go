@@ -18,7 +18,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v3/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/move"
-	neoforgedl "github.com/pufferpanel/pufferpanel/v3/operations/neoforge"
+	"github.com/pufferpanel/pufferpanel/v3/operations/neoforgedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/resolveforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/operations/resolveneoforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/operations/sleep"

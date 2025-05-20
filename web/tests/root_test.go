@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/pufferpanel/pufferpanel/v3/web/daemon"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -45,10 +44,6 @@ func Test_getFeatures(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_ = config.DockerDisallowHost.Set(tt.dockerFlag, false)
-
-			if runtime.GOOS == "windows" {
-				tt.expected.Environments = utils.Remove(tt.expected.Environments, "tty")
-			}
 
 			result := CallAPI("GET", "/daemon/features", nil, "")
 			if !assert.Equal(t, http.StatusOK, result.Code) {
