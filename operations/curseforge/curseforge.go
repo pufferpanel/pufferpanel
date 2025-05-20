@@ -39,7 +39,7 @@ type CurseForge struct {
 //-   download "old" installer to the cache
 //-   run installer in cache
 //-   copy directory to server
-//- neoforge
+//- neoforgedl
 //-   same as forge, but screw downloading
 //- quilt
 //-   will not deal with
@@ -142,8 +142,8 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 	var vars map[string]string
 	var manifest Manifest
 	if jar, err = findInstallerJar(env); err == nil {
-		if strings.HasPrefix(jar, "neoforge") {
-			modLoader = "neoforge"
+		if strings.HasPrefix(jar, "neoforgedl") {
+			modLoader = "neoforgedl"
 		} else {
 			modLoader = "forge"
 		}
@@ -206,9 +206,9 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 				return pufferpanel.OperationResult{Error: err}
 			}
 		}
-	case "neoforge":
+	case "neoforgedl":
 		{
-			//for neoforge, we need a jar
+			//for neoforgedl, we need a jar
 			jarFile := data["jar"]
 			if jarFile == "" {
 				env.DisplayToConsole(true, "Cannot locate Neoforge installer")
@@ -223,7 +223,7 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 			env.DisplayToConsole(true, "Grabbing ServerStarter")
 			runJarFile := filepath.Join(env.GetRootDirectory(), "server.jar")
 			if _, err = os.Stat(runJarFile); os.IsNotExist(err) {
-				var cachePath = filepath.Join(config.CacheFolder.Value(), "github.com", "neoforge", "serverstarter", NeoForgeServerStarterVersion, "server.jar")
+				var cachePath = filepath.Join(config.CacheFolder.Value(), "github.com", "neoforgedl", "serverstarter", NeoForgeServerStarterVersion, "server.jar")
 				if _, err = os.Stat(cachePath); os.IsNotExist(err) {
 					env.DisplayToConsole(true, "Downloading "+NeoForgeServerStarter)
 					err = pufferpanel.DownloadFileToCache(NeoForgeServerStarter, cachePath)
