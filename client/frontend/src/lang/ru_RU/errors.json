@@ -50,6 +50,6 @@
   "ErrBackupServerRunning": "Сервер в данный момент работает. Пожалуйста, остановите сервер перед выполнением резервного копирования или восстановления",
   "ErrContainerNotUnique": "Найдено несколько контейнеров",
   "ErrNoContainerNoneFound": "Контейнер не найден",
-  "ErrNoMountFound": "No mount found",
-  "ErrUnsupportedMountType": "Unsupported mount type"
+  "ErrNoMountFound": "Монтирование не найдено",
+  "ErrUnsupportedMountType": "Неподдерживаемый тип монтирования"
 }
