@@ -74,10 +74,41 @@ function clearConsole() {
   if (console.value) console.value.replaceChildren([])
 }
 
+const history = []
+let historyIndex = -1
+
 function sendCommand() {
+  if (command.value) {
+    history.push(command.value)
+    historyIndex = -1
+  }
+
   props.server.sendCommand(command.value)
   command.value = ''
 }
+
+function previousCommand() {
+  if (historyIndex === 0 || history.length === 0) return
+
+  if (historyIndex === -1) {
+    historyIndex = history.length
+  }
+
+  historyIndex--
+
+  command.value = history[historyIndex]
+}
+
+function nextCommand() {
+  if (historyIndex === -1 || historyIndex >= history.length) {
+    return
+  }
+
+  historyIndex++
+
+  command.value = history[historyIndex]
+}
+
 </script>
 
 <template>
@@ -88,7 +119,8 @@ function sendCommand() {
       <div ref="console" class="console" />
     </div>
     <div v-if="server.hasScope('server.console.send')" dir="ltr" class="command">
-      <text-field v-model="command" v-hotkey="'c c'" :label="t('servers.Command')" @keyup.enter="sendCommand()" />
+      <text-field v-model="command" v-hotkey="'c c'" :label="t('servers.Command')" @keyup.enter="sendCommand()"
+        @keydown.up.prevent="previousCommand()" @keydown.down.prevent="nextCommand()" />
       <icon name="send" @click="sendCommand()" />
     </div>
   </div>
