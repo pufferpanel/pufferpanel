@@ -1,8 +1,8 @@
 {
   "Templates": "Sablonok",
-  "Save": "Save Template",
-  "Saved": "Template saved",
-  "Delete": "Delete Template",
+  "Save": "Sablon mentése",
+  "Saved": "Sablon elmentve",
+  "Delete": "Sablon törlése",
   "ConfirmDelete": "Do you really want to delete the template {name}?",
   "Deleted": "Sablon törölve",
   "New": "Új sablon",
