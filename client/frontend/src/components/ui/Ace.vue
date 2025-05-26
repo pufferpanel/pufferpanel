@@ -9,7 +9,7 @@ const props = defineProps({
   modelValue: { type: String, required: true }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'save'])
 
 const el = ref(null)
 
@@ -74,6 +74,13 @@ function init() {
       bindKey: { win: 'Escape', mac: 'Escape' },
       exec: (editor) => {
         editor.blur()
+      }
+    })
+    editor.commands.addCommand({
+      name: 'save',
+      bindKey: { win: 'Ctrl-S', mac: 'Cmd-S' },
+      exec: () => {
+        emit('save')
       }
     })
   })

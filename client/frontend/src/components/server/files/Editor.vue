@@ -71,6 +71,6 @@ export default {
       <source :src="modelValue.url" />
       <div class="warning unsupported" v-text="t('errors.AudioUnsupported')" />
     </audio>
-    <ace v-else id="file-editor" :read-only="readOnly" :model-value="modelValue.content" class="file-editor" :file="modelValue.name" theme="monokai" @update:modelValue="emitUpdate" />
+    <ace v-else id="file-editor" :read-only="readOnly" :model-value="modelValue.content" class="file-editor" :file="modelValue.name" theme="monokai" @update:modelValue="emitUpdate" @save="emit('save')" />
   </div>
 </template>
