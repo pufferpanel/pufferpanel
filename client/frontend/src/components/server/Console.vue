@@ -74,13 +74,21 @@ function clearConsole() {
   if (console.value) console.value.replaceChildren([])
 }
 
-const history = []
-let historyIndex = -1
+const history = ref([])
+const historyIndex = ref(-1)
+const temporaryCommand = ref('')
 
 function sendCommand() {
-  if (command.value) {
-    history.push(command.value)
-    historyIndex = -1
+  if (historyIndex.value !== -1) {
+    history.value.splice(historyIndex.value, 1)
+  }
+
+  history.value.push(command.value)
+  historyIndex.value = -1
+  temporaryCommand.value = ''
+
+  if (history.value.length > 100) {
+    history.value.splice(0, 1)
   }
 
   props.server.sendCommand(command.value)
@@ -88,25 +96,31 @@ function sendCommand() {
 }
 
 function previousCommand() {
-  if (historyIndex === 0 || history.length === 0) return
-
-  if (historyIndex === -1) {
-    historyIndex = history.length
-  }
-
-  historyIndex--
-
-  command.value = history[historyIndex]
-}
-
-function nextCommand() {
-  if (historyIndex === -1 || historyIndex >= history.length) {
+  if (historyIndex.value === -1 && history.value.length > 0) {
+    historyIndex.value = history.value.length - 1
+    temporaryCommand.value = command.value
+  } else if (historyIndex.value > 0) {
+    historyIndex.value--
+  } else {
     return
   }
 
-  historyIndex++
+  command.value = history.value[historyIndex.value]
+}
 
-  command.value = history[historyIndex]
+function nextCommand() {
+  if (historyIndex.value === -1) {
+    return
+  }
+
+  historyIndex.value++
+
+  if (historyIndex.value >= history.value.length) {
+    historyIndex.value = -1
+    command.value = temporaryCommand.value
+  } else {
+    command.value = history.value[historyIndex.value]
+  }
 }
 
 </script>
