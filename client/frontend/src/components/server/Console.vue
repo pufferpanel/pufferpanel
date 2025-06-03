@@ -83,7 +83,10 @@ function sendCommand() {
     history.value.splice(historyIndex.value, 1)
   }
 
-  history.value.push(command.value)
+  if (history.value.length === 0 || history.value[history.value.length - 1] !== command.value) {
+    history.value.push(command.value)
+  }
+
   historyIndex.value = -1
   temporaryCommand.value = ''
 
