@@ -50,5 +50,10 @@
     "autoStart": "Start serveren når noden starter",
     "autoRestartOnGraceful": "Start serveren på nyttnår den stopper normalt",
     "autoRestartOnCrash": "Start serveren på nytt når den krasjer"
-  }
+  },
+  "IncompatibleTemplates": "Incompatible templates",
+  "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
+  "IncompatibleArch": "Incompatible with architecture '{arch}'",
+  "IncompatibleOs": "Incompatible with OS '{os}'",
+  "IncompatibleEnv": "Incompatible with environment '{env}'"
 }
