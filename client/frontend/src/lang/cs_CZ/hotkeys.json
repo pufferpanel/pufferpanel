@@ -7,7 +7,8 @@
     "g n": "Přejít na uzly",
     "g s": "Přejít na servery",
     "g t": "Přejít na šablony",
-    "g u": "Přejít na Uživatele"
+    "g u": "Přejít na Uživatele",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Účet",
