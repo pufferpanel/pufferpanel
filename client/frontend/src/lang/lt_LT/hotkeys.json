@@ -7,7 +7,8 @@
     "g n": "Eiti į taškus",
     "g s": "Eiti į serverius",
     "g t": "Eiti į šablonus",
-    "g u": "Eiti į vartotojus"
+    "g u": "Eiti į vartotojus",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Paskyra",
