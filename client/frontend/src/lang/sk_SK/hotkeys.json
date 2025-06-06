@@ -7,7 +7,8 @@
     "g n": "Prejsť k uzlom",
     "g s": "Prejsť k serverom",
     "g t": "Prejsť k šablonám",
-    "g u": "Prejsť k užívateľom"
+    "g u": "Prejsť k užívateľom",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Účet",
