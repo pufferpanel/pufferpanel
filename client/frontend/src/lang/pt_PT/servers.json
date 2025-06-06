@@ -50,5 +50,10 @@
     "autoStart": "Iniciar o servidor quando o nó inicia",
     "autoRestartOnGraceful": "Reiniciar o servidor quando pára normalmente",
     "autoRestartOnCrash": "Reiniciar o servidor quando falha"
-  }
+  },
+  "IncompatibleTemplates": "Incompatible templates",
+  "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
+  "IncompatibleArch": "Incompatible with architecture '{arch}'",
+  "IncompatibleOs": "Incompatible with OS '{os}'",
+  "IncompatibleEnv": "Incompatible with environment '{env}'"
 }
