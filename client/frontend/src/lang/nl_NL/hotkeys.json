@@ -7,7 +7,8 @@
     "g n": "Ga naar Nodes",
     "g s": "Ga naar servers",
     "g t": "Ga naar Sjabloon",
-    "g u": "Ga naar gebruikers"
+    "g u": "Ga naar gebruikers",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Account",
