@@ -50,5 +50,10 @@
     "autoStart": "ノード開始時にサーバーを起動する",
     "autoRestartOnGraceful": "正常に停止したらサーバーを再起動します",
     "autoRestartOnCrash": "クラッシュしたらサーバーを再起動します"
-  }
+  },
+  "IncompatibleTemplates": "Incompatible templates",
+  "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
+  "IncompatibleArch": "Incompatible with architecture '{arch}'",
+  "IncompatibleOs": "Incompatible with OS '{os}'",
+  "IncompatibleEnv": "Incompatible with environment '{env}'"
 }
