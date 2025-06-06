@@ -7,7 +7,8 @@
     "g n": "Nodeok",
     "g s": "Szeverek",
     "g t": "Sablonok",
-    "g u": "Felhasználók"
+    "g u": "Felhasználók",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Fiók",
