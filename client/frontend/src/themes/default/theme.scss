@@ -179,7 +179,8 @@ hr {
 }
 
 .hotkey {
-  margin-top: 1em;
+  margin-top: .5em;
+  display: flex;
   .key {
     border: 1px solid var(--text-disabled);
     border-radius: 4px;
@@ -192,13 +193,10 @@ hr {
     align-items: center;
     background-color: var(--backdrop);
     box-sizing: border-box;
-    &:last-child {
-      margin-right: 0;
-    }
   }
   .keys {
     display: inline-block;
-    width: 8em;
+    min-width: 5em;
   }
   .description {
     height: 1.5em;

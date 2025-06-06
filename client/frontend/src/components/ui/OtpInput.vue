@@ -10,9 +10,21 @@ const emit = defineEmits(['update:modelValue', 'complete'])
 const inputs = ref([])
 
 function onInput(n, e) {
-  if (e.data === null) {
+  if (!e.data && e.target.value.length === props.digits) {
+    // data isn't set but there's a full code in the input when a password manager directly sets field value
+    [...e.target.value].map((c, i) => {
+      if (inputs.value[i]) inputs.value[i].value = c
+    })
+    if (inputs.value[n]) inputs.value[n].blur()
+    emit('update:modelValue', inputs.value.map(e => e.value).join(''))
+    emit('complete', inputs.value.map(e => e.value).join(''))
+    return
+  } else if (e.data === null) {
     // data is null when deleting chars
     emit('update:modelValue', inputs.value.map(e => e.value).join(''))
+    return
+  } else if (e.data === undefined && e.target.value.length === 1) {
+    // likely a password manager detecting multiple fields and direct settings each field to a single digit of the code
     return
   }
 
@@ -65,10 +77,34 @@ onMounted(() => {
 function pushInput(input) {
   if (inputs.value.indexOf(input) === -1) inputs.value.push(input)
 }
+
+function onBackspace(n, e) {
+  if (e.target.value === '' && inputs.value[n - 1]) {
+    inputs.value[n - 1].value = ''
+    inputs.value[n - 1].focus()
+  }
+}
 </script>
 
 <template>
   <div class="otp-input">
-    <input v-for="n in Array(props.digits).keys()" :key="n" :ref="pushInput" :disabled="props.disabled" type="text" @input="onInput(n, $event)" />
+    <input
+      v-for="n in Array(props.digits).keys()"
+      :key="n"
+      :ref="pushInput"
+      :name="n === 0 ? 'totp' : 'ingnore'"
+      :autofill="n === 0 ? 'one-time-code' : 'none'"
+      :disabled="props.disabled"
+      type="text"
+      @input="onInput(n, $event)"
+      @keydown.backspace="onBackspace(n, $event)"
+    />
+    <!--
+      apparently proton pass tries to handle multi field totp inputs on its end, however it sadly seems to have
+      a heart attach mid-attempt and just refuses to fill in the last digit of the code, adding another input
+      seems to confuse it into just throwing the full code into the first input though, which we handle for
+      other password managers as well, that's why this invisible to humans input exists
+    -->
+    <input type="text" name="fix_proton_pass" autofill="none" style="position:absolute;left:-99999px;width:1px" />
   </div>
 </template>

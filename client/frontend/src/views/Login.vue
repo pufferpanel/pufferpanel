@@ -93,8 +93,8 @@ function passwordErrorMsg() {
   <div class="login">
     <h1 v-text="t('users.Login')" />
     <form @keydown.enter="login()">
-      <text-field v-model="email" type="email" name="email" :disabled="loading" :label="t('users.Email')" :error="emailErrorMsg()" icon="email" autofocus @blur="validateEmail" @change="validateEmail(true)" />
-      <text-field v-model="password" type="password" name="password" :disabled="loading" :label="t('users.Password')" :error="passwordErrorMsg()" icon="lock" @blur="validatePassword" @change="validatePassword(true)" />
+      <text-field v-model="email" type="email" name="email" :disabled="loading || otpNeeded" :label="t('users.Email')" :error="emailErrorMsg()" icon="email" autofocus @blur="validateEmail" @change="validateEmail(true)" />
+      <text-field v-model="password" type="password" name="password" :disabled="loading || otpNeeded" :label="t('users.Password')" :error="passwordErrorMsg()" icon="lock" @blur="validatePassword" @change="validatePassword(true)" />
       <loader v-if="loading" />
       <btn color="primary" :disabled="emailError || passwordError || loading" @click="login()" v-text="t('users.Login')" />
       <btn v-if="$config.registrationEnabled" variant="text" @click="$router.push({ name: 'Register' })" v-text="t('users.RegisterLink')" />
