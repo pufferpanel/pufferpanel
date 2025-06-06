@@ -50,5 +50,10 @@
     "autoStart": "Server starten, wenn der Knoten startet",
     "autoRestartOnGraceful": "Server neu starten, wenn er gewöhnlich gestoppt ist",
     "autoRestartOnCrash": "Server neu starten, wenn er abgestürzt ist"
-  }
+  },
+  "IncompatibleTemplates": "Incompatible templates",
+  "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
+  "IncompatibleArch": "Incompatible with architecture '{arch}'",
+  "IncompatibleOs": "Incompatible with OS '{os}'",
+  "IncompatibleEnv": "Incompatible with environment '{env}'"
 }
