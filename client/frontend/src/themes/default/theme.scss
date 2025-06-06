@@ -1137,8 +1137,16 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   .select-template {
     @include row;
 
-    h2, h3 {
+    h2, h3, .incompatible-desc {
       @include cols(12);
+    }
+
+    .incompatible-title {
+      margin-bottom: 0;
+    }
+
+    .incompatible-title ~ .list .list-header {
+      margin-top: 0;
     }
 
     .list {
@@ -1150,9 +1158,16 @@ html[dir="rtl"] .settings .panel .master-url .icon {
       @include cols(12);
       @include cols(4, md);
       @include card;
+      margin-top: 0;
+    }
+
+    .template:not(.disabled) {
       @include clickable;
       @include link;
-      margin-top: 0;
+    }
+
+    .template.disabled {
+      background-color: var(--backdrop);
     }
 
     .overlay .actions {

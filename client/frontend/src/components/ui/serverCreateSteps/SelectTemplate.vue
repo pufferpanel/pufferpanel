@@ -10,6 +10,7 @@ const { t } = useI18n()
 const api = inject('api')
 const emit = defineEmits(['selected', 'back'])
 const templatesByRepo = ref([])
+const incompatibleTemplates = ref([])
 const showing = ref(false)
 const currentTemplate = ref({})
 
@@ -40,7 +41,8 @@ function templateArchMatches(template) {
 
 async function load() {
   const repos = await api.template.listAllTemplates()
-  const res = []
+  const compatible = []
+  const incompatible = []
   Object.keys(repos).sort((a, b) => repos[a].id > repos[b].id).map(repo => {
     if (repos[repo].templates.length === 0) return
     const templates = repos[repo].templates.filter(template => {
@@ -48,9 +50,19 @@ async function load() {
         templateOsMatches(template) &&
         templateArchMatches(template)
     })
-    res.push({ ...repos[repo], templates })
+    if (templates.length !== 0) compatible.push({ ...repos[repo], templates })
+    if (templates.length !== repos[repo].templates.length) {
+      incompatible.push({
+        ...repos[repo],
+        templates: undefined,
+        arch: repos[repo].templates.filter(t => !templateArchMatches(t)),
+        os: repos[repo].templates.filter(t => !templateOsMatches(t)),
+        env: repos[repo].templates.filter(t => !templateEnvMatches(t))
+      })
+    }
   })
-  templatesByRepo.value = res
+  templatesByRepo.value = compatible
+  incompatibleTemplates.value = incompatible
 }
 
 onMounted(async () => {
@@ -80,6 +92,29 @@ function choice(confirm) {
       <h3 class="list-header" v-text="repo.name" />
       <div v-for="template in repo.templates" :key="template.name" class="list-item template" @click="show(repo.id, template.name)">
         <span class="title" v-text="template.display" />
+      </div>
+    </div>
+    <h2 v-if="incompatibleTemplates.length > 0" class="incompatible-title" v-text="t('servers.IncompatibleTemplates')" />
+    <div v-if="incompatibleTemplates.length > 0" class="incompatible-desc" v-text="t('servers.IncompatibleTemplatesDescription')" />
+    <div v-for="repo in incompatibleTemplates" :key="repo.id" class="list incompatible-list">
+      <h3 class="list-header" v-text="repo.name" />
+      <div v-if="repo.arch.length > 0" class="list">
+        <h4 class="list-header" v-text="t('servers.IncompatibleArch', {arch})" />
+        <div v-for="template in repo.arch" :key="template.name" class="list-item template disabled">
+          <span class="title" v-text="template.display" />
+        </div>
+      </div>
+      <div v-if="repo.os.length > 0" class="list">
+        <h4 class="list-header" v-text="t('servers.IncompatibleOs', {os})" />
+        <div v-for="template in repo.os" :key="template.name" class="list-item template disabled">
+          <span class="title" v-text="template.display" />
+        </div>
+      </div>
+      <div v-if="repo.env.length > 0" class="list">
+        <h4 class="list-header" v-text="t('servers.IncompatibleEnv', {env})" />
+        <div v-for="template in repo.env" :key="template.name" class="list-item template disabled">
+          <span class="title" v-text="template.display" />
+        </div>
       </div>
     </div>
     <btn color="error" @click="emit('back')"><icon name="back" />{{ t('common.Back') }}</btn>
