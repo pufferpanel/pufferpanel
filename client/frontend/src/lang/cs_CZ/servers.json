@@ -50,5 +50,10 @@
     "autoStart": "Spustit server při spuštění uzlu",
     "autoRestartOnGraceful": "Restartovat server, když se normálně zastaví",
     "autoRestartOnCrash": "Restartovat server při pádu"
-  }
+  },
+  "IncompatibleTemplates": "Incompatible templates",
+  "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
+  "IncompatibleArch": "Incompatible with architecture '{arch}'",
+  "IncompatibleOs": "Incompatible with OS '{os}'",
+  "IncompatibleEnv": "Incompatible with environment '{env}'"
 }
