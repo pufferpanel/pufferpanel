@@ -7,7 +7,8 @@
     "g n": "Ir a los Nodos",
     "g s": "Ir a los servidores",
     "g t": "Ir a las plantillas",
-    "g u": "Ir a los usuarios"
+    "g u": "Ir a los usuarios",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Cuenta",
