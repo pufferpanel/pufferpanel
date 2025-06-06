@@ -7,7 +7,8 @@
     "g n": "Vai ai nodi",
     "g s": "Vai ai server",
     "g t": "Vai ai modelli",
-    "g u": "Vai agli utenti"
+    "g u": "Vai agli utenti",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Account",
