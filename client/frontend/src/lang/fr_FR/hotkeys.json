@@ -7,7 +7,8 @@
     "g n": "Aller aux nœuds",
     "g s": "Aller aux serveurs",
     "g t": "Aller aux thèmes",
-    "g u": "Aller aux utilisateurs"
+    "g u": "Aller aux utilisateurs",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Compte",
