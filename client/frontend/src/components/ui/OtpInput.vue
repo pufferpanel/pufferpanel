@@ -84,6 +84,11 @@ function onBackspace(n, e) {
     inputs.value[n - 1].focus()
   }
 }
+
+function clearAll() {
+  inputs.value.map(e => e.value = '')
+  if (inputs.value[0]) inputs.value[0].focus()
+}
 </script>
 
 <template>
@@ -97,7 +102,8 @@ function onBackspace(n, e) {
       :disabled="props.disabled"
       type="text"
       @input="onInput(n, $event)"
-      @keydown.backspace="onBackspace(n, $event)"
+      @keydown.exact.backspace="onBackspace(n, $event)"
+      @keydown.ctrl.backspace="clearAll"
     />
     <!--
       apparently proton pass tries to handle multi field totp inputs on its end, however it sadly seems to have
