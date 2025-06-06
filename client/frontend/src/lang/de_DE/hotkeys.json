@@ -7,7 +7,8 @@
     "g n": "Zu den Nodes wechseln",
     "g s": "Zu den Servern wechseln",
     "g t": "Zu den Vorlagen wechseln",
-    "g u": "Zu den Benutzern wechseln"
+    "g u": "Zu den Benutzern wechseln",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Konto",
