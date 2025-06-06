@@ -7,7 +7,8 @@
     "g n": "Mine Nodede Juurde",
     "g s": "Mine Serveritele",
     "g t": "Mine Mallidele",
-    "g u": "Mine Kasutajatele"
+    "g u": "Mine Kasutajatele",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Konto",
