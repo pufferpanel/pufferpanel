@@ -50,5 +50,10 @@
     "autoStart": "Käivita server koos seotud nodega",
     "autoRestartOnGraceful": "Taaskäivita server kui ta normaalselt peatub",
     "autoRestartOnCrash": "Taaskäivita server kui ta kokku jookseb"
-  }
+  },
+  "IncompatibleTemplates": "Incompatible templates",
+  "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
+  "IncompatibleArch": "Incompatible with architecture '{arch}'",
+  "IncompatibleOs": "Incompatible with OS '{os}'",
+  "IncompatibleEnv": "Incompatible with environment '{env}'"
 }
