@@ -82,7 +82,7 @@ func getLatestForMCVersion(minecraftVersion string) (string, error) {
 	}
 
 	if topVersion == nil {
-		return "", errors.New("failed to find neoforge version for " + minecraftVersion)
+		return "", errors.New("failed to find neoforgedl version for " + minecraftVersion)
 	}
 
 	return topVersion.Original(), nil

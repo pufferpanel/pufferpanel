@@ -42,11 +42,11 @@ func Initialize(useFiles bool) {
 
 	//first, create STDERR
 
-	stderr := MultiWriter(rotation, os.Stderr, CreateServiceLogger("error"))
+	stderr := MultiWriter(rotation, os.Stderr)
 	Error = log.New(stderr, "[ERROR] ", flags)
 
 	//now, STDOUT
-	stdout := MultiWriter(rotation, os.Stdout, CreateServiceLogger("info"))
+	stdout := MultiWriter(rotation, os.Stdout)
 	Info = log.New(stdout, "[INFO] ", flags)
 
 	//and now, a DEBUG
