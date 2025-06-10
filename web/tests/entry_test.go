@@ -55,7 +55,7 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	err = database.Migrate(db)
+	err = database.Upgrade(db, false)
 	if err != nil {
 		panic(err)
 	}
