@@ -30,7 +30,7 @@ func LoadFromFolder() {
 		if element.IsDir() || !strings.HasSuffix(element.Name(), ".json") {
 			continue
 		}
-		logging.Info.Printf("Attempting to load " + element.Name())
+		logging.Info.Printf("Attempting to load %s\n", element.Name())
 		id := strings.TrimSuffix(element.Name(), filepath.Ext(element.Name()))
 		program, err = Load(id)
 		if err != nil {

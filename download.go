@@ -45,7 +45,7 @@ func DownloadFileToCache(url, fileName string) error {
 		return err
 	}
 
-	logging.Info.Printf("Downloading: " + url)
+	logging.Info.Printf("Downloading: %s\n", url)
 
 	response, err := HttpGet(url)
 	defer utils.CloseResponse(response)

@@ -17,7 +17,7 @@ on:
 
 env:
   SWAG_VERSION: "1.16.4"
-  NODE_VERSION: "20"
+  NODE_VERSION: "22"
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 

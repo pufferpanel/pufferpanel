@@ -1,7 +1,7 @@
 ###
 # Builder container
 ###
-FROM --platform=$BUILDPLATFORM node:20-alpine AS node
+FROM --platform=$BUILDPLATFORM node:22-alpine AS node
 
 WORKDIR /build
 COPY client .
@@ -14,7 +14,7 @@ RUN yarn install && \
 
 FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
 
-FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.24-alpine AS builder
 
 RUN apk add clang lld
 COPY --from=xx / /
