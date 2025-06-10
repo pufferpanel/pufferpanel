@@ -97,7 +97,7 @@ func updateSelf(c *gin.Context) {
 
 	passwordChanged := false
 	if viewModel.NewPassword != "" {
-		if !us.IsSecurePassword(viewModel.NewPassword) {
+		if us.IsSecurePassword(viewModel.NewPassword) != nil {
 			response.HandleError(c, pufferpanel.ErrPasswordRequirements, http.StatusBadRequest)
 			return
 		}

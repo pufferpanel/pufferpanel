@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/AlecAivazis/survey/v2"
 	"github.com/pterm/pterm"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/groups"
@@ -12,6 +11,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/spf13/cobra"
 	"gorm.io/gorm"
+	"os"
 	"strings"
 )
 
@@ -56,60 +56,68 @@ func addUser(cmd *cobra.Command, args []string) {
 		Password: addPassword,
 	}
 
-	//should we ask if this user is an admin should only appear if no flags are used
-	promptAdmin := true
-	if answers.Admin || answers.Username != "" || answers.Email != "" || answers.Password != "" {
-		promptAdmin = false
+	useFlags := false
+	if answers.Username != "" || answers.Email != "" || answers.Password != "" {
+		useFlags = true
 	}
 
-	questions := make([]*survey.Question, 0)
-
-	if answers.Username == "" {
-		questions = append(questions, &survey.Question{
-			Name: "username",
-			Prompt: &survey.Input{
-				Message: "Username:",
-			},
-			Validate: validateUsername,
-		})
+	firstAnswer := answers.Username == ""
+	err := validateUsername(answers.Username)
+	for err != nil {
+		if !firstAnswer {
+			pterm.Error.Println("Username validation failed: " + err.Error())
+			if useFlags {
+				os.Exit(1)
+			}
+		}
+		firstAnswer = false
+		answers.Username, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Username").Show()
+		err = validateUsername(answers.Username)
 	}
 
-	if answers.Email == "" {
-		questions = append(questions, &survey.Question{
-			Name: "email",
-			Prompt: &survey.Input{
-				Message: "Email:",
-			},
-			Validate: validateEmail,
-		})
+	firstAnswer = answers.Email == ""
+	err = validateEmail(answers.Email)
+	for err != nil {
+		if !firstAnswer {
+			pterm.Error.Println("Email validation failed: " + err.Error())
+			if useFlags {
+				os.Exit(1)
+			}
+		}
+		firstAnswer = false
+		answers.Email, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Email").Show()
+		err = validateEmail(answers.Email)
 	}
 
-	if answers.Password == "" {
-		questions = append(questions, &survey.Question{
-			Name: "password",
-			Prompt: &survey.Password{
-				Message: "Password:",
-			},
-			Validate: validatePassword,
-		})
+	firstAnswer = answers.Password == ""
+	err = validatePassword(answers.Password)
+	for err != nil {
+		if !firstAnswer {
+			pterm.Error.Println("Password validation failed: " + err.Error())
+			if useFlags {
+				os.Exit(1)
+			}
+		}
+		firstAnswer = false
+		answers.Password, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Password").WithMask("*").Show()
+		err = validatePassword(answers.Password)
+		if err != nil {
+			continue
+		}
+
+		confirm, _ := pterm.DefaultInteractiveTextInput.WithDefaultText("Confirm Password").WithMask("*").Show()
+		if answers.Password != confirm {
+			err = errors.New("passwords do not match")
+		}
 	}
 
-	if promptAdmin {
-		questions = append(questions, &survey.Question{
-			Name: "admin",
-			Prompt: &survey.Confirm{
-				Message: "Admin",
-			},
-		})
-	}
-
-	if len(questions) > 0 {
-		_ = survey.Ask(questions, &answers)
+	if !useFlags {
+		answers.Admin, _ = pterm.DefaultInteractiveConfirm.WithDefaultText("Set as Admin").Show()
 	}
 
 	db, err := database.GetConnection()
 	if err != nil {
-		fmt.Printf("Failed to connect to database: %s\n", err.Error())
+		pterm.Error.Printf("Failed to connect to database: %s\n", err.Error())
 		return
 	}
 	defer database.Close()
@@ -122,21 +130,21 @@ func addUser(cmd *cobra.Command, args []string) {
 		}
 		err = user.SetPassword(answers.Password)
 		if err != nil {
-			fmt.Printf("Failed to set password: %s\n", err.Error())
+			pterm.Error.Printf("Failed to set password: %s\n", err.Error())
 			return err
 		}
 
 		us := &services.User{DB: tx}
 		err = us.Create(user)
 		if err != nil {
-			fmt.Printf("Failed to create user: %s\n", err.Error())
+			pterm.Error.Printf("Failed to create user: %s\n", err.Error())
 			return err
 		}
 
 		ps := &services.Permission{DB: tx}
 		perms, err := ps.GetForUserAndServer(user.ID, "")
 		if err != nil {
-			fmt.Printf("Failed to get permissions: %s\n", err.Error())
+			pterm.Error.Printf("Failed to get permissions: %s\n", err.Error())
 			return err
 		}
 
@@ -146,7 +154,7 @@ func addUser(cmd *cobra.Command, args []string) {
 
 		err = ps.UpdatePermissions(perms)
 		if err != nil {
-			fmt.Printf("Failed to apply permissions: %s\n", err.Error())
+			pterm.Error.Printf("Failed to apply permissions: %s\n", err.Error())
 			return err
 		}
 
@@ -155,7 +163,7 @@ func addUser(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Printf("User added\n")
+	pterm.Info.Printf("User added\n")
 }
 
 func validateEmail(val interface{}) error {
@@ -191,21 +199,7 @@ func validatePassword(val interface{}) error {
 	}
 
 	us := &services.User{}
-	if !us.IsSecurePassword(pw) {
-		return errors.New("password must be at least 8 characters")
-	}
-
-	var secondAttempt string
-	confirm := &survey.Password{
-		Message: "Confirm Password",
-	}
-	_ = survey.AskOne(confirm, &secondAttempt)
-
-	if secondAttempt != pw {
-		return errors.New("password do not match")
-	}
-
-	return nil
+	return us.IsSecurePassword(pw)
 }
 
 type userCreate struct {
