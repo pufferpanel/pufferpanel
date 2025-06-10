@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/mattn/go-sqlite3"
+	"github.com/pterm/pterm"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/spf13/cobra"
 	"io"
@@ -13,19 +13,18 @@ import (
 	"path/filepath"
 )
 
-var migrateCmd = &cobra.Command{
-	Use:    "dbmigrate",
-	Short:  "Runs the database migrations",
-	Run:    executeDbMigrations,
-	Hidden: true,
+var dbUpgradeCmd = &cobra.Command{
+	Use:   "upgrade",
+	Short: "Runs the database upgrades",
+	Run:   executeDbUpgrade,
 }
 
-func executeDbMigrations(cmd *cobra.Command, args []string) {
+func executeDbUpgrade(cmd *cobra.Command, args []string) {
 	var currentFile string
 	var backupFile string
 
 	if !config.PanelEnabled.Value() {
-		logging.Info.Printf("Panel not enabled, skipping migration")
+		pterm.Info.Printfln("Panel not enabled, skipping upgrade")
 		os.Exit(0)
 	}
 
@@ -34,7 +33,7 @@ func executeDbMigrations(cmd *cobra.Command, args []string) {
 		drv := sqlite3.SQLiteDriver{}
 		conn, err := drv.Open(database.GetConnectionString())
 		if err != nil {
-			logging.Error.Printf("error connecting to database: %s", err.Error())
+			pterm.Error.Printfln("error connecting to database: %s", err.Error())
 			os.Exit(1)
 			return
 		}
@@ -56,7 +55,7 @@ func executeDbMigrations(cmd *cobra.Command, args []string) {
 
 		err = copyDatabaseFile(currentFile, backupFile)
 		if err != nil {
-			logging.Error.Printf("error backing up database: %s", err.Error())
+			pterm.Error.Printfln("error backing up database: %s", err.Error())
 			os.Exit(1)
 			return
 		}
@@ -64,16 +63,16 @@ func executeDbMigrations(cmd *cobra.Command, args []string) {
 
 	db, err := database.GetConnection()
 	if err != nil {
-		logging.Error.Printf("error connecting to database: %s", err.Error())
+		pterm.Error.Printfln("error connecting to database: %s", err.Error())
 		rollback(backupFile, currentFile)
 		os.Exit(1)
 		return
 	}
 
-	logging.Info.Printf("Starting database migration")
-	err = database.Migrate(db)
+	pterm.Info.Printfln("Starting database upgrade")
+	err = database.Upgrade(db, true)
 	if err != nil {
-		logging.Error.Printf("error upgrading database: %s", err.Error())
+		pterm.Error.Printfln("Database upgrade failed: %s", err.Error())
 		rollback(backupFile, currentFile)
 		os.Exit(1)
 		return
@@ -86,7 +85,7 @@ func rollback(backup, overrideTo string) {
 	}
 	err := copyDatabaseFile(backup, overrideTo)
 	if err != nil {
-		logging.Error.Printf("error restoring database: %s", err.Error())
+		pterm.Error.Printfln("error restoring database: %s", err.Error())
 		return
 	}
 }

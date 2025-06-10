@@ -37,7 +37,7 @@ func RegisterPost(c *gin.Context) {
 		return
 	}
 
-	if !us.IsSecurePassword(request.Password) {
+	if us.IsSecurePassword(request.Password) != nil {
 		response.HandleError(c, pufferpanel.ErrPasswordRequirements, http.StatusBadRequest)
 		return
 	}

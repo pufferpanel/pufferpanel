@@ -3,15 +3,16 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3/groups"
-	"github.com/pufferpanel/pufferpanel/v3/scopes"
-
-	"github.com/AlecAivazis/survey/v2"
+	"github.com/pterm/pterm"
 	"github.com/pufferpanel/pufferpanel/v3/database"
+	"github.com/pufferpanel/pufferpanel/v3/groups"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/spf13/cobra"
 	"gorm.io/gorm"
+	"os"
+	"strings"
 )
 
 var AddUserCmd = &cobra.Command{
@@ -55,60 +56,68 @@ func addUser(cmd *cobra.Command, args []string) {
 		Password: addPassword,
 	}
 
-	//should we ask if this user is an admin should only appear if no flags are used
-	promptAdmin := true
-	if answers.Admin || answers.Username != "" || answers.Email != "" || answers.Password != "" {
-		promptAdmin = false
+	useFlags := false
+	if answers.Username != "" || answers.Email != "" || answers.Password != "" {
+		useFlags = true
 	}
 
-	questions := make([]*survey.Question, 0)
-
-	if answers.Username == "" {
-		questions = append(questions, &survey.Question{
-			Name: "username",
-			Prompt: &survey.Input{
-				Message: "Username:",
-			},
-			Validate: validateUsername,
-		})
+	firstAnswer := answers.Username == ""
+	err := validateUsername(answers.Username)
+	for err != nil {
+		if !firstAnswer {
+			pterm.Error.Println("Username validation failed: " + err.Error())
+			if useFlags {
+				os.Exit(1)
+			}
+		}
+		firstAnswer = false
+		answers.Username, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Username").Show()
+		err = validateUsername(answers.Username)
 	}
 
-	if answers.Email == "" {
-		questions = append(questions, &survey.Question{
-			Name: "email",
-			Prompt: &survey.Input{
-				Message: "Email:",
-			},
-			Validate: validateEmail,
-		})
+	firstAnswer = answers.Email == ""
+	err = validateEmail(answers.Email)
+	for err != nil {
+		if !firstAnswer {
+			pterm.Error.Println("Email validation failed: " + err.Error())
+			if useFlags {
+				os.Exit(1)
+			}
+		}
+		firstAnswer = false
+		answers.Email, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Email").Show()
+		err = validateEmail(answers.Email)
 	}
 
-	if answers.Password == "" {
-		questions = append(questions, &survey.Question{
-			Name: "password",
-			Prompt: &survey.Password{
-				Message: "Password:",
-			},
-			Validate: validatePassword,
-		})
+	firstAnswer = answers.Password == ""
+	err = validatePassword(answers.Password)
+	for err != nil {
+		if !firstAnswer {
+			pterm.Error.Println("Password validation failed: " + err.Error())
+			if useFlags {
+				os.Exit(1)
+			}
+		}
+		firstAnswer = false
+		answers.Password, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Password").WithMask("*").Show()
+		err = validatePassword(answers.Password)
+		if err != nil {
+			continue
+		}
+
+		confirm, _ := pterm.DefaultInteractiveTextInput.WithDefaultText("Confirm Password").WithMask("*").Show()
+		if answers.Password != confirm {
+			err = errors.New("passwords do not match")
+		}
 	}
 
-	if promptAdmin {
-		questions = append(questions, &survey.Question{
-			Name: "admin",
-			Prompt: &survey.Confirm{
-				Message: "Admin",
-			},
-		})
-	}
-
-	if len(questions) > 0 {
-		_ = survey.Ask(questions, &answers)
+	if !useFlags {
+		answers.Admin, _ = pterm.DefaultInteractiveConfirm.WithDefaultText("Set as Admin").Show()
 	}
 
 	db, err := database.GetConnection()
 	if err != nil {
-		fmt.Printf("Failed to connect to database: %s\n", err.Error())
+		pterm.Error.Printf("Failed to connect to database: %s\n", err.Error())
 		return
 	}
 	defer database.Close()
@@ -121,21 +130,21 @@ func addUser(cmd *cobra.Command, args []string) {
 		}
 		err = user.SetPassword(answers.Password)
 		if err != nil {
-			fmt.Printf("Failed to set password: %s\n", err.Error())
+			pterm.Error.Printf("Failed to set password: %s\n", err.Error())
 			return err
 		}
 
 		us := &services.User{DB: tx}
 		err = us.Create(user)
 		if err != nil {
-			fmt.Printf("Failed to create user: %s\n", err.Error())
+			pterm.Error.Printf("Failed to create user: %s\n", err.Error())
 			return err
 		}
 
 		ps := &services.Permission{DB: tx}
 		perms, err := ps.GetForUserAndServer(user.ID, "")
 		if err != nil {
-			fmt.Printf("Failed to get permissions: %s\n", err.Error())
+			pterm.Error.Printf("Failed to get permissions: %s\n", err.Error())
 			return err
 		}
 
@@ -145,7 +154,7 @@ func addUser(cmd *cobra.Command, args []string) {
 
 		err = ps.UpdatePermissions(perms)
 		if err != nil {
-			fmt.Printf("Failed to apply permissions: %s\n", err.Error())
+			pterm.Error.Printf("Failed to apply permissions: %s\n", err.Error())
 			return err
 		}
 
@@ -154,7 +163,7 @@ func addUser(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Printf("User added\n")
+	pterm.Info.Printf("User added\n")
 }
 
 func validateEmail(val interface{}) error {
@@ -190,21 +199,7 @@ func validatePassword(val interface{}) error {
 	}
 
 	us := &services.User{}
-	if !us.IsSecurePassword(pw) {
-		return errors.New("password must be at least 8 characters")
-	}
-
-	var secondAttempt string
-	confirm := &survey.Password{
-		Message: "Confirm Password",
-	}
-	_ = survey.AskOne(confirm, &secondAttempt)
-
-	if secondAttempt != pw {
-		return errors.New("password do not match")
-	}
-
-	return nil
+	return us.IsSecurePassword(pw)
 }
 
 type userCreate struct {
@@ -228,109 +223,130 @@ func editUser(cmd *cobra.Command, args []string) {
 	defer database.Close()
 
 	var username string
-	_ = survey.AskOne(&survey.Input{
-		Message: "Username:",
-	}, &username, survey.WithValidator(survey.Required))
+
+	username, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Enter Username").Show()
 
 	us := &services.User{DB: db}
 
 	user, err := us.Get(username)
-	if err != nil && err == gorm.ErrRecordNotFound {
-		fmt.Printf("No user with username '%s'\n", username)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		pterm.Error.Printfln("No user with username '%s'\n", username)
 		return
 	} else if err != nil {
-		fmt.Printf("Error getting user: %s\n", err.Error())
+		pterm.Error.Printfln("Error getting user: %s\n", err.Error())
 		return
 	}
 
-	action := ""
-	_ = survey.AskOne(&survey.Select{
-		Message: "Select option to edit",
-		Options: []string{"Username", "Email", "Password", "Change Admin Status", "Remove 2FA"},
-	}, &action)
+	var usernameAction = "Username"
+	var emailAction = "Email"
+	var passwordAction = "Password"
+	var adminAction = "Admin Status"
+	var remove2FAAction = "Remove 2FA"
+	var quitAction = "Quit"
 
-	switch action {
-	case "Username":
-		{
-			prompt := ""
-			_ = survey.AskOne(&survey.Input{
-				Message: "New Username:",
-			}, &prompt, survey.WithValidator(survey.Required))
-			user.Username = prompt
+	var currentAction string
 
-			err = us.Update(user)
-			if err != nil {
-				fmt.Printf("Error updating username: %s\n", err.Error())
-			}
-		}
-	case "Email":
-		{
-			prompt := ""
-			_ = survey.AskOne(&survey.Input{
-				Message: "New Email:",
-			}, &prompt, survey.WithValidator(survey.Required))
-			user.Email = prompt
+	for currentAction != quitAction {
+		currentAction, _ = pterm.DefaultInteractiveSelect.WithOptions([]string{
+			usernameAction,
+			emailAction,
+			passwordAction,
+			adminAction,
+			remove2FAAction,
+			quitAction,
+		}).WithFilter(false).WithMaxHeight(20).Show()
 
-			err = us.Update(user)
-			if err != nil {
-				fmt.Printf("Error updating email: %s\n", err.Error())
-			}
-		}
-	case "Password":
-		{
-			prompt := ""
-			_ = survey.AskOne(&survey.Password{
-				Message: "New Password:",
-			}, &prompt, survey.WithValidator(validatePassword))
+		switch currentAction {
+		case usernameAction:
+			{
+				oldValue := user.Username
+				user.Username, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Change username to").WithDefaultValue(oldValue).Show()
 
-			err = user.SetPassword(prompt)
-			if err != nil {
-				fmt.Printf("Error updating password: %s\n", err.Error())
-			}
-
-			err = us.Update(user)
-			if err != nil {
-				fmt.Printf("Error updating password: %s\n", err.Error())
-			}
-		}
-	case "Change Admin Status":
-		{
-			prompt := false
-			_ = survey.AskOne(&survey.Confirm{
-				Message: "Set Admin Status: ",
-			}, &prompt)
-
-			ps := &services.Permission{DB: db}
-			perms, err := ps.GetForUserAndServer(user.ID, "")
-			if err != nil {
-				fmt.Printf("Error updating permissions: %s\n", err.Error())
-				return
-			}
-
-			//perms.Admin = prompt
-			if prompt {
-				perms.Scopes = scopes.AddScope(perms.Scopes, scopes.ScopeAdmin)
-			} else {
-				perms.Scopes = scopes.RemoveScope(perms.Scopes, scopes.ScopeAdmin)
-			}
-
-			err = ps.UpdatePermissions(perms)
-			if err != nil {
-				fmt.Printf("Error updating password: %s\n", err.Error())
-			}
-		}
-	case "Remove 2FA":
-		{
-			prompt := false
-			_ = survey.AskOne(&survey.Confirm{Message: "Confirm removal of 2FA?"}, &prompt)
-			if prompt {
-				us := &services.User{DB: db}
-				err = us.DisableOtp(user.ID)
+				err = us.Update(user)
 				if err != nil {
-					fmt.Printf("Error removing 2FA: %s\n", err.Error())
+					pterm.Error.Printfln("Error updating username: %s", err.Error())
+				} else {
+					pterm.Info.Printfln("Username updated from %s to %s", oldValue, user.Username)
+				}
+			}
+		case emailAction:
+			{
+				oldValue := user.Username
+				user.Email, _ = pterm.DefaultInteractiveTextInput.WithDefaultText("Change email to").WithDefaultValue(oldValue).Show()
+
+				err = us.Update(user)
+				if err != nil {
+					pterm.Error.Printfln("Error updating email: %s", err.Error())
+				} else {
+					pterm.Info.Printfln("Email updated from %s to %s", oldValue, user.Username)
+				}
+			}
+		case passwordAction:
+			{
+				password, _ := pterm.DefaultInteractiveTextInput.WithMask("*").WithDefaultText("Change password to").Show()
+
+				err = user.SetPassword(password)
+				if err != nil {
+					pterm.Error.Printfln("Error updating password: %s", err.Error())
+					break
+				}
+				err = us.Update(user)
+				if err != nil {
+					pterm.Error.Printfln("Error updating password: %s", err.Error())
+				} else {
+					pterm.Info.Printfln("Password updated")
+				}
+			}
+		case adminAction:
+			{
+				result, _ := pterm.DefaultInteractiveContinue.WithDefaultText("Set as admin").WithOptions([]string{"yes", "no", "cancel"}).WithDefaultValue("cancel").Show()
+
+				if result == "cancel" {
+					break
+				}
+
+				ps := &services.Permission{DB: db}
+				perms, err := ps.GetForUserAndServer(user.ID, "")
+				if err != nil {
+					pterm.Error.Printfln("Error updating permissions: %s", err.Error())
+					break
+				}
+
+				//perms.Admin = prompt
+				result = strings.ToLower(result)
+				if result == "yes" || result == "y" {
+					perms.Scopes = scopes.AddScope(perms.Scopes, scopes.ScopeAdmin)
+				} else if result == "no" || result == "n" {
+					perms.Scopes = scopes.RemoveScope(perms.Scopes, scopes.ScopeAdmin)
+				} else {
+					break
+				}
+
+				err = ps.UpdatePermissions(perms)
+				if err != nil {
+					pterm.Error.Printfln("Error updating password: %s", err.Error())
+					break
+				}
+
+				if scopes.ContainsScope(perms.Scopes, scopes.ScopeAdmin) {
+					pterm.Info.Printfln("Admin status added")
+				} else {
+					pterm.Info.Printfln("Admin status removed")
+				}
+			}
+		case remove2FAAction:
+			{
+				result, _ := pterm.DefaultInteractiveConfirm.WithDefaultText("Remove 2FA").Show()
+				if result {
+					us := &services.User{DB: db}
+					err = us.DisableOtp(user.ID)
+					if err != nil {
+						fmt.Printf("Error removing 2FA: %s", err.Error())
+					} else {
+						pterm.Info.Printfln("2FA removed")
+					}
 				}
 			}
 		}
 	}
-
 }
