@@ -3,62 +3,62 @@
   "Language": "Sprog",
   "Online": "Online",
   "Offline": "Offline",
-  "Installing": "Installing",
+  "Installing": "Installerer",
   "Unknown": "Ukendt",
   "Loading": "Indlæser...",
-  "Description": "Description",
+  "Description": "Beskrivelse",
   "Save": "Gem",
   "Cancel": "Annuller",
-  "Close": "Close",
+  "Close": "Luk",
   "Host": "Vært",
   "Port": "Port",
   "Collapse": "Minimer",
-  "Expand": "Expand",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Expand": "Udvid",
+  "Copy": "Kopier til udklipsholder",
+  "Copied": "Kopieret til udklipsholder",
+  "Back": "Tilbage",
   "Next": "Næste",
   "Details": "Detaljer",
   "ErrorDetails": "Fejloplysninger",
   "HelpTranslate": "Hjælp os med at oversætte PufferPanel",
   "Protocol": "Protokol",
   "Add": "Tilføj",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Apply": "Anvend",
+  "Confirm": "Bekræft",
+  "Condition": "Betingelse",
+  "Discard": "Kassér",
+  "ConfirmLeave": "Du har ugemte ændringer. Vil du kassere disse ændringer og forlade denne side?",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Tema",
+    "Mode": "Tilstand",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "Light": "Lys",
+      "Dark": "Mørk",
+      "DarkHighContrast": "Mørk (Høj Kontrast)",
       "Auto": "Auto"
     },
-    "BaseColor": "Base Color",
-    "ServerTypeDisplay": "Server Type Display",
+    "BaseColor": "Grundfarve",
+    "ServerTypeDisplay": "Server Type Visning",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "Ikon",
+      "None": "Ingen"
     },
-    "ListType": "List Type",
+    "ListType": "Listetype",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Gitter",
+      "List": "Liste"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Font-størrelse",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Standard"
     },
     "FontFace": "Font Face",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Standard",
+      "A11y": "Tilgængelighed optimeret"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "Ingen resultater",
+  "Yes": "Ja",
+  "No": "Nej"
 }
