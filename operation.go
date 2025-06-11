@@ -17,7 +17,7 @@ type CreateOperation struct {
 }
 
 type RunOperatorArgs struct {
-	Environment Environment
+	Environment *Environment
 	Server      DaemonServer
 }
 

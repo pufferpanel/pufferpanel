@@ -61,6 +61,7 @@ func getFeatures(c *gin.Context) {
 		envs = utils.Remove(envs, "host")
 		envs = utils.Remove(envs, "tty")
 		envs = utils.Remove(envs, "standard")
+		envs = utils.Remove(envs, "bubblewrap")
 	}
 
 	c.JSON(http.StatusOK, Features{Features: features, Environments: envs, OS: runtime.GOOS, Arch: runtime.GOARCH, Version: pufferpanel.Version})

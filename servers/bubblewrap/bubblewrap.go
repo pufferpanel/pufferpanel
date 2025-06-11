@@ -1,4 +1,4 @@
-package tty
+package bubblewrap
 
 import (
 	"errors"
@@ -19,14 +19,14 @@ import (
 	"time"
 )
 
-type tty struct {
+type bubblewrap struct {
 	mainProcess  *exec.Cmd
 	statLocker   sync.Mutex
 	lastStats    *pufferpanel.ServerStats
 	lastStatTime time.Time
 }
 
-func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
+func (t *bubblewrap) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
 	environment.Wait.Add(1)
 
 	pr := exec.Command(steps.Command, steps.Arguments...)
@@ -84,7 +84,7 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 	return
 }
 
-func (t *tty) KillImpl(environment *pufferpanel.Environment) (err error) {
+func (t *bubblewrap) KillImpl(environment *pufferpanel.Environment) (err error) {
 	running, err := environment.IsRunning()
 	if err != nil {
 		return
@@ -95,7 +95,7 @@ func (t *tty) KillImpl(environment *pufferpanel.Environment) (err error) {
 	return t.mainProcess.Process.Kill()
 }
 
-func (t *tty) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.ServerStats, error) {
+func (t *bubblewrap) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.ServerStats, error) {
 	running, err := environment.IsRunning()
 	if err != nil {
 		return nil, err
@@ -135,8 +135,7 @@ func (t *tty) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.S
 	}
 
 	if environment.Server.Stats.Type == "jcmd" {
-		var socket *net.UnixConn
-		if socket, err = t.initiateJCMD(); err == nil && socket != nil {
+		if socket, err := t.initializeJCmd(); err == nil && socket != nil {
 			for _, s := range []string{"1", "\x00", "jcmd", "\x00", "GC.heap_info", "\x00", "\x00", "\x00"} {
 				_, err = socket.Write([]byte(s))
 				if err != nil {
@@ -165,7 +164,7 @@ func (t *tty) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.S
 	return stats, nil
 }
 
-func (t *tty) SendCodeImpl(environment *pufferpanel.Environment, code int) error {
+func (t *bubblewrap) SendCodeImpl(environment *pufferpanel.Environment, code int) error {
 	running, err := environment.IsRunning()
 
 	if err != nil || !running {
@@ -175,15 +174,15 @@ func (t *tty) SendCodeImpl(environment *pufferpanel.Environment, code int) error
 	return t.mainProcess.Process.Signal(syscall.Signal(code))
 }
 
-func (t *tty) GetUidImpl(*pufferpanel.Environment) int {
+func (t *bubblewrap) GetUidImpl(*pufferpanel.Environment) int {
 	return -1
 }
 
-func (t *tty) GetGidImpl(*pufferpanel.Environment) int {
+func (t *bubblewrap) GetGidImpl(*pufferpanel.Environment) int {
 	return -1
 }
 
-func (t *tty) IsRunningImpl(*pufferpanel.Environment) (isRunning bool, err error) {
+func (t *bubblewrap) IsRunningImpl(*pufferpanel.Environment) (isRunning bool, err error) {
 	isRunning = t.mainProcess != nil && t.mainProcess.Process != nil
 	if isRunning {
 		pr, pErr := os.FindProcess(t.mainProcess.Process.Pid)
@@ -196,7 +195,7 @@ func (t *tty) IsRunningImpl(*pufferpanel.Environment) (isRunning bool, err error
 	return
 }
 
-func (t *tty) handleClose(environment *pufferpanel.Environment, callback func(exitCode int)) {
+func (t *bubblewrap) handleClose(environment *pufferpanel.Environment, callback func(exitCode int)) {
 	err := t.mainProcess.Wait()
 
 	_ = environment.Console.Close()
@@ -290,7 +289,7 @@ func socketPath(pid int) string {
 	return fmt.Sprintf("/proc/%v/root/tmp/.java_pid%v", pid, pid)
 }
 
-func (t *tty) initiateJCMD() (*net.UnixConn, error) {
+func (t *bubblewrap) initializeJCmd() (net.Conn, error) {
 	pid := t.mainProcess.Process.Pid
 	sock := socketPath(pid)
 

@@ -1,7 +1,7 @@
 package pufferpanel
 
 type EnvironmentFactory interface {
-	Create(id string) Environment
+	Create() EnvironmentImpl
 
 	Key() string
 }
