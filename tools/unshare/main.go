@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"syscall"
 )
@@ -18,10 +19,14 @@ include <tunables/global>
 profile lordralex /usr/bin/unshare flags=(unconfined) {
   userns,
 }
-*/
+*/ //sudo apparmor_parser -r /etc/apparmor.d/unshare
 
-//ensure uidmap is installed (?)
-//sudo apparmor_parser -r /etc/apparmor.d/unshare
+//after more testing, AppArmor can shove it. They are causing our issues. SOMEHOW EVEN THOUGH THEY DONT GIVE A DAMN INDICATION
+// - /etc/default/grub -> GRUB_CMDLINE_LINUX="apparmor=0"
+// - update-grub
+// - reboot
+
+//ensure uidmap is installed (?) - removing it works so far
 
 /*
 mkdir -p {tmp,proc,run/systemd/resolve}
@@ -29,12 +34,12 @@ unshare --mount-proc=proc --map-users 1000:1000:1 -muipfCr bash -c 'mkdir -p {pu
 */
 
 func main() {
-	unshare("id")
+	unshare("/usr/bin/id")
 }
 
 func chroot(cmd string, args ...string) {
 	attrs := &syscall.SysProcAttr{
-		Chroot: "/home/lordralex/testchroot",
+		Chroot: ".",
 	}
 
 	c := exec.Command(cmd, args...)
@@ -59,9 +64,23 @@ func unshare(cmd string, args ...string) {
 			syscall.CLONE_NEWNET |
 			syscall.CLONE_NEWUTS |
 			syscall.CLONE_NEWPID,
-		//Credential: &syscall.Credential{Uid: 9018, Gid: 9018},
+		Credential: &syscall.Credential{Uid: 0, Gid: 0, NoSetGroups: true},
+		UidMappings: []syscall.SysProcIDMap{
+			{
+				ContainerID: 0,
+				HostID:      os.Getuid(),
+				Size:        1,
+			},
+		},
+		GidMappings: []syscall.SysProcIDMap{
+			{
+				ContainerID: 0,
+				HostID:      os.Getgid(),
+				Size:        1,
+			},
+		},
 	}
-	fmt.Println(c.String())
+	//fmt.Println(c.String())
 	output, err := c.CombinedOutput()
 	if err != nil {
 		panic(err)
