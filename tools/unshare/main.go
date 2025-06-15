@@ -56,15 +56,30 @@ unshare --mount-proc=proc --map-users 1000:1000:1 -muipfCr bash -c 'mkdir -p {pu
 //  owner /proc/*/uid_map w,
 //}
 
+//what we've ended up with is a nightmare. But, a working one
+//the current thing works if we remove new PID (this causes issues with the forking because Go can't do the -f flag)
+//we also had to disable the net namespace because we could not actually use the network, unsure why (but I bet... go)
+//we store our working folder into /tmp so that it's cleaner where we actually persist files
+//this defers back to our "regular" username so we should be okay there
+//move the dir we're "chrooted" in to the arguments so we can test it elsewhere
+//long term, we might need to look at persistence, and see if we can "persist" these so we don't need to keep remaking it
+//this required several rounds of coffee, mountain dew, and midori
+
 func main() {
+	dir, _ := os.Getwd()
+	if len(os.Args) > 1 {
+		dir = os.Args[1]
+	}
+
 	//as soon as you add the third command, this no longer functions
-	unshare("/home/lordralex/testchroot", "pwd")                        //are we in the right place
-	unshare("/home/lordralex/testchroot", "ls", "-l")                   //do we see anything
-	unshare("/home/lordralex/testchroot", "whoami")                     //are we the correct user
-	unshare("/home/lordralex/testchroot", "touch", "test")              //can we write and it persist
-	unshare("/home/lordralex/testchroot", "curl", "1.1.1.1")            //can we access an IP
-	unshare("/home/lordralex/testchroot", "curl", "google.com")         //does DNS work
-	unshare("/home/lordralex/testchroot", "curl", "https://google.com") //does SSL work
+	unshare(dir, "pwd")                        //are we in the right place
+	unshare(dir, "ls", "-l")                   //do we see anything
+	unshare(dir, "whoami")                     //are we the correct user
+	unshare(dir, "touch", "test")              //can we write and it persist
+	unshare(dir, "curl", "1.1.1.1")            //can we access an IP
+	unshare(dir, "curl", "google.com")         //does DNS work
+	unshare(dir, "curl", "https://google.com") //does SSL work
+	unshare(dir, "ls", "-l", "/")              //does SSL work
 }
 
 func unshare(dir, cmd string, args ...string) {
