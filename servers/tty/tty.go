@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/creack/pty"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/shirou/gopsutil/process"
@@ -24,12 +25,17 @@ type tty struct {
 	statLocker   sync.Mutex
 	lastStats    *pufferpanel.ServerStats
 	lastStatTime time.Time
+
+	DisableUnshare bool `json:"disableUnshare"`
 }
 
 func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
 	environment.Wait.Add(1)
 
-	pr := exec.Command(steps.Command, steps.Arguments...)
+	pr, err := t.createCmd(environment.GetRootDirectory(), steps.Command, steps.Arguments)
+	if err != nil {
+		return err
+	}
 	pr.Dir = environment.GetRootDirectory()
 
 	var envVars = make(map[string]string)
@@ -54,7 +60,6 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 		pr.Env = append(pr.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
-	pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 	t.mainProcess = pr
 	environment.DisplayToConsole(true, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 	environment.Log(logging.Info, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
@@ -229,6 +234,11 @@ func (t *tty) handleClose(environment *pufferpanel.Environment, callback func(ex
 	t.statLocker.Lock()
 	t.statLocker.Unlock()
 
+	//if we are using unshare AND we're in tmp, we can nuke the workspace at this point
+	if !t.DisableUnshare && strings.HasSuffix(t.mainProcess.Dir, os.TempDir()) {
+		_ = os.RemoveAll(t.mainProcess.Dir)
+	}
+
 	t.mainProcess = nil
 
 	environment.Wait.Done()
@@ -307,4 +317,65 @@ func (t *tty) initiateJCMD() (*net.UnixConn, error) {
 	}
 
 	return net.DialUnix("unix", nil, addr)
+}
+
+var cmdList = []string{
+	"mkdir -p {dev,bin,usr,lib,lib64,etc,tmp,proc}",
+	"mount -t tmpfs -o size=50m tmpfs tmp",
+	"mount --bind /bin bin",
+	"mount --bind /lib lib",
+	"mount --bind /lib64 lib64",
+	"mount --rbind /usr usr",
+	"mount --rbind /etc etc",
+	"mount --rbind /dev dev",
+	"mount --rbind /proc proc",
+}
+
+func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err error) {
+	if t.DisableUnshare {
+		pr = exec.Command(cmd, args...)
+		pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
+		pr.Dir = workDir
+		return
+	} else {
+		pr = exec.Command("bash", "-c",
+			strings.Join(append(cmdList,
+				fmt.Sprintf("mkdir -p {%s,%s,%s}", strings.TrimPrefix(workDir, "/"), strings.TrimPrefix(config.BinariesFolder.Value(), "/"), strings.TrimPrefix(config.CacheFolder.Value(), "/")),
+				fmt.Sprintf("mount --bind %s %s", workDir, strings.TrimPrefix(workDir, "/")),
+				fmt.Sprintf("mount --bind %s %s", config.BinariesFolder.Value(), strings.TrimPrefix(config.BinariesFolder.Value(), "/")),
+				fmt.Sprintf("mount --bind %s %s", config.CacheFolder.Value(), strings.TrimPrefix(config.CacheFolder.Value(), "/")),
+				"mount --rbind / .",
+				fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s %s", workDir, os.Getuid(), os.Getgid(), cmd, strings.Join(args, " ")),
+			), " && "))
+		pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
+		if err != nil {
+			return
+		}
+		pr.SysProcAttr = &syscall.SysProcAttr{
+			Setctty: true,
+			Setsid:  true,
+			Unshareflags: syscall.CLONE_NEWUSER |
+				syscall.CLONE_NEWNS |
+				syscall.CLONE_FILES |
+				syscall.CLONE_NEWCGROUP |
+				syscall.CLONE_NEWIPC |
+				syscall.CLONE_NEWUTS,
+			Credential: &syscall.Credential{Uid: 0, Gid: 0, NoSetGroups: true},
+			UidMappings: []syscall.SysProcIDMap{
+				{
+					ContainerID: 0,
+					HostID:      os.Getuid(),
+					Size:        1,
+				},
+			},
+			GidMappings: []syscall.SysProcIDMap{
+				{
+					ContainerID: 0,
+					HostID:      os.Getgid(),
+					Size:        1,
+				},
+			},
+		}
+	}
+	return
 }

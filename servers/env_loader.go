@@ -3,7 +3,6 @@ package servers
 import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/servers/bubblewrap"
 	"github.com/pufferpanel/pufferpanel/v3/servers/docker"
 	"github.com/pufferpanel/pufferpanel/v3/servers/tty"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
@@ -18,7 +17,6 @@ func init() {
 	envMapping["tty"] = tty.EnvironmentFactory{}
 	envMapping["standard"] = tty.EnvironmentFactory{}
 	envMapping["docker"] = docker.EnvironmentFactory{}
-	envMapping["bubblewrap"] = bubblewrap.EnvironmentFactory{}
 }
 
 func CreateEnvironment(environmentType, folder string, backupFolder string, server pufferpanel.Server) (*pufferpanel.Environment, error) {
@@ -41,6 +39,11 @@ func CreateEnvironment(environmentType, folder string, backupFolder string, serv
 	}
 	item.Implementation = factory.Create()
 	err := utils.UnmarshalTo(server.Environment.Metadata, item)
+	if err != nil {
+		return nil, err
+	}
+
+	err = utils.UnmarshalTo(server.Environment.Metadata, item.Implementation)
 	if err != nil {
 		return nil, err
 	}
