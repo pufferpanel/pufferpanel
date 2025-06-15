@@ -79,25 +79,36 @@ func main() {
 	unshare(dir, "curl", "1.1.1.1")            //can we access an IP
 	unshare(dir, "curl", "google.com")         //does DNS work
 	unshare(dir, "curl", "https://google.com") //does SSL work
-	unshare(dir, "ls", "-l", "/")              //does SSL work
+	unshare(dir, "ls", "-l", "/")              //is root clean
+
+	//now let's test the servers!
+	//unshare(dir, "ls", "-l", "/usr/lib/jvm/java-21-openjdk-amd64/lib")
+	//unshare(dir, "env")
+	unshare(dir, "java", "-Xmx4G", "-jar", "server.jar", "nogui")
+}
+
+var cmdList = []string{
+	"mkdir -p {dev,bin,usr,lib,lib64,etc,tmp,proc}",
+	"mount -t tmpfs -o size=50m tmpfs tmp",
+	"mount --bind /bin bin",
+	"mount --bind /lib lib",
+	"mount --bind /lib64 lib64",
+	"mount --rbind /usr usr",
+	"mount --rbind /etc etc",
+	"mount --rbind /dev dev",
+	"mount --rbind /proc proc",
 }
 
 func unshare(dir, cmd string, args ...string) {
 	var err error
 
 	c := exec.Command("bash", "-c",
-		strings.Join([]string{"mkdir -p {dev,bin,usr,lib,lib64,etc,tmp,run/systemd/resolve," + strings.TrimPrefix(dir, "/") + "}",
-			"mount -t tmpfs -o size=100m tmpfs tmp",
-			"mount --bind /bin bin",
-			"mount --bind /lib lib",
-			"mount --bind /lib64 lib64",
-			"mount --rbind /etc etc",
-			"mount --rbind /dev dev",
-			"mount --rbind /run/systemd/resolve run/systemd/resolve",
-			"mount --bind " + dir + " " + strings.TrimPrefix(dir, "/"),
+		strings.Join(append(cmdList,
+			"mkdir -p "+strings.TrimPrefix(dir, "/"),
+			"mount --bind "+dir+" "+strings.TrimPrefix(dir, "/"),
 			"mount --rbind / .",
 			fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s %s", dir, os.Getuid(), os.Getgid(), cmd, strings.Join(args, " ")),
-		}, " && "))
+		), " && "))
 	c.Dir, err = os.MkdirTemp("", "unshare-pp-")
 	defer func() {
 		_ = os.RemoveAll(c.Dir)
