@@ -249,7 +249,7 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func findInstallerJar(env pufferpanel.Environment) (string, error) {
+func findInstallerJar(env *pufferpanel.Environment) (string, error) {
 	entries, err := os.ReadDir(env.GetRootDirectory())
 	if err != nil {
 		return "", err
@@ -266,7 +266,7 @@ func findInstallerJar(env pufferpanel.Environment) (string, error) {
 	return "", os.ErrNotExist
 }
 
-func installViaJar(server pufferpanel.DaemonServer, env pufferpanel.Environment, jarFile string, javaBinary string) error {
+func installViaJar(server pufferpanel.DaemonServer, env *pufferpanel.Environment, jarFile string, javaBinary string) error {
 	//installer found, we will run this one
 	result := make(chan int, 1)
 	err := env.Execute(pufferpanel.ExecutionData{
@@ -319,7 +319,7 @@ func installViaJar(server pufferpanel.DaemonServer, env pufferpanel.Environment,
 	return nil
 }
 
-func installFabric(env pufferpanel.Environment, data map[string]string, javaBinary string) error {
+func installFabric(env *pufferpanel.Environment, data map[string]string, javaBinary string) error {
 	//this is a mess
 	//there's 2 options that exist for fabric
 	//there is an "improved" launcher, which is just a jar that we need

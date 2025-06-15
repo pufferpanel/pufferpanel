@@ -12,12 +12,12 @@ type DockerPull struct {
 
 func (d DockerPull) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
 	env := args.Environment
-	dockerEnv, ok := env.(*docker.Docker)
+	dockerEnv, ok := env.Implementation.(*docker.Docker)
 
 	if !ok {
 		return pufferpanel.OperationResult{Error: pufferpanel.ErrEnvironmentNotSupported}
 	}
 
-	err := dockerEnv.PullImage(context.Background(), d.ImageName, true)
+	err := dockerEnv.PullImage(env, context.Background(), d.ImageName, true)
 	return pufferpanel.OperationResult{Error: err}
 }

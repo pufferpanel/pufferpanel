@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 )
 
-func CreateFunctions(env pufferpanel.Environment) []cel.EnvOption {
+func CreateFunctions(env *pufferpanel.Environment) []cel.EnvOption {
 	return []cel.EnvOption{
 		cel.Function("file_exists",
 			cel.Overload("file_exists_string_bool",
@@ -34,7 +34,7 @@ func CreateFunctions(env pufferpanel.Environment) []cel.EnvOption {
 	}
 }
 
-func cel_file_exists(env pufferpanel.Environment) functions.UnaryOp {
+func cel_file_exists(env *pufferpanel.Environment) functions.UnaryOp {
 	return func(fileName ref.Val) ref.Val {
 		fullPath := filepath.Join(env.GetRootDirectory(), fileName.Value().(string))
 		_, err := os.Stat(fullPath)
@@ -42,14 +42,14 @@ func cel_file_exists(env pufferpanel.Environment) functions.UnaryOp {
 	}
 }
 
-func cel_in_path(env pufferpanel.Environment) functions.UnaryOp {
+func cel_in_path(env *pufferpanel.Environment) functions.UnaryOp {
 	return func(fileName ref.Val) ref.Val {
 		_, err := exec.LookPath(fileName.Value().(string))
 		return types.Bool(err == nil || errors.Is(err, exec.ErrDot))
 	}
 }
 
-func cel_is_server_running(env pufferpanel.Environment) functions.FunctionOp {
+func cel_is_server_running(env *pufferpanel.Environment) functions.FunctionOp {
 	return func(values ...ref.Val) ref.Val {
 		r, err := env.IsRunning()
 		return types.Bool(err == nil && r)

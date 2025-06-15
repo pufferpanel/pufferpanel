@@ -3,6 +3,9 @@ package servers
 import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/servers/bubblewrap"
+	"github.com/pufferpanel/pufferpanel/v3/servers/docker"
+	"github.com/pufferpanel/pufferpanel/v3/servers/tty"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"path/filepath"
 	"sync"
@@ -10,46 +13,43 @@ import (
 
 var envMapping = make(map[string]pufferpanel.EnvironmentFactory)
 
-func CreateEnvironment(environmentType, folder string, backupFolder string, server pufferpanel.Server) (pufferpanel.Environment, error) {
-	factory := envMapping[environmentType]
+func init() {
+	envMapping["host"] = tty.EnvironmentFactory{}
+	envMapping["tty"] = tty.EnvironmentFactory{}
+	envMapping["standard"] = tty.EnvironmentFactory{}
+	envMapping["docker"] = docker.EnvironmentFactory{}
+	envMapping["bubblewrap"] = bubblewrap.EnvironmentFactory{}
+}
 
-	if factory == nil {
-		switch environmentType {
-		case "standard":
-			factory = envMapping["host"]
-		case "tty":
-			factory = envMapping["host"]
-		}
-	}
+func CreateEnvironment(environmentType, folder string, backupFolder string, server pufferpanel.Server) (*pufferpanel.Environment, error) {
+	factory := envMapping[environmentType]
 
 	if factory == nil {
 		return nil, fmt.Errorf("undefined environment: %s", environmentType)
 	}
 
-	item := factory.Create(server.Identifier)
+	item := &pufferpanel.Environment{
+		Type:            factory.Key(),
+		ServerId:        server.Identifier,
+		ConsoleTracker:  pufferpanel.CreateTracker(),
+		StatusTracker:   pufferpanel.CreateTracker(),
+		StatsTracker:    pufferpanel.CreateTracker(),
+		ConsoleBuffer:   pufferpanel.CreateCache(),
+		BackupDirectory: filepath.Join(backupFolder, server.Identifier),
+		Wait:            &sync.WaitGroup{},
+		Server:          server,
+	}
+	item.Implementation = factory.Create()
 	err := utils.UnmarshalTo(server.Environment.Metadata, item)
 	if err != nil {
 		return nil, err
 	}
 
-	serverRoot := filepath.Join(folder, server.Identifier)
-	backupDirectory := filepath.Join(backupFolder, server.Identifier)
-	envCache := pufferpanel.CreateCache()
-
-	e := item.GetBase()
-	if e.RootDirectory == "" {
-		e.RootDirectory = serverRoot
+	if item.RootDirectory == "" {
+		item.RootDirectory = filepath.Join(folder, server.Identifier)
 	}
-	e.BackupDirectory = backupDirectory
 
-	e.ConsoleTracker = pufferpanel.CreateTracker()
-	e.StatusTracker = pufferpanel.CreateTracker()
-	e.StatsTracker = pufferpanel.CreateTracker()
-
-	e.ConsoleBuffer = envCache
-	e.Wait = &sync.WaitGroup{}
-	e.Wrapper = e.CreateWrapper()
-	e.Server = server
+	item.CreateWrapper()
 
 	return item, nil
 }
