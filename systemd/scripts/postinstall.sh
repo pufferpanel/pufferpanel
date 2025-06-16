@@ -12,3 +12,8 @@ exitCode=$?
 [ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
 
 chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/log/pufferpanel /var/lib/pufferpanel /var/www/pufferpanel
+
+if command -v apparmor_parser >/dev/null 2>&1
+then
+    apparmor_parser -r /etc/apparmor.d/unshare
+fi
