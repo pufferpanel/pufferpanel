@@ -64,6 +64,7 @@ var SecurityForceOpenat2 = asBool("security.forceOpenat2", false)
 var SecurityForceOpenat = asBool("security.forceOpenat", false)
 var SecurityTrustedProxies = asStringArray("security.trustedProxies", []string{})
 var SecurityTrustedProxyHeader = asString("security.trustedProxyHeader", "")
+var SecurityDisableUnshare = asBool("security.disableUnshare", false)
 
 var DockerRootPath = asString("docker.root", "")
 var DockerDisallowHost = asBool("docker.disallowHost", false)

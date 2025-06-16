@@ -332,7 +332,7 @@ var cmdList = []string{
 }
 
 func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err error) {
-	if t.DisableUnshare {
+	if t.DisableUnshare || config.SecurityDisableUnshare.Value() {
 		pr = exec.Command(cmd, args...)
 		pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 		pr.Dir = workDir

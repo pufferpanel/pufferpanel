@@ -236,6 +236,11 @@ func daemon() error {
 		logging.Error.Printf("Error creating binaries folder: %s", err.Error())
 	}
 
+	err = os.MkdirAll(config.CacheFolder.Value(), 0755)
+	if err != nil {
+		logging.Error.Printf("Error creating cache folder: %s", err.Error())
+	}
+
 	//update path to include our binary folder
 	newPath := os.Getenv("PATH")
 	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
