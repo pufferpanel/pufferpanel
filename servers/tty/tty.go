@@ -26,7 +26,8 @@ type tty struct {
 	lastStats    *pufferpanel.ServerStats
 	lastStatTime time.Time
 
-	DisableUnshare bool `json:"disableUnshare"`
+	DisableUnshare bool     `json:"disableUnshare"`
+	Mounts         []string `json:"mounts"`
 }
 
 func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
@@ -338,15 +339,30 @@ func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err e
 		pr.Dir = workDir
 		return
 	} else {
-		pr = exec.Command("bash", "-c",
-			strings.Join(append(cmdList,
-				fmt.Sprintf("mkdir -p {%s,%s,%s}", strings.TrimPrefix(workDir, "/"), strings.TrimPrefix(config.BinariesFolder.Value(), "/"), strings.TrimPrefix(config.CacheFolder.Value(), "/")),
-				fmt.Sprintf("mount --bind %s %s", workDir, strings.TrimPrefix(workDir, "/")),
-				fmt.Sprintf("mount --bind %s %s", config.BinariesFolder.Value(), strings.TrimPrefix(config.BinariesFolder.Value(), "/")),
-				fmt.Sprintf("mount --bind %s %s", config.CacheFolder.Value(), strings.TrimPrefix(config.CacheFolder.Value(), "/")),
-				"mount --rbind / .",
-				fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s %s", workDir, os.Getuid(), os.Getgid(), cmd, strings.Join(args, " ")),
-			), " && "))
+		workDirMount := removeRoot(workDir)
+		binaryFolderMount := removeRoot(config.BinariesFolder.Value())
+		cacheFolderMount := removeRoot(config.CacheFolder.Value())
+
+		mountFolders := []string{workDirMount, binaryFolderMount, cacheFolderMount}
+		for _, v := range t.Mounts {
+			mountFolders = append(mountFolders, removeRoot(v))
+		}
+
+		unshareArgs := append(cmdList,
+			fmt.Sprintf("mkdir -p {%s}", strings.Join(mountFolders, ",")),
+			fmt.Sprintf("mount --bind %s %s", workDir, workDirMount),
+			fmt.Sprintf("mount --bind %s %s", config.BinariesFolder.Value(), binaryFolderMount),
+			fmt.Sprintf("mount --bind %s %s", config.CacheFolder.Value(), cacheFolderMount),
+		)
+
+		for _, v := range t.Mounts {
+			unshareArgs = append(unshareArgs, fmt.Sprintf("mount --bind %s %s", v, removeRoot(v)))
+		}
+
+		unshareArgs = append(unshareArgs, "mount --rbind / .",
+			fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s %s", workDir, os.Getuid(), os.Getgid(), cmd, strings.Join(args, " ")))
+
+		pr = exec.Command("bash", "-c", strings.Join(unshareArgs, " && "))
 		pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
 		if err != nil {
 			return
@@ -378,4 +394,8 @@ func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err e
 		}
 	}
 	return
+}
+
+func removeRoot(path string) string {
+	return strings.TrimPrefix(path, "/")
 }
