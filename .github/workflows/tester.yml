@@ -90,8 +90,8 @@ jobs:
 
       - name: Build AMD64
         run: |
-          go build -o build-artifacts/pufferpanel_amd64 -v github.com/pufferpanel/pufferpanel/v3/cmd
-          go build -o build-artifacts/templatetester_amd64 -v github.com/pufferpanel/pufferpanel/v3/tools/templatetester
+          go build -o build-artifacts/pufferpanel_x64 -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go build -o build-artifacts/templatetester_x64 -v github.com/pufferpanel/pufferpanel/v3/tools/templatetester
         env:
           GOOS: linux
           GOARCH: amd64
@@ -115,7 +115,7 @@ jobs:
 
       - name: Get templates
         run: |
-          build-artifacts/templatetester_amd64 --print
+          build-artifacts/templatetester_x64 --print
 
       - name: Trigger tests
         id: trigger
