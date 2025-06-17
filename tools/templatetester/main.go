@@ -100,6 +100,7 @@ func main() {
 			_, err = file.WriteString(fmt.Sprintf("TEMPLATES=%s\n", msg))
 			panicIf(err)
 		}
+		return
 	}
 
 	//we have our test set, let's kick off a panel instance
