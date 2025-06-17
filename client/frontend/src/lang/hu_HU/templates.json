@@ -3,7 +3,7 @@
   "Save": "Sablon mentése",
   "Saved": "Sablon elmentve",
   "Delete": "Sablon törlése",
-  "ConfirmDelete": "Do you really want to delete the template {name}?",
+  "ConfirmDelete": "Törölni szeretnéd {name}?",
   "Deleted": "Sablon törölve",
   "New": "Új sablon",
   "EditLocalOnly": "You can only save changes made to local templates",
