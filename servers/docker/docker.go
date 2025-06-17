@@ -443,7 +443,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 
 	containerConfig.Env = make([]string, 0)
 	for k, v := range envVars {
-		containerConfig.Env = append(containerConfig.Env, fmt.Sprintf("%s=%s", k, v))
+		containerConfig.Env = append(containerConfig.Env, fmt.Sprintf("%s=%s", k, utils.ReplaceTokens(v, data.Variables)))
 	}
 
 	if len(containerConfig.Entrypoint) == 0 && len(cmdSlice) > 0 {
