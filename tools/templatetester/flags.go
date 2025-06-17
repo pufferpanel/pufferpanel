@@ -22,6 +22,7 @@ func init() {
 	flag.StringVar(&files, "files", "", "")
 	flag.StringVar(&CmdFlags.PufferpanelBinary, "binary", "pufferpanel", "")
 	flag.StringVar(&CmdFlags.Host, "host", "http://127.0.0.1:8080", "")
+	flag.BoolVar(&CmdFlags.PrintTests, "print", false, "")
 	flag.Parse()
 
 	if skip != "" {
@@ -54,4 +55,5 @@ type Flags struct {
 	Files             []string
 	PufferpanelBinary string
 	Host              string
+	PrintTests        bool
 }

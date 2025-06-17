@@ -4,48 +4,27 @@ on:
     types:
       - template-tester
 
-env:
-  TAG: templatetester
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   run-tester:
     name: Run Tool
-    runs-on: template-tester
+    runs-on: template-tester-${{ matrix.arch }}
     permissions:
       packages: read
 
     strategy:
       matrix:
         template: ${{ github.event.client_payload.templates }}
+        arch: [ amd64 ]
       fail-fast: false
 
     steps:
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Download assets
+        uses: actions/download-artifact@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Prepare
-        run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
-          docker rm -f templatetester-${{ matrix.template }} || true
-          docker volume rm -f template-tester-${{ matrix.template }} || true
-          echo "::add-mask::${{ secrets.RUNNER_IP }}"
+          name: tool-binaries
+          run-id: '${{ github.event.client_payload.run_id }}'
 
       - name: Run
         run: |
-          docker volume create template-tester-${{ matrix.template }}
-          mountPath=$(docker volume inspect -f {{.Mountpoint}} template-tester-${{ matrix.template }})
-          echo "Docker will mount from $mountPath"
-          docker run --rm \
-                 --network host \
-                 --name templatetester-${{ matrix.template }} \
-                 -v template-tester-${{ matrix.template }}:/tester \
-                 -v /var/run/docker.sock:/var/run/docker.sock \
-                 -e PUFFER_DOCKER_ROOT="$mountPath" \
-                 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --workDir=/tester --files=${{ matrix.template }}
-          docker volume rm -f template-tester-${{ matrix.template }}
+          chmod +x pufferpanel_* templatetester_*
+          ./templatetester_${{ matrix.arch }} --require=${{ matrix.template }} --binary=./pufferpanel_${{ matrix.arch }}

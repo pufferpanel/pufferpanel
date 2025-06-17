@@ -13,6 +13,7 @@ import (
 	"gorm.io/gorm"
 	"io"
 	"io/fs"
+	"log"
 	"math"
 	"net"
 	"net/http"
@@ -33,13 +34,13 @@ import (
 // such as ones which need Steam credentials or to actually own the game
 func main() {
 	if len(CmdFlags.Skip) != 0 {
-		fmt.Printf("Skip rules: %s\n", strings.Join(CmdFlags.Skip, " "))
+		log.Printf("Skip rules: %s", strings.Join(CmdFlags.Skip, " "))
 	}
 	if len(CmdFlags.Required) != 0 {
-		fmt.Printf("Require rules: %s\n", strings.Join(CmdFlags.Required, " "))
+		log.Printf("Require rules: %s", strings.Join(CmdFlags.Required, " "))
 	}
 	if len(CmdFlags.Files) != 0 {
-		fmt.Printf("Files to test rules: %s\n", strings.Join(CmdFlags.Files, " "))
+		log.Printf("Files to test rules: %s", strings.Join(CmdFlags.Files, " "))
 	}
 
 	var err error
@@ -74,6 +75,32 @@ func main() {
 	}
 
 	var tests = buildTests()
+
+	if len(tests) == 0 {
+		log.Printf("No tests were found")
+		return
+	}
+
+	if CmdFlags.PrintTests {
+		data := make([]string, 0)
+		for _, v := range tests {
+			data = append(data, "\""+v.Name+"\"")
+		}
+		msg := strings.Join(data, ",")
+		envFile := os.ExpandEnv("GITHUB_ENV")
+		if envFile == "" {
+			log.Printf("No env file found, printing to console")
+			log.Println(msg)
+		} else {
+			file, err := os.OpenFile(envFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			panicIf(err)
+			defer func() {
+				_ = file.Close()
+			}()
+			_, err = file.WriteString(fmt.Sprintf("TEMPLATES=%s\n", msg))
+			panicIf(err)
+		}
+	}
 
 	//we have our test set, let's kick off a panel instance
 	//for this, we're going to run the binary, and wait for the "service" to start up (using the unix socket)
@@ -137,7 +164,7 @@ func main() {
 	<-waiter
 
 	//now we can inject our admin user in, so we can proceed to spin up the servers
-	fmt.Println("Starting database edits")
+	log.Println("Starting database edits")
 	db, err := gorm.Open(sqlite.Open(dbConn))
 	panicIf(err)
 	panicIf(initLoginAdminUser(db))
@@ -149,7 +176,7 @@ func main() {
 	session, err := createSession(db)
 	panicIf(err)
 
-	fmt.Println("Now starting tests")
+	log.Println("Now starting tests")
 
 	for i := range tests {
 		runTest(client, session, tests[i])
@@ -157,7 +184,7 @@ func main() {
 }
 
 func runTest(client *http.Client, session string, test *TestScenario) {
-	fmt.Println("\nStarting: " + test.Name)
+	log.Println("\nStarting: " + test.Name)
 	urlPrefix := CmdFlags.Host + "/api/servers/" + test.Name
 
 	var data []byte

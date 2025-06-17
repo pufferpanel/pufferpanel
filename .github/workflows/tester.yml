@@ -2,95 +2,125 @@ name: Build Tool - Tester
 on:
   workflow_dispatch:
     inputs:
-      skip-build:
-        description: 'Skips building of the image'
+      no-run-tool:
+        description: 'Skips running of the tool'
         default: false
         required: true
         type: boolean
 
 env:
-  TAG: templatetester
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  SWAG_VERSION: "1.16.4"
+  NODE_VERSION: "22"
 
 jobs:
   build-tool:
     name: Build Tool
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-    strategy:
-      matrix:
-        platform: [ "linux/amd64" ]
-    if: ${{ ! inputs.skip-build }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Check out code
+        uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log into registry ${{ env.REGISTRY }}
-        uses: docker/login-action@v3
+      - name: Set up Go
+        uses: actions/setup-go@v5
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          go-version-file: 'go.mod'
 
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: type=raw,${{ env.TAG }}
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+          cache-dependency-path: 'client/yarn.lock'
 
-      - name: Prep
+      - name: Restore Go BIN
+        id: restore-go-bin
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/bin
+          key: ${{ runner.os }}-swag-${{ env.SWAG_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-swag-
+
+      - name: Download Go Binaries
+        if: steps.restore-go-bin.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/swaggo/swag/releases/download/v${{ env.SWAG_VERSION }}/swag_${{ env.SWAG_VERSION }}_Linux_x86_64.tar.gz
+          mkdir -p ~/go/bin
+          tar -zxf swag*.tar.gz -C ~/go/bin
+          rm -rf swag*.tar.gz
+          
+      - name: Set CurseForge Key
         env:
-          secret_set: ${{ secrets.CURSEFORGE_CODE != '' }}
-        if: ${{ env.secret_set }}
+          secret_set: ${{ secrets.CURSEFORGE_CODE }}
+        if: ${{ env.secret_set != '' }}
         run: |
           echo '${{ secrets.CURSEFORGE_CODE }}' > config/curseforge.go
 
-      - name: Build and push Docker image
-        id: build-and-push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: Dockerfile-${{ env.TAG }}
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            sha: ${{ github.sha }}
-            version: ${{ env.VERSION }}
-            curseforgeKey: ${{ secrets.CURSEFORGE_KEY }}
-          platforms: ${{ matrix.platform }}
+      - name: Download Go modules
+        run: |
+          go mod download
 
-  run-tool:
-    name: Run Tool
-    runs-on: ubuntu-latest
+      - name: Generate Swagger Docs
+        run: |
+          ~/go/bin/swag init --md . -o web/swagger -g web/loader.go
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: yarn install, build
+        run: |
+          npm install -g yarn
+          yarn install
+          env VITE_CHECK_ENV="true" yarn build
+        env:
+          CI: true
+        working-directory: client
+          
+      - name: Download APT packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --download-only -y gcc-aarch64-linux-gnu
+
+      - name: APT Install
+        run: |
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Prep
+        run: |
+          mkdir build-artifacts
+
+      - name: Build AMD64
+        run: |
+          go build -o build-artifacts/pufferpanel_amd64 -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go build -o build-artifacts/templatetester_amd64 -v github.com/pufferpanel/pufferpanel/v3/tools/templatetester
+        env:
+          GOOS: linux
+          GOARCH: amd64
+
+      - name: Build ARM64
+        run: |
+          go build -o build-artifacts/pufferpanel_arm64 -v github.com/pufferpanel/pufferpanel/v3/cmd
+          go build -o build-artifacts/templatetester_arm64 -v github.com/pufferpanel/pufferpanel/v3/tools/templatetester
+        env:
+          GOOS: linux
+          GOARCH: arm64
+          CC: aarch64-linux-gnu-gcc
+          CGO_ENABLED: 1
+
+      - name: Generate job artifact
+        uses: actions/upload-artifact@v4
         with:
-          repository: "pufferpanel/templates"
-          path: templates
-          ref: v3
+          name: tool-binaries
+          path: build-artifacts/
+          if-no-files-found: error
 
       - name: Get templates
         run: |
-          cd templates
-          FILES=$(find * -name "*.json" ! -name "data.json" ! -name "spec.json" -printf '%P\n' | awk '{print "\""$0"\""}' | tr '\n' ',' | sed 's/,$/\n/')
-          echo "TEMPLATES=$FILES" >> $GITHUB_ENV
+          build-artifacts/templatetester_amd64 --print
 
       - name: Trigger tests
         id: trigger
+        if: ${{ ! inputs.no-run-tool }}
         uses: peter-evans/repository-dispatch@v2
         with:
           event-type: template-tester
-          client-payload: '{ "templates": [ ${{ env.TEMPLATES }} ] }'
+          client-payload: '{ "templates": [ ${{ env.TEMPLATES }} ], "run_id": "${{ github.run_id }}" }'

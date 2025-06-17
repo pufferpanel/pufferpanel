@@ -119,14 +119,14 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 	return err
 }
 
-func (d *Docker) KillImpl(environment *pufferpanel.Environment) (err error) {
+func (d *Docker) KillImpl(environment *pufferpanel.Environment) error {
 	running, err := environment.IsRunning()
 	if err != nil {
 		return err
 	}
 
 	if !running {
-		return
+		return nil
 	}
 
 	dockerClient, err := d.getClient()
@@ -134,7 +134,7 @@ func (d *Docker) KillImpl(environment *pufferpanel.Environment) (err error) {
 		return err
 	}
 	err = dockerClient.ContainerKill(context.Background(), environment.ServerId, "SIGKILL")
-	return
+	return err
 }
 
 func (d *Docker) IsRunningImpl(environment *pufferpanel.Environment) (bool, error) {
