@@ -19,6 +19,25 @@ func TestReplaceTokens(t *testing.T) {
 	assert.Equal(t, "TEST val1", resultTest)
 }
 
+func TestReplaceTokensInMaps(t *testing.T) {
+	mapping := createSourceMap()
+	data := []string{
+		"TEST ${val1}",
+		"TEST2",
+		"TEST ${1234567}",
+		"${int}",
+	}
+	expected := []string{
+		"TEST RESULT1",
+		"TEST2",
+		"TEST RESULT3",
+		"436",
+	}
+
+	resultTest := ReplaceTokensInArr(data, mapping)
+	assert.Equal(t, expected, resultTest)
+}
+
 func createSourceMap() map[string]interface{} {
 	source := make(map[string]interface{})
 

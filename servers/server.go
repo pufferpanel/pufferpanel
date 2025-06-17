@@ -28,9 +28,9 @@ type Server struct {
 	pufferpanel.DaemonServer
 	pufferpanel.Server
 
-	CrashCounter       int                     `json:"-"`
-	RunningEnvironment pufferpanel.Environment `json:"-"`
-	Scheduler          *Scheduler              `json:"-"`
+	CrashCounter       int                      `json:"-"`
+	RunningEnvironment *pufferpanel.Environment `json:"-"`
+	Scheduler          *Scheduler               `json:"-"`
 	stopChan           chan bool
 	waitForConsole     sync.Locker
 	fileServer         files.FileServer
@@ -428,7 +428,7 @@ func (p *Server) Execute(command string) (err error) {
 	return
 }
 
-func (p *Server) SetEnvironment(environment pufferpanel.Environment) (err error) {
+func (p *Server) SetEnvironment(environment *pufferpanel.Environment) (err error) {
 	p.RunningEnvironment = environment
 	return
 }
@@ -437,7 +437,7 @@ func (p *Server) Id() string {
 	return p.Identifier
 }
 
-func (p *Server) GetEnvironment() pufferpanel.Environment {
+func (p *Server) GetEnvironment() *pufferpanel.Environment {
 	return p.RunningEnvironment
 }
 
@@ -794,7 +794,7 @@ func (p *Server) Log(l *log.Logger, format string, obj ...interface{}) {
 
 func (p *Server) RunCondition(condition string, extraData map[string]interface{}) (bool, error) {
 	data := map[string]interface{}{
-		conditions.VariableEnv:      p.RunningEnvironment.GetBase().Type,
+		conditions.VariableEnv:      p.RunningEnvironment.Type,
 		conditions.VariableServerId: p.Id(),
 	}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/creack/pty"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/shirou/gopsutil/process"
@@ -20,19 +21,23 @@ import (
 )
 
 type tty struct {
-	*pufferpanel.BaseEnvironment
-	mainProcess *exec.Cmd
-
+	mainProcess  *exec.Cmd
 	statLocker   sync.Mutex
 	lastStats    *pufferpanel.ServerStats
 	lastStatTime time.Time
+
+	DisableUnshare bool     `json:"disableUnshare"`
+	Mounts         []string `json:"mounts"`
 }
 
-func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
-	t.Wait.Add(1)
+func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
+	environment.Wait.Add(1)
 
-	pr := exec.Command(steps.Command, steps.Arguments...)
-	pr.Dir = t.GetRootDirectory()
+	pr, err := t.createCmd(environment.GetRootDirectory(), steps.Command, steps.Arguments)
+	if err != nil {
+		return err
+	}
+	pr.Dir = environment.GetRootDirectory()
 
 	var envVars = make(map[string]string)
 
@@ -46,7 +51,7 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 		}
 		envVars[key] = value
 	}
-	envVars["HOME"] = t.GetRootDirectory()
+	envVars["HOME"] = environment.GetRootDirectory()
 	envVars["TERM"] = "xterm-256color"
 	for k, v := range steps.Environment {
 		envVars[k] = v
@@ -56,38 +61,37 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 		pr.Env = append(pr.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
-	pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 	t.mainProcess = pr
-	t.DisplayToConsole(true, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
-	t.Log(logging.Info, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
+	environment.DisplayToConsole(true, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
+	environment.Log(logging.Info, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 
-	_ = t.StatusTracker.WriteMessage(pufferpanel.Transmission{
+	_ = environment.StatusTracker.WriteMessage(pufferpanel.Transmission{
 		Message: pufferpanel.ServerRunning{
 			Running:    true,
-			Installing: t.IsInstalling(),
+			Installing: environment.IsInstalling(),
 		},
 		Type: pufferpanel.MessageTypeStatus,
 	})
 
 	processTty, err := pty.Start(pr)
 	if err != nil {
-		t.Wait.Done()
+		environment.Wait.Done()
 		return
 	}
 
-	t.BaseEnvironment.CreateConsoleStdinProxy(steps.StdInConfig, processTty)
-	t.BaseEnvironment.Console.Start()
+	environment.CreateConsoleStdinProxy(steps.StdInConfig, processTty)
+	environment.Console.Start()
 
 	go func(proxy io.Writer) {
 		_, _ = io.Copy(proxy, processTty)
-	}(t.Wrapper)
+	}(environment.Wrapper)
 
-	go t.handleClose(steps.Callback)
+	go t.handleClose(environment, steps.Callback)
 	return
 }
 
-func (t *tty) kill() (err error) {
-	running, err := t.IsRunning()
+func (t *tty) KillImpl(environment *pufferpanel.Environment) (err error) {
+	running, err := environment.IsRunning()
 	if err != nil {
 		return
 	}
@@ -97,8 +101,8 @@ func (t *tty) kill() (err error) {
 	return t.mainProcess.Process.Kill()
 }
 
-func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
-	running, err := t.IsRunning()
+func (t *tty) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.ServerStats, error) {
+	running, err := environment.IsRunning()
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +112,7 @@ func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
 			Memory: 0,
 		}
 
-		if t.Server.Stats.Type == "jcmd" {
+		if environment.Server.Stats.Type == "jcmd" {
 			stats.Jvm = &utils.JvmStats{}
 		}
 
@@ -136,7 +140,7 @@ func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
 		Memory: cast.ToFloat64(memMap.RSS),
 	}
 
-	if t.Server.Stats.Type == "jcmd" {
+	if environment.Server.Stats.Type == "jcmd" {
 		var socket *net.UnixConn
 		if socket, err = t.initiateJCMD(); err == nil && socket != nil {
 			for _, s := range []string{"1", "\x00", "jcmd", "\x00", "GC.heap_info", "\x00", "\x00", "\x00"} {
@@ -167,8 +171,8 @@ func (t *tty) GetStats() (*pufferpanel.ServerStats, error) {
 	return stats, nil
 }
 
-func (t *tty) SendCode(code int) error {
-	running, err := t.IsRunning()
+func (t *tty) SendCodeImpl(environment *pufferpanel.Environment, code int) error {
+	running, err := environment.IsRunning()
 
 	if err != nil || !running {
 		return err
@@ -177,15 +181,15 @@ func (t *tty) SendCode(code int) error {
 	return t.mainProcess.Process.Signal(syscall.Signal(code))
 }
 
-func (t *tty) GetUid() int {
+func (t *tty) GetUidImpl(*pufferpanel.Environment) int {
 	return -1
 }
 
-func (t *tty) GetGid() int {
+func (t *tty) GetGidImpl(*pufferpanel.Environment) int {
 	return -1
 }
 
-func (t *tty) isRunning() (isRunning bool, err error) {
+func (t *tty) IsRunningImpl(*pufferpanel.Environment) (isRunning bool, err error) {
 	isRunning = t.mainProcess != nil && t.mainProcess.Process != nil
 	if isRunning {
 		pr, pErr := os.FindProcess(t.mainProcess.Process.Pid)
@@ -198,10 +202,10 @@ func (t *tty) isRunning() (isRunning bool, err error) {
 	return
 }
 
-func (t *tty) handleClose(callback func(exitCode int)) {
+func (t *tty) handleClose(environment *pufferpanel.Environment, callback func(exitCode int)) {
 	err := t.mainProcess.Wait()
 
-	_ = t.Console.Close()
+	_ = environment.Console.Close()
 
 	var exitCode int
 	if t.mainProcess.ProcessState == nil || err != nil {
@@ -214,14 +218,14 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 	} else {
 		exitCode = t.mainProcess.ProcessState.ExitCode()
 	}
-	t.LastExitCode = exitCode
+	environment.LastExitCode = exitCode
 
 	if err != nil {
-		t.Log(logging.Error, "Error waiting on process: %s\n", err)
+		environment.Log(logging.Error, "Error waiting on process: %s\n", err)
 	}
 
 	if t.mainProcess != nil && t.mainProcess.ProcessState != nil {
-		t.Log(logging.Debug, "%s\n", t.mainProcess.ProcessState.String())
+		environment.Log(logging.Debug, "%s\n", t.mainProcess.ProcessState.String())
 	}
 
 	if t.mainProcess != nil && t.mainProcess.Process != nil {
@@ -231,14 +235,19 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 	t.statLocker.Lock()
 	t.statLocker.Unlock()
 
+	//if we are using unshare AND we're in tmp, we can nuke the workspace at this point
+	if !t.DisableUnshare && strings.HasSuffix(t.mainProcess.Dir, os.TempDir()) {
+		_ = os.RemoveAll(t.mainProcess.Dir)
+	}
+
 	t.mainProcess = nil
 
-	t.Wait.Done()
+	environment.Wait.Done()
 
-	_ = t.StatusTracker.WriteMessage(pufferpanel.Transmission{
+	_ = environment.StatusTracker.WriteMessage(pufferpanel.Transmission{
 		Message: pufferpanel.ServerRunning{
 			Running:    false,
-			Installing: t.IsInstalling(),
+			Installing: environment.IsInstalling(),
 		},
 		Type: pufferpanel.MessageTypeStatus,
 	})
@@ -309,4 +318,84 @@ func (t *tty) initiateJCMD() (*net.UnixConn, error) {
 	}
 
 	return net.DialUnix("unix", nil, addr)
+}
+
+var cmdList = []string{
+	"mkdir -p {dev,bin,usr,lib,lib64,etc,tmp,proc}",
+	"mount -t tmpfs -o size=50m tmpfs tmp",
+	"mount --bind /bin bin",
+	"mount --bind /lib lib",
+	"mount --bind /lib64 lib64",
+	"mount --rbind /usr usr",
+	"mount --rbind /etc etc",
+	"mount --rbind /dev dev",
+	"mount --rbind /proc proc",
+}
+
+func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err error) {
+	if t.DisableUnshare || config.SecurityDisableUnshare.Value() {
+		pr = exec.Command(cmd, args...)
+		pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
+		pr.Dir = workDir
+		return
+	} else {
+		workDirMount := removeRoot(workDir)
+		binaryFolderMount := removeRoot(config.BinariesFolder.Value())
+		cacheFolderMount := removeRoot(config.CacheFolder.Value())
+
+		mountFolders := []string{workDirMount, binaryFolderMount, cacheFolderMount}
+		for _, v := range t.Mounts {
+			mountFolders = append(mountFolders, removeRoot(v))
+		}
+
+		unshareArgs := append(cmdList,
+			fmt.Sprintf("mkdir -p {%s}", strings.Join(mountFolders, ",")),
+			fmt.Sprintf("mount --bind %s %s", workDir, workDirMount),
+			fmt.Sprintf("mount --bind %s %s", config.BinariesFolder.Value(), binaryFolderMount),
+			fmt.Sprintf("mount --bind %s %s", config.CacheFolder.Value(), cacheFolderMount),
+		)
+
+		for _, v := range t.Mounts {
+			unshareArgs = append(unshareArgs, fmt.Sprintf("mount --bind %s %s", v, removeRoot(v)))
+		}
+
+		unshareArgs = append(unshareArgs, "mount --rbind / .",
+			fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s %s", workDir, os.Getuid(), os.Getgid(), cmd, strings.Join(args, " ")))
+
+		pr = exec.Command("bash", "-c", strings.Join(unshareArgs, " && "))
+		pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
+		if err != nil {
+			return
+		}
+		pr.SysProcAttr = &syscall.SysProcAttr{
+			Setctty: true,
+			Setsid:  true,
+			Unshareflags: syscall.CLONE_NEWUSER |
+				syscall.CLONE_NEWNS |
+				syscall.CLONE_FILES |
+				syscall.CLONE_NEWCGROUP |
+				syscall.CLONE_NEWIPC |
+				syscall.CLONE_NEWUTS,
+			Credential: &syscall.Credential{Uid: 0, Gid: 0, NoSetGroups: true},
+			UidMappings: []syscall.SysProcIDMap{
+				{
+					ContainerID: 0,
+					HostID:      os.Getuid(),
+					Size:        1,
+				},
+			},
+			GidMappings: []syscall.SysProcIDMap{
+				{
+					ContainerID: 0,
+					HostID:      os.Getgid(),
+					Size:        1,
+				},
+			},
+		}
+	}
+	return
+}
+
+func removeRoot(path string) string {
+	return strings.TrimPrefix(path, "/")
 }

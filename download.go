@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-func DownloadFile(url, fileName string, env Environment) error {
+func DownloadFile(url, fileName string, env *Environment) error {
 	target, err := os.Create(filepath.Join(env.GetRootDirectory(), fileName))
 	defer utils.Close(target)
 	if err != nil {
@@ -57,7 +57,7 @@ func DownloadFileToCache(url, fileName string) error {
 	return err
 }
 
-func DownloadViaMaven(downloadUrl string, env Environment) (string, error) {
+func DownloadViaMaven(downloadUrl string, env *Environment) (string, error) {
 	localPath := filepath.Join(config.CacheFolder.Value(), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
 
 	if os.PathSeparator != '/' {

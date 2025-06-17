@@ -1,36 +1,29 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
-	"flag"
 	"fmt"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/client"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/servers"
-	docker2 "github.com/pufferpanel/pufferpanel/v3/servers/docker"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"github.com/spf13/cast"
+	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/scopes"
+	"github.com/pufferpanel/pufferpanel/v3/services"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"io"
 	"io/fs"
 	"log"
+	"math"
+	"net"
+	"net/http"
+	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
 )
-
-var templatesToSkip []string
-var mustTest []string
-var filesToTest []string
 
 // The purpose of this is to simply test all templates in our repo to the best of our ability
 // This will download all the templates, spin up a fake server using it, and attempt to run everything
@@ -40,42 +33,18 @@ var filesToTest []string
 // Arguments are templates to ignore, for ones which require data that we cannot actually safely test
 // such as ones which need Steam credentials or to actually own the game
 func main() {
-	var gitRef string
-	var skipStr string
-	var requiredStr string
-	var templateFolder string
-	var deleteTemp bool
-	var workingDir string
-	var reuse bool
-	var filesArg string
-	flag.StringVar(&gitRef, "gitRef", "refs/heads/v3", "")
-	flag.StringVar(&skipStr, "skip", "", "")
-	flag.StringVar(&requiredStr, "require", "", "")
-	flag.StringVar(&templateFolder, "path", "", "")
-	flag.BoolVar(&deleteTemp, "delete", true, "")
-	flag.StringVar(&workingDir, "workDir", "", "")
-	flag.BoolVar(&reuse, "reuse", false, "")
-	flag.StringVar(&filesArg, "files", "", "")
-	flag.Parse()
-
-	//just forces the config init to run, so we can then load the config values from ENV
-	_ = config.LoadConfigFile("")
-
-	if skipStr != "" {
-		templatesToSkip = strings.Split(skipStr, ",")
-		fmt.Printf("Skip rules: %s\n", strings.Join(templatesToSkip, " "))
+	if len(CmdFlags.Skip) != 0 {
+		log.Printf("Skip rules: %s", strings.Join(CmdFlags.Skip, " "))
 	}
-	if requiredStr != "" {
-		mustTest = strings.Split(requiredStr, ",")
-		fmt.Printf("Require rules: %s\n", strings.Join(mustTest, " "))
+	if len(CmdFlags.Required) != 0 {
+		log.Printf("Require rules: %s", strings.Join(CmdFlags.Required, " "))
 	}
-	if filesArg != "" {
-		filesToTest = strings.Split(filesArg, ",")
-		fmt.Printf("Files to test rules: %s\n", strings.Join(filesToTest, " "))
+	if len(CmdFlags.Files) != 0 {
+		log.Printf("Files to test rules: %s", strings.Join(CmdFlags.Files, " "))
 	}
 
 	var err error
-	if workingDir == "" {
+	if CmdFlags.WorkingDir == "" {
 		tmpDir := os.TempDir()
 		pattern := "puffertemplatetest"
 
@@ -85,11 +54,11 @@ func main() {
 			panicIf(err)
 		}
 
-		workingDir, err = os.MkdirTemp("", pattern)
+		CmdFlags.WorkingDir, err = os.MkdirTemp("", pattern)
 		panicIf(err)
 	} else {
-		err = filepath.WalkDir(workingDir, func(path string, info fs.DirEntry, err error) error {
-			if path == workingDir {
+		err = filepath.WalkDir(CmdFlags.WorkingDir, func(path string, info fs.DirEntry, err error) error {
+			if path == CmdFlags.WorkingDir {
 				return err
 			}
 			return os.RemoveAll(path)
@@ -99,389 +68,324 @@ func main() {
 		}
 	}
 
-	if deleteTemp {
+	if CmdFlags.DeleteTemp {
 		defer func() {
-			_ = os.RemoveAll(workingDir)
+			_ = os.RemoveAll(CmdFlags.WorkingDir)
 		}()
 	}
 
-	_ = config.DataRootFolder.Set(workingDir, false)
-	_ = config.LogsFolder.Set(filepath.Join(workingDir, "logs"), false)
-	_ = config.DatabaseDialect.Set("sqlite3", false)
-	_ = config.DatabaseUrl.Set("file:test.db?cache=shared&mode=memory", false)
-	_ = config.ConsoleForward.Set(true, false)
+	var tests = buildTests()
 
-	err = os.MkdirAll(config.ServersFolder.Value(), 0755)
-	panicIf(err)
-	err = os.MkdirAll(config.BinariesFolder.Value(), 0755)
-	panicIf(err)
-	err = os.MkdirAll(config.CacheFolder.Value(), 0755)
-	panicIf(err)
-	err = os.MkdirAll(config.LogsFolder.Value(), 0755)
-	panicIf(err)
-
-	newPath := os.Getenv("PATH")
-	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
-	if !strings.Contains(newPath, fullPath) {
-		_ = os.Setenv("PATH", newPath+":"+fullPath)
+	if len(tests) == 0 {
+		log.Printf("No tests were found")
+		return
 	}
 
-	logging.Initialize(false)
-	_ = docker2.InitContainerMountSource()
-
-	//this may require a DB, so we are going to pretend we have one
-	//because of how code works, we're going to abuse our own system
-	//db, err := database.GetConnection()
-	//panicIf(err)
-
-	//get all templates
-	if templateFolder == "" {
-		if templateFolder = os.Getenv("TEMPLATE_PATH"); templateFolder == "" {
-			templateFolder = filepath.Join(workingDir, "templates")
-			err = os.MkdirAll(templateFolder, 0755)
-			panicIf(err)
-
-			log.Printf("Cloning template repo")
-			_, err = git.PlainClone(templateFolder, false, &git.CloneOptions{
-				URL:           "https://github.com/PufferPanel/templates",
-				ReferenceName: plumbing.ReferenceName(gitRef),
-				SingleBranch:  true,
-				Depth:         1,
-			})
-			panicIf(err)
+	if CmdFlags.PrintTests {
+		data := make([]string, 0)
+		for _, v := range tests {
+			data = append(data, "\""+v.Name+"\"")
 		}
-	}
-
-	var templateFolders []os.DirEntry
-	templateFolders, err = os.ReadDir(templateFolder)
-	panicIf(err)
-
-	testScenarios := make([]*TestScenario, 0)
-
-	for _, folder := range templateFolders {
-		if !folder.IsDir() || strings.HasPrefix(folder.Name(), ".") {
-			continue
-		}
-
-		if _, err = os.Stat(filepath.Join(templateFolder, folder.Name(), ".skip")); err == nil {
-			continue
-		}
-
-		var files []os.DirEntry
-		files, err = os.ReadDir(filepath.Join(templateFolder, folder.Name()))
-		panicIf(err)
-
-		for _, file := range files {
-			if file.Name() == "data.json" {
-				continue
-			}
-
-			if len(filesToTest) > 0 {
-				test := false
-				for _, t := range filesToTest {
-					if t == file.Name() {
-						test = true
-						break
-					}
-				}
-				if !test {
-					continue
-				}
-			}
-
-			filePath := filepath.Join(templateFolder, folder.Name(), file.Name())
-			if strings.HasSuffix(file.Name(), ".json") {
-				tmp := &TestTemplate{}
-				tmp.Name = strings.TrimSuffix(file.Name(), ".json")
-
-				tmp.Template, err = os.ReadFile(filePath)
-				panicIf(err)
-
-				_, err = os.Stat(filepath.Join(templateFolder, folder.Name(), "data.txt"))
-				if err == nil {
-					tmp.Variables, err = readDataTxtFile(filepath.Join(templateFolder, folder.Name(), "data.txt"))
-					panicIf(err)
-				} else if !os.IsNotExist(err) {
-					panicIf(err)
-				}
-
-				_, err = os.Stat(filepath.Join(templateFolder, folder.Name(), "data.json"))
-				if err == nil {
-					tests, err := readDataJsonFile(filepath.Join(templateFolder, folder.Name(), "data.json"))
-					for _, v := range tests {
-						testScenarios = append(testScenarios, &TestScenario{
-							Name: v.Name,
-							Test: &TestTemplate{
-								Template:           tmp.Template,
-								Name:               tmp.Name,
-								Variables:          v.Variables,
-								Environment:        v.Environment,
-								IgnoreExitCode:     v.IgnoreExitCode,
-								RuntimeRequirement: v.RuntimeRequirement,
-							},
-						})
-					}
-					panicIf(err)
-				} else if !os.IsNotExist(err) {
-					panicIf(err)
-				} else {
-					//no data json, which means it's a single test
-					//but, each template could support envs, so auto-process each
-
-					template := pufferpanel.Server{}
-					err = json.NewDecoder(bytes.NewReader(tmp.Template)).Decode(&template)
-					panicIf(err)
-
-					if len(template.SupportedEnvironments) > 0 {
-						for _, v := range template.SupportedEnvironments {
-							z := &TestTemplate{
-								Template:           tmp.Template,
-								Name:               tmp.Name,
-								Environment:        make(map[string]interface{}),
-								Variables:          make(map[string]interface{}),
-								RuntimeRequirement: tmp.RuntimeRequirement,
-							}
-
-							scenario := &TestScenario{
-								Name: z.Name,
-								Test: z,
-							}
-							if v.Type != "host" {
-								scenario.Name = scenario.Name + "-" + v.Type
-							}
-
-							for r, p := range v.Metadata {
-								scenario.Test.Environment[r] = p
-							}
-
-							scenario.Test.Environment["type"] = v.Type
-
-							testScenarios = append(testScenarios, scenario)
-						}
-					} else {
-						testScenarios = append(testScenarios, &TestScenario{
-							Name: tmp.Name,
-							Test: tmp,
-						})
-					}
-				}
-			}
-		}
-	}
-
-	var docker *client.Client
-	ctx := context.Background()
-
-	finalScenarioList := make([]*TestScenario, 0)
-	for _, scenario := range testScenarios {
-		skip := false
-		for _, v := range templatesToSkip {
-			if utils.CompareWildcard(scenario.Name, v) {
-				skip = true
-				break
-			}
-		}
-		if skip {
-			for _, v := range mustTest {
-				if utils.CompareWildcard(scenario.Name, v) {
-					skip = false
-					break
-				}
-			}
-
-			if skip {
-				log.Printf("Skipping %s", scenario.Name)
-				continue
-			}
-		}
-		log.Printf("Will run test for: %s", scenario.Name)
-		finalScenarioList = append(finalScenarioList, scenario)
-	}
-
-	//now... we can create servers from each one of them
-	for _, scenario := range finalScenarioList {
-		log.Printf("Starting test for %s", scenario.Name)
-
-		template := scenario.Test
-
-		if strings.HasSuffix(scenario.Name, "-docker") {
-			//kill off any existing docker containers
-			if docker == nil {
-				docker, err = client.NewClientWithOpts(client.FromEnv)
-				panicIf(err)
-				docker.NegotiateAPIVersion(ctx)
-			}
-
-			opts := container.ListOptions{
-				Filters: filters.NewArgs(),
-			}
-
-			opts.All = true
-			opts.Filters.Add("name", scenario.Name)
-
-			existingContainers, err := docker.ContainerList(ctx, opts)
-			panicIf(err)
-			if len(existingContainers) > 0 {
-				err = docker.ContainerRemove(ctx, scenario.Name, container.RemoveOptions{
-					Force: true,
-				})
-				panicIf(err)
-			}
-		}
-
-		buf := bytes.NewReader(template.Template)
-
-		log.Printf("Creating server")
-		prg := servers.CreateProgram()
-		err = json.NewDecoder(buf).Decode(prg)
-		panicIf(err)
-		prg.Identifier = strings.ReplaceAll(scenario.Name, "+", "")
-
-		if template.Variables != nil {
-			for k, v := range template.Variables {
-				variable := prg.Variables[k]
-				variable.Value = v
-				prg.Variables[k] = variable
-			}
-		}
-
-		if len(template.Environment) > 0 {
-			prg.Environment = pufferpanel.MetadataType{
-				Type:     cast.ToString(template.Environment["type"]),
-				Metadata: template.Environment,
-			}
-		}
-
-		if reuse {
-			_ = os.Remove(filepath.Join(config.ServersFolder.Value(), prg.Identifier+".json"))
+		msg := strings.Join(data, ",")
+		envFile := os.ExpandEnv("GITHUB_ENV")
+		if envFile == "" {
+			log.Printf("No env file found, printing to console")
+			log.Println(msg)
 		} else {
-			_ = os.RemoveAll(filepath.Join(config.ServersFolder.Value(), prg.Identifier))
-		}
-
-		prg, err = servers.Create(prg)
-		panicIf(err)
-
-		err = prg.Install()
-		panicIf(err)
-
-		err = runServer(prg, template.RuntimeRequirement)
-		panicIf(err)
-
-		running, err := prg.IsRunning()
-		panicIf(err)
-
-		if running {
-			panic(errors.New("server is still running"))
-		}
-
-		if !template.IgnoreExitCode && prg.RunningEnvironment.GetLastExitCode() != prg.Execution.ExpectedExitCode {
-			panicIf(fmt.Errorf("exit code status %d", prg.RunningEnvironment.GetLastExitCode()))
-		}
-
-		err = prg.Destroy()
-		panicIf(err)
-
-		//force delete files
-		if reuse {
-			_ = os.Remove(filepath.Join(config.ServersFolder.Value(), prg.Identifier+".json"))
-		} else {
-			_ = os.RemoveAll(filepath.Join(config.ServersFolder.Value(), prg.Identifier))
+			file, err := os.OpenFile(envFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			panicIf(err)
+			defer func() {
+				_ = file.Close()
+			}()
+			_, err = file.WriteString(fmt.Sprintf("TEMPLATES=%s\n", msg))
+			panicIf(err)
 		}
 	}
-}
 
-func readDataTxtFile(fileName string) (map[string]interface{}, error) {
-	file, err := os.Open(fileName)
-	if err != nil {
-		return nil, err
-	}
-	defer utils.Close(file)
+	//we have our test set, let's kick off a panel instance
+	//for this, we're going to run the binary, and wait for the "service" to start up (using the unix socket)
+	//once that's done, we'll then create our servers
+	//this is the best way to truly "model" what's going on
 
-	result := make(map[string]interface{})
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		parts := strings.Split(line, "=")
-		key := parts[0]
-		value := parts[1]
-		result[key] = value
-	}
-	return result, nil
-}
+	waiter := make(chan bool, 1)
 
-func readDataJsonFile(fileName string) ([]*TestData, error) {
-	file, err := os.Open(fileName)
-	if err != nil {
-		return nil, err
-	}
-	defer utils.Close(file)
-
-	result := make([]*TestData, 0)
-	err = json.NewDecoder(file).Decode(&result)
-	return result, err
-}
-
-func runServer(prg *servers.Server, waitFor int) (err error) {
-	if waitFor == 0 {
-		waitFor = 5
-	}
-
-	err = prg.Start()
+	var unixSocketPath = fmt.Sprintf("/tmp/pufferpanel-%d.sock", time.Now().Unix())
+	_ = os.Remove(unixSocketPath)
+	listener, err := net.ListenPacket("unixgram", unixSocketPath)
 	panicIf(err)
 
-	c := make(chan error, 1)
-	go func() {
-		c <- prg.RunningEnvironment.WaitForMainProcess()
+	var dbConn = "file:" + filepath.Join(CmdFlags.WorkingDir, "test.db") + "?cache=shared"
+
+	go socketListener(listener, waiter)
+
+	c := exec.Command(CmdFlags.PufferpanelBinary, "runService")
+
+	defer func() {
+		if c.Process.Pid != 0 {
+			_ = c.Process.Kill()
+		}
+		_ = listener.Close()
+		_ = os.Remove(unixSocketPath)
 	}()
-	t := time.After(time.Minute * time.Duration(waitFor))
 
-	//we need to make sure we were running for a minute
-	//if we did not, something went wrong
-	running, err := prg.IsRunning()
-	panicIf(err)
-
-	if !running {
-		panic(errors.New("server did not run for a minute"))
-	}
-
-	select {
-	case <-t:
-		break
-	case err = <-c:
+	go func() {
+		c.Dir = CmdFlags.WorkingDir
+		c.Env = append(
+			os.Environ(),
+			"PUFFER_PANEL_DATABASE_URL="+dbConn,
+			"PUFFER_LOGS=logs",
+			"PUFFER_DAEMON_CONSOLE_FORWARD=true",
+			"PUFFER_DAEMON_DATA_ROOT="+CmdFlags.WorkingDir,
+			"PUFFER_WEB_HOST=0.0.0.0:8080",
+			"NOTIFY_SOCKET="+unixSocketPath,
+			"GIN_MODE=release",
+		)
+		stdout, err := c.StdoutPipe()
 		panicIf(err)
-		break
-	}
+		stderr, err := c.StderrPipe()
+		panicIf(err)
 
-	err = prg.Stop()
+		panicIf(c.Start())
+
+		go ioCopy(os.Stdout, stdout)
+		go ioCopy(os.Stderr, stderr)
+
+		e := c.Wait()
+		var d *exec.ExitError
+		if errors.As(e, &d) {
+			if d.Error() == "signal: killed" {
+				e = nil
+			}
+		}
+		panicIf(e)
+	}()
+
+	//wait for panel to be up, so the db is fully created and we're good to go
+	<-waiter
+
+	//now we can inject our admin user in, so we can proceed to spin up the servers
+	log.Println("Starting database edits")
+	db, err := gorm.Open(sqlite.Open(dbConn))
+	panicIf(err)
+	panicIf(initLoginAdminUser(db))
+
+	//now, start the web calls
+	//the concern is the session length, we'll "force" it to last for 24 hours. if it expires, then the tests should
+	//be failed anyways
+	client := &http.Client{}
+	session, err := createSession(db)
 	panicIf(err)
 
-	return prg.GetEnvironment().WaitForMainProcessFor(5 * time.Minute)
-}
+	log.Println("Now starting tests")
 
-func panicIf(err error) {
-	if err != nil {
-		panic(err)
+	for i := range tests {
+		runTest(client, session, tests[i])
 	}
 }
 
-type TestScenario struct {
-	Name string
-	Test *TestTemplate
+func runTest(client *http.Client, session string, test *TestScenario) {
+	log.Println("\nStarting: " + test.Name)
+	urlPrefix := CmdFlags.Host + "/api/servers/" + test.Name
+
+	var data []byte
+	var err error
+
+	//create server
+	_, err = call(client, &http.Request{
+		Method: "PUT",
+		URL:    createUrl(urlPrefix),
+		Header: createHeaders(session),
+		Body:   createCreateBody(test),
+	})
+	panicIf(err)
+
+	//install server
+	_, err = call(client, &http.Request{
+		Method: "POST",
+		URL:    createUrl(urlPrefix + "/install"),
+		Header: createHeaders(session),
+	})
+	panicIf(err)
+
+	//wait for install to complete
+	for {
+		time.Sleep(10 * time.Second)
+		data, err = call(client, &http.Request{
+			Method: "GET",
+			URL:    createUrl(urlPrefix + "/status"),
+			Header: createHeaders(session),
+		})
+		panicIf(err)
+
+		var status pufferpanel.ServerRunning
+		err = json.NewDecoder(bytes.NewReader(data)).Decode(&status)
+		panicIf(err)
+
+		if !status.Installing {
+			break
+		}
+	}
+
+	//start server
+	_, err = call(client, &http.Request{
+		Method: "POST",
+		URL:    createUrl(urlPrefix + "/start"),
+		Header: createHeaders(session),
+	})
+	panicIf(err)
+
+	//wait for 5 minutes
+	started := time.Now()
+	for {
+		time.Sleep(1 * time.Minute)
+		data, err = call(client, &http.Request{
+			Method: "GET",
+			URL:    createUrl(urlPrefix + "/status"),
+			Header: createHeaders(session),
+		})
+		panicIf(err)
+
+		var status pufferpanel.ServerRunning
+		err = json.NewDecoder(bytes.NewReader(data)).Decode(&status)
+		panicIf(err)
+
+		if !status.Running {
+			panicIf(errors.New("server did not run for 5 minutes"))
+		}
+		if math.Abs(time.Since(started).Seconds()) >= 360 {
+			break
+		}
+	}
+
+	//stop server
+	_, err = call(client, &http.Request{
+		Method: "POST",
+		URL:    createUrl(urlPrefix + "/stop"),
+		Header: createHeaders(session),
+	})
+	panicIf(err)
+
+	//wait for the stop
+	started = time.Now()
+	for {
+		time.Sleep(1 * time.Minute)
+		data, err = call(client, &http.Request{
+			Method: "GET",
+			URL:    createUrl(urlPrefix + "/status"),
+			Header: createHeaders(session),
+		})
+		panicIf(err)
+
+		var status pufferpanel.ServerRunning
+		err = json.NewDecoder(bytes.NewReader(data)).Decode(&status)
+		panicIf(err)
+
+		if !status.Running {
+			break
+		}
+		if math.Abs(time.Since(started).Seconds()) >= 360 {
+			panicIf(errors.New("server did not stop after 360 seconds"))
+		}
+	}
+
+	//delete server
+	_, err = call(client, &http.Request{
+		Method: "DELETE",
+		URL:    createUrl(urlPrefix),
+		Header: createHeaders(session),
+	})
+
+	panicIf(err)
 }
 
-type TestTemplate struct {
-	Template           []byte
-	Name               string
-	Variables          map[string]interface{}
-	Environment        map[string]interface{}
-	IgnoreExitCode     bool
-	RuntimeRequirement int
+func socketListener(listener net.PacketConn, ch chan bool) {
+	defer func() {
+		_ = listener.Close()
+	}()
+
+	const NotifyReady = "READY=1"
+	const NotifyShutdown = "STOPPING=1"
+
+	for {
+		buf := make([]byte, 16)
+		n, _, err := listener.ReadFrom(buf)
+		if err != nil {
+			return
+		}
+		panicIf(err)
+
+		str := string(buf[:n])
+
+		if str == NotifyReady {
+			ch <- true
+		} else if str == NotifyShutdown {
+			break
+		}
+	}
 }
 
-type TestData struct {
-	Name               string                 `json:"name"`
-	Variables          map[string]interface{} `json:"variables"`
-	Environment        map[string]interface{} `json:"environment"`
-	IgnoreExitCode     bool                   `json:"ignoreExitCode"`
-	RuntimeRequirement int                    `json:"runtimeRequirement"`
+var loginAdminUser = &models.User{
+	Username:       "loginAdminUser",
+	Email:          "admin@example.com",
+	OtpActive:      false,
+	HashedPassword: "asdf",
+}
+
+func initLoginAdminUser(db *gorm.DB) error {
+	err := db.Create(loginAdminUser).Error
+	if err != nil {
+		return err
+	}
+
+	perms := &models.Permissions{
+		UserId: &loginAdminUser.ID,
+		Scopes: []*scopes.Scope{scopes.ScopeAdmin},
+	}
+	err = db.Create(perms).Error
+	return err
+}
+
+func createSession(db *gorm.DB) (string, error) {
+	ss := &services.Session{DB: db}
+	token, err := ss.CreateForUser(loginAdminUser)
+	if err != nil {
+		return "", err
+	}
+	err = db.Model(&models.Session{}).Where("token = ?", token).Update("expiration_time", time.Now().Add(time.Hour*24)).Error
+	return token, err
+}
+
+func call(client *http.Client, request *http.Request) (data []byte, err error) {
+	response, err := client.Do(request)
+	defer func() {
+		if response != nil && response.Body != nil {
+			_ = response.Body.Close()
+		}
+	}()
+
+	if err != nil {
+		return
+	}
+
+	data, err = io.ReadAll(response.Body)
+	if err == io.EOF {
+		err = nil
+	}
+
+	if err != nil || response.StatusCode < 200 || response.StatusCode >= 400 {
+		err = fmt.Errorf("failed to create server (%d)\n%s", response.StatusCode, data)
+	}
+	return
+}
+
+func createUrl(str string) *url.URL {
+	u, err := url.Parse(str)
+	panicIf(err)
+	return u
+}
+
+func createHeaders(session string) http.Header {
+	headers := http.Header{}
+	headers.Add("Authorization", "Bearer "+session)
+	return headers
 }

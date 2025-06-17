@@ -136,7 +136,7 @@ func (op SpongeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func (op SpongeDl) getLatestVersion(env pufferpanel.Environment) (SpongeApiV2Versions, error) {
+func (op SpongeDl) getLatestVersion(env *pufferpanel.Environment) (SpongeApiV2Versions, error) {
 	var data SpongeApiV2Versions
 
 	var params = "?limit=1"
@@ -163,7 +163,7 @@ func (op SpongeDl) getLatestVersion(env pufferpanel.Environment) (SpongeApiV2Ver
 	return data, err
 }
 
-func (op SpongeDl) getSpecificVersion(env pufferpanel.Environment, version string) (SpongeApiV2Latest, error) {
+func (op SpongeDl) getSpecificVersion(env *pufferpanel.Environment, version string) (SpongeApiV2Latest, error) {
 	var data SpongeApiV2Latest
 
 	var url = SpongeApiBaseUrl + op.SpongeType + "/versions/" + version

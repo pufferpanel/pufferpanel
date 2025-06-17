@@ -157,11 +157,12 @@ jobs:
         run: |
           mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel RPMBUILD/var/www/pufferpanel
           mkdir -p DEBBUILD/var/log/pufferpanel RPMBUILD/var/log/pufferpanel
-          mkdir -p DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+          mkdir -p DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system DEBBUILD/etc/apparmor.d/
           mkdir -p DEBBUILD/var/lib/pufferpanel/binaries RPMBUILD/var/lib/pufferpanel
           cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
           cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
           cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+          cp systemd/servicefiles/apparmor.conf DEBBUILD/etc/apparmor.d/pufferpanel
 
       - name: Build Package DEB AMD64
         id: debamd64
@@ -284,11 +285,12 @@ jobs:
         run: |
           mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel RPMBUILD/var/www/pufferpanel
           mkdir -p DEBBUILD/var/log/pufferpanel RPMBUILD/var/log/pufferpanel
-          mkdir -p DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+          mkdir -p DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/ DEBBUILD/etc/apparmor.d
           mkdir -p DEBBUILD/var/lib/pufferpanel/binaries RPMBUILD/var/lib/pufferpanel
           cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
           cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
           cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+          cp systemd/servicefiles/apparmor.conf DEBBUILD/etc/apparmor.d/pufferpanel
 
       - name: Build Package DEB ARM64
         id: debarm64

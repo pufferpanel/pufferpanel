@@ -61,7 +61,7 @@ func (op MojangDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 	return pufferpanel.OperationResult{Error: err}
 }
 
-func downloadServerFromJson(url, target string, env pufferpanel.Environment) error {
+func downloadServerFromJson(url, target string, env *pufferpanel.Environment) error {
 	response, err := pufferpanel.HttpGet(url)
 	defer utils.CloseResponse(response)
 	if err != nil {

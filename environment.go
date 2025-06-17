@@ -13,90 +13,39 @@ import (
 	"time"
 )
 
-type Environment interface {
-	// Execute Executes a command within the environment.
-	Execute(steps ExecutionData) error
+type EnvironmentImpl interface {
+	ExecuteAsyncImpl(environment *Environment, steps ExecutionData) error
 
-	// ExecuteAsync Executes a command within the environment and immediately return
-	ExecuteAsync(steps ExecutionData) error
+	KillImpl(environment *Environment) error
 
-	// ExecuteInMainProcess Sends a string to the StdIn of the main program process
-	ExecuteInMainProcess(cmd string) error
+	GetStatsImpl(environment *Environment) (*ServerStats, error)
 
-	// Kill Kills the main process, but leaves the environment running.
-	Kill() error
+	SendCodeImpl(environment *Environment, code int) error
 
-	// Create Creates the environment setting needed to run programs.
-	Create() error
+	GetUidImpl(environment *Environment) int
 
-	// Delete Deletes the environment.
-	Delete() error
+	GetGidImpl(environment *Environment) int
 
-	Update() error
-
-	IsRunning() (isRunning bool, err error)
-
-	IsInstalling() bool
-
-	SetInstalling(bool)
-
-	WaitForMainProcess() error
-
-	WaitForMainProcessFor(timeout time.Duration) error
-
-	GetRootDirectory() string
-
-	GetConsole() (console []byte, epoch int64)
-
-	GetConsoleFrom(time int64) (console []byte, epoch int64)
-
-	AddConsoleListener(ws *Socket)
-
-	AddStatusListener(ws *Socket)
-
-	AddStatsListener(ws *Socket)
-
-	GetStats() (*ServerStats, error)
-
-	DisplayToConsole(prefix bool, msg string, data ...interface{})
-
-	SendCode(code int) error
-
-	GetBase() *BaseEnvironment
-
-	GetLastExitCode() int
-
-	GetWrapper() io.Writer
-
-	GetStatsTracker() *Tracker
-
-	GetServer() Server
-
-	GetUid() int
-
-	GetGid() int
+	IsRunningImpl(environment *Environment) (isRunning bool, err error)
 }
 
-type BaseEnvironment struct {
-	Environment
-	Type              string               `json:"type"`
-	RootDirectory     string               `json:"root,omitempty"`
-	BackupDirectory   string               `json:"-"`
-	ConsoleBuffer     *MemoryCache         `json:"-"`
-	Wait              *sync.WaitGroup      `json:"-"`
-	ExecutionFunction ExecutionFunction    `json:"-"`
-	ServerId          string               `json:"-"`
-	LastExitCode      int                  `json:"-"`
-	Wrapper           io.Writer            `json:"-"` //our proxy back to the main
-	ConsoleTracker    *Tracker             `json:"-"`
-	StatusTracker     *Tracker             `json:"-"`
-	StatsTracker      *Tracker             `json:"-"`
-	Installing        bool                 `json:"-"`
-	BackingUp         bool                 `json:"-"`
-	IsRunningFunc     func() (bool, error) `json:"-"`
-	KillFunc          func() error         `json:"-"`
-	Console           Console              `json:"-"`
-	Server            Server               `json:"-"`
+type Environment struct {
+	Type            string          `json:"type"`
+	RootDirectory   string          `json:"root,omitempty"`
+	BackupDirectory string          `json:"-"`
+	ConsoleBuffer   *MemoryCache    `json:"-"`
+	Wait            *sync.WaitGroup `json:"-"`
+	ServerId        string          `json:"-"`
+	LastExitCode    int             `json:"-"`
+	Wrapper         io.Writer       `json:"-"` //our proxy back to the main
+	ConsoleTracker  *Tracker        `json:"-"`
+	StatusTracker   *Tracker        `json:"-"`
+	StatsTracker    *Tracker        `json:"-"`
+	Installing      bool            `json:"-"`
+	BackingUp       bool            `json:"-"`
+	Console         Console         `json:"-"`
+	Server          Server          `json:"-"`
+	Implementation  EnvironmentImpl `json:"-"`
 }
 
 type ExecutionData struct {
@@ -111,7 +60,7 @@ type ExecutionData struct {
 
 type ExecutionFunction func(steps ExecutionData) (err error)
 
-func (e *BaseEnvironment) Execute(steps ExecutionData) error {
+func (e *Environment) Execute(steps ExecutionData) error {
 	err := e.ExecuteAsync(steps)
 	if err != nil {
 		return err
@@ -119,7 +68,7 @@ func (e *BaseEnvironment) Execute(steps ExecutionData) error {
 	return e.WaitForMainProcess()
 }
 
-func (e *BaseEnvironment) ExecuteAsync(steps ExecutionData) (err error) {
+func (e *Environment) ExecuteAsync(steps ExecutionData) (err error) {
 	running, err := e.IsRunning()
 	if err != nil {
 		return
@@ -132,10 +81,10 @@ func (e *BaseEnvironment) ExecuteAsync(steps ExecutionData) (err error) {
 	//update configs
 	steps.StdInConfig = steps.StdInConfig.Replace(steps.Variables)
 
-	return e.ExecutionFunction(steps)
+	return e.Implementation.ExecuteAsyncImpl(e, steps)
 }
 
-func (e *BaseEnvironment) CreateConsoleStdinProxy(config StdinConsoleConfiguration, base io.WriteCloser) {
+func (e *Environment) CreateConsoleStdinProxy(config StdinConsoleConfiguration, base io.WriteCloser) {
 	if config.Type == "telnet" {
 		e.Console = &connections.TelnetConnection{
 			IP:       config.IP,
@@ -160,37 +109,37 @@ func (e *BaseEnvironment) CreateConsoleStdinProxy(config StdinConsoleConfigurati
 	}
 }
 
-func (e *BaseEnvironment) GetRootDirectory() string {
+func (e *Environment) GetRootDirectory() string {
 	return e.RootDirectory
 }
 
-func (e *BaseEnvironment) GetConsole() (console []byte, epoch int64) {
+func (e *Environment) GetConsole() (console []byte, epoch int64) {
 	console, epoch = e.ConsoleBuffer.Read()
 	return
 }
 
-func (e *BaseEnvironment) GetConsoleFrom(time int64) (console []byte, epoch int64) {
+func (e *Environment) GetConsoleFrom(time int64) (console []byte, epoch int64) {
 	console, epoch = e.ConsoleBuffer.ReadFrom(time)
 	return
 }
 
-func (e *BaseEnvironment) AddConsoleListener(ws *Socket) {
+func (e *Environment) AddConsoleListener(ws *Socket) {
 	e.ConsoleTracker.Register(ws)
 }
 
-func (e *BaseEnvironment) AddStatsListener(ws *Socket) {
+func (e *Environment) AddStatsListener(ws *Socket) {
 	e.StatsTracker.Register(ws)
 }
 
-func (e *BaseEnvironment) AddStatusListener(ws *Socket) {
+func (e *Environment) AddStatusListener(ws *Socket) {
 	e.StatusTracker.Register(ws)
 }
 
-func (e *BaseEnvironment) GetStatsTracker() *Tracker {
+func (e *Environment) GetStatsTracker() *Tracker {
 	return e.StatsTracker
 }
 
-func (e *BaseEnvironment) DisplayToConsole(daemon bool, msg string, data ...interface{}) {
+func (e *Environment) DisplayToConsole(daemon bool, msg string, data ...interface{}) {
 	format := msg
 	if daemon {
 		if !strings.HasSuffix(format, "\n") {
@@ -207,16 +156,16 @@ func (e *BaseEnvironment) DisplayToConsole(daemon bool, msg string, data ...inte
 	}
 }
 
-func (e *BaseEnvironment) Update() error {
+func (e *Environment) Update() error {
 	return nil
 }
 
-func (e *BaseEnvironment) Delete() (err error) {
+func (e *Environment) Delete() (err error) {
 	err = os.RemoveAll(e.RootDirectory)
 	return
 }
 
-func (e *BaseEnvironment) Create() error {
+func (e *Environment) Create() error {
 	err := os.Mkdir(e.RootDirectory, 0755)
 	if os.IsExist(err) {
 		return nil
@@ -224,11 +173,11 @@ func (e *BaseEnvironment) Create() error {
 	return err
 }
 
-func (e *BaseEnvironment) WaitForMainProcess() error {
+func (e *Environment) WaitForMainProcess() error {
 	return e.WaitForMainProcessFor(0)
 }
 
-func (e *BaseEnvironment) WaitForMainProcessFor(timeout time.Duration) (err error) {
+func (e *Environment) WaitForMainProcessFor(timeout time.Duration) (err error) {
 	running, err := e.IsRunning()
 	if err != nil {
 		return
@@ -247,36 +196,33 @@ func (e *BaseEnvironment) WaitForMainProcessFor(timeout time.Duration) (err erro
 	return
 }
 
-func (e *BaseEnvironment) CreateWrapper() io.Writer {
+func (e *Environment) CreateWrapper() {
 	if config.ConsoleForward.Value() {
 		//return io.MultiWriter(newLogger(e.ServerId).Writer(), e.ConsoleBuffer, e.ConsoleTracker)
-		return io.MultiWriter(logging.OriginalStdOut, e.ConsoleBuffer, e.ConsoleTracker)
+		e.Wrapper = io.MultiWriter(logging.OriginalStdOut, e.ConsoleBuffer, e.ConsoleTracker)
+	} else {
+		e.Wrapper = io.MultiWriter(e.ConsoleBuffer, e.ConsoleTracker)
 	}
-	return io.MultiWriter(e.ConsoleBuffer, e.ConsoleTracker)
 }
 
-func (e *BaseEnvironment) GetBase() *BaseEnvironment {
-	return e
-}
-
-func (e *BaseEnvironment) GetLastExitCode() int {
+func (e *Environment) GetLastExitCode() int {
 	return e.LastExitCode
 }
 
-func (e *BaseEnvironment) GetWrapper() io.Writer {
+func (e *Environment) GetWrapper() io.Writer {
 	return e.Wrapper
 }
 
-func (e *BaseEnvironment) Log(l *log.Logger, format string, obj ...interface{}) {
+func (e *Environment) Log(l *log.Logger, format string, obj ...interface{}) {
 	msg := fmt.Sprintf("[%s] ", e.ServerId) + format
 	l.Printf(msg, obj...)
 }
 
-func (e *BaseEnvironment) IsInstalling() bool {
+func (e *Environment) IsInstalling() bool {
 	return e.Installing
 }
 
-func (e *BaseEnvironment) SetInstalling(flag bool) {
+func (e *Environment) SetInstalling(flag bool) {
 	e.Installing = flag
 	_ = e.StatusTracker.WriteMessage(Transmission{
 		Message: ServerRunning{
@@ -286,7 +232,7 @@ func (e *BaseEnvironment) SetInstalling(flag bool) {
 	})
 }
 
-func (e *BaseEnvironment) ExecuteInMainProcess(cmd string) (err error) {
+func (e *Environment) ExecuteInMainProcess(cmd string) (err error) {
 	running, err := e.IsRunning()
 	if err != nil {
 		return err
@@ -299,10 +245,26 @@ func (e *BaseEnvironment) ExecuteInMainProcess(cmd string) (err error) {
 	return
 }
 
-func (e *BaseEnvironment) IsRunning() (isRunning bool, err error) {
-	return e.IsRunningFunc()
+func (e *Environment) IsRunning() (isRunning bool, err error) {
+	return e.Implementation.IsRunningImpl(e)
 }
 
-func (e *BaseEnvironment) Kill() error {
-	return e.KillFunc()
+func (e *Environment) Kill() error {
+	return e.Implementation.KillImpl(e)
+}
+
+func (e *Environment) GetStats() (*ServerStats, error) {
+	return e.Implementation.GetStatsImpl(e)
+}
+
+func (e *Environment) SendCode(code int) error {
+	return e.Implementation.SendCodeImpl(e, code)
+}
+
+func (e *Environment) GetUid() int {
+	return e.Implementation.GetUidImpl(e)
+}
+
+func (e *Environment) GetGid() int {
+	return e.Implementation.GetGidImpl(e)
 }

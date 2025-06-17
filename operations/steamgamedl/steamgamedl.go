@@ -138,7 +138,7 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func downloadMetadata(env pufferpanel.Environment) error {
+func downloadMetadata(env *pufferpanel.Environment) error {
 	response, err := pufferpanel.HttpGet(SteamMetadataLink)
 	defer utils.CloseResponse(response)
 	if err != nil {
