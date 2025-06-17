@@ -22,7 +22,7 @@ func Test_getFeatures(t *testing.T) {
 			name: "docker not forced",
 			expected: daemon.Features{
 				Features:     []string{"docker"},
-				Environments: []string{"docker", "host", "tty", "standard", "bubblewrap"},
+				Environments: []string{"docker", "host", "tty", "standard"},
 				OS:           runtime.GOOS,
 				Arch:         runtime.GOARCH,
 				Version:      pufferpanel.Version,
