@@ -86,18 +86,17 @@ func main() {
 		for _, v := range tests {
 			data = append(data, "\""+v.Name+"\"")
 		}
-		msg := strings.Join(data, ",")
+		msg := fmt.Sprintf("TEMPLATES=%s\n", strings.Join(data, ","))
 		envFile := os.ExpandEnv("GITHUB_ENV")
-		if envFile == "" {
-			log.Printf("No env file found, printing to console")
-			log.Println(msg)
-		} else {
+		log.Println(msg)
+		if envFile != "" {
+			log.Printf("Writing data to %s", envFile)
 			file, err := os.OpenFile(envFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			panicIf(err)
 			defer func() {
 				_ = file.Close()
 			}()
-			_, err = file.WriteString(fmt.Sprintf("TEMPLATES=%s\n", msg))
+			_, err = file.WriteString(msg)
 			panicIf(err)
 		}
 		return

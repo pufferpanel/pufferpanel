@@ -116,6 +116,11 @@ jobs:
       - name: Get templates
         run: |
           build-artifacts/templatetester_x64 --print
+          cat $GITHUB_ENV
+
+      - name: Show ENV
+        run: |
+          printf '%s\n' "$TEMPLATES"
 
       - name: Trigger tests
         id: trigger
