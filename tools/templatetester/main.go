@@ -186,10 +186,10 @@ func main() {
 func runTest(client *http.Client, session string, test *TestScenario) {
 	log.Println("\nStarting: " + test.Name)
 
-	template := &pufferpanel.Server{}
-	err := json.NewDecoder(bytes.NewReader(test.Test.Template)).Decode(template)
+	template := pufferpanel.Server{}
+	err := json.NewDecoder(bytes.NewReader(test.Test.Template)).Decode(&template)
 	panicIf(err)
-	if err = template.Requirements.Test(*template); err != nil {
+	if err = template.Requirements.Test(template); err != nil {
 		log.Printf("Template requirements failed: %s", err)
 		return
 	}
