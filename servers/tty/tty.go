@@ -353,7 +353,7 @@ func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err e
 
 		if runtime.GOARCH == "amd64" {
 			unshareArgs = append(unshareArgs,
-				"mkdir -p /lib64",
+				"mkdir -p lib64",
 				"mount --bind /lib64 lib64",
 			)
 		}
