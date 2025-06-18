@@ -14,6 +14,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 	"sync"
 	"syscall"
@@ -321,11 +322,10 @@ func (t *tty) initiateJCMD() (*net.UnixConn, error) {
 }
 
 var cmdList = []string{
-	"mkdir -p {dev,bin,usr,lib,lib64,etc,tmp,proc}",
+	"mkdir -p {dev,bin,usr,lib,etc,tmp,proc}",
 	"mount -t tmpfs -o size=50m tmpfs tmp",
 	"mount --bind /bin bin",
 	"mount --bind /lib lib",
-	"mount --bind /lib64 lib64",
 	"mount --rbind /usr usr",
 	"mount --rbind /etc etc",
 	"mount --rbind /dev dev",
@@ -348,7 +348,17 @@ func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err e
 			mountFolders = append(mountFolders, removeRoot(v))
 		}
 
-		unshareArgs := append(cmdList,
+		unshareArgs := make([]string, len(cmdList))
+		copy(unshareArgs, cmdList)
+
+		if runtime.GOARCH == "amd64" {
+			unshareArgs = append(unshareArgs,
+				"mkdir -p /lib64",
+				"mount --bind /lib64 lib64",
+			)
+		}
+
+		unshareArgs = append(unshareArgs,
 			fmt.Sprintf("mkdir -p {%s}", strings.Join(mountFolders, ",")),
 			fmt.Sprintf("mount --bind %s %s", workDir, workDirMount),
 			fmt.Sprintf("mount --bind %s %s", config.BinariesFolder.Value(), binaryFolderMount),
