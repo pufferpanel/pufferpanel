@@ -23,7 +23,6 @@ jobs:
         with:
           run-id: '${{ github.event.client_payload.run_id }}'
 
-        # We will only install deps if this is a "host", we will not do it for docker templates
       - name: Install global deps
         if: !endsWith(matrix.template, '-docker')
         run: |
@@ -38,7 +37,7 @@ jobs:
             apt-get update && \
             apt-get install -y wget build-essential zip unzip tar git xz-utils nodejs
           "
-        # Deps only involved on AMD64 architecture
+
       - name: Install x64 deps
         if: matrix.arch == 'x64' && !endsWith(matrix.template, '-docker')
         run: |
@@ -49,13 +48,13 @@ jobs:
             apt update && \
             apt install -y lib32gcc-s1 libstdc++6 libstdc++6:i386 libtinfo5:i386 libncurses5:i386 libcurl3-gnutls:i386
           "
-        # Add our user to the pufferpanel group so we can kick off our binary
+
       - name: Create user
         run: |
           sudo groupadd pufferpanel
           sudo usermod -a -G pufferpanel $USER
 
-        # Run the tester on the template provided
+
       - name: Run
         run: |
           chmod +x pufferpanel_* templatetester_*
