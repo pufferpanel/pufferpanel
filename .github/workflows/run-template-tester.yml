@@ -61,4 +61,4 @@ jobs:
       - name: Run
         run: |
           chmod +x pufferpanel_* templatetester_*
-          ./templatetester_${{ matrix.arch }} --require=${{ matrix.template }} --workDir=/templatetester --binary=$(pwd)/pufferpanel_${{ matrix.arch }}
+          ./templatetester_${{ matrix.arch }} --require=${{ matrix.template }} --binary=$(pwd)/pufferpanel_${{ matrix.arch }}
