@@ -7,7 +7,7 @@ on:
 jobs:
   run-tester:
     name: Run Tool
-    runs-on: [ template-tester, "${{ matrix.arch }}" ]
+    runs-on: [ "template-tester-${{ matrix.arch }}" ]
     permissions:
       packages: read
 
@@ -46,7 +46,9 @@ jobs:
             echo steam steam/question select \"I AGREE\" | debconf-set-selections && \
             echo steam steam/license note '' | debconf-set-selections && \
             apt update && \
-            apt install -y lib32gcc-s1 libstdc++6 libstdc++6:i386 libtinfo5:i386 libncurses5:i386 libcurl3-gnutls:i386
+            apt install -y lib32gcc-s1 libstdc++6 libstdc++6:i386 libtinfo5:i386 libncurses5:i386 libcurl3-gnutls:i386 && \
+            groupadd pufferpanel && \
+            usermod -a -G pufferpanel $USER
           "
 
       - name: Run
