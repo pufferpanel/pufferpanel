@@ -31,13 +31,13 @@ func init() {
 		CmdFlags.Skip = make([]string, 0)
 	}
 
-	if skip != "" {
+	if required != "" {
 		CmdFlags.Required = strings.Split(required, ",")
 	} else {
 		CmdFlags.Required = make([]string, 0)
 	}
 
-	if skip != "" {
+	if files != "" {
 		CmdFlags.Files = strings.Split(files, ",")
 	} else {
 		CmdFlags.Files = make([]string, 0)
