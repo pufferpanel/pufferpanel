@@ -159,10 +159,10 @@ func main() {
 		}
 		panicIf(e)
 	}()
-  
+
 	//wait for panel to be up, so the db is fully created and we're good to go
 	<-waiter
-  
+
 	//now we can inject our admin user in, so we can proceed to spin up the servers
 	log.Println("Starting database edits")
 	db, err := gorm.Open(sqlite.Open(dbConn))
@@ -185,10 +185,18 @@ func main() {
 
 func runTest(client *http.Client, session string, test *TestScenario) {
 	log.Println("\nStarting: " + test.Name)
+
+	template := &pufferpanel.Server{}
+	err := json.NewDecoder(bytes.NewReader(test.Test.Template)).Decode(template)
+	panicIf(err)
+	if err = template.Requirements.Test(*template); err != nil {
+		log.Printf("Template requirements failed: %s", err)
+		return
+	}
+
 	urlPrefix := CmdFlags.Host + "/api/servers/" + test.Name
 
 	var data []byte
-	var err error
 
 	//create server
 	_, err = call(client, &http.Request{
