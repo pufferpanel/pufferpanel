@@ -61,6 +61,4 @@ jobs:
       - name: Run
         run: |
           chmod +x pufferpanel_* templatetester_*
-          mkdir -p /templatetester
-          mv pufferpanel_* /templatetester
-          ./templatetester_${{ matrix.arch }} --require=${{ matrix.template }} --workDir=/templatetester --binary=./pufferpanel_${{ matrix.arch }}
+          ./templatetester_${{ matrix.arch }} --require=${{ matrix.template }} --workDir=/templatetester --binary=$(pwd)/pufferpanel_${{ matrix.arch }}
