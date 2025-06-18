@@ -87,7 +87,7 @@ func main() {
 			data = append(data, "\""+v.Name+"\"")
 		}
 		msg := fmt.Sprintf("TEMPLATES=%s\n", strings.Join(data, ","))
-		envFile := os.ExpandEnv("GITHUB_ENV")
+		envFile := os.ExpandEnv("$GITHUB_ENV")
 		log.Println(msg)
 		if envFile != "" {
 			log.Printf("Writing data to %s", envFile)
