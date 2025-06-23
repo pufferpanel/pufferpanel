@@ -2,6 +2,7 @@ package curseforge
 
 import (
 	"errors"
+	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/files"
@@ -270,8 +271,7 @@ func installViaJar(server pufferpanel.DaemonServer, env *pufferpanel.Environment
 	//installer found, we will run this one
 	result := make(chan int, 1)
 	err := env.Execute(pufferpanel.ExecutionData{
-		Command:   javaBinary,
-		Arguments: []string{"-jar", jarFile, "--installServer"},
+		Command: fmt.Sprintf("%s -jar %s --installServer", javaBinary, jarFile),
 		Callback: func(exitCode int) {
 			result <- exitCode
 			env.DisplayToConsole(true, "Installer exit code: %d", exitCode)
@@ -348,8 +348,7 @@ func installFabric(env *pufferpanel.Environment, data map[string]string, javaBin
 		//forge installer found, we will run this one
 		result := make(chan int, 1)
 		err = env.Execute(pufferpanel.ExecutionData{
-			Command:   javaBinary,
-			Arguments: []string{"-jar", "fabric-installer", "server", "-mcversion", data["mcVersion"], "-loader", data["version"], "-downloadMinecraft"},
+			Command: fmt.Sprintf("%s -jar fabric-installer server -mcversion %s -loader %s -downloadMinecraft", javaBinary, data["mcVersion"], data["version"]),
 			Callback: func(exitCode int) {
 				result <- exitCode
 				env.DisplayToConsole(true, "Installer exit code: %d", exitCode)

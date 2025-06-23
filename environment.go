@@ -50,7 +50,6 @@ type Environment struct {
 
 type ExecutionData struct {
 	Command          string
-	Arguments        []string
 	Environment      map[string]string
 	WorkingDirectory string
 	Variables        map[string]interface{}

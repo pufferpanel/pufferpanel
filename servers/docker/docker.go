@@ -382,11 +382,13 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 		return err
 	}
 
+	cmd, args := utils.SplitArguments(data.Command)
+
 	cmdSlice := strslice.StrSlice{}
 	if data.Command != "" {
-		cmdSlice = append(cmdSlice, data.Command)
+		cmdSlice = append(cmdSlice, cmd)
 	}
-	for _, v := range data.Arguments {
+	for _, v := range args {
 		cmdSlice = append(cmdSlice, v)
 	}
 

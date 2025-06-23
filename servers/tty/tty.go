@@ -34,7 +34,7 @@ type tty struct {
 func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
 	environment.Wait.Add(1)
 
-	pr, err := t.createCmd(environment.GetRootDirectory(), steps.Command, steps.Arguments)
+	pr, err := t.createCmd(environment.GetRootDirectory(), steps.Command)
 	if err != nil {
 		return err
 	}
@@ -332,9 +332,10 @@ var cmdList = []string{
 	"mount --rbind /proc proc",
 }
 
-func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err error) {
+func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
 	if t.DisableUnshare || config.SecurityDisableUnshare.Value() {
-		pr = exec.Command(cmd, args...)
+		c, args := utils.SplitArguments(cmd)
+		pr = exec.Command(c, args...)
 		pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 		pr.Dir = workDir
 		return
@@ -370,7 +371,7 @@ func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err e
 		}
 
 		unshareArgs = append(unshareArgs, "mount --rbind / .",
-			fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s %s", workDir, os.Getuid(), os.Getgid(), cmd, utils.MergeArguments(args)))
+			fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s", workDir, os.Getuid(), os.Getgid(), cmd))
 
 		pr = exec.Command("bash", "-c", strings.Join(unshareArgs, " && "))
 		pr.Dir, err = os.MkdirTemp("", "unshare-pp-")

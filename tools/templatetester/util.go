@@ -253,11 +253,15 @@ func createCreateBody(scenario *TestScenario) io.ReadCloser {
 		}
 	}
 
-	for k, v := range scenario.Test.Environment {
-		if k == "type" {
-			model.Environment.Type = v.(string)
+	envType := scenario.Test.Environment["type"].(string)
 
+	for _, v := range model.SupportedEnvironments {
+		if v.Type == envType {
+			model.Environment = v
 		}
+	}
+
+	for k, v := range scenario.Test.Environment {
 		model.Environment.Metadata[k] = v
 	}
 
