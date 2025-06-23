@@ -110,3 +110,39 @@ func TestSplitArguments(t *testing.T) {
 		})
 	}
 }
+
+func TestMergeArguments(t *testing.T) {
+	tests := []struct {
+		args     []string
+		expected string
+	}{
+		{
+			expected: "java -jar test.jar",
+			args:     []string{"java", "-jar", "test.jar"},
+		},
+		{
+			expected: "java -jar \"test.jar\"",
+			args:     []string{"java", "-jar", "\"test.jar\""},
+		},
+		{
+			expected: "java -jar \"test this.jar\"",
+			args:     []string{"java", "-jar", "test this.jar"},
+		},
+		{
+			expected: "java -jar \"test this.jar\" noGui",
+			args:     []string{"java", "-jar", "test this.jar", "noGui"},
+		},
+		{
+			expected: "\"C:\\\\Program Files\\\\Java\\\\bin\\\\java.exe\" -jar \"test this.jar\" noGui",
+			args:     []string{"\"C:\\\\Program Files\\\\Java\\\\bin\\\\java.exe\"", "-jar", "test this.jar", "noGui"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run("", func(t *testing.T) {
+			result := MergeArguments(tt.args)
+			if result != tt.expected {
+				t.Errorf("MergeArguments() got = %v, want %v", result, tt.expected)
+			}
+		})
+	}
+}

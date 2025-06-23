@@ -131,6 +131,10 @@ func buildTests() []*TestScenario {
 					panicIf(err)
 				}
 
+				template := pufferpanel.Server{}
+				err = json.NewDecoder(bytes.NewReader(tmp.Template)).Decode(&template)
+				panicIf(err)
+
 				_, err = os.Stat(filepath.Join(templateFolder, folder.Name(), "data.json"))
 				if err == nil {
 					tests, err := readDataJsonFile(filepath.Join(templateFolder, folder.Name(), "data.json"))
@@ -154,11 +158,6 @@ func buildTests() []*TestScenario {
 				} else {
 					//no data json, which means it's a single test
 					//but, each template could support envs, so auto-process each
-
-					template := pufferpanel.Server{}
-					err = json.NewDecoder(bytes.NewReader(tmp.Template)).Decode(&template)
-					panicIf(err)
-
 					if len(template.SupportedEnvironments) > 0 {
 						for _, v := range template.SupportedEnvironments {
 							z := &TestTemplate{
@@ -254,12 +253,10 @@ func createCreateBody(scenario *TestScenario) io.ReadCloser {
 		}
 	}
 
-	if e, ok := scenario.Test.Environment["type"]; ok {
-		model.Environment.Type = e.(string)
-	}
 	for k, v := range scenario.Test.Environment {
 		if k == "type" {
-			continue
+			model.Environment.Type = v.(string)
+
 		}
 		model.Environment.Metadata[k] = v
 	}

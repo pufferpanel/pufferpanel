@@ -370,7 +370,7 @@ func (t *tty) createCmd(workDir, cmd string, args []string) (pr *exec.Cmd, err e
 		}
 
 		unshareArgs = append(unshareArgs, "mount --rbind / .",
-			fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s %s", workDir, os.Getuid(), os.Getgid(), cmd, strings.Join(args, " ")))
+			fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s %s", workDir, os.Getuid(), os.Getgid(), cmd, utils.MergeArguments(args)))
 
 		pr = exec.Command("bash", "-c", strings.Join(unshareArgs, " && "))
 		pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
