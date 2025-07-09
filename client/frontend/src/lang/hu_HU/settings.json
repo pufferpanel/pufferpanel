@@ -1,15 +1,15 @@
 {
   "Settings": "Beállítások",
   "PanelSettings": "Panel Beállítások",
-  "SavePanelSettings": "Save Panel Settings",
+  "SavePanelSettings": "Panel beállítások mentése",
   "EmailSettings": "Email Beállítások",
-  "SaveEmailSettings": "Save Email Settings",
+  "SaveEmailSettings": "Email beállítások mentése",
   "MasterUrl": "Fő URL",
   "MasterUrlHint": "Az alap URL, amin a http://localhost:8080 formában lehet elérni a panelt",
   "CompanyName": "Vállakozás Neve",
   "DefaultTheme": "Alapértelmezett Téma",
   "RegistrationEnabled": "A felhasználók maguk regisztrálhatnak",
-  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabledHint": "Az önregisztrált felhasználók semmit sem tehetnek, amíg nem kapnak engedélyeket\n\nEnnek letiltása csak a közvetlen regisztrációt akadályozza meg, a szerverre való meghívást és a Felhasználók oldalt nem érinti",
   "EmailProvider": "Email Szolgáltató",
   "emailProviders": {
     "none": "Ezek közül egyik sem",
@@ -18,15 +18,15 @@
     "mailjet": "Mailjet"
   },
   "email": {
-    "from": "Sender Address",
+    "from": "Küldő cìm",
     "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "key": "API kulcs",
+    "host": "Kiszolgáló",
+    "username": "Felhasználónév",
+    "password": "Jelszó"
   },
-  "Saved": "Saved",
-  "TestEmail": "Test Email",
-  "TestEmailSent": "Test email sent",
-  "TestEmailFailed": "Test email failed to send"
+  "Saved": "Mentve",
+  "TestEmail": "Teszt Email",
+  "TestEmailSent": "Teszt email kiküldve",
+  "TestEmailFailed": "Teszt email kiküldése sikertelen"
 }
