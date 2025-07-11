@@ -58,34 +58,34 @@
     "UserEdit": "Nem admin felhasználó tudja szerkezteni ezt a változót",
     "Internal": "Internál (soha nem mutatja felhasználóknak vagy adminoknak)",
     "Options": "Beállítások",
-    "ConditionHint": "Only show this group if this condition is met",
+    "ConditionHint": "Csak akkor mutatsa ezt a csoport amikor a kondiciók teljesülnek",
     "types": {
-      "String": "String",
-      "Boolean": "Boolean",
-      "Number": "Number",
-      "Options": "Options"
+      "String": "Karakterlánc",
+      "Boolean": "Logikai",
+      "Number": "Szám",
+      "Options": "Opciók"
     },
-    "EditGroup": "Edit group",
-    "RemoveGroup": "Remove group",
-    "MoveToGroup": "Move to different group",
-    "Remove": "Remove"
+    "EditGroup": "Csoport szerkesztése",
+    "RemoveGroup": "Csoport eltávolítása",
+    "MoveToGroup": "Másik csoportba át helyezése",
+    "Remove": "Eltávolítás"
   },
   "description": {
-    "Name": "This name is used as an identifier for the template",
-    "Display": "This is the name that will be displayed to users for example during server creation",
-    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
-    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
-    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
-    "Command": "This is the command that will be executed to start the server",
-    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
-    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
-    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
-    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+    "Name": "Ez a név a sablon azonosítójaként szolgál",
+    "Display": "Ez az a név, amely a felhasználók számára megjelenik például a szerver létrehozása során",
+    "Type": "Ez különböző sablonok csoportosítására és a szerverlistán megjelenítendő ikon kiválasztására szolgál",
+    "Variables": "A változók a felhasználók számára a szerveren beállításokként jelennek meg, és hasznosak lehetnek például annak meghatározásához, hogy a felhasználó melyik verziót szeretné használni, vagy hogy meghatározza bizonyos beállításokat, például a használni kívánt portot",
+    "Install": "Itt határozza meg, hogy milyen lépések fognak végrehajtódni, amikor egy felhasználó megnyomja a sablonból létrehozott szerver telepítési gombját",
+    "Command": "Ez az a parancs, amely a szerver elindításához kerül végrehajtásra",
+    "StopCommand": "Írjon egy parancsot a szerver konzoljára, amikor a felhasználó megnyomja a szerver leállítás gombját",
+    "StopSignal": "Jelzést küld a szervernek, amikor a felhasználó megnyomja a szerver leállítási gombját. Ez például a CTRL+C billentyűkombináció megnyomásának emulálására használható",
+    "PreRunHook": "Itt megadhat néhány lépést, amelyet minden alkalommal végre kell hajtani, mielőtt a szerver elindul",
+    "PostRunHook": "Itt megadhat néhány lépést, amelyet a szerver leállítása után minden alkalommal végre kell hajtani"
   },
   "WorkingDirectory": "Munkafelület",
-  "General": "General",
-  "Hooks": "Hooks",
-  "Import": "Import template",
+  "General": "Általános",
+  "Hooks": "Hookok",
+  "Import": "Sablon importálása",
   "import": {
     "CommunityWarning": "Ezeket a sablonokat a közösség készítette, és mindenféle garancia nélkül bocsátja rendelkezésre"
   }
