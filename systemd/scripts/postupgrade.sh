@@ -28,5 +28,5 @@ exitCode=$?
 
 if command -v apparmor_parser >/dev/null 2>&1
 then
-    apparmor_parser -r /etc/apparmor.d/unshare
+    apparmor_parser -r /etc/apparmor.d/pufferpanel
 fi
