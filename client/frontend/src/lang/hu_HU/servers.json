@@ -28,7 +28,7 @@
   "SaveSettings": "Beállítások mentése",
   "SettingsSaved": "Beállítások elmentve",
   "AdminOnlySetting": "Ez a beállítás csak az adminisztrátorok számára látható",
-  "NoSettings": "This server does not have any settings you can change",
+  "NoSettings": "Ezzen a szerveren nem beállításokat megváltoztatni",
   "Delete": "Szerver törlése",
   "ConfirmDelete": "Biztosan törli ezt a szervert? (A művelet nem visszavonható)",
   "Deleted": "Szerver törölve",
