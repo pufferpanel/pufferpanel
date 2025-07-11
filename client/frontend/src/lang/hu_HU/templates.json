@@ -34,10 +34,10 @@
   "StopCommand": "Stop parancs",
   "StopSignal": "Állj jelzés",
   "NoGroup": "Nincsen Csoportban",
-  "AddVariableGroup": "Add Variable Group",
-  "CommandConditionHint": "Use this command only if this condition is met",
-  "AddCommand": "Add Command",
-  "AddEnvironment": "Add Environment",
+  "AddVariableGroup": "Változó csoport hozzá adása",
+  "CommandConditionHint": "Akkor használd a parancsot amikor a kondiciót elérted",
+  "AddCommand": "Parancs hozzáadása",
+  "AddEnvironment": "Környezet hozzáadása",
   "signals": {
     "1": "SIGHUP",
     "2": "SIGINT (CTRL+C)",
@@ -45,19 +45,19 @@
     "15": "SIGTERM"
   },
   "errors": {
-    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
-    "DisplayInvalid": "The display name cannot be blank",
-    "TypeInvalid": "The type cannot be blank",
-    "CommandInvalid": "The command cannot be blank"
+    "NameInvalid": "A sablon neve nem tartalmazalmat szóközt vagy speciális karatert és nem lehet üres a neve",
+    "DisplayInvalid": "A megjelenítő név nem lehet üres",
+    "TypeInvalid": "A fajta nem lehet üres",
+    "CommandInvalid": "A parancs nem lehet üres"
   },
   "variables": {
-    "Description": "Description",
-    "Type": "Type",
-    "Value": "Default Value",
-    "Required": "This variable is required",
-    "UserEdit": "Non-admin users can edit this variable",
-    "Internal": "Internal (never shown to users or admins)",
-    "Options": "Options",
+    "Description": "Leírás",
+    "Type": "Típus",
+    "Value": "Alapértelmezett érték",
+    "Required": "Ez a változó kötelező",
+    "UserEdit": "Nem admin felhasználó tudja szerkezteni ezt a változót",
+    "Internal": "Internál (soha nem mutatja felhasználóknak vagy adminoknak)",
+    "Options": "Beállítások",
     "ConditionHint": "Only show this group if this condition is met",
     "types": {
       "String": "String",
