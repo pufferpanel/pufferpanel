@@ -237,8 +237,11 @@ func (t *tty) handleClose(environment *pufferpanel.Environment, callback func(ex
 	t.statLocker.Unlock()
 
 	//if we are using unshare AND we're in tmp, we can nuke the workspace at this point
-	if !t.DisableUnshare && strings.HasSuffix(t.mainProcess.Dir, os.TempDir()) {
-		_ = os.RemoveAll(t.mainProcess.Dir)
+	if !t.DisableUnshare && strings.HasPrefix(t.mainProcess.Dir, os.TempDir()) {
+		err = os.RemoveAll(t.mainProcess.Dir)
+		if err != nil {
+			logging.Debug.Printf("Failed to delete %s: %s", t.mainProcess.Dir, err.Error())
+		}
 	}
 
 	t.mainProcess = nil
