@@ -129,9 +129,9 @@ func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.Wa
 			}
 			var outFile *os.File
 			if fs != nil {
-				outFile, err = fs.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode())
+				outFile, err = fs.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode()|0600)
 			} else {
-				outFile, err = os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode())
+				outFile, err = os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode()|0600)
 			}
 
 			if err != nil {
