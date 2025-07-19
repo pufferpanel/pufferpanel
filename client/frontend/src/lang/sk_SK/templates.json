@@ -56,7 +56,7 @@
     "Value": "Predvolená hodnota",
     "Required": "Táto premenná je povinná",
     "UserEdit": "Používatelia bez administrátorských práv môžu túto premennú upravovať",
-    "Internal": "Interná (nikdy sa nezobrazuje používateľom ani správcom)",
+    "Internal": "Interná (nikdy sa nezobrazuje užívateľom ani správcom)",
     "Options": "Možnosti",
     "ConditionHint": "Túto skupinu zobrazovať len ak je splnená táto podmienka",
     "types": {
@@ -72,21 +72,21 @@
   },
   "description": {
     "Name": "Tento názov sa používa ako identifikátor šablóny",
-    "Display": "Toto je názov, ktorý sa zobrazí používateľom napríklad pri vytváraní servera",
+    "Display": "Toto je názov, ktorý sa zobrazí užívateľom napríklad pri vytváraní servera",
     "Type": "Toto sa používa na zoskupovanie rôznych šablón a na rozhodnutie, aká ikona sa má zobraziť v zozname serverov",
-    "Variables": "Premenné sa používateľom zobrazujú ako nastavenia na serveri. Sú užitočné napríklad na to, aby používateľ mohol definovať, ktorú verziu chce používať, alebo aby mohol definovať niektoré nastavenia, ako napríklad port, ktorý chce používať",
-    "Install": "Tu definujete, aké kroky sa vykonajú, keď používateľ klikne na tlačidlo inštalácie servera vytvoreného z tejto šablóny",
+    "Variables": "Premenné sa užívateľom zobrazujú ako nastavenia na serveri. Sú užitočné napríklad na to, aby užívateľ mohol definovať, ktorú verziu chce používať, alebo aby mohol definovať niektoré nastavenia, ako napríklad port, ktorý chce používať",
+    "Install": "Tu definujete, aké kroky sa vykonajú, keď užívateľ klikne na tlačidlo inštalácie servera vytvoreného z tejto šablóny",
     "Command": "Toto je príkaz, ktorý sa vykoná na spustenie servera",
-    "StopCommand": "Napíšte príkaz do konzoly servera, keď používateľ stlačí tlačidlo zastavenia servera",
-    "StopSignal": "Pošlite signál serveru, keď používateľ stlačí tlačidlo zastavenia servera. Toto sa dá napríklad použiť na emuláciu stlačenia klávesovej skratky CTRL+C",
+    "StopCommand": "Napíšte príkaz do konzoly servera, keď užívateľ stlačí tlačidlo zastavenia servera",
+    "StopSignal": "Pošlite signál serveru, keď užívateľ stlačí tlačidlo zastavenia servera. Toto sa dá napríklad použiť na emuláciu stlačenia klávesovej skratky CTRL+C",
     "PreRunHook": "Tu môžete definovať niektoré kroky, ktoré sa majú vykonať vždy tesne pred spustením servera",
     "PostRunHook": "Tu môžete definovať niektoré kroky, ktoré sa majú vykonávať vždy po zastavení servera"
   },
-  "WorkingDirectory": "Working Directory",
-  "General": "General",
+  "WorkingDirectory": "Pracovný priečinok",
+  "General": "Všeobecné",
   "Hooks": "Hooks",
-  "Import": "Import template",
+  "Import": "Importovať šablónu",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties"
+    "CommunityWarning": "Tieto šablóny sú vytvorené komunitou a sú poskytované bez akýchkoľvek záruk"
   }
 }
