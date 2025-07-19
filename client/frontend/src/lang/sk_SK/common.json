@@ -34,7 +34,7 @@
     "mode": {
       "Light": "Svetlý",
       "Dark": "Tmavý",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Tmavá (vysoký kontrast)",
       "Auto": "Automatický"
     },
     "BaseColor": "Základná farba",
@@ -48,14 +48,14 @@
       "Grid": "Mriežka",
       "List": "Zoznam"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Veľkosť písma",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Predvolená"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Písmo",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Predvolené",
+      "A11y": "Optimalizované pre bezbarierovosť"
     }
   },
   "NoResults": "Žiadne výsledky",
