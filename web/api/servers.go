@@ -789,9 +789,8 @@ func editServerUser(c *gin.Context) {
 	if scopes.ContainsScope(currentPerms.Scopes, scopes.ScopeServerAdmin) || scopes.ContainsScope(currentGlobalPerms.Scopes, scopes.ScopeServerAdmin) || scopes.ContainsScope(currentGlobalPerms.Scopes, scopes.ScopeAdmin) {
 		existing.Scopes = perms.Scopes
 	} else {
-		allowedScopes := utils.Union(existing.Scopes, currentPerms.Scopes)
 		//update perms to match this "setup", but not stomp over what the user can't change
-		replacement := scopes.UpdateScopesWhereGranted(existing.Scopes, allowedScopes, currentPerms.Scopes)
+		replacement := scopes.UpdateScopesWhereGranted(existing.Scopes, perms.Scopes, currentPerms.Scopes)
 		existing.Scopes = replacement
 	}
 

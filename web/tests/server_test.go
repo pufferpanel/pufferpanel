@@ -294,7 +294,6 @@ func TestServers(t *testing.T) {
 				if !assert.Equal(t, http.StatusOK, response.Code) {
 					return
 				}
-				//TODO: Check to make sure our user above was added
 				var data []*models.UserPermissionsView
 				err := json.NewDecoder(response.Body).Decode(&data)
 				if !assert.NoError(t, err) {
@@ -309,6 +308,88 @@ func TestServers(t *testing.T) {
 					if v.Email == loginNoLoginUser.Email {
 						var expectedScopes = []*scopes.Scope{
 							scopes.ScopeServerView, scopes.ScopeServerViewData,
+						}
+						if !assert.Equal(t, expectedScopes, v.Scopes) {
+							return
+						}
+						found = true
+					}
+				}
+
+				if !found {
+					assert.Fail(t, "Failed to locate user")
+				}
+			})
+
+			t.Run("GrantUserPermissions", func(t *testing.T) {
+				var data = []byte(`{"scopes": ["server.view", "server.data.view", "server.start", "server.users.view", "server.users.edit"]}`)
+				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoLoginUser.Email, data, session)
+				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					return
+				}
+
+				response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
+				if !assert.Equal(t, http.StatusOK, response.Code) {
+					return
+				}
+				var perms []*models.UserPermissionsView
+				err := json.NewDecoder(response.Body).Decode(&perms)
+				if !assert.NoError(t, err) {
+					return
+				}
+
+				if assert.NotEmpty(t, perms) {
+					return
+				}
+				found := false
+				for _, v := range perms {
+					if v.Email == loginNoLoginUser.Email {
+						var expectedScopes = []*scopes.Scope{
+							scopes.ScopeServerView, scopes.ScopeServerViewData, scopes.ScopeServerStart, scopes.ScopeServerUserView, scopes.ScopeServerUserEdit,
+						}
+						if !assert.Equal(t, expectedScopes, v.Scopes) {
+							return
+						}
+						found = true
+					}
+				}
+
+				if !found {
+					assert.Fail(t, "Failed to locate user")
+				}
+			})
+
+			t.Run("SubuserGrantUserPermissions", func(t *testing.T) {
+				//first get a session for the fake user
+				testSession, err := createSession(db, loginNoLoginUser)
+				if !assert.NoError(t, err) {
+					return
+				}
+
+				var data = []byte(`{"scopes": ["server.view", "server.start", "server.stop"]}`)
+				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoAdminWithServersUser.Email, data, testSession)
+				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					return
+				}
+
+				response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
+				if !assert.Equal(t, http.StatusOK, response.Code) {
+					return
+				}
+				var perms []*models.UserPermissionsView
+				err = json.NewDecoder(response.Body).Decode(&perms)
+				if !assert.NoError(t, err) {
+					return
+				}
+
+				if assert.NotEmpty(t, perms) {
+					return
+				}
+				found := false
+				for _, v := range perms {
+					if v.Email == loginNoAdminWithServersUser.Email {
+						var expectedScopes = []*scopes.Scope{
+							scopes.ScopeServerView, scopes.ScopeServerStart,
 						}
 						if !assert.Equal(t, expectedScopes, v.Scopes) {
 							return
