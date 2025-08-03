@@ -51,9 +51,9 @@
     "autoRestartOnGraceful": "Restartovat server, když se normálně zastaví",
     "autoRestartOnCrash": "Restartovat server při pádu"
   },
-  "IncompatibleTemplates": "Incompatible templates",
-  "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
-  "IncompatibleArch": "Incompatible with architecture '{arch}'",
-  "IncompatibleOs": "Incompatible with OS '{os}'",
+  "IncompatibleTemplates": "Nekompatibilní šablony",
+  "IncompatibleTemplatesDescription": "Tyto šablony nejsou kompatibilní s alespoň jedním z vašich předchozích výběrů",
+  "IncompatibleArch": "Nekompatibilní s architekturou '{arch}'",
+  "IncompatibleOs": "Nekompatibilní s operačním systémem '{os}'",
   "IncompatibleEnv": "Incompatible with environment '{env}'"
 }
