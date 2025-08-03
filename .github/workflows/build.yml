@@ -183,8 +183,7 @@ jobs:
           before-remove: systemd/scripts/preremove.sh
           after-remove: systemd/scripts/postremove.sh
           after-purge: systemd/scripts/purge.sh
-          user: pufferpanel
-          group: pufferpanel
+          extra-dpkg-args: '-Zxz'
           suggested-packages: |
             lib32gcc1
 
@@ -311,8 +310,7 @@ jobs:
           before-remove: systemd/scripts/preremove.sh
           after-remove: systemd/scripts/postremove.sh
           after-purge: systemd/scripts/purge.sh
-          user: pufferpanel
-          group: pufferpanel
+          extra-dpkg-args: '-Zxz'
 
       - name: Build Package RPM ARM64
         id: rpmarm64
