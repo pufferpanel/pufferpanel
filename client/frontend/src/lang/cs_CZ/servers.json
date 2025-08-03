@@ -55,5 +55,5 @@
   "IncompatibleTemplatesDescription": "Tyto šablony nejsou kompatibilní s alespoň jedním z vašich předchozích výběrů",
   "IncompatibleArch": "Nekompatibilní s architekturou '{arch}'",
   "IncompatibleOs": "Nekompatibilní s operačním systémem '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Nekompatibilní s prostředím '{env}'"
 }
