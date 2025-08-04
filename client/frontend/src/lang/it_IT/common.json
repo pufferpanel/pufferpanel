@@ -34,7 +34,7 @@
     "mode": {
       "Light": "Chiaro",
       "Dark": "Scuro",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Scuro (alto contrasto)",
       "Auto": "Automatico"
     },
     "BaseColor": "Colore Base",
@@ -48,14 +48,14 @@
       "Grid": "Griglia",
       "List": "Lista"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Dimensione Carattere",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Predefinito"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Stile font",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Predefinito",
+      "A11y": "Alta leggibilità"
     }
   },
   "NoResults": "Nessun risultato",
