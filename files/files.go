@@ -27,7 +27,7 @@ func CopyFile(src, dest string) error {
 	return err
 }
 
-func WriteFile(src io.ReadCloser, dest string) error {
+func WriteFile(src io.Reader, dest string) error {
 	destination, err := os.Create(dest)
 	if err != nil {
 		return err
