@@ -3,7 +3,6 @@ package paperdl
 import (
 	"errors"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/spf13/cast"
 )
 
@@ -12,7 +11,6 @@ type OperationFactory struct {
 }
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	logging.Debug.Printf("create entered")
 	minecraftVersion := cast.ToString(op.OperationArgs["minecraftVersion"])
 	build := cast.ToString(op.OperationArgs["build"])
 	filename := cast.ToString(op.OperationArgs["target"])
@@ -25,7 +23,6 @@ func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.O
 		return nil, errors.New("missing build")
 	}
 
-	logging.Debug.Printf("create done")
 	return PaperDl{MinecraftVersion: minecraftVersion, Build: build, Filename: filename}, nil
 }
 

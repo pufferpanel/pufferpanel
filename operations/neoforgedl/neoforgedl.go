@@ -35,12 +35,13 @@ func (op NeoforgeDL) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 	jarDownload := strings.Replace(InstallerUrl, "${version}", op.Version, -1)
 
 	localFile, err := pufferpanel.DownloadViaMaven(jarDownload, env)
+	defer utils.Close(localFile)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
 
 	//copy from the cache
-	err = files.CopyFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
+	err = files.WriteFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}

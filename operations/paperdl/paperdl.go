@@ -1,6 +1,7 @@
 package paperdl
 
 import (
+	"crypto"
 	"encoding/json"
 	"errors"
 	"github.com/hashicorp/go-version"
@@ -41,14 +42,13 @@ func (op PaperDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRes
 		return pufferpanel.OperationResult{Error: err}
 	}
 
-	localFile, err := pufferpanel.FileFromCacheOrDownload(dlUrl, hash, pufferpanel.FileHashSHA256, env)
+	dl, err := pufferpanel.Download(dlUrl, hash, crypto.SHA256, true, env)
+	defer utils.Close(dl)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
 
-
-	//copy from the cache
-	err = files.CopyFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
+	err = files.WriteFile(dl, path.Join(env.GetRootDirectory(), op.Filename))
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
@@ -85,7 +85,7 @@ func getLatestMCVersion() (string, error) {
 	for _, v := range versions.Versions {
 		if ver, err := version.NewVersion(v.VersionInfo.Id); err == nil && latest.LessThan(ver) {
 			latest = ver
-		} else {
+		} else if err != nil {
 			logging.Info.Printf("failed to parse version '%s', %s", v, err)
 		}
 	}
@@ -105,7 +105,7 @@ func (op PaperDl) getDownloadUrlAndHash(env *pufferpanel.Environment) (string, s
 		URL: path,
 		Header: http.Header{},
 	}
-	request.Header.Add("user-agent", UserAgent)
+	request.Header.Add("User-Agent", UserAgent)
 
 	response, err := pufferpanel.Http().Do(request)
 	defer utils.CloseResponse(response)
@@ -124,7 +124,7 @@ func (op PaperDl) getDownloadUrlAndHash(env *pufferpanel.Environment) (string, s
 		return "", "", err
 	}
 
-	return build.Dowloads.Server.Url, build.Dowloads.Server.Checksums.Sha256, nil
+	return build.Downloads.Server.Url, build.Downloads.Server.Checksums.Sha256, nil
 }
 
 type PaperVersionInfo struct {
@@ -153,5 +153,5 @@ type PaperDownload struct {
 }
 
 type PaperBuild struct {
-	Dowloads PaperDownload `json:"downloads"`
+	Downloads PaperDownload `json:"downloads"`
 }

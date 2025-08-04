@@ -39,11 +39,12 @@ func (f *Fabricdl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 	}
 
 	file, err := pufferpanel.DownloadViaMaven(metadata[0].Url, env)
+	defer utils.Close(file)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
 
-	err = files.CopyFile(file, path.Join(env.GetRootDirectory(), "fabric-installer.jar"))
+	err = files.WriteFile(file, path.Join(env.GetRootDirectory(), "fabric-installer.jar"))
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}

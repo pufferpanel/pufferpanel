@@ -184,12 +184,13 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 				forgeUrl := replaceTokens(ForgeInstallerUrl, data)
 				forgeInstaller := replaceTokens(ForgeInstallerName, data)
 
-				jarFile, err = pufferpanel.DownloadViaMaven(forgeUrl, env)
+				dl, err := pufferpanel.DownloadViaMaven(forgeUrl, env)
+				defer utils.Close(dl)
 				if err != nil {
 					return pufferpanel.OperationResult{Error: err}
 				}
 				//copy to server
-				err = files.CopyFile(jarFile, filepath.Join(env.GetRootDirectory(), forgeInstaller))
+				err = files.WriteFile(dl, filepath.Join(env.GetRootDirectory(), forgeInstaller))
 				if err != nil {
 					return pufferpanel.OperationResult{Error: err}
 				}
