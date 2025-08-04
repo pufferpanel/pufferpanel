@@ -2,10 +2,12 @@ package pufferpanel
 
 import (
 	"crypto/sha1"
+	"crypto/sha256"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
+	"hash"
 	"io"
 	"log"
 	"os"
@@ -57,14 +59,19 @@ func DownloadFileToCache(url, fileName string) error {
 	return err
 }
 
-func DownloadViaMaven(downloadUrl string, env *Environment) (string, error) {
+type FileHash int
+
+const (
+	FileHashSHA1 = iota
+	FileHashSHA256
+)
+
+func FileFromCacheOrDownload(downloadUrl, expectedHash string, algorithm FileHash, env *Environment) (string, error) {
 	localPath := filepath.Join(config.CacheFolder.Value(), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
 
 	if os.PathSeparator != '/' {
 		localPath = strings.Replace(localPath, "/", string(os.PathSeparator), -1)
 	}
-
-	sha1Url := downloadUrl + ".sha1"
 
 	if env != nil {
 		env.DisplayToConsole(true, "Downloading: %s\n", downloadUrl)
@@ -75,7 +82,13 @@ func DownloadViaMaven(downloadUrl string, env *Environment) (string, error) {
 	defer utils.Close(f)
 	//cache was readable, so validate
 	if err == nil {
-		h := sha1.New()
+		var h hash.Hash
+		if algorithm == FileHashSHA1 {
+			h = sha1.New()
+		} else if algorithm == FileHashSHA256 {
+			h = sha256.New()
+		}
+
 		if _, err := io.Copy(h, f); err != nil {
 			log.Fatal(err)
 		}
@@ -83,22 +96,27 @@ func DownloadViaMaven(downloadUrl string, env *Environment) (string, error) {
 
 		actualHash := fmt.Sprintf("%x", h.Sum(nil))
 
-		logging.Info.Printf("Downloading hash from %s", sha1Url)
-		response, err := HttpGet(sha1Url)
-		defer utils.CloseResponse(response)
-		if err != nil {
-			useCache = false
-		} else {
-			data := make([]byte, 40)
-			_, err := response.Body.Read(data)
-			expectedHash := string(data)
-
+		if strings.HasPrefix(expectedHash, "https://") || strings.HasPrefix(expectedHash, "http://") {
+			logging.Info.Printf("Downloading hash from %s", expectedHash)
+			response, err := HttpGet(expectedHash)
+			defer utils.CloseResponse(response)
 			if err != nil {
 				useCache = false
-			} else if expectedHash != actualHash {
-				logging.Info.Printf("Cache expected %s but was actually %s", expectedHash, actualHash)
-				useCache = false
+			} else {
+				data := make([]byte, 40)
+				_, err := response.Body.Read(data)
+				expectedHash = string(data)
+
+				if err != nil {
+					logging.Info.Printf("Failed downloading hash, not using cache")
+					useCache = false
+				}
 			}
+		}
+		
+		if expectedHash != actualHash {
+			logging.Info.Printf("Cache expected %s but was actually %s", expectedHash, actualHash)
+			useCache = false
 		}
 
 		if useCache {
@@ -106,9 +124,8 @@ func DownloadViaMaven(downloadUrl string, env *Environment) (string, error) {
 				logging.Info.Printf("Using cached copy of file: %s\n", downloadUrl)
 			}
 		}
-	} else if !os.IsNotExist(err) {
-		logging.Info.Printf("Cached file is not readable, will download (%s)", localPath)
 	} else {
+		logging.Info.Printf("Cached file is not readable, will download (%s)", localPath)
 		useCache = false
 	}
 
@@ -122,4 +139,8 @@ func DownloadViaMaven(downloadUrl string, env *Environment) (string, error) {
 	} else {
 		return "", err
 	}
+}
+
+func DownloadViaMaven(downloadUrl string, env *Environment) (string, error) {
+	return FileFromCacheOrDownload(downloadUrl, downloadUrl + ".sha1", FileHashSHA1, env)
 }

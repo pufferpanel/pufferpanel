@@ -19,6 +19,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/move"
 	"github.com/pufferpanel/pufferpanel/v3/operations/neoforgedl"
+	"github.com/pufferpanel/pufferpanel/v3/operations/paperdl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/resolveforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/operations/resolveneoforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/operations/sleep"
@@ -47,6 +48,7 @@ var factories = []pufferpanel.OperationFactory{
 	mojangdl.Factory,
 	move.Factory,
 	neoforgedl.Factory,
+	paperdl.Factory,
 	resolveforgeversion.Factory,
 	resolveneoforgeversion.Factory,
 	sleep.Factory,
