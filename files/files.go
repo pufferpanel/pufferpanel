@@ -26,3 +26,13 @@ func CopyFile(src, dest string) error {
 	_, err = io.Copy(destination, source)
 	return err
 }
+
+func WriteFile(src io.Reader, dest string) error {
+	destination, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+	defer utils.Close(destination)
+	_, err = io.Copy(destination, src)
+	return err
+}

@@ -106,12 +106,13 @@ func (op SpongeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 			}
 
 			file, err := pufferpanel.DownloadViaMaven(url, env)
+			defer utils.Close(file)
 			if err != nil {
 				return pufferpanel.OperationResult{Error: err}
 			}
 
 			//going to stick the spongeforge rename in, to assist with those modpacks
-			err = files.CopyFile(file, path.Join(env.GetRootDirectory(), "mods", "_aspongeforge.jar"))
+			err = files.WriteFile(file, path.Join(env.GetRootDirectory(), "mods", "_aspongeforge.jar"))
 			if err != nil {
 				return pufferpanel.OperationResult{Error: err}
 			}
@@ -119,11 +120,12 @@ func (op SpongeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 	case "spongevanilla":
 		{
 			file, err := pufferpanel.DownloadViaMaven(url, env)
+			defer utils.Close(file)
 			if err != nil {
 				return pufferpanel.OperationResult{Error: err}
 			}
 
-			err = files.CopyFile(file, path.Join(env.GetRootDirectory(), "server.jar"))
+			err = files.WriteFile(file, path.Join(env.GetRootDirectory(), "server.jar"))
 			if err != nil {
 				return pufferpanel.OperationResult{Error: err}
 			}
