@@ -98,7 +98,6 @@ onMounted(async () => {
           <hooks v-model="edit" />
         </tab>
         <tab id="environment" :title="t('templates.Environment')" icon="environment" hotkey="t e">
-          <div class="warning" v-text="t('servers.EnvironmentEditHint')" />
           <server-environment v-model="edit" />
         </tab>
         <tab id="json" :title="t('templates.Json')" icon="json" hotkey="t j">

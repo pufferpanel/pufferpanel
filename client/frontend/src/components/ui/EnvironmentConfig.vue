@@ -1,6 +1,21 @@
 <script>
 const fields = {
-  host: [],
+  host: [
+    {
+      name: 'disableUnshare',
+      type: 'boolean',
+      label: 'env.host.DisableUnshare',
+      hint: 'env.host.DisableUnshareHint',
+      default: false
+    },
+    {
+      name: 'mounts',
+      type: 'list',
+      label: 'env.host.Mounts',
+      hint: 'env.host.MountsHint',
+      default: []
+    }
+  ],
   docker: [
     {
       name: 'image',
@@ -47,9 +62,11 @@ const fields = {
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import KeyValueInput from '@/components/ui/KeyValueInput.vue'
+import ListInput from '@/components/ui/ListInput.vue'
 import PortMappingInput from '@/components/ui/PortMappingInput.vue'
 import Suggestion from '@/components/ui/Suggestion.vue'
 import TextField from '@/components/ui/TextField.vue'
+import Toggle from '@/components/ui/Toggle.vue'
 
 const props = defineProps({
   noFieldsMessage: { type: String, default: () => undefined },
@@ -95,6 +112,8 @@ function getLabel(field) {
       <port-mapping-input v-else-if="field.type === 'portBindings'" :model-value="modelValue[field.name] || field.default" :label="getLabel(field)" :hint="field.hint ? t(field.hint) : undefined" @update:modelValue="onInput(field.name, $event)" />
       <suggestion v-else-if="field.type === 'text' && field.options" :model-value="modelValue[field.name] || field.default" :label="getLabel(field)" :options="field.options" :hint="field.hint ? t(field.hint) : undefined" @update:modelValue="onInput(field.name, $event)" />
       <text-field v-else-if="field.type === 'text'" :model-value="modelValue[field.name] || field.default" :label="getLabel(field)" :hint="field.hint ? t(field.hint) : undefined" @update:modelValue="onInput(field.name, $event)" />
+      <toggle v-else-if="field.type === 'boolean'" :model-value="modelValue[field.name]" :label="getLabel(field)" :hint="field.hint ? t(field.hint) : undefined" @update:modelValue="onInput(field.name, $event)" />
+      <list-input v-else-if="field.type === 'list'" :model-value="modelValue[field.name]" :label="getLabel(field)" :hint="field.hint ? t(field.hint) : undefined" @update:modelValue="onInput(field.name, $event)" />
       <span v-else v-text="`${field.type} not yet implemented`" />
     </div>
   </div>

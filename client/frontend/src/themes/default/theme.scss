@@ -335,18 +335,6 @@ hr {
       @include cols(12);
       @include cols(6, md);
     }
-    .switch-wrapper {
-      @include cols(11);
-      @include cols(5, md);
-      @include breakpoint(md) {
-        display: flex;
-        justify-self: end;
-        .label {
-          align-self: center;
-          padding-top: 8px;
-        }
-      }
-    }
     .button.icon {
       @include cols(1);
     }
