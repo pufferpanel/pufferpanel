@@ -47,10 +47,10 @@
     "server-console-send": "Può inviare comandi alla console",
     "server-stats": "Può vedere l'utilizzo delle risorse",
     "server-status": "Può vedere lo stato corrente del server",
-    "server-backup-view": "View and download backups",
-    "server-backup-create": "Create a new backup",
-    "server-backup-restore": "Restore server from a backup",
-    "server-backup-delete": "Delete a backup"
+    "server-backup-view": "Visualizza e scarica i backup",
+    "server-backup-create": "Crea un nuovo backup",
+    "server-backup-restore": "Ripristina il server da un backup",
+    "server-backup-delete": "Elimina un backup"
   },
   "hint": {
     "admin": "Concedi tutti i permessi",
