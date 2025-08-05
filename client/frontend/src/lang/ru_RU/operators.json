@@ -1,8 +1,8 @@
 {
   "ConditionHint": "Выполнить только этот шаг, если это условие выполнено",
   "mojangdl": {
-    "generic": "Загрузить Minecraft",
-    "formatted": "Загрузить Minecraft"
+    "generic": "Скачать Minecraft",
+    "formatted": "Скачать Minecraft"
   },
   "writefile": {
     "generic": "Записать в файл",
@@ -19,7 +19,7 @@
   },
   "command": {
     "generic": "Выполнить команду(ы)",
-    "formatted": "Запустить {command}. | Запустить команды {n}",
+    "formatted": "Выполнить {command} | Выполнить {n} команд",
     "commands": "Команды"
   },
   "alterfile": {
@@ -36,12 +36,12 @@
     "target": "Целевой путь"
   },
   "mkdir": {
-    "generic": "Создать папку",
+    "generic": "Создать каталог",
     "formatted": "Создать каталог {target}"
   },
   "steamgamedl": {
     "generic": "Установить из Steam",
-    "formatted": "Установить Steam App ID {appId}",
+    "formatted": "Установить приложение Steam с ID {appId}",
     "appId": "ID приложения Steam"
   },
   "javadl": {
