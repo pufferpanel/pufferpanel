@@ -54,6 +54,6 @@
   "IncompatibleTemplates": "Inkompatible Vorlagen",
   "IncompatibleTemplatesDescription": "Diese Vorlagen sind mit mindestens einer deiner vorherigen Auswahloptionen nicht kompatibel",
   "IncompatibleArch": "Inkompatibel mit der Architektur '{arch}‘",
-  "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleOs": "Inkompatibel mit dem Betriebssystem '{os}‘",
+  "IncompatibleEnv": "Inkompatibel mit der Umgebung '{env}‘"
 }
