@@ -12,6 +12,16 @@
   }
 }
 
+.templatelist .repo.createLink {
+  display: block;
+  padding: .75em;
+  margin-top: 3rem;
+  text-align: center;
+  .icon::before {
+    margin-right: .5em;
+  }
+}
+
 html[dir="rtl"] .createLink .icon {
   margin-left: 1.5em;
   margin-right: unset;

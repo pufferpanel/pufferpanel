@@ -84,8 +84,8 @@ func getsTemplatesForRepo(c *gin.Context) {
 // @Router /api/templates [post]
 // @Security OAuth2Application[templates.repo.create]
 func addRepo(c *gin.Context) {
-	var repo *models.TemplateRepo
-	err := c.BindJSON(repo)
+	var repo models.TemplateRepo
+	err := c.BindJSON(&repo)
 
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -99,7 +99,7 @@ func addRepo(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
-	err = ts.AddRepo(repo)
+	err = ts.AddRepo(&repo)
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return

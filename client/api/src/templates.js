@@ -19,7 +19,16 @@ export class TemplateApi {
     const res = []
     const repos = await this.listRepos()
     await Promise.all(repos.map(async repo => {
-      res.push({ name: repo.name, id: repo.id, templates: await this.listRepoTemplates(repo.id) })
+      let templates = undefined
+      let error = undefined
+      try {
+        templates = await this.listRepoTemplates(repo.id)
+      } catch (e) {
+        error = e
+        if (error.response) error = error.response
+        if (error.error) error = error.error
+      }
+      res.push({ ...repo, templates, error })
     }))
     return res
   }
@@ -54,8 +63,8 @@ export class TemplateApi {
     return res.data
   }
 
-  async saveRepo(repo, config) {
-    await this._api.put(`/api/templates/${repo}`, config)
+  async addRepo(repo) {
+    await this._api.post('/api/templates/', repo)
     return true
   }
 

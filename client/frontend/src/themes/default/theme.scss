@@ -1219,6 +1219,17 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   @include card;
 }
 
+.templatelist .template-repo-header {
+  display: flex;
+  align-items: center;
+  .name {
+    flex-grow: 1;
+  }
+  .button.icon {
+    font-size: 1.25em;
+  }
+}
+
 .templatelist .template {
   display: flex;
   flex-flow: row wrap;

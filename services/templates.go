@@ -244,7 +244,7 @@ func (t *Template) AddRepo(repo *models.TemplateRepo) error {
 }
 
 func (t *Template) DeleteRepo(id uint) error {
-	return t.DB.Where(&models.TemplateRepo{ID: id}).Error
+	return t.DB.Where(&models.TemplateRepo{ID: id}).Delete(&models.TemplateRepo{ID: id}).Error
 }
 
 func readTemplateFromDisk(name, path string) (*models.Template, error) {
