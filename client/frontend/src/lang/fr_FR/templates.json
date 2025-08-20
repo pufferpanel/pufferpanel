@@ -38,6 +38,12 @@
   "CommandConditionHint": "Utiliser cette commande uniquement si cette condition est remplie",
   "AddCommand": "Ajouter une Commande",
   "AddEnvironment": "Ajouter un Environnement",
+  "AddRepo": "Add Template Repository",
+  "RepoName": "Repository Name",
+  "RepoUrl": "Repository URL",
+  "RepoBranch": "Repository Branch",
+  "ConfirmDeleteRepo": "Are you sure you want to delete the repository '{name}'?",
+  "DeleteRepo": "Delete Repository",
   "signals": {
     "1": "INSCRIPTION",
     "2": "SIGINT (CTRL+C)",
