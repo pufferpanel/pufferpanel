@@ -68,25 +68,27 @@ onmessage = function (e) {
 
   const updates = []
 
-  let last = null
-  newLines.map(line => {
+  newLines.map((line, i) => {
     line = ansiup.ansi_to_html(line)
     if (lastIncompleteLine) line = lastIncompleteLine.line + line
 
     if (lastIncompleteLine) {
       updates.push({ op: 'update', content: handleLine(line, e.data.panelName) })
-      last = { line }
+      if ((newLines.length - 1) === i && !endOnNewline) {
+        // this is the last line and it's not complete
+        lastIncompleteLine = { line }
+      } else {
+        // not the last line, must be complete
+        lastIncompleteLine = null
+      }
     } else {
       updates.push({ op: 'append', content: handleLine(line, e.data.panelName) })
-      last = { line }
+      if ((newLines.length - 1) === i && !endOnNewline) {
+        // this is the last line and it's not complete
+        lastIncompleteLine = { line }
+      }
     }
   })
 
   postMessage(updates)
-
-  if (!endOnNewline) {
-    lastIncompleteLine = last
-  } else {
-    lastIncompleteLine = null
-  }
 }
