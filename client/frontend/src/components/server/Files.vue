@@ -11,6 +11,7 @@ import TextField from '@/components/ui/TextField.vue'
 
 const { t } = useI18n()
 const events = inject('events')
+const toast = inject('toast')
 
 const props = defineProps({
   server: { type: Object, required: true }
@@ -96,10 +97,13 @@ async function openFile(f, overrideWarn = false) {
   }
 }
 
-async function saveFile() {
+async function saveFile({close}) {
   await props.server.uploadFile(`${getCurrentPath()}/${file.value.name}`, file.value.content)
-  editorOpen.value = false
-  file.value = null
+  toast.success(t('files.Saved'))
+  if (close) {
+    editorOpen.value = false
+    file.value = null
+  }
   refresh()
 }
 
@@ -313,7 +317,7 @@ function trackFileEl(index) {
       <loader />
     </overlay>
     <overlay v-model="editorOpen" class="editor">
-      <editor v-if="file" v-model="file" :read-only="!canEdit" @save="saveFile()" @close="editorOpen = false" />
+      <editor v-if="file" v-model="file" :read-only="!canEdit" @save="saveFile($event)" @close="editorOpen = false" />
     </overlay>
   </div>
 </template>

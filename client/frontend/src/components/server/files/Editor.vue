@@ -59,7 +59,7 @@ export default {
   <div>
     <div class="overlay-header">
       <h1 class="title" v-text="modelValue.name" />
-      <btn v-if="!readOnly && !((extensions[modelValue.extension] || {}).disableSave)" variant="text" @click="emit('save')"><icon name="save" /> {{ t('common.Save') }}</btn>
+      <btn v-if="!readOnly && !((extensions[modelValue.extension] || {}).disableSave)" variant="text" @click="emit('save', {close: true})"><icon name="save" /> {{ t('common.Save') }}</btn>
       <btn v-hotkey="'Escape'" variant="icon" @click="emit('close')"><icon name="close" /></btn>
     </div>
     <img v-if="getType(modelValue) === 'image'" class="file-viewer" :src="modelValue.url" />
@@ -71,6 +71,6 @@ export default {
       <source :src="modelValue.url" />
       <div class="warning unsupported" v-text="t('errors.AudioUnsupported')" />
     </audio>
-    <ace v-else id="file-editor" :read-only="readOnly" :model-value="modelValue.content" class="file-editor" :file="modelValue.name" theme="monokai" @update:modelValue="emitUpdate" @save="emit('save')" />
+    <ace v-else id="file-editor" :read-only="readOnly" :model-value="modelValue.content" class="file-editor" :file="modelValue.name" theme="monokai" @update:modelValue="emitUpdate" @save="emit('save', {close: false})" />
   </div>
 </template>
