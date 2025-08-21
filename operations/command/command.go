@@ -30,8 +30,9 @@ func (c Command) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResu
 				}
 				ch <- nil
 			},
-			StdInConfig: c.StdIn,
-			Variables:   c.Variables,
+			StdInConfig:  c.StdIn,
+			Variables:    c.Variables,
+			DisableStats: true,
 		})
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}

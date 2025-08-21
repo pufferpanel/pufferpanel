@@ -22,10 +22,12 @@ import (
 )
 
 type tty struct {
-	mainProcess  *exec.Cmd
-	statLocker   sync.Mutex
-	lastStats    *pufferpanel.ServerStats
-	lastStatTime time.Time
+	mainProcess         *exec.Cmd
+	statLocker          sync.Mutex
+	lastStats           *pufferpanel.ServerStats
+	lastStatTime        time.Time
+	disableStdin        bool
+	disableSpecialStats bool
 
 	DisableUnshare bool     `json:"disableUnshare"`
 	Mounts         []string `json:"mounts"`
@@ -74,13 +76,19 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 		Type: pufferpanel.MessageTypeStatus,
 	})
 
+	t.disableSpecialStats = steps.DisableStats
+	t.disableStdin = steps.DisableStdin
+
 	processTty, err := pty.Start(pr)
 	if err != nil {
 		environment.Wait.Done()
 		return
 	}
 
-	environment.CreateConsoleStdinProxy(steps.StdInConfig, processTty)
+	if !t.disableStdin {
+		environment.CreateConsoleStdinProxy(steps.StdInConfig, processTty)
+	}
+
 	environment.Console.Start()
 
 	go func(proxy io.Writer) {
@@ -141,7 +149,7 @@ func (t *tty) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.S
 		Memory: cast.ToFloat64(memMap.RSS),
 	}
 
-	if environment.Server.Stats.Type == "jcmd" {
+	if !t.disableSpecialStats && environment.Server.Stats.Type == "jcmd" {
 		var socket *net.UnixConn
 		if socket, err = t.initiateJCMD(); err == nil && socket != nil {
 			for _, s := range []string{"1", "\x00", "jcmd", "\x00", "GC.heap_info", "\x00", "\x00", "\x00"} {
@@ -255,6 +263,9 @@ func (t *tty) handleClose(environment *pufferpanel.Environment, callback func(ex
 		},
 		Type: pufferpanel.MessageTypeStatus,
 	})
+
+	t.disableStdin = false
+	t.disableSpecialStats = false
 
 	if callback != nil {
 		callback(exitCode)
