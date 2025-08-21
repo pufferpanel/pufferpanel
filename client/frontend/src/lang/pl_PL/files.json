@@ -19,5 +19,6 @@
   "Current": "Aktualny",
   "Total": "Ogółem",
   "OpenLargeFile": "Ten plik może powodować problemy z wydajnością przeglądarki ze względu na jego rozmiar, czy chcesz go otworzyć mimo to?",
-  "OpenAnyways": "Otwórz mimo to"
+  "OpenAnyways": "Otwórz mimo to",
+  "Saved": "File saved"
 }
