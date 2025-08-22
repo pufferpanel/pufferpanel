@@ -74,10 +74,58 @@ function clearConsole() {
   if (console.value) console.value.replaceChildren([])
 }
 
+const history = ref([])
+const historyIndex = ref(-1)
+const temporaryCommand = ref('')
+
 function sendCommand() {
+  if (historyIndex.value !== -1) {
+    history.value.splice(historyIndex.value, 1)
+  }
+
+  if (history.value.length === 0 || history.value[history.value.length - 1] !== command.value) {
+    history.value.push(command.value)
+  }
+
+  historyIndex.value = -1
+  temporaryCommand.value = ''
+
+  if (history.value.length > 100) {
+    history.value.splice(0, 1)
+  }
+
   props.server.sendCommand(command.value)
   command.value = ''
 }
+
+function previousCommand() {
+  if (historyIndex.value === -1 && history.value.length > 0) {
+    historyIndex.value = history.value.length - 1
+    temporaryCommand.value = command.value
+  } else if (historyIndex.value > 0) {
+    historyIndex.value--
+  } else {
+    return
+  }
+
+  command.value = history.value[historyIndex.value]
+}
+
+function nextCommand() {
+  if (historyIndex.value === -1) {
+    return
+  }
+
+  historyIndex.value++
+
+  if (historyIndex.value >= history.value.length) {
+    historyIndex.value = -1
+    command.value = temporaryCommand.value
+  } else {
+    command.value = history.value[historyIndex.value]
+  }
+}
+
 </script>
 
 <template>
@@ -88,7 +136,8 @@ function sendCommand() {
       <div ref="console" class="console" />
     </div>
     <div v-if="server.hasScope('server.console.send')" dir="ltr" class="command">
-      <text-field v-model="command" v-hotkey="'c c'" :label="t('servers.Command')" @keyup.enter="sendCommand()" />
+      <text-field v-model="command" v-hotkey="'c c'" :label="t('servers.Command')" @keyup.enter="sendCommand()"
+        @keydown.up.prevent="previousCommand()" @keydown.down.prevent="nextCommand()" />
       <icon name="send" @click="sendCommand()" />
     </div>
   </div>
