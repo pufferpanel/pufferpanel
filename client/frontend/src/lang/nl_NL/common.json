@@ -3,62 +3,62 @@
   "Language": "Taal",
   "Online": "Online",
   "Offline": "Offline",
-  "Installing": "Installing",
+  "Installing": "Installeren",
   "Unknown": "Onbekend",
-  "Loading": "Laden...",
-  "Description": "Description",
+  "Loading": "Bezig met laden...",
+  "Description": "Beschrijving",
   "Save": "Opslaan",
   "Cancel": "Annuleren",
-  "Close": "Close",
+  "Close": "Sluiten",
   "Host": "Hostnaam",
   "Port": "Poort",
   "Collapse": "Inklappen",
-  "Expand": "Expand",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Expand": "Uitklappen",
+  "Copy": "Kopiëren",
+  "Copied": "Gekopieerd naar het Klembord",
+  "Back": "Terug",
   "Next": "Volgende",
   "Details": "Details",
   "ErrorDetails": "Fout details",
   "HelpTranslate": "Help ons PufferPanel te vertalen",
   "Protocol": "Protocol",
   "Add": "Voeg toe",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Apply": "Toepassen",
+  "Confirm": "Bevestigen",
+  "Condition": "Voorwaarde",
+  "Discard": "Verwijder",
+  "ConfirmLeave": "Je hebt niet-opgeslagen wijzigingen. Wil je deze wijzigingen verwijderen en deze pagina verlaten?",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Thema",
+    "Mode": "Modus",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "Light": "Licht",
+      "Dark": "Donker",
+      "DarkHighContrast": "Donker (hoog Contrast)",
       "Auto": "Auto"
     },
-    "BaseColor": "Base Color",
-    "ServerTypeDisplay": "Server Type Display",
+    "BaseColor": "Basis kleur",
+    "ServerTypeDisplay": "Server Type Weergave",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "Pictogram",
+      "None": "Geen"
     },
-    "ListType": "List Type",
+    "ListType": "Lijst Type",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Raster",
+      "List": "Lijst"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Lettertype grootte",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Standaard"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Lettertype",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Standaard",
+      "A11y": "Toegankelijkheid geoptimaliseerd"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "Geen resultaten",
+  "Yes": "Ja",
+  "No": "Nee"
 }

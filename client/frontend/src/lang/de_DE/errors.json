@@ -50,6 +50,6 @@
   "ErrBackupServerRunning": "Der Server wird gerade ausgeführt. Bitte stoppen Sie den Server, bevor Sie ein Backup oder eine Wiederherstellung durchführen",
   "ErrContainerNotUnique": "Mehrere Container gefunden",
   "ErrNoContainerNoneFound": "Kein Container gefunden",
-  "ErrNoMountFound": "No mount found",
-  "ErrUnsupportedMountType": "Unsupported mount type"
+  "ErrNoMountFound": "Kein Mount gefunden",
+  "ErrUnsupportedMountType": "Nicht unterstützter Mount-Typ"
 }

@@ -19,5 +19,6 @@
   "Current": "Actuel",
   "Total": "Total",
   "OpenLargeFile": "Ce fichier peut entraîner des problèmes de performances pour votre navigateur en raison de sa taille, voulez-vous quand même l'ouvrir ?",
-  "OpenAnyways": "Ouvrir quand même"
+  "OpenAnyways": "Ouvrir quand même",
+  "Saved": "File saved"
 }

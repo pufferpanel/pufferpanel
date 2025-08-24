@@ -19,5 +19,6 @@
   "Current": "Nykyinen",
   "Total": "Yhteensä",
   "OpenLargeFile": "Tämä tiedosto voi aiheuttaa suorituskykyongelmia selaimellesi kokonsa vuoksi, haluatko kuitenkin avata tiedoston?",
-  "OpenAnyways": "Avaa kuitenkin"
+  "OpenAnyways": "Avaa kuitenkin",
+  "Saved": "File saved"
 }

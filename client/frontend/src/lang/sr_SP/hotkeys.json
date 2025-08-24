@@ -7,7 +7,8 @@
     "g n": "Go to Nodes",
     "g s": "Go to Servers",
     "g t": "Go to Templates",
-    "g u": "Go to Users"
+    "g u": "Go to Users",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Account",

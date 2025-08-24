@@ -7,7 +7,8 @@
     "g n": "Mergi la Node-uri",
     "g s": "Mergi la servere",
     "g t": "Mergi la șabloane",
-    "g u": "Mergi la Utilizatori"
+    "g u": "Mergi la Utilizatori",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Cont",

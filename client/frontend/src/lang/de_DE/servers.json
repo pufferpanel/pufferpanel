@@ -50,5 +50,10 @@
     "autoStart": "Server starten, wenn der Knoten startet",
     "autoRestartOnGraceful": "Server neu starten, wenn er gewöhnlich gestoppt ist",
     "autoRestartOnCrash": "Server neu starten, wenn er abgestürzt ist"
-  }
+  },
+  "IncompatibleTemplates": "Inkompatible Vorlagen",
+  "IncompatibleTemplatesDescription": "Diese Vorlagen sind mit mindestens einer deiner vorherigen Auswahloptionen nicht kompatibel",
+  "IncompatibleArch": "Inkompatibel mit der Architektur '{arch}‘",
+  "IncompatibleOs": "Inkompatibel mit dem Betriebssystem '{os}‘",
+  "IncompatibleEnv": "Inkompatibel mit der Umgebung '{env}‘"
 }

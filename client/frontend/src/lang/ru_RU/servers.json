@@ -50,5 +50,10 @@
     "autoStart": "Запускать сервер при запуске хоста",
     "autoRestartOnGraceful": "Перезагружать сервер когда он нормально останавливается",
     "autoRestartOnCrash": "Перезапустить сервер при сбое"
-  }
+  },
+  "IncompatibleTemplates": "Несовместимые шаблоны",
+  "IncompatibleTemplatesDescription": "Эти шаблоны несовместимы по крайней мере с одним из ваших предыдущих вариантов",
+  "IncompatibleArch": "Несовместимо с архитектурой '{arch}'",
+  "IncompatibleOs": "Несовместимо с ОС '{os}'",
+  "IncompatibleEnv": "Несовместимо с окружением '{env}'"
 }

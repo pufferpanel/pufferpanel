@@ -7,7 +7,8 @@
     "g n": "Przejdź do węzłów",
     "g s": "Przejdź do serwerów",
     "g t": "Przejdź do szablonów",
-    "g u": "Przejdź do użytkowników"
+    "g u": "Przejdź do użytkowników",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Konto",

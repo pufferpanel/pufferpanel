@@ -1,16 +1,16 @@
 {
     "Backup": "Backup",
-    "Name": "Name",
-    "Create": "Create backup",
-    "BackupStarted": "Backup started",
-    "BackupsHeader": "Available backups",
-    "Restore": "Restore",
-    "RestoreStarted": "Restore started",
-    "RestorePrompt": "Restore from backup",
-    "RestorePromptBody": "Do you really want to restore from this backup? \r\n This will delete any existing data so it is highly recommended to create a backup first.",
+    "Name": "Nome",
+    "Create": "Criar \"backup\"",
+    "BackupStarted": "Backup Iniciado",
+    "BackupsHeader": "Backups disponíveis",
+    "Restore": "Restaurar",
+    "RestoreStarted": "Restauração iniciada",
+    "RestorePrompt": "Restaurar o backup",
+    "RestorePromptBody": "Você realmente deseja restaurar a partir deste backup? Isso excluirá todos os dados existentes, por isso é altamente recomendável criar um backup primeiro.",
     "Download": "Download",
-    "Delete": "Delete",
-    "Deleted": "Backup deleted successfully",
-    "DeletePrompt": "Permanently delete backup",
-    "DeletePromptBody": "Do you really want to delete the backup permanently?"
+    "Delete": "Excluir",
+    "Deleted": "Backup excluído com sucesso",
+    "DeletePrompt": "Excluir backup permanentemente",
+    "DeletePromptBody": "Você realmente deseja excluir o backup permanentemente?"
 }

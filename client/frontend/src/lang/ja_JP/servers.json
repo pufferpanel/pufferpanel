@@ -12,10 +12,10 @@
   "Statistics": "統計",
   "CPU": "CPU",
   "Memory": "メモリ",
-  "JvmHeapAlloc": "Heapspace allocated",
-  "JvmHeapUsed": "Heapspace in use",
-  "JvmMetaAlloc": "Metaspace allocated",
-  "JvmMetaUsed": "Metaspace in use",
+  "JvmHeapAlloc": "ヒープスペースが割り当てられました",
+  "JvmHeapUsed": "ヒープスペース",
+  "JvmMetaAlloc": "メタスペースが割り当てられました",
+  "JvmMetaUsed": "メタスペース",
   "Files": "ファイル",
   "Name": "サーバー名",
   "EditName": "サーバー名を編集",
@@ -50,5 +50,10 @@
     "autoStart": "ノード開始時にサーバーを起動する",
     "autoRestartOnGraceful": "正常に停止したらサーバーを再起動します",
     "autoRestartOnCrash": "クラッシュしたらサーバーを再起動します"
-  }
+  },
+  "IncompatibleTemplates": "互換性のないテンプレート",
+  "IncompatibleTemplatesDescription": "これらのテンプレートは、あなたの以前の選択のうち少なくとも1つと互換性がありません",
+  "IncompatibleArch": "アーキテクチャ 『{arch}』 と互換性がありません",
+  "IncompatibleOs": "OS 『{os}』 と互換性がありません",
+  "IncompatibleEnv": "環境 『{env}』 と互換性がありません"
 }

@@ -50,5 +50,10 @@
     "autoStart": "Spustit server při spuštění uzlu",
     "autoRestartOnGraceful": "Restartovat server, když se normálně zastaví",
     "autoRestartOnCrash": "Restartovat server při pádu"
-  }
+  },
+  "IncompatibleTemplates": "Nekompatibilní šablony",
+  "IncompatibleTemplatesDescription": "Tyto šablony nejsou kompatibilní s alespoň jedním z vašich předchozích výběrů",
+  "IncompatibleArch": "Nekompatibilní s architekturou '{arch}'",
+  "IncompatibleOs": "Nekompatibilní s operačním systémem '{os}'",
+  "IncompatibleEnv": "Nekompatibilní s prostředím '{env}'"
 }

@@ -19,5 +19,6 @@
   "Current": "Atual",
   "Total": "Total",
   "OpenLargeFile": "This file may cause performance issues for your browser due to its size, do you want to open it anyways?",
-  "OpenAnyways": "Abrir mesmo assim"
+  "OpenAnyways": "Abrir mesmo assim",
+  "Saved": "File saved"
 }

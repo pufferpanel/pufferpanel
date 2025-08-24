@@ -34,7 +34,7 @@
     "mode": {
       "Light": "Hell",
       "Dark": "Dunkel",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Dunkel (Hoher Kontrast)",
       "Auto": "Auto"
     },
     "BaseColor": "Standardfarbe",
@@ -55,7 +55,7 @@
     "FontFace": "Schriftart",
     "fontFace": {
       "Default": "Standard",
-      "A11y": "Accessibility optimized"
+      "A11y": "Für Barrierefreiheit optimiert"
     }
   },
   "NoResults": "Keine Ergebnisse",

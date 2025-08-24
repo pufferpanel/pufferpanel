@@ -1,68 +1,68 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Csak akkor hajtsa végre ezt a lépést, ha a következő feltétel teljesül",
   "mojangdl": {
-    "generic": "Download Minecraft",
-    "formatted": "Download Minecraft"
+    "generic": "Minecraft Letöltése",
+    "formatted": "Minecraft Letöltése"
   },
   "writefile": {
-    "generic": "Write to file",
-    "formatted": "Write to file {target}"
+    "generic": "Fájlba írás",
+    "formatted": "Fájlba írása  {target}"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
-    "formatted": "Resolve Minecraft Forge Version"
+    "generic": "Minecraft Forge verzió megoldása",
+    "formatted": "Minecraft Forge verzió megoldása"
   },
   "download": {
-    "generic": "Download file(s)",
-    "formatted": "Download {file} | Download {n} files",
-    "files": "Files"
+    "generic": "Fájl(ok) letöltése",
+    "formatted": "{file} letölése | {n} fájlok letöltése",
+    "files": "Fájlok"
   },
   "command": {
-    "generic": "Run command(s)",
-    "formatted": "Run {command} | Run {n} commands",
-    "commands": "Commands"
+    "generic": "Parancs(ok) Futtatása",
+    "formatted": "{command} futtása | {n} parancs futtása",
+    "commands": "Parancsok"
   },
   "alterfile": {
-    "generic": "Modify a file",
-    "formatted": "Modify file {target}",
-    "regex": "Treat search string as regular expression",
-    "search": "Search",
-    "replace": "Replace matches with"
+    "generic": "Fájl módosítása",
+    "formatted": "Fájl {target} módosítása",
+    "regex": "A keresési karakterlánc szabályos kifejezésként való kezelése",
+    "search": "Keresés",
+    "replace": "Találatok kicserélése ezzel"
   },
   "move": {
-    "generic": "Move or rename a file",
-    "formatted": "Move file {source} to {target}",
-    "source": "Source Path",
-    "target": "Target Path"
+    "generic": "Fájl áthelyezése vagy törlése",
+    "formatted": "Fájl áthelyezése {source} ide {target}",
+    "source": "Forrás útvonal",
+    "target": "Cél útvonal"
   },
   "mkdir": {
-    "generic": "Create a directory",
-    "formatted": "Create directory {target}"
+    "generic": "Mappa létrehozása",
+    "formatted": "Mappa létrehozzása {target}"
   },
   "steamgamedl": {
-    "generic": "Install from Steam",
-    "formatted": "Install Steam App ID {appId}",
+    "generic": "Steamről telepítése",
+    "formatted": "Streamről App id-ben telepítése {appId}",
     "appId": "Steam App ID"
   },
   "javadl": {
-    "generic": "Install Java",
-    "formatted": "Install Java {version}"
+    "generic": "Java telepítése",
+    "formatted": "Java {version} telepítése"
   },
   "forgedl": {
-    "generic": "Download Minecraft Forge",
-    "formatted": "Download Minecraft Forge"
+    "generic": "Minecraft Forge Letöltése",
+    "formatted": "Minecraft Forge Letöltése"
   },
   "spongeforgedl": {
-    "generic": "Download Minecraft SpongeForge",
-    "formatted": "Download Minecraft SpongeForge",
-    "releaseType": "Release Type"
+    "generic": "Minecraft SpongeForge Letöltése",
+    "formatted": "Minecraft SpongeForge Letöltése",
+    "releaseType": "Kiadás Típusa"
   },
   "fabricdl": {
-    "generic": "Download Minecraft Fabric",
-    "formatted": "Download Minecraft Fabric"
+    "generic": "Minecraft Fabric Letöltése",
+    "formatted": "Minecraft Fabric Letöltése"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "generic": "Curseforgeról letöltés",
+    "formatted": "Curseforgeról letöltés"
   }
 }

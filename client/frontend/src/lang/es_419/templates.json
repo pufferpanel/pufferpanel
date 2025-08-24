@@ -1,9 +1,9 @@
 {
   "Templates": "Plantillas",
-  "Save": "Guardar Plantilla",
+  "Save": "Guardar plantilla",
   "Saved": "Plantilla guardada",
   "Delete": "Eliminar Plantilla",
-  "ConfirmDelete": "¿Realmente deseas eliminar la plantilla {name}?",
+  "ConfirmDelete": "¿Realmente quieres eliminar la plantilla {name}?",
   "Deleted": "Plantilla eliminada",
   "New": "Crear nueva plantilla",
   "EditLocalOnly": "Solo puedes guardar cambios realizados en plantillas locales",
@@ -38,6 +38,12 @@
   "CommandConditionHint": "Usar este comando sólo si se cumple esta condición",
   "AddCommand": "Añadir comando",
   "AddEnvironment": "Añadir entorno",
+  "AddRepo": "Add Template Repository",
+  "RepoName": "Repository Name",
+  "RepoUrl": "Repository URL",
+  "RepoBranch": "Repository Branch",
+  "ConfirmDeleteRepo": "Are you sure you want to delete the repository '{name}'?",
+  "DeleteRepo": "Delete Repository",
   "signals": {
     "1": "SIGHUP",
     "2": "SIGINT (CTRL+C)",
@@ -65,10 +71,10 @@
       "Number": "Numero",
       "Options": "Opciones"
     },
-    "EditGroup": "Edit group",
-    "RemoveGroup": "Remove group",
-    "MoveToGroup": "Move to different group",
-    "Remove": "Remove"
+    "EditGroup": "Editar grupo",
+    "RemoveGroup": "Eliminar grupo",
+    "MoveToGroup": "Mover a un grupo diferente",
+    "Remove": "Eliminar"
   },
   "description": {
     "Name": "Este nombre se utiliza como identificador para la plantilla",

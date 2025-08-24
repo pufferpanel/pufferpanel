@@ -37,7 +37,7 @@
   "SftpPort": "Porta SFTP",
   "WithPrivateAddress": "Usa un host/porta diverso per il server per la comunicazione del server",
   "WithPrivateAddressHint": "Questo indirizzo separato viene utilizzato quando il nodo principale deve parlare con il nuovo nodo. Utile per esempio quando i nodi sono nella stessa rete dietro NAT.",
-  "LocalNodeEdit": "Il nodo locale non ha alcuna impostazione modificabile\n\nPer modificare l'host visualizzato con i server ospitati su questo nodo regolare l'url principale dei pannelli nelle impostazioni del pannello",
+  "LocalNodeEdit": "Il nodo locale non ha alcuna impostazione modificabile\n\nPer modificare l'host visualizzato con i server ospitati su questo nodo, modifica l'url principale dei pannelli nelle impostazioni del pannello",
   "Deploy": "Dispiega Nodo",
   "deploy": {
     "Step1": "## Passo 1\n\nInstalla PufferPanel sul nuovo server, [vedi i documenti per i dettagli](https://docs.pufferpanel.com/en/latest/installing.html)",

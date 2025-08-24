@@ -7,7 +7,8 @@
     "g n": "Prejsť k uzlom",
     "g s": "Prejsť k serverom",
     "g t": "Prejsť k šablonám",
-    "g u": "Prejsť k užívateľom"
+    "g u": "Prejsť k užívateľom",
+    "/": "Globálne vyhľadávanie"
   },
   "Self": {
     "Title": "Účet",
@@ -54,8 +55,8 @@
   },
   "UserList": {
     "Title": "Používatelia",
-    "c": "Vytvoriť nového používateľa",
-    "l": "Zameraj prvého používateľa zozname"
+    "c": "Vytvoriť nového užívateľa",
+    "l": "Zameraj prvého užívateľa v zozname"
   },
   "TemplateList": {
     "Title": "Šablóny",

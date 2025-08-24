@@ -26,7 +26,7 @@
     "password": "パスワード"
   },
   "Saved": "保存しました",
-  "TestEmail": "Test Email",
-  "TestEmailSent": "Test email sent",
-  "TestEmailFailed": "Test email failed to send"
+  "TestEmail": "テストメールを送信",
+  "TestEmailSent": "テストメールが送信されました",
+  "TestEmailFailed": "テストメールの送信に失敗しました"
 }

@@ -7,7 +7,8 @@
     "g n": "Ir para nós",
     "g s": "Ir para Servidores",
     "g t": "Ir para Modelos",
-    "g u": "Ir para Usuários"
+    "g u": "Ir para Usuários",
+    "/": "Global Search"
   },
   "Self": {
     "Title": "Conta",

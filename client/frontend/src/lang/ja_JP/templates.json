@@ -38,6 +38,12 @@
   "CommandConditionHint": "条件が満たされている場合のみコマンドを実行します",
   "AddCommand": "コマンドを追加",
   "AddEnvironment": "環境を追加",
+  "AddRepo": "Add Template Repository",
+  "RepoName": "Repository Name",
+  "RepoUrl": "Repository URL",
+  "RepoBranch": "Repository Branch",
+  "ConfirmDeleteRepo": "Are you sure you want to delete the repository '{name}'?",
+  "DeleteRepo": "Delete Repository",
   "signals": {
     "1": "登録",
     "2": "SIGINT (CTRL+C)",
