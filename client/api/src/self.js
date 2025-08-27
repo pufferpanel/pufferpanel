@@ -31,8 +31,13 @@ export class SelfApi {
   }
 
   async validateOtpEnroll(token) {
-    await this._api.put('/api/self/otp', { token })
-    return true
+    const res = await this._api.put('/api/self/otp', { token })
+    return res.data
+  }
+
+  async regenerateRecoveryCodes(token) {
+    const res = await this._api.post('/api/self/otp/recovery', { token })
+    return res.data
   }
 
   async disableOtp(token) {

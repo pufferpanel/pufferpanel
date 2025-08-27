@@ -21,6 +21,7 @@ const emailError = ref(false)
 const password = ref('')
 const passwordError = ref(false)
 const otpNeeded = ref(false)
+const otpRecovery = ref(false)
 const token = ref('')
 
 function loggedIn() {
@@ -100,8 +101,10 @@ function passwordErrorMsg() {
       <btn v-if="$config.registrationEnabled" variant="text" @click="$router.push({ name: 'Register' })" v-text="t('users.RegisterLink')" />
     </form>
     <overlay v-model="otpNeeded" class="otp" :title="t('users.OtpNeeded')" closable @close="resetOtp()">
-      <otp-input :disabled="loading" @update:modelValue="token = $event" @complete="token = $event; submitOtp()" />
+      <otp-input v-if="!otpRecovery" :disabled="loading" @update:modelValue="token = $event" @complete="token = $event; submitOtp()" />
+      <text-field v-else v-model="token" autofocus :disabled="loading" />
       <loader v-if="loading" />
+      <btn variant="text" @click="otpRecovery = !otpRecovery; token = ''" v-text="otpRecovery ? t('users.OtpUseAuthenticator') : t('users.OtpUseRecovery')" />
       <btn color="primary" :disabled="loading" @click="submitOtp()" v-text="t('users.Login')" />
     </overlay>
   </div>

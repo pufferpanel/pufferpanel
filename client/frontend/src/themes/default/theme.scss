@@ -798,6 +798,25 @@ html[dir="rtl"] .menu.open {
 }
 
 
+.recovery-codes .overlay {
+  max-width: 32rem;
+}
+
+.recovery-codes .codes {
+  @include row;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  .code {
+    @include cols(6);
+    text-align: center;
+    code {
+      background-color: var(--backdrop);
+      font-weight: bold;
+    }
+  }
+}
+
+
 
 
 
@@ -852,7 +871,7 @@ html[dir="rtl"] .menu.open {
       width: calc(3.5em * 8);
     }
 
-    .otp-enroll-content, .otp-enroll-actions, .otp-deactivation-actions {
+    .otp-enroll-content, .otp-enroll-actions, .recovery-code-regeneration-actions, .otp-deactivation-actions {
       @include row;
       max-width: unset;
     }
@@ -871,7 +890,7 @@ html[dir="rtl"] .menu.open {
       @include cols(8, lg);
     }
 
-    .otp-enroll-actions .button, .otp-deactivation-actions .button {
+    .otp-enroll-actions .button, .recovery-code-regeneration-actions .button, .otp-deactivation-actions .button {
       @include cols(12);
       @include cols(6, md);
     }

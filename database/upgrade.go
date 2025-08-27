@@ -26,6 +26,7 @@ var dbObjects = []interface{}{
 	&models.Session{},
 	&models.TemplateRepo{},
 	&models.Backup{},
+	&models.RecoveryCode{},
 }
 
 func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {

@@ -2,10 +2,12 @@ package services
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/base64"
 	"errors"
 	"image"
 	"image/png"
+	"math/big"
 	"strings"
 
 	"github.com/pquerna/otp"
@@ -92,8 +94,19 @@ func (us *User) ValidOtp(email string, token string) (user *models.User, err err
 	}
 
 	if !totp.Validate(token, user.OtpSecret) {
-		err = pufferpanel.ErrInvalidCredentials
-		return
+		// check recovery codes
+		rc := &models.RecoveryCode{
+			UserId: user.ID,
+		}
+		rc.SetCode(token)
+
+		res := us.DB.Where(rc).Delete(rc)
+		if res.Error != nil {
+			err = res.Error
+		}
+		if res.RowsAffected == 0 {
+			err = pufferpanel.ErrInvalidCredentials
+		}
 	}
 	return
 }
@@ -192,18 +205,93 @@ func (us *User) StartOtpEnroll(userId uint) (secret string, imgStr string, err e
 	return
 }
 
-func (us *User) ValidateOtpEnroll(userId uint, token string) error {
+func (us *User) gerateOtpRecoveryCode(length int) (string, error) {
+	const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	code := make([]byte, length)
+	for i := range length {
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
+		if err != nil {
+			return "", err
+		}
+		code[i] = chars[num.Int64()]
+	}
+	return string(code), nil
+}
+
+func (us *User) generateOtpRecoveryCodes(numCodes int) ([]string, error) {
+	codes := make([]string, numCodes)
+	for i := range numCodes {
+		code, err := us.gerateOtpRecoveryCode(12)
+		if err != nil {
+			return nil, err
+		}
+		codes[i] = code
+	}
+	return codes, nil
+}
+
+func (us *User) ValidateOtpEnroll(userId uint, token string) ([]string, error) {
 	user, err := us.GetById(userId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if !totp.Validate(token, user.OtpSecret) {
-		return pufferpanel.ErrInvalidCredentials
+		return nil, pufferpanel.ErrInvalidCredentials
+	}
+
+	codes, err := us.generateOtpRecoveryCodes(10)
+	if err != nil {
+		return nil, err
+	}
+
+	rcs := make([]models.RecoveryCode, len(codes))
+	for i, code := range codes {
+		rcs[i] = models.RecoveryCode{
+			UserId: user.ID,
+		}
+		rcs[i].SetCode(code)
+	}
+
+	err = us.DB.Create(&rcs).Error
+	if err != nil {
+		return nil, err
 	}
 
 	user.OtpActive = true
-	return us.Update(user)
+	return codes, us.Update(user)
+	
+}
+
+func (us *User) RegenerateOtpRecoveryCodes(userId uint) ([]string, error) {
+	user, err := us.GetById(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	codes, err := us.generateOtpRecoveryCodes(10)
+	if err != nil {
+		return nil, err
+	}
+
+	rcs := make([]models.RecoveryCode, len(codes))
+	for i, code := range codes {
+		rcs[i] = models.RecoveryCode{
+			UserId: user.ID,
+		}
+		rcs[i].SetCode(code)
+	}
+
+	err = us.DB.Transaction(func(tx *gorm.DB) error {
+		err := tx.Delete(&models.RecoveryCode{}, "user_id = ?", user.ID).Error
+		if err != nil {
+			return err
+		}
+
+		return tx.Create(&rcs).Error
+	})
+
+	return codes, err
 }
 
 func (us *User) DisableOtp(userId uint) error {
@@ -212,9 +300,16 @@ func (us *User) DisableOtp(userId uint) error {
 		return err
 	}
 
-	user.OtpSecret = ""
-	user.OtpActive = false
-	return us.Update(user)
+	return us.DB.Transaction(func(tx *gorm.DB) error {
+		err := tx.Delete(&models.RecoveryCode{}, "user_id = ?", user.ID).Error
+		if err != nil {
+			return err
+		}
+
+		user.OtpSecret = ""
+		user.OtpActive = false
+		return us.Update(user)
+	})
 }
 
 func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) ([]*models.User, int64, error) {
