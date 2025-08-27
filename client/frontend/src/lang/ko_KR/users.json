@@ -41,6 +41,13 @@
   "OtpSecret": "비밀 코드",
   "OtpConfirm": "2단계 인증 코드를 이용하여 계속하기",
   "OtpNeeded": "2단계 인증 필요",
+  "RecoveryCodes": "Recovery Codes",
+  "RecoveryCodesHint": "These codes can be used in place of authenticator codes in case you loose access to those. Each code is valid for exactly one use. They will not be shown again, make sure to keep them in a safe place.",
+  "SaveRecoveryCodes": "Save Recovery Codes",
+  "RegenerateRecoveryCodes": "Regenerate Recovery Codes",
+  "RegenerateRecoveryCodesHint": "Regenerating your recovery codes will invalidate all current recovery codes.",
+  "OtpUseRecovery": "Use a recovery code instead",
+  "OtpUseAuthenticator": "Use an authenticator code instead",
   "UserInvited": "User invited",
   "DeleteSuccess": "User deleted successfully"
 }
