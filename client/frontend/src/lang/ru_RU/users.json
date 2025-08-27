@@ -41,6 +41,13 @@
   "OtpSecret": "Секретный код",
   "OtpConfirm": "Подтвердите с помощью кода 2FA",
   "OtpNeeded": "Требуется 2FA",
+  "RecoveryCodes": "Recovery Codes",
+  "RecoveryCodesHint": "These codes can be used in place of authenticator codes in case you loose access to those. Each code is valid for exactly one use. They will not be shown again, make sure to keep them in a safe place.",
+  "SaveRecoveryCodes": "Save Recovery Codes",
+  "RegenerateRecoveryCodes": "Regenerate Recovery Codes",
+  "RegenerateRecoveryCodesHint": "Regenerating your recovery codes will invalidate all current recovery codes.",
+  "OtpUseRecovery": "Use a recovery code instead",
+  "OtpUseAuthenticator": "Use an authenticator code instead",
   "UserInvited": "Пользователь приглашен",
   "DeleteSuccess": "Пользователь успешно удален"
 }
