@@ -23,6 +23,10 @@
     "subject": "OTP has been enabled for your account",
     "body": "otp-enabled.html"
   },
+  "recoveryCodesRegenerated": {
+    "subject": "OTP Recovery Codes have been regenerated for your account",
+    "body": "recovery-codes-regenerated.html"
+  },
   "otpDisabled": {
     "subject": "OTP has been disabled for your account",
     "body": "otp-disabled.html"

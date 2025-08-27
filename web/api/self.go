@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"github.com/pquerna/otp/totp"
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"net/http"
@@ -27,8 +26,9 @@ func registerSelf(g *gin.RouterGroup) {
 	g.Handle("PUT", "/otp", middleware.RequiresPermission(scopes.ScopeSelfEdit), validateOtpEnroll)
 	g.Handle("OPTIONS", "/otp", response.CreateOptions("GET", "POST", "PUT"))
 
+	g.Handle("POST", "/otp/recovery", middleware.RequiresPermission(scopes.ScopeSelfEdit), regenerateOtpRecoveryCodes)
 	g.Handle("DELETE", "/otp/:token", middleware.RequiresPermission(scopes.ScopeSelfEdit), disableOtp)
-	g.Handle("OPTIONS", "/otp/:token", response.CreateOptions("DELETE"))
+	g.Handle("OPTIONS", "/otp/:token", response.CreateOptions("POST", "DELETE"))
 
 	g.Handle("GET", "/oauth2", middleware.RequiresPermission(scopes.ScopeSelfClients), getPersonalOAuth2Clients)
 	g.Handle("POST", "/oauth2", middleware.RequiresPermission(scopes.ScopeSelfClients), createPersonalOAuth2Client)
@@ -178,7 +178,7 @@ func validateOtpEnroll(c *gin.Context) {
 		return
 	}
 
-	err = us.ValidateOtpEnroll(user.ID, request.Token)
+	recoveryCodes, err := us.ValidateOtpEnroll(user.ID, request.Token)
 	if errors.Is(err, pufferpanel.ErrInvalidCredentials) {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
@@ -191,7 +191,41 @@ func validateOtpEnroll(c *gin.Context) {
 	if err != nil {
 		logging.Error.Printf("Error sending email: %s\n", err)
 	}
-	c.Status(http.StatusNoContent)
+	c.JSON(http.StatusOK, gin.H{
+		"recoveryCodes": recoveryCodes,
+	})
+}
+
+func regenerateOtpRecoveryCodes(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	user := c.MustGet("user").(*models.User)
+
+	request := &ValidateOtpRequest{}
+
+	err := c.BindJSON(request)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	_, err = us.ValidOtp(user.Email, request.Token)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	recoveryCodes, err := us.RegenerateOtpRecoveryCodes(user.ID)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	err = services.GetEmailService().SendEmail(user.Email, "recoveryCodesRegenerated", nil, true)
+	if err != nil {
+		logging.Error.Printf("Error sending email: %s\n", err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"recoveryCodes": recoveryCodes,
+	})
 }
 
 func disableOtp(c *gin.Context) {
@@ -201,12 +235,12 @@ func disableOtp(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	token := c.Param("token")
 
-	if !totp.Validate(token, user.OtpSecret) {
-		response.HandleError(c, pufferpanel.ErrInvalidCredentials, http.StatusBadRequest)
+	_, err := us.ValidOtp(user.Email, token)
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	err := us.DisableOtp(user.ID)
+	err = us.DisableOtp(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
