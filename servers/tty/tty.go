@@ -40,7 +40,6 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 	if err != nil {
 		return err
 	}
-	pr.Dir = environment.GetRootDirectory()
 
 	var envVars = make(map[string]string)
 
