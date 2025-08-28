@@ -65,8 +65,8 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 	}
 
 	t.mainProcess = pr
-	environment.DisplayToConsole(true, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
-	environment.Log(logging.Info, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
+	environment.DisplayToConsole(true, "Starting process: %s", steps.Command)
+	environment.Log(logging.Info, "Starting process in directory [%s]: %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 
 	_ = environment.StatusTracker.WriteMessage(pufferpanel.Transmission{
 		Message: pufferpanel.ServerRunning{
