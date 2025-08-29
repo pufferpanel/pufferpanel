@@ -105,7 +105,8 @@ const chartOptions = (mode) => {
     parsing: false,
     locale: locale.value.split('_')[0] || 'en',
     interaction: {
-      mode: 'x',
+      mode: 'nearest',
+      axis: 'x',
       intersect: false
     },
     animations: {
