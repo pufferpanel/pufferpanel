@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .suggestions .input-field {
   transition: border-radius 0.1s ease-in-out;
 }

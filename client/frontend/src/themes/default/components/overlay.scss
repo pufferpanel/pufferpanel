@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .overlay-backdrop {
   position: fixed;
   top: 0;

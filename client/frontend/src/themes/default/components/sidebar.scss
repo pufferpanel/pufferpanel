@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .sidebar {
   font-size: 20px;
   font-weight: bold;
@@ -67,10 +69,10 @@
 
 // Main content area
 .main {
-  @include row;
   transition: padding 0.1s ease-in-out;
   padding-top: 64px;
   padding-bottom: 1em;
+  @include row;
 }
 
 .sidebar ~ .main {

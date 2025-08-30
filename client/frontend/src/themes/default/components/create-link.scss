@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .createLink {
   @include clickable;
   @include link;

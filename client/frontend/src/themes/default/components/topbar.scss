@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .topbar {
   @include raised;
   position: fixed;

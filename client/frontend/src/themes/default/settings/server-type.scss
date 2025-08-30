@@ -1,3 +1,6 @@
+@use '../mixins' as *;
+@use '../icons' as *;
+
 .server .type {
   display: none;
 }

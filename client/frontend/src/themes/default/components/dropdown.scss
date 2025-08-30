@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .dropdown {
   position: relative;
   display: inline-block;

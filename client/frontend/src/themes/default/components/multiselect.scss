@@ -1,3 +1,6 @@
+@use '../mixins' as *;
+@use '../icons' as *;
+
 .multiselect {
   position: relative;
   margin: 0 auto;

@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .list-type-grid {
   .main .list {
     @include breakpoint(md) {

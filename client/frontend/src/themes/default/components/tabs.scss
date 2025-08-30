@@ -1,16 +1,11 @@
+@use '../mixins' as *;
+@use '../icons' as *;
+
 .tabs {
   max-width: calc(100vw - 4em);
   position: relative;
 
   .scroll-left {
-    @media (hover: none) and (pointer: coarse) {
-      display: none;
-    }
-
-    @include icon;
-    @include icon-name(chevron-left);
-    @include raised;
-    @include clickable;
     background-color: var(--background);
     width: 1.125em;
     height: 1.125em;
@@ -21,6 +16,10 @@
     z-index: 2;
     text-align: center;
     font-size: 1.8em;
+    @include icon;
+    @include icon-name(chevron-left);
+    @include raised;
+    @include clickable;
     &:hover::after {
       content: '';
       display: inline-block;
@@ -32,17 +31,13 @@
       left: 0;
       top: -1.125em;
     }
-  }
 
-  .scroll-right {
     @media (hover: none) and (pointer: coarse) {
       display: none;
     }
+  }
 
-    @include icon;
-    @include icon-name(chevron-right);
-    @include raised;
-    @include clickable;
+  .scroll-right {
     background-color: var(--background);
     width: 1.125em;
     height: 1.125em;
@@ -53,6 +48,10 @@
     z-index: 1;
     text-align: center;
     font-size: 1.8em;
+    @include icon;
+    @include icon-name(chevron-right);
+    @include raised;
+    @include clickable;
     &:hover::after {
       content: '';
       display: inline-block;
@@ -63,6 +62,10 @@
       position: relative;
       right: 0;
       top: -1.125em;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      display: none;
     }
   }
 

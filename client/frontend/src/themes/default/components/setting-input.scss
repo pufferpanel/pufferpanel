@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .setting-input-wrapper {
   @include row;
 

@@ -208,16 +208,16 @@ html[dir="rtl"] .list-item .list-item-icon {
   @include link;
 }
 
-@mixin icon {
-  // copied from mdi because it doesn't expose a mixin and extending causes trouble occasionally
-  display: inline-block;
-  font: normal normal normal #{$mdi-font-size-base}/1 '#{$mdi-font-name}';
-  font-size: inherit;
-  text-rendering: auto;
-  line-height: inherit;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+// @mixin icon {
+//   // copied from mdi because it doesn't expose a mixin and extending causes trouble occasionally
+//   display: inline-block;
+//   font: normal normal normal #{$mdi-font-size-base}/1 '#{$mdi-font-name}';
+//   font-size: inherit;
+//   text-rendering: auto;
+//   line-height: inherit;
+//   -webkit-font-smoothing: antialiased;
+//   -moz-osx-font-smoothing: grayscale;
+// }
 
 @mixin high-contrast-mode {
   .mode-dark-highcontrast {

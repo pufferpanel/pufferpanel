@@ -1,4 +1,6 @@
 @use "sass:map";
+@use "sass:meta";
+@use "sass:string";
 
 // slightly modified mdi scss
 @font-face {
@@ -58,8 +60,8 @@
 }
 
 @function icon-char($character-code) {
-  @if function-exists("selector-append") {
-    @return unquote("\"\\#{$character-code}\"");
+  @if meta.function-exists("selector-append") {
+    @return string.unquote("\"\\#{$character-code}\"");
   }
 
   @if "\\#{'x'}" == "\\x" {

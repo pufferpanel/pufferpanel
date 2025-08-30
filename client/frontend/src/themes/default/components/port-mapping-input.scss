@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 .port-mapping-input {
   .label {
     font-family: var(--headline-font);
@@ -15,11 +17,11 @@
 
   .entry {
     .fields {
-      @include row;
       display: inline-grid;
       width: calc(100% - 4em);
       margin-left: unset;
       margin-right: 1em;
+      @include row;
       .input-field-wrapper {
         @include cols(6);
         @include cols(3, md);

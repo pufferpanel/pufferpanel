@@ -1,3 +1,5 @@
+@use '../mixins' as *;
+
 #toasts {
   position: fixed;
   top: 64px;
