@@ -1,7 +1,7 @@
 @use '../mixins' as *;
 @use '../icons' as *;
 
-.multiselect {
+.multiselect-wrapper {
   position: relative;
   margin: 0 auto;
   width: 100%;
@@ -16,24 +16,23 @@
   background: var(--background);
   padding: 1rem .75rem;
   transition: border-radius 0.1s ease-in-out;
+}
+.is-open .multiselect-wrapper {
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
 
-  &.is-open {
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
-  }
+.is-open-top .multiselect-wrapper {
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
 
-  &.is-open-top {
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
-  }
+.is-disabled .multiselect-wrapper {
+  cursor: default;
+  background: var(--backdrop);
+}
 
-  &.is-disabled {
-    cursor: default;
-    background: var(--backdrop);
-  }
-
-  &.is-active {
-    box-shadow: 0 0 0 2px var(--primary);
-    border-color: var(--primary);
-  }
+.is-active .multiselect-wrapper {
+  box-shadow: 0 0 0 2px var(--primary);
+  border-color: var(--primary);
 }
 
 .multiselect-multiple-label,
@@ -352,4 +351,12 @@
   &:active, &:focus {
     outline: none;
   }
+}
+.multiselect-assistive-text {
+  position: absolute;
+  margin: -1px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
 }
