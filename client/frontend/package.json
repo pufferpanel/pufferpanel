@@ -30,6 +30,8 @@
     "vue-router": "4"
   },
   "devDependencies": {
+    "sass": "^1.43.2",
+    "sass-loader": "^12.2.0",
     "@intlify/vite-plugin-vue-i18n": "^3.2.1",
     "@vitejs/plugin-vue": "^5.2.1",
     "eslint": "^8.0.0",
