@@ -157,8 +157,14 @@ const intl = new Intl.DateTimeFormat(
           <div class="name">{{ backup.name }} ({{ intl.format(new Date(backup.createdAt)) }})</div>
           <!--<div class="size">{{ formatFileSize(backup.fileSize) }}</div> -->
         </div>
-        <btn v-if="server.hasScope('server.backup.restore')" tabindex="-1" variant="icon" :tooltip="t('backup.Restore')" :disabled="isBackingUp()"
-          @click.stop="promptRestore(backup)">
+        <btn
+          v-if="server.hasScope('server.backup.restore')"
+          tabindex="-1"
+          variant="icon"
+          :tooltip="t('backup.Restore')"
+          :disabled="isBackingUp()"
+          @click.stop="promptRestore(backup)"
+        >
           <icon name="restore" />
         </btn>
         <a tabindex="-1" class="dl-link" :href="props.server.getBackupUrl(backup.id)" target="_blank" rel="noopener">
@@ -166,8 +172,14 @@ const intl = new Intl.DateTimeFormat(
             <icon name="download" />
           </btn>
         </a>
-        <btn v-if="server.hasScope('server.backup.delete')" tabindex="-1" variant="icon" :tooltip="t('backup.Delete')" :disabled="isBackingUp()"
-          @click.stop="promptDelete(backup)">
+        <btn
+          v-if="server.hasScope('server.backup.delete')"
+          tabindex="-1"
+          variant="icon"
+          :tooltip="t('backup.Delete')"
+          :disabled="isBackingUp()"
+          @click.stop="promptDelete(backup)"
+        >
           <icon name="remove" />
         </btn>
       </div>

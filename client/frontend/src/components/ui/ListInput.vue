@@ -21,7 +21,7 @@ const { t } = useI18n()
 const values = ref([ ...props.modelValue ])
 
 function emitUpdate() {
-  emit('update:modelValue', values)
+  emit('update:modelValue', values.value)
 }
 
 function addEntry() {

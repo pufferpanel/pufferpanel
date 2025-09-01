@@ -136,8 +136,14 @@ function nextCommand() {
       <div ref="console" class="console" />
     </div>
     <div v-if="server.hasScope('server.console.send')" dir="ltr" class="command">
-      <text-field v-model="command" v-hotkey="'c c'" :label="t('servers.Command')" @keyup.enter="sendCommand()"
-        @keydown.up.prevent="previousCommand()" @keydown.down.prevent="nextCommand()" />
+      <text-field
+        v-model="command"
+        v-hotkey="'c c'"
+        :label="t('servers.Command')"
+        @keyup.enter="sendCommand()"
+        @keydown.up.prevent="previousCommand()"
+        @keydown.down.prevent="nextCommand()"
+      />
       <icon name="send" @click="sendCommand()" />
     </div>
   </div>

@@ -43,7 +43,7 @@ export async function updateLocale(locale, save = true) {
     const file = files[i]
     try {
       messages[file] = (await import(`../lang/${locale}/${file}.json`)).default
-    } catch (e) {
+    } catch (_) {
       messages[file] = (await import(`../lang/${fallback}/${file}.json`)).default
     }
   }

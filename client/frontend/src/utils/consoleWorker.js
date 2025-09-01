@@ -1,4 +1,4 @@
-import AnsiUp from 'ansi_up'
+import { AnsiUp } from 'ansi_up'
 
 const decoder = new TextDecoder('utf-8')
 
