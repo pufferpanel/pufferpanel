@@ -19,6 +19,7 @@ type Server struct {
 	Requirements          Requirements              `json:"requirements,omitempty"`
 	Stats                 MetadataType              `json:"stats,omitempty"`
 	Query                 MetadataType              `json:"query,omitempty"`
+	KeepAlive             KeepAlive                 `json:"keepAlive,omitempty"`
 } //@name ServerDefinition
 
 type Execution struct {
@@ -57,6 +58,11 @@ type Group struct {
 	Variables   []string `json:"variables"`
 	Order       int      `json:"order"`
 } //@name Group
+
+type KeepAlive struct {
+	Frequency string `json:"frequency"`
+	Command   string `json:"command"`
+} //@name KeepAlive
 
 func (s *Server) CopyFrom(replacement *Server) {
 	s.Variables = replacement.Variables

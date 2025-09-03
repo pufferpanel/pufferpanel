@@ -36,6 +36,8 @@ type Server struct {
 	fileServer         files.FileServer
 	backingUp          bool
 	restoring          bool
+	keepAlive          *time.Ticker
+	keepAliveChan      chan bool
 }
 
 var queue *list.List
@@ -170,6 +172,7 @@ func CreateProgram() *Server {
 	}
 	p.stopChan = make(chan bool, 1)
 	p.waitForConsole = &sync.Mutex{}
+	p.keepAliveChan = make(chan bool)
 	return p
 }
 
@@ -264,7 +267,32 @@ func (p *Server) Start() error {
 		return err
 	}
 
-	//stats!
+	//keepalive!
+	if p.KeepAlive.Frequency != "" && p.KeepAlive.Command != "" {
+		dur, err := time.ParseDuration(p.KeepAlive.Frequency)
+		if err != nil {
+			p.RunningEnvironment.DisplayToConsole(true, " Failed to enable keep-alive: %s", err)
+			return nil
+		}
+		if p.keepAlive == nil {
+			p.keepAlive = time.NewTicker(dur)
+		} else {
+			p.keepAlive.Reset(dur)
+		}
+
+		if p.keepAlive != nil {
+			go func() {
+				for {
+					select {
+					case <-p.keepAliveChan:
+						return
+					case <-p.keepAlive.C:
+						_ = p.RunningEnvironment.ExecuteInMainProcess(p.KeepAlive.Command)
+					}
+				}
+			}()
+		}
+	}
 
 	return err
 }
@@ -511,6 +539,11 @@ func (p *Server) GetNetwork() string {
 }
 
 func (p *Server) afterExit(exitCode int) {
+	if p.keepAlive != nil {
+		p.keepAlive.Stop()
+		p.keepAliveChan <- true
+	}
+
 	graceful := exitCode == p.Execution.ExpectedExitCode
 	if graceful {
 		p.CrashCounter = 0
