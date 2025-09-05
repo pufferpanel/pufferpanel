@@ -30,7 +30,7 @@
   "AdminOnlySetting": "この設定は管理者にのみ表示されます",
   "NoSettings": "このサーバーには変更できる設定がありません",
   "Delete": "サーバーを削除",
-  "ConfirmDelete": "このコメントを削除してもよろしいですか? この操作は元に戻すことができません。",
+  "ConfirmDelete": "サーバー「{name}」を削除してもよろしいですか? この操作は元に戻すことができません。",
   "Deleted": "サーバーを削除しました",
   "SftpConnection": "SFTP に接続",
   "EditDefinition": "サーバー設定を編集",
@@ -48,8 +48,8 @@
   "NumPlayersOnline": "{current}/{max} 人がオンラインです",
   "flags": {
     "autoStart": "ノード開始時にサーバーを起動する",
-    "autoRestartOnGraceful": "正常に停止したらサーバーを再起動します",
-    "autoRestartOnCrash": "クラッシュしたらサーバーを再起動します"
+    "autoRestartOnGraceful": "正常に停止した際にサーバーを再起動する",
+    "autoRestartOnCrash": "クラッシュした際にサーバーを再起動する"
   },
   "IncompatibleTemplates": "互換性のないテンプレート",
   "IncompatibleTemplatesDescription": "これらのテンプレートは、あなたの以前の選択のうち少なくとも1つと互換性がありません",
