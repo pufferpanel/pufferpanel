@@ -55,5 +55,6 @@
   "IncompatibleTemplatesDescription": "Diese Vorlagen sind mit mindestens einer deiner vorherigen Auswahloptionen nicht kompatibel",
   "IncompatibleArch": "Inkompatibel mit der Architektur '{arch}‘",
   "IncompatibleOs": "Inkompatibel mit dem Betriebssystem '{os}‘",
-  "IncompatibleEnv": "Inkompatibel mit der Umgebung '{env}‘"
+  "IncompatibleEnv": "Inkompatibel mit der Umgebung '{env}‘",
+  "AdvancedSettings": "Advanced Settings"
 }
