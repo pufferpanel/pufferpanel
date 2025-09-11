@@ -55,5 +55,6 @@
   "IncompatibleTemplatesDescription": "Questi modelli sono incompatibili con una o più di una delle tue selezioni precedenti",
   "IncompatibleArch": "Incompatibile con l'architettura '{arch}'",
   "IncompatibleOs": "Incompatibile col Sistema operativo '{os}'",
-  "IncompatibleEnv": "Incompatibile con l'ambiente '{env}'"
+  "IncompatibleEnv": "Incompatibile con l'ambiente '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }
