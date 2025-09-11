@@ -55,5 +55,6 @@
   "IncompatibleTemplatesDescription": "Эти шаблоны несовместимы по крайней мере с одним из ваших предыдущих вариантов",
   "IncompatibleArch": "Несовместимо с архитектурой '{arch}'",
   "IncompatibleOs": "Несовместимо с ОС '{os}'",
-  "IncompatibleEnv": "Несовместимо с окружением '{env}'"
+  "IncompatibleEnv": "Несовместимо с окружением '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }
