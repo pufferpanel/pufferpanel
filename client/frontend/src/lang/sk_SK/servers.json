@@ -55,5 +55,6 @@
   "IncompatibleTemplatesDescription": "Tieto šablóny nie sú kompatibilné s aspoň jedným z vašich predchádzajúcich výberov",
   "IncompatibleArch": "Nekompatibilné s architektúrou '{arch}'",
   "IncompatibleOs": "Nekompatibilné s OS '{os}'",
-  "IncompatibleEnv": "Nekompatibilné s prostredím '{env}'"
+  "IncompatibleEnv": "Nekompatibilné s prostredím '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }
