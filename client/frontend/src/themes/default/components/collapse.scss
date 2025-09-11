@@ -1,0 +1,46 @@
+@use "../icons" as *;
+@use "../mixins" as *;
+
+.collapse {
+  position: relative;
+  margin-top: .5rem;
+  padding: .5rem;
+  transition: all .1s ease-in-out;
+  &.open {
+    @include card;
+    & {
+      transition: all .1s ease-in-out;
+    }
+  }
+  .title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    font-family: var(--headline-font);
+    @include clickable;
+  }
+  .title::after {
+    @include icon-base;
+    @include icon-name-base('chevron-down');
+    font-size: 1.75rem;
+    position: absolute;
+    top: .25rem;
+    right: 0;
+    transition: right .1s ease-in-out, all .2s ease-in-out;
+  }
+  &.open .title::after {
+    top: .5rem;
+    right: .5rem;
+    transform: rotate(180deg);
+  }
+  .content {
+    height: 1px;
+    overflow-x: visible;
+    overflow-y: hidden;
+    opacity: 0;
+    transition: all .1s ease-in-out;
+  }
+  &.open .content {
+    height: 100%;
+    opacity: 1;
+  }
+}

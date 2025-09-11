@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
+import Collapse from '@/components/ui/Collapse.vue'
 import EnvironmentConfig from '@/components/ui/EnvironmentConfig.vue'
 import Icon from '@/components/ui/Icon.vue'
 import Variables from '@/components/ui/Variables.vue'
@@ -56,9 +57,11 @@ function confirm() {
 
 <template>
   <div class="settings">
-    <environment-config v-if="environment" v-model="environment" />
     <variables :model-value="{ data: settings, groups }" @update:modelValue="updateSettings" />
     <div v-if="Object.keys(settings).length === 0" v-text="t('servers.NoSettings')" />
+    <collapse :title="t('servers.AdvancedSettings')">
+      <environment-config v-if="environment" v-model="environment" />
+    </collapse>
     <btn color="error" @click="emit('back')"><icon name="back" />{{ t('common.Back') }}</btn>
     <btn color="primary" :disabled="!canSubmit()" @click="confirm()"><icon name="save" />{{ t('servers.Create') }}</btn>
   </div>

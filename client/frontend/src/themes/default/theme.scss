@@ -59,6 +59,7 @@
   font-family: var(--standard-font);
   text-rendering: optimizelegibility;
   color: var(--text);
+  box-sizing: border-box;
 }
 
 h1, h2, h3, h4, h5, h6, .server-header .name {
@@ -148,8 +149,10 @@ hr {
 
 
 .hotkey-list {
-  max-width: unset;
   @include row;
+  & {
+    max-width: unset;
+  }
 
   .contextual h3 {
     margin-top: 0;
@@ -292,10 +295,12 @@ hr {
 
 .templatecreate, .templateview, .serverview #admin .server-definition {
   .actions {
-    grid-gap: 0 1em;
-    gap: 0 1em;
-    max-width: unset;
     @include row;
+    & {
+      grid-gap: 0 1em;
+      gap: 0 1em;
+      max-width: unset;
+    }
     .button {
       margin-bottom: 0;
       @include cols(12);
@@ -782,10 +787,12 @@ html[dir="rtl"] .menu.open {
 
 
 .confirm-overlay .actions {
-  grid-gap: 0 1em;
-  gap: 0 1em;
-  max-width: unset;
   @include row;
+  & {
+    grid-gap: 0 1em;
+    gap: 0 1em;
+    max-width: unset;
+  }
 
   .button {
     @include cols(12);
@@ -803,12 +810,16 @@ html[dir="rtl"] .menu.open {
 }
 
 .recovery-codes .codes {
-  margin-top: 3rem;
-  margin-bottom: 3rem;
   @include row;
+  & {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
   .code {
-    text-align: center;
     @include cols(6);
+    & {
+      text-align: center;
+    }
     code {
       background-color: var(--backdrop);
       font-weight: bold;
@@ -872,16 +883,20 @@ html[dir="rtl"] .menu.open {
     }
 
     .otp-enroll-content, .otp-enroll-actions, .recovery-code-regeneration-actions, .otp-deactivation-actions {
-      max-width: unset;
       @include row;
+      & {
+        max-width: unset;
+      }
     }
 
     .otp-enroll-qr {
-      display: flex;
-      justify-content: center;
       @include cols(12);
       @include cols(6, md);
       @include cols(4, lg);
+      & {
+        display: flex;
+        justify-content: center;
+      }
     }
 
     .otp-enroll-info {
@@ -905,15 +920,19 @@ html[dir="rtl"] {
 }
 
 .userview {
-  margin: unset;
   @include cols(12);
   @include row;
+  & {
+    margin: unset;
+  }
   .details, .permissions {
-    height: -moz-fit-content;
-    height: fit-content;
     @include card;
     @include cols(12);
     @include cols(6, md);
+    & {
+      height: -moz-fit-content;
+      height: fit-content;
+    }
     h3 {
       margin-top: 2em;
     }
@@ -921,15 +940,19 @@ html[dir="rtl"] {
 }
 
 .settings {
-  margin: unset;
   @include cols(12);
   @include row;
+  & {
+    margin: unset;
+  }
   .panel, .email {
-    height: -moz-fit-content;
-    height: fit-content;
     @include card;
     @include cols(12);
     @include cols(6, md);
+    & {
+      height: -moz-fit-content;
+      height: fit-content;
+    }
     .master-url {
       position: relative;
       .input-field-wrapper {
@@ -937,11 +960,13 @@ html[dir="rtl"] {
         width: calc(100% - 3em);
       }
       .icon {
-        margin-left: 0.5em;
-        font-size: 2em;
-        position: absolute;
-        top: 0.5em;
         @include clickable;
+        & {
+          margin-left: 0.5em;
+          font-size: 2em;
+          position: absolute;
+          top: 0.5em;
+        }
       }
     }
     .switch-wrapper .hint {
@@ -957,21 +982,24 @@ html[dir="rtl"] .settings .panel .master-url .icon {
 }
 
 .nodeview, .nodeview .edit, .nodecreate {
-  margin: unset;
-  //margin-top: 1.5em;
-  grid-gap: 0 1em;
-  gap: 0 1em;
   @include cols(12);
   @include row;
+  & {
+    margin: unset;
+    grid-gap: 0 1em;
+    gap: 0 1em;
+  }
 
   h1, p, .name, .button, .sftp-port, .private-toggle, .public-host, .private-host, .public-port, .private-port {
     @include cols(12);
   }
 
   h2 {
-    margin-top: 1em;
-    margin-bottom: 0.25em;
     @include cols(12);
+    & {
+      margin-top: 1em;
+      margin-bottom: 0.25em;
+    }
   }
 
   .public-host, .private-host {
@@ -984,17 +1012,21 @@ html[dir="rtl"] .settings .panel .master-url .icon {
 }
 
 .nodeview .features {
-  margin: unset;
-  grid-gap: 0 1em;
-  gap: 0 1em;
   @include cols(12);
   @include row;
+  & {
+    margin: unset;
+    grid-gap: 0 1em;
+    gap: 0 1em;
+  }
 
   .reachable {
-    margin-bottom: 0.75em;
     @include cols(12);
     @include icon;
     @include icon-name(play-circle);
+    & {
+      margin-bottom: 0.75em;
+    }
     &::before {
       color: var(--primary);
       margin-right: 0.5em;
@@ -1012,10 +1044,12 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   }
 
   .os, .arch, .env, .docker {
-    margin: unset;
-    margin-top: 0.5em;
     @include cols(12);
     @include row;
+    & {
+      margin: unset;
+      margin-top: 0.5em;
+    }
     span {
       @include cols(6);
       @include cols(3, md);
@@ -1066,16 +1100,18 @@ html[dir="rtl"] .settings .panel .master-url .icon {
     }
 
     .step {
-      font-size: 1.5em;
-      line-height: 2rem;
-      text-align: center;
-      width: 2rem;
-      height: 2rem;
-      border-radius: 1rem;
-      background-color: var(--primary);
-      z-index: 1;
       @include icon;
       @include icon-name(check);
+      & {
+        font-size: 1.5em;
+        line-height: 2rem;
+        text-align: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 1rem;
+        background-color: var(--primary);
+        z-index: 1;
+      }
       &::before {
         color: var(--text-primary);
       }
@@ -1097,17 +1133,21 @@ html[dir="rtl"] .settings .panel .master-url .icon {
     }
 
     .step-current {
-      background-color: var(--backdrop);
       @include raised;
       @include step-icons;
+      & {
+        background-color: var(--backdrop);
+      }
       &::before {
         color: var(--text);
       }
     }
 
     .step-current ~ .step {
-      background-color: var(--backdrop);
       @include step-icons;
+      & {
+        background-color: var(--backdrop);
+      }
       &::before {
         color: var(--text);
       }
@@ -1162,10 +1202,12 @@ html[dir="rtl"] .settings .panel .master-url .icon {
     }
 
     .template {
-      margin-top: 0;
       @include card;
       @include cols(12);
       @include cols(4, md);
+      & {
+        margin-top: 0;
+      }
     }
 
     .template:not(.disabled) {
@@ -1178,10 +1220,12 @@ html[dir="rtl"] .settings .panel .master-url .icon {
     }
 
     .overlay .actions {
-      grid-gap: 0 1em;
-      gap: 0 1em;
-      max-width: unset;
       @include row;
+      & {
+        grid-gap: 0 1em;
+        gap: 0 1em;
+        max-width: unset;
+      }
 
       .button {
         @include cols(12);
@@ -1206,10 +1250,12 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   }
 
   .environment, .settings {
-    grid-gap: 0 1em;
-    gap: 0 1em;
-    margin-top: 1.5rem;
     @include row;
+    & {
+      grid-gap: 0 1em;
+      gap: 0 1em;
+      margin-top: 1.5rem;
+    }
     div, .button {
       @include cols(12);
     }
@@ -1300,10 +1346,12 @@ html[dir="rtl"] .settings .panel .master-url .icon {
 
   .file-list {
     .file {
-      padding: 0.5em;
-      display: flex;
       @include clickable;
       @include link;
+      & {
+        padding: 0.5em;
+        display: flex;
+      }
       .details {
         flex-grow: 1;
         padding-left: 1rem;
@@ -1427,14 +1475,18 @@ html[dir="rtl"] #console .command .icon-send {
   }
 
   .user {
-    grid-gap: 0;
-    gap: 0;
     @include row;
+    & {
+      grid-gap: 0;
+      gap: 0;
+    }
 
     &.open {
-      margin-top: 0;
-      margin-bottom: 18px;
       @include card;
+      & {
+        margin-top: 0;
+        margin-bottom: 18px;
+      }
     }
 
     h3 {
@@ -1460,9 +1512,11 @@ html[dir="rtl"] #console .command .icon-send {
     }
 
     .switch-wrapper {
-      margin-bottom: 0;
       @include cols(12);
       @include cols(6, md);
+      & {
+        margin-bottom: 0;
+      }
     }
 
     &.closed .switch-wrapper, &.closed .button {
@@ -1481,10 +1535,12 @@ html[dir="rtl"] #console .command .icon-send {
       }
     }
     .button {
-      height: 56px;
-      margin-bottom: 0;
       @include cols(12);
       @include cols(4, md);
+      & {
+        height: 56px;
+        margin-bottom: 0;
+      }
 
       @include breakpoint-only(xs) {
         margin-top: 0;

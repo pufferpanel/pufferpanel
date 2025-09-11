@@ -69,32 +69,35 @@
 
 // Main content area
 .main {
-  transition: padding 0.1s ease-in-out;
-  padding-top: 64px;
-  padding-bottom: 1em;
   @include row;
+  & {
+    transition: padding 0.1s ease-in-out;
+    padding-top: 64px;
+    padding-bottom: 1em;
+  }
 }
 
 .sidebar ~ .main {
-  padding-left: 1em;
-  padding-right: 1em;
+  box-sizing: content-box;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 @include breakpoint(lg) {
   .sidebar.open.left ~ .main {
-    padding-left: calc(256px + 1em);
+    padding-left: calc(256px + 1rem);
   }
 
   .sidebar.open.right ~ .main {
-    padding-right: calc(256px + 1em);
+    padding-right: calc(256px + 1rem);
   }
 
   .sidebar.open.left.mini ~ .main {
-    padding-left: calc(46px + 1em);
+    padding-left: calc(46px + 1rem);
   }
 
   .sidebar.open.right.mini ~ .main {
-    padding-right: calc(46px + 1em);
+    padding-right: calc(46px + 1rem);
   }
 }
 

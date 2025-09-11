@@ -17,12 +17,14 @@
 
   .entry {
     .fields {
-      display: inline-grid;
-      width: calc(100% - 4em);
-      max-width: unset;
-      margin-left: unset;
-      margin-right: 1em;
       @include row;
+      & {
+        display: inline-grid;
+        width: calc(100% - 4em);
+        max-width: unset;
+        margin-left: unset;
+        margin-right: 1em;
+      }
       .input-field-wrapper {
         @include cols(6);
       }
