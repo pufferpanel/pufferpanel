@@ -55,5 +55,6 @@
   "IncompatibleTemplatesDescription": "Ezek a sablonok nem kompatibilisek legalább az egyik korábbi választásoddal",
   "IncompatibleArch": "Nem kompatibilis a(z) '{arch}' architektúrával",
   "IncompatibleOs": "Nem kompatibilis a(z) '{os}' operációs rendszerrel",
-  "IncompatibleEnv": "Nem kompatibilis a(z) '{env}' környezettel"
+  "IncompatibleEnv": "Nem kompatibilis a(z) '{env}' környezettel",
+  "AdvancedSettings": "Advanced Settings"
 }
