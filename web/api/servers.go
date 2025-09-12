@@ -76,6 +76,9 @@ func registerServers(g *gin.RouterGroup) {
 	g.POST("/:serverId/start", middleware.RequiresPermission(scopes.ScopeServerStart), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/start", response.CreateOptions("POST"))
 
+	g.POST("/:serverId/restart", middleware.RequiresPermission(scopes.ScopeServerStart), middleware.RequiresPermission(scopes.ScopeServerStop), middleware.ResolveServerPanel, proxyServerRequest)
+	g.OPTIONS("/:serverId/restart", response.CreateOptions("POST"))
+
 	g.POST("/:serverId/stop", middleware.RequiresPermission(scopes.ScopeServerStop), middleware.ResolveServerPanel, proxyServerRequest)
 	g.OPTIONS("/:serverId/stop", response.CreateOptions("POST"))
 

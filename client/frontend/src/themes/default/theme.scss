@@ -431,7 +431,7 @@ hr {
   display: none;
 }
 
-.status.offline ~ .server-controls .stop, .status.offline ~ .server-controls .kill {
+.status.offline ~ .server-controls .restart, .status.offline ~ .server-controls .stop {
   display: none;
 }
 
@@ -459,7 +459,7 @@ hr {
     }
   }
 
-  .install, .menu.closed {
+  .kill, .install, .menu.closed {
     display: none;
   }
 
@@ -494,11 +494,11 @@ hr {
     color: var(--success);
   }
 
-  .stop .icon::before {
+  .restart .icon::before {
     color: var(--warning);
   }
 
-  .kill .icon::before {
+  .stop .icon::before, .kill .icon::before {
     color: var(--error);
   }
 }
