@@ -155,6 +155,18 @@ func startServer(c *gin.Context) {
 	}
 }
 
+func doRestart(server *servers.Server) error {
+	err := server.Stop()
+	if err != nil {
+		return err
+	}
+	err = server.GetEnvironment().WaitForMainProcess()
+	if err != nil {
+		return err
+	}
+	return server.Start()
+}
+
 // @Summary Restart server
 // @Description Restart server
 // @Success 202 {object} nil
@@ -166,20 +178,8 @@ func restartServer(c *gin.Context) {
 	server := getServerFromGin(c)
 	_, wait := c.GetQuery("wait")
 
-	doRestart := func() error {
-		err := server.Stop()
-		if err != nil {
-			return err
-		}
-		err = server.GetEnvironment().WaitForMainProcess()
-		if err != nil {
-			return err
-		}
-		return server.Start()
-	}
-
 	if wait {
-		err := doRestart()
+		err := doRestart(server)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
@@ -187,7 +187,7 @@ func restartServer(c *gin.Context) {
 		c.Status(http.StatusNoContent)
 	} else {
 		go func() {
-			err := doRestart()
+			err := doRestart(server)
 			if err != nil {
 				logging.Error.Printf("Error restarting server %s: %s", server.Id(), err)
 			}
