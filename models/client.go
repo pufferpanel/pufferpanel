@@ -22,6 +22,8 @@ type Client struct {
 
 	Name        string `gorm:"column:name;not null;size:100;default:''" json:"name"`
 	Description string `gorm:"column:description;not null;size:4000;default:''" json:"description"`
+
+	Scopes string `gorm:"column:scopes;not null;size:4000;default:'';<-:false" json:"-"`
 }
 
 func (c *Client) SetClientSecret(secret string) error {
