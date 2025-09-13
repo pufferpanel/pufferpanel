@@ -139,6 +139,31 @@ func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.Wa
 			}
 			defer utils.Close(outFile)
 			_, err = io.Copy(outFile, file.ReadCloser)
+		} else if file.Mode()&os.ModeSymlink != 0 {
+			target, err := getLinkTarget(file)
+			if err != nil {
+				return err
+			}
+
+			if fs != nil {
+				if err = fs.MkdirAll(parent, 0755); err != nil {
+					return err
+				}
+			} else {
+				if err = os.MkdirAll(parent, 0755); err != nil {
+					return err
+				}
+			}
+
+			if fs != nil {
+				if err = fs.Symlink(target, path); err != nil {
+					return err
+				}
+			} else {
+				if err = os.Symlink(target, path); err != nil {
+					return err
+				}
+			}
 		}
 
 		return
@@ -157,6 +182,22 @@ func getCompressedItemName(file archiver.File) string {
 		return v.Name
 	default:
 		return file.Name()
+	}
+}
+
+func getLinkTarget(file archiver.File) (string, error) {
+	switch v := file.Header.(type) {
+	case *tar.Header:
+		return v.Linkname, nil
+	case zip.FileHeader:
+		buffer := make([]byte, file.Size())
+		size, err := file.Read(buffer)
+		if err != nil {
+			return "", err
+		}
+		return string(buffer[:size]), nil
+	default:
+		return "", archiver.ErrFormatNotRecognized
 	}
 }
 

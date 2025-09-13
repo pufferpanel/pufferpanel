@@ -26,6 +26,7 @@ type FileServer interface {
 	Rename(source, target string) error
 	RemoveAll(path string) error
 	Glob(pattern string) ([]string, error)
+	Symlink(oldname, newname string) error
 
 	Close() error
 }
@@ -63,6 +64,10 @@ func (sfp *fileServer) Stat(name string) (fs.FileInfo, error) {
 	}
 	defer utils.Close(f)
 	return f.Stat()
+}
+
+func (sfp *fileServer) Symlink(oldpath, newpath string) error {
+	return unix.Symlinkat(oldpath, getFd(sfp.root), newpath)
 }
 
 func (sfp *fileServer) ReadDir(name string) ([]fs.DirEntry, error) {
