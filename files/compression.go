@@ -149,17 +149,13 @@ func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.Wa
 				if err = fs.MkdirAll(parent, 0755); err != nil {
 					return err
 				}
-			} else {
-				if err = os.MkdirAll(parent, 0755); err != nil {
-					return err
-				}
-			}
-
-			if fs != nil {
 				if err = fs.Symlink(target, path); err != nil {
 					return err
 				}
 			} else {
+				if err = os.MkdirAll(parent, 0755); err != nil {
+					return err
+				}
 				if err = os.Symlink(target, path); err != nil {
 					return err
 				}
