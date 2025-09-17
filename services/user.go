@@ -343,7 +343,7 @@ func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) 
 func (us *User) IsSecurePassword(password string) error {
 	//TODO: Change to use validator
 	if len(password) < 8 {
-		return pufferpanel.ErrFieldLength("password", 8, 100)
+		return pufferpanel.ErrFieldLength("password", 8, 72)
 	}
 	return nil
 }
