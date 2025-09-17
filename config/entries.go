@@ -60,7 +60,6 @@ var DepotDownloaderDisableLancache = asBool("daemon.depotDownloader.disableLanca
 
 var TokenPublicUrl = asString("token.public", "")
 
-var SecurityForceOpenat2 = asBool("security.forceOpenat2", false)
 var SecurityForceOpenat = asBool("security.forceOpenat", false)
 var SecurityTrustedProxies = asStringArray("security.trustedProxies", []string{})
 var SecurityTrustedProxyHeader = asString("security.trustedProxyHeader", "")

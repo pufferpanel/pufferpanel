@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func testOpenat2() {
+func testOpenat2() bool {
 	f, err := os.Open("/proc/kallsyms")
 	if errors.Is(err, os.ErrNotExist) {
 		logging.Info.Printf("Could not open /proc/kallsyms to validate kernel support, falling back to temp file test\n%s", err.Error())
@@ -60,4 +60,5 @@ func testOpenat2() {
 	} else {
 		panic(fmt.Errorf("Could not open /proc/kallsyms to validate kernel support\n%s", err.Error()))
 	}
+	return useOpenat2
 }

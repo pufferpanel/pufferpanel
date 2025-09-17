@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
@@ -8,18 +9,14 @@ import (
 var useOpenat2 = false
 
 func DetermineKernelSupport() {
-	if config.SecurityForceOpenat2.Value() {
-		useOpenat2 = true
-	} else if config.SecurityForceOpenat.Value() {
+	if config.SecurityForceOpenat.Value() {
 		useOpenat2 = false
+		logging.Info.Printf("WARNING: OPENAT2 SUPPORT NOT ENABLED. OVERRIDE IS BEING USED.")
 	} else {
-		testOpenat2()
-	}
-
-	if useOpenat2 {
-		logging.Debug.Printf("openat2 enabled")
-	} else {
-		logging.Info.Printf("WARNING: OPENAT2 SUPPORT NOT ENABLED")
+		passes := testOpenat2()
+		if !passes {
+			panic(fmt.Sprintf("OpenAt2 is not supported. Cowardly not starting to avoid security issues."))
+		}
 	}
 }
 

@@ -62,8 +62,6 @@ func internalRun() (terminate chan bool, success bool) {
 		terminate <- true
 	}()
 
-	utils.DetermineKernelSupport()
-
 	router := gin.New()
 	router.Use(gin.Recovery())
 	router.Use(gin.LoggerWithWriter(logging.Info.Writer()))
@@ -214,6 +212,8 @@ func panel() {
 }
 
 func daemon() error {
+	utils.DetermineKernelSupport()
+
 	sftp.Run()
 
 	var err error
