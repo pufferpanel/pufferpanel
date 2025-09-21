@@ -100,7 +100,7 @@ function clearAll() {
       :name="n === 0 ? 'totp' : 'ingnore'"
       :autofill="n === 0 ? 'one-time-code' : 'none'"
       :disabled="props.disabled"
-      type="text"
+      type="number"
       @input="onInput(n, $event)"
       @keydown.exact.backspace="onBackspace(n, $event)"
       @keydown.ctrl.backspace="clearAll"
@@ -111,6 +111,6 @@ function clearAll() {
       seems to confuse it into just throwing the full code into the first input though, which we handle for
       other password managers as well, that's why this invisible to humans input exists
     -->
-    <input type="text" name="fix_proton_pass" autofill="none" style="position:absolute;left:-99999px;width:1px" />
+    <input type="number" name="fix_proton_pass" autofill="none" style="position:absolute;left:-99999px;width:1px" />
   </div>
 </template>

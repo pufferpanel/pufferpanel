@@ -1,8 +1,11 @@
 package auth
 
 import (
+	"encoding/json"
+	"errors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
@@ -24,26 +27,34 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
-	user, otpNeeded, err := us.ValidateLogin(request.Email, request.Password)
-	if response.HandleError(c, err, http.StatusBadRequest) {
+	result, err := us.ValidatePasswordLogin(request.Email, request.Password)
+	if errors.Is(err, pufferpanel.ErrInvalidCredentials) {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	if otpNeeded {
+	if result.NeedsSecondFactor {
+		sessionDataJson, err := json.Marshal(result.WebauthnSessionData)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+
 		userSession := sessions.Default(c)
-		userSession.Set("user", user.Email)
+		userSession.Set("user", result.User.Email)
 		userSession.Set("time", time.Now().Unix())
+		userSession.Set("passkeyLogin", sessionDataJson)
 		err = userSession.Save()
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
-		c.JSON(http.StatusOK, &LoginResponse{
-			OtpNeeded: true,
-		})
+		c.JSON(http.StatusOK, result)
 		return
 	}
 
-	createSession(c, user)
+	createSession(c, result.User)
 }
 
 func OtpPost(c *gin.Context) {
@@ -75,6 +86,68 @@ func OtpPost(c *gin.Context) {
 
 	user, err := us.ValidOtp(email, request.Token)
 	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	createSession(c, user)
+}
+
+func PasskeyStart(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	request := &PasskeyLoginRequest{}
+
+	err := c.BindJSON(request)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	challenge, sessionData, err := us.StartPasskeyLogin(request.Email)
+	if errors.Is(err, pufferpanel.ErrInvalidCredentials) {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	sessionDataJson, err := json.Marshal(sessionData)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	userSession := sessions.Default(c)
+	userSession.Set("user", request.Email)
+	userSession.Set("passkeyLogin", sessionDataJson)
+	err = userSession.Save()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, challenge)
+}
+
+func PasskeyFinish(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	sessionData := webauthn.SessionData{}
+
+	userSession := sessions.Default(c)
+	email := userSession.Get("user").(string)
+	sessionDataJson := userSession.Get("passkeyLogin").([]byte)
+	err := json.Unmarshal(sessionDataJson, &sessionData)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	user, err := us.ValidatePasskeyLogin(email, c.Request, sessionData)
+	if errors.Is(err, pufferpanel.ErrInvalidCredentials) {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -123,10 +196,14 @@ type LoginRequestData struct {
 }
 
 type LoginResponse struct {
-	Scopes    []*scopes.Scope `json:"scopes,omitempty"`
-	OtpNeeded bool            `json:"otpNeeded,omitempty"`
+	Scopes            []*scopes.Scope `json:"scopes,omitempty"`
+	NeedsSecondFactor bool `json:"needsSecondFactor"`
 }
 
 type OtpRequestData struct {
 	Token string `json:"token"`
+}
+
+type PasskeyLoginRequest struct {
+	Email string `json:"email"`
 }

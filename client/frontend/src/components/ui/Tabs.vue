@@ -12,7 +12,8 @@ export default {
   emits: ['tabChanged'],
   setup(props, { slots, emit }) {
     const tabButtons = ref(null)
-    const needsScroller = ref(false)
+    const needsLeftScroller = ref(false)
+    const needsRightScroller = ref(false)
 
     const tabs = ref([])
     const activeKey = ref('')
@@ -29,8 +30,12 @@ export default {
       nextTick(() => emit('tabChanged', key))
     }
 
-    function onResize() {
-      needsScroller.value = tabButtons.value.scrollWidth > tabButtons.value.offsetWidth
+    function onResizeOrScroll() {
+      if (tabButtons.value.scrollWidth > tabButtons.value.offsetWidth) {
+        needsLeftScroller.value = tabButtons.value.scrollLeft > 5
+        const leftMax = tabButtons.value.scrollWidth - tabButtons.value.offsetWidth
+        needsRightScroller.value = (leftMax - tabButtons.value.scrollLeft) > 5
+      }
     }
 
     function scroll(dir) {
@@ -42,8 +47,11 @@ export default {
     }
 
     onMounted(() => {
-      window.addEventListener('resize', onResize)
-      nextTick(() => onResize())
+      window.addEventListener('resize', onResizeOrScroll)
+      nextTick(() => {
+        tabButtons.value.addEventListener('scroll', onResizeOrScroll)
+        onResizeOrScroll()
+      })
 
       tabs.value = slots
         .default()
@@ -68,18 +76,19 @@ export default {
     })
 
     onUnmounted(() => {
-      window.removeEventListener('resize', onResize)
+      window.removeEventListener('resize', onResizeOrScroll)
+      tabButtons.value.removeEventListener('scroll', onResizeOrScroll)
     })
 
-    return { tabButtons, needsScroller, tabs, activeKey, setActive, scroll }
+    return { tabButtons, needsLeftScroller, needsRightScroller, tabs, activeKey, setActive, scroll }
   }
 }
 </script>
 
 <template>
   <div class="tabs">
-    <div v-if="needsScroller" class="scroll-left" @click="scroll('left')" />
-    <div v-if="needsScroller" class="scroll-right" @click="scroll('right')" />
+    <div v-if="needsLeftScroller" class="scroll-left" @click="scroll('left')" />
+    <div v-if="needsRightScroller" class="scroll-right" @click="scroll('right')" />
     <div ref="tabButtons" class="tab-buttons">
       <div
         v-for="tab in tabs"

@@ -7,10 +7,11 @@ import (
 )
 
 type UserView struct {
-	Id       uint   `json:"id,omitempty"`
-	Username string `json:"username,omitempty"`
-	Email    string `json:"email,omitempty"`
-	OtpActive bool `json:"otpActive"`
+	Id                     uint   `json:"id,omitempty"`
+	Username               string `json:"username,omitempty"`
+	Email                  string `json:"email,omitempty"`
+	OtpActive              bool   `json:"otpActive"`
+	AllowPasswordlessLogin bool   `json:"allowPasswordlessLogin"`
 	//ONLY SHOW WHEN COPYING
 	Password    string `json:"password,omitempty"`
 	NewPassword string `json:"newPassword,omitempty"`
@@ -18,10 +19,11 @@ type UserView struct {
 
 func FromUser(model *User) *UserView {
 	return &UserView{
-		Id:       model.ID,
-		Username: model.Username,
-		Email:    model.Email,
-		OtpActive: model.OtpActive,
+		Id:                     model.ID,
+		Username:               model.Username,
+		Email:                  model.Email,
+		OtpActive:              model.OtpActive,
+		AllowPasswordlessLogin: model.AllowPasswordlessLogin,
 	}
 }
 

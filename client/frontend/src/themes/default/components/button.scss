@@ -136,3 +136,7 @@ html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
   opacity: 0.4;
   cursor: default;
 }
+
+.button * {
+  color: inherit;
+}

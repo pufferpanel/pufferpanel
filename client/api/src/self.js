@@ -45,6 +45,37 @@ export class SelfApi {
     return true
   }
 
+  async getPasskeys() {
+    const res = await this._api.get('/api/self/passkey')
+    return res.data
+  }
+
+  async startPasskeyEnroll(name) {
+    const res = await this._api.post('/api/self/passkey', { name })
+    return this._api.auth._decodeWebauthnChallenge(res.data)
+  }
+
+  async validatePasskeyEnroll(data) {
+    await this._api.put('/api/self/passkey', data)
+    return true
+  }
+
+  async enrollPasskey(name) {
+    let creation = await this._api.self.startPasskeyEnroll(name)
+    const attestation = await navigator.credentials.create(creation)
+    return await this._api.self.validatePasskeyEnroll(attestation)
+  }
+
+  async deletePasskey(id) {
+    await this._api.delete(`/api/self/passkey/${id}`)
+    return true
+  }
+
+  async setAllowPasswordlessLogin(value) {
+    await this._api.put(`/api/self/passwordless/${value}`)
+    return true
+  }
+
   async getSettings() {
     const res = await this._api.get('/api/userSettings')
     const map = {}

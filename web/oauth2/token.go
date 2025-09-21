@@ -151,11 +151,13 @@ func handleTokenRequest(c *gin.Context) {
 
 			//validate their credentials
 			var token string
-			user, _, err = us.ValidateLogin(user.Email, request.Password)
+			result, err := us.ValidatePasswordLogin(user.Email, request.Password)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
 			}
+
+			user = result.User
 
 			//confirm user has access to this server
 			ps := &services.Permission{DB: db}

@@ -15,7 +15,6 @@
     .#{$t}list {
       @include card;
       @include cols(12);
-      max-width: calc(100% - 2em);
       .list {
         .list-item a:focus-visible {
           outline: none;

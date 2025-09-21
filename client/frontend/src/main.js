@@ -65,6 +65,13 @@ async function mountApp(config) {
     .use(validators)
     .use(makeRouter(apiClient))
     .use(hotkeys)
+    .use({
+      install: (app) => {
+        const passkeysSupported = isSecureContext && window.navigator && navigator.credentials
+        app.config.globalProperties.$passkeysSupported = passkeysSupported
+        app.provide('passkeysSupported', passkeysSupported)
+      }
+    })
     .mount('#app')
 }
 

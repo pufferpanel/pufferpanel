@@ -532,7 +532,6 @@ html[dir="rtl"] .menu.open {
 
 .server-header {
   display: flex;
-  max-width: calc(100vw - 2em);
   margin-bottom: 0.25em;
   .name {
     display: flex;
@@ -843,10 +842,6 @@ html[dir="rtl"] .menu.open {
   }
 }
 
-.login .otp .overlay {
-  width: calc(3.5em * 8);
-}
-
 .self.loading {
   @include cols(12);
   @include row;
@@ -868,46 +863,86 @@ html[dir="rtl"] .menu.open {
   }
 
   .mfa {
-    position: relative;
+    @include row;
+    .otp {
+      @include cols(12);
+      position: relative;
+      
+      .overlay h1 {
+        display: inline-block;
+      }
 
-    .overlay h1 {
-      display: inline-block;
-    }
+      .description {
+        display: block;
+      }
 
-    .description {
-      display: block;
-    }
+      .otp-deactivation .overlay {
+        width: calc(3.5em * 8);
+      }
 
-    .otp-deactivation .overlay {
-      width: calc(3.5em * 8);
-    }
+      .otp-enroll-content, .otp-enroll-actions, .recovery-code-regeneration-actions, .otp-deactivation-actions {
+        @include row;
+        & {
+          max-width: unset;
+        }
+      }
 
-    .otp-enroll-content, .otp-enroll-actions, .recovery-code-regeneration-actions, .otp-deactivation-actions {
-      @include row;
-      & {
-        max-width: unset;
+      .otp-enroll-qr {
+        @include cols(12);
+        @include cols(6, md);
+        @include cols(4, lg);
+        & {
+          display: flex;
+          justify-content: center;
+        }
+      }
+
+      .otp-enroll-info {
+        @include cols(12);
+        @include cols(6, md);
+        @include cols(8, lg);
+      }
+
+      .otp-enroll-actions .button, .recovery-code-regeneration-actions .button, .otp-deactivation-actions .button {
+        @include cols(12);
+        @include cols(6, md);
       }
     }
-
-    .otp-enroll-qr {
-      @include cols(12);
-      @include cols(6, md);
-      @include cols(4, lg);
-      & {
+    .passkeys {
+      .passkey {
         display: flex;
-        justify-content: center;
+        flex-direction: row;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        .name {
+          flex-grow: 1;
+          align-content: center;
+        }
+      }
+      @include breakpoint(md) {
+        .passkey {
+          @include card;
+          padding: .2rem .2rem .2rem 1rem;
+          margin-top: 0;
+        }
+      }
+      @include breakpoint-only(xs) {
+        .list-item {
+          padding: .25rem;
+        }
       }
     }
-
-    .otp-enroll-info {
+    .otp:not(:last-child), .passkeys {
+      @include card;
       @include cols(12);
       @include cols(6, md);
-      @include cols(8, lg);
-    }
-
-    .otp-enroll-actions .button, .recovery-code-regeneration-actions .button, .otp-deactivation-actions .button {
-      @include cols(12);
-      @include cols(6, md);
+      & {
+        height: fit-content;
+      }
+      &, h2:first-child {
+        margin-top: 0;
+      }
     }
   }
 }
@@ -1308,7 +1343,6 @@ html[dir="rtl"] .settings .panel .master-url .icon {
 }
 
 .serverview {
-  max-width: calc(100% - 2em);
   h2 {
     display: none;
   }
