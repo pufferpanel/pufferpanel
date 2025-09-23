@@ -359,10 +359,12 @@ func (p *Server) Destroy() (err error) {
 
 	p.Log(logging.Info, "Destroying server %s", p.Id())
 
+	p.Log(logging.Debug, "Stopping scheduler")
 	if p.Scheduler != nil {
 		p.Scheduler.Stop()
 	}
 
+	p.Log(logging.Debug, "Starting uninstall processes")
 	process, err := GenerateProcess(p.Uninstallation, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
 		p.Log(logging.Error, "Error uninstalling server: %s", err)
@@ -377,6 +379,7 @@ func (p *Server) Destroy() (err error) {
 		return
 	}
 
+	p.Log(logging.Debug, "Deleting environment")
 	err = p.RunningEnvironment.Delete()
 	if err != nil {
 		p.Log(logging.Error, "Error uninstalling server: %s", err)
