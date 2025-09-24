@@ -4,6 +4,7 @@
   "Console": "Console",
   "SFTPInfo": "Informazione SFTP",
   "Start": "Avvia",
+  "Restart": "Restart",
   "Stop": "Ferma",
   "Kill": "Termina processo",
   "Install": "Installa",
