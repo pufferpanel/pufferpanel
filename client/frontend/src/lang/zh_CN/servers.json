@@ -4,6 +4,7 @@
   "Console": "控制台",
   "SFTPInfo": "SFTP 信息",
   "Start": "开启",
+  "Restart": "Restart",
   "Stop": "停止",
   "Kill": "强制关闭",
   "Install": "安装",
