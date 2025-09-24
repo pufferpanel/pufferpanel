@@ -65,6 +65,9 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.POST("/:serverId/start", middleware.ResolveServerNode, startServer)
 		l.OPTIONS("/:serverId/start", response.CreateOptions("POST"))
 
+		l.POST("/:serverId/restart", middleware.ResolveServerNode, restartServer)
+		l.OPTIONS("/:serverId/restart", response.CreateOptions("POST"))
+
 		l.POST("/:serverId/stop", middleware.ResolveServerNode, stopServer)
 		l.OPTIONS("/:serverId/stop", response.CreateOptions("POST"))
 
@@ -146,6 +149,47 @@ func startServer(c *gin.Context) {
 			err := server.Start()
 			if err != nil {
 				logging.Error.Printf("Error starting server %s: %s", server.Id(), err)
+			}
+		}()
+		c.Status(http.StatusAccepted)
+	}
+}
+
+func doRestart(server *servers.Server) error {
+	err := server.Stop()
+	if err != nil {
+		return err
+	}
+	err = server.GetEnvironment().WaitForMainProcess()
+	if err != nil {
+		return err
+	}
+	return server.Start()
+}
+
+// @Summary Restart server
+// @Description Restart server
+// @Success 202 {object} nil
+// @Success 204 {object} nil
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/restart [post]
+// @Security OAuth2Application[server.start, server.stop]
+func restartServer(c *gin.Context) {
+	server := getServerFromGin(c)
+	_, wait := c.GetQuery("wait")
+
+	if wait {
+		err := doRestart(server)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+
+		c.Status(http.StatusNoContent)
+	} else {
+		go func() {
+			err := doRestart(server)
+			if err != nil {
+				logging.Error.Printf("Error restarting server %s: %s", server.Id(), err)
 			}
 		}()
 		c.Status(http.StatusAccepted)

@@ -23,7 +23,7 @@ const props = defineProps({
 })
 
 const hotkeys = {
-  'r r': () => props.server.start(),
+  'r r': () => props.server.restart(),
   'r s': () => props.server.stop(),
   'r k': () => props.server.kill(),
   'r i': () => props.server.install()
@@ -46,6 +46,10 @@ const showMenu =
       <icon name="play" />
       <span class="text">{{ t('servers.Start') }}</span>
     </btn>
+    <btn v-if="server.hasScope('server.start') && server.hasScope('server.stop')" class="restart" @click="server.restart()">
+      <icon name="restart" />
+      <span class="text">{{ t('servers.Restart') }}</span>
+    </btn>
     <btn v-if="server.hasScope('server.stop')" class="stop" @click="server.stop()">
       <icon name="stop" />
       <span class="text">{{ t('servers.Stop') }}</span>
@@ -66,6 +70,10 @@ const showMenu =
         <icon name="play" />
         <span class="text">{{ t('servers.Start') }}</span>
       </btn>
+    <btn v-if="server.hasScope('server.start') && server.hasScope('server.stop')" class="restart" @click="menuOpen = false; server.restart()">
+      <icon name="restart" />
+      <span class="text">{{ t('servers.Restart') }}</span>
+    </btn>
       <btn v-if="server.hasScope('server.stop')" class="stop" @click="menuOpen = false; server.stop()">
         <icon name="stop" />
         <span class="text">{{ t('servers.Stop') }}</span>

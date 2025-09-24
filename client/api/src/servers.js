@@ -61,6 +61,10 @@ export class ServerApi {
     return await this.action(id, 'start', wait)
   }
 
+  async restart(id, wait = false) {
+    return await this.action(id, 'restart', wait)
+  }
+
   async stop(id, wait = false) {
     return await this.action(id, 'stop', wait)
   }
@@ -426,6 +430,10 @@ class Server {
 
   async start() {
     return await this._api.server.start(this.id)
+  }
+
+  async restart() {
+    return await this._api.server.restart(this.id)
   }
 
   async stop() {

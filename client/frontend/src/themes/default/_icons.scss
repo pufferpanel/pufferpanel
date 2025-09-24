@@ -6588,6 +6588,9 @@ $mdi-icons: (
 .icon-play {
   @include icon-name(play-circle);
 }
+.icon-restart {
+  @include icon-name(refresh-circle);
+}
 .icon-stop {
   @include icon-name(stop-circle);
 }
