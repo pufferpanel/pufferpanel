@@ -144,5 +144,13 @@ export const operators = {
       label: 'templates.Filename',
       default: ''
     }
+  ],
+  nodejsdl: [
+    {
+      name: 'version',
+      type: 'text',
+      label: 'templates.Version',
+      default: ''
+    }
   ]
 }
