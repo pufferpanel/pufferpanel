@@ -64,5 +64,9 @@
   "curseforge": {
     "generic": "Curseforgeról letöltés",
     "formatted": "Curseforgeról letöltés"
+  },
+  "nodejsdl": {
+    "generic": "Install Node.js",
+    "formatted": "Install Node.js {version}"
   }
 }
