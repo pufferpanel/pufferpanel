@@ -4,6 +4,7 @@
   "Console": "Console",
   "SFTPInfo": "Informations SFTP",
   "Start": "Démarrer",
+  "Restart": "Restart",
   "Stop": "Arrêter",
   "Kill": "Forcer l'arrêt",
   "Install": "Installer",
