@@ -4,6 +4,7 @@
   "Console": "主控台",
   "SFTPInfo": "SFTP資訊",
   "Start": "啟動",
+  "Restart": "Restart",
   "Stop": "停止",
   "Kill": "終止",
   "Install": "安裝",
