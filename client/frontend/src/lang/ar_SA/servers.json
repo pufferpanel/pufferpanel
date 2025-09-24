@@ -4,6 +4,7 @@
   "Console": "وحدة التحكم",
   "SFTPInfo": "معلومات SFTP",
   "Start": "بدء",
+  "Restart": "Restart",
   "Stop": "إيقاف",
   "Kill": "فرض الإيقاف",
   "Install": "تثبيت",
