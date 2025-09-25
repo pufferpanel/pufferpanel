@@ -1,22 +1,32 @@
 - name: Install Github Runner
-  hosts: templatetesters
-  remote_user: root
+  hosts: runners
+  become: yes
+  gather_facts: true
 
   vars:
-    ghPAT: ''
-    aptProxy: ''
     orgName: 'pufferpanel'
     runnerGroup: 'template-tester'
-    labels: 'template-tester'
 
-    ghrunnerVersion: '2.322.0'
-    ghrunnerHash: 'b13b784808359f31bc79b08a191f5f83757852957dd8fe3dbfcc38202ccf5768'
+    ghrunnerVersion: '2.328.0'
+    ghrunnerHash_x64: '01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e'
+    ghrunnerHash_arm64: 'b801b9809c4d9301932bccadf57ca13533073b2aa9fa9b8e625a8db905b5d8eb'
 
   tasks:
+    - name: Set defaults
+      ansible.builtin.set_fact:
+        local: "{{ local | default(false) }}"
+        aptProxy: "{{ aptProxy | default('') }}"
+        ghPAT: "{{ ghPAT | default('') }}"
+
+    - name: Fail if no PAT
+      ansible.builtin.fail:
+        msg: No PAT provided
+      when: ghPAT == ''
+
     - name: Add APT proxy
-      when: aptProxy != ''
+      when: aptProxy != '' and local
       ansible.builtin.copy:
-        content: "Acquire::http::proxy \"{{ aptProxy }}\";"
+        content: "Acquire::http::proxy \"{{ aptProxy }}\";\nAcquire::https::proxy \"{{ aptProxy }}\";"
         dest: /etc/apt/apt.conf.d/00aptproxy
         force: false
 
@@ -34,12 +44,18 @@
           - nano
           - apt-transport-https
           - ca-certificates
-          - lib32gcc-s1
-          - lib32stdc++6
           - unzip
           - zip
           - tar
           - gzip
+          - acl
+
+    - name: Install x64 specific packages
+      when: ansible_facts.architecture == "x86_64"
+      ansible.builtin.apt:
+        package:
+          - lib32gcc-s1
+          - lib32stdc++6
 
     - name: Install Docker Repo
       block:
@@ -59,7 +75,7 @@
 
         - name: Add Repo
           ansible.builtin.apt_repository:
-            repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+            repo: "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
             state: present
 
     - name: Install Docker
@@ -100,14 +116,15 @@
             group: ghrunner
 
         - name: Download file
+          when: ansible_facts.architecture == "aarch64"
           ansible.builtin.get_url:
-            url: "https://github.com/actions/runner/releases/download/v{{ ghrunnerVersion }}/actions-runner-linux-x64-{{ ghrunnerVersion }}.tar.gz"
+            url: "https://github.com/actions/runner/releases/download/v{{ ghrunnerVersion }}/actions-runner-linux-{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'x64' }}-{{ ghrunnerVersion }}.tar.gz"
             dest: /home/ghrunner/actions-runner/actions-runner.tar.gz
             mode: "0644"
             force: true
 
         - name: Validate SHA256
-          when: ghrunnerHash != ''
+          when: (ansible_facts.architecture == "x86_64" and ghrunnerHash_x64 != "") or (ansible_facts.architecture == "aarch64" and ghrunnerHash_arm64 != "")
           block:
             - name: Get file hash
               ansible.builtin.stat:
@@ -118,7 +135,7 @@
             - name: Fail if hashes differ
               ansible.builtin.fail:
                 msg: File hashes do not match
-              when: sha.stat.checksum != ghrunnerHash
+              when: (ansible_facts.architecture == "x86_64" and sha.stat.checksum != ghrunnerHash_x64) or (ansible_facts.architecture == "aarch64" and sha.stat.checksum != ghrunnerHash_arm64)
 
         - name: Extract
           ansible.builtin.unarchive:
@@ -159,7 +176,7 @@
         - name: Configure
           ansible.builtin.command:
             chdir: /home/ghrunner/actions-runner
-            cmd: ./config.sh --url https://github.com/{{ orgName }} --token {{ token.json.token }} --unattended --runnergroup {{ runnerGroup | default('Default') }} --labels {{ labels }}
+            cmd: ./config.sh --url https://github.com/{{ orgName }} --token {{ token.json.token }} --unattended --runnergroup {{ runnerGroup | default('Default') }}
           become: yes
           become_user: ghrunner
 
