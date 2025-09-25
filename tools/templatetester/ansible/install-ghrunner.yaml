@@ -6,6 +6,7 @@
   vars:
     orgName: 'pufferpanel'
     runnerGroup: 'template-tester'
+    runnerLabel: 'template-tester'
 
     ghrunnerVersion: '2.328.0'
     ghrunnerHash_x64: '01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e'
@@ -176,7 +177,7 @@
         - name: Configure
           ansible.builtin.command:
             chdir: /home/ghrunner/actions-runner
-            cmd: ./config.sh --url https://github.com/{{ orgName }} --token {{ token.json.token }} --unattended --runnergroup {{ runnerGroup | default('Default') }}
+            cmd: ./config.sh --url https://github.com/{{ orgName }} --token {{ token.json.token }} --unattended --runnergroup {{ runnerGroup | default('Default') }} --labels {{ runnerLabel }}
           become: yes
           become_user: ghrunner
 
