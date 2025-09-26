@@ -59,9 +59,10 @@ jobs:
           sudo usermod -a -G pufferpanel $USER
 
       - name: AppArmor nonsense
+        if: ${{ ! endsWith(matrix.template, '-docker') }}
         run: |
-          echo -e "abi <abi/3.0>, \ninclude <tunables/global> \n$(pwd)/templatetester_${{ matrix.arch }} flags=(unconfined) {n}" > sudo tee /etc/apparmor.d/templatetester
-          echo -e "abi <abi/3.0>, \ninclude <tunables/global> \n$(pwd)/pufferpanel_${{ matrix.arch }} flags=(unconfined) {\n}" > sudo tee /etc/apparmor.d/pufferpanel
+          echo -e "abi <abi/3.0>, \ninclude <tunables/global> \n$(pwd)/templatetester_${{ matrix.arch }} flags=(unconfined) {\n}" | sudo tee /etc/apparmor.d/templatetester
+          echo -e "abi <abi/3.0>, \ninclude <tunables/global> \n$(pwd)/pufferpanel_${{ matrix.arch }} flags=(unconfined) {\n}" | sudo tee /etc/apparmor.d/pufferpanel
           sudo apparmor_parser -r /etc/apparmor.d/templatetester
           sudo apparmor_parser -r /etc/apparmor.d/pufferpanel
 
@@ -72,6 +73,7 @@ jobs:
           ./templatetester_${{ matrix.arch }} --skip=* --require=${{ matrix.template }} --binary=$(pwd)/pufferpanel_${{ matrix.arch }}
 
       - name: Cleanup
+        if: ${{ ! endsWith(matrix.template, '-docker') }}
         run: |
             sudo apparmor_parser -R /etc/apparmor.d/templatetester
             sudo apparmor_parser -R /etc/apparmor.d/pufferpanel
