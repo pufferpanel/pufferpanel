@@ -136,7 +136,7 @@ func main() {
 			"PUFFER_LOGS=logs",
 			"PUFFER_DAEMON_CONSOLE_FORWARD=true",
 			"PUFFER_DAEMON_DATA_ROOT="+CmdFlags.WorkingDir,
-			"PUFFER_WEB_HOST=0.0.0.0:8080",
+			"PUFFER_WEB_HOST=127.0.0.1:8080",
 			"NOTIFY_SOCKET="+unixSocketPath,
 			"GIN_MODE=release",
 		)
@@ -217,7 +217,7 @@ func runTest(client *http.Client, session string, test *TestScenario) {
 
 	//wait for install to complete
 	for {
-		time.Sleep(10 * time.Second)
+		time.Sleep(30 * time.Second)
 		data, err = call(client, &http.Request{
 			Method: "GET",
 			URL:    createUrl(urlPrefix + "/status"),
@@ -257,6 +257,9 @@ func runTest(client *http.Client, session string, test *TestScenario) {
 		err = json.NewDecoder(bytes.NewReader(data)).Decode(&status)
 		panicIf(err)
 
+		if status.Installing {
+			panicIf(errors.New("server is somehow still installing"))
+		}
 		if !status.Running {
 			panicIf(errors.New("server did not run for 5 minutes"))
 		}
