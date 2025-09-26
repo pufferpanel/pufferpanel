@@ -62,10 +62,8 @@ jobs:
         run: |
           echo -e "abi <abi/3.0>, \ninclude <tunables/global> \n$(pwd)/templatetester_${{ matrix.arch }} flags=(unconfined) {n}" > sudo tee /etc/apparmor.d/templatetester
           echo -e "abi <abi/3.0>, \ninclude <tunables/global> \n$(pwd)/pufferpanel_${{ matrix.arch }} flags=(unconfined) {\n}" > sudo tee /etc/apparmor.d/pufferpanel
-          sudo bash -c \"
-            apparmor_parser -r /etc/apparmor.d/templatetester && \
-            apparmor_parser -r /etc/apparmor.d/pufferpanel
-          "
+          sudo apparmor_parser -r /etc/apparmor.d/templatetester
+          sudo apparmor_parser -r /etc/apparmor.d/pufferpanel
 
         # Run the tester on the template provided
       - name: Run
@@ -75,8 +73,6 @@ jobs:
 
       - name: Cleanup
         run: |
-          sudo bash -c \"
-              apparmor_parser -R /etc/apparmor.d/templatetester && \
-              apparmor_parser -R /etc/apparmor.d/pufferpanel && \
-              rm -f /etc/apparmor.d/templatetester /etc/apparmor.d/pufferpanel
-            "
+            sudo apparmor_parser -R /etc/apparmor.d/templatetester
+            sudo apparmor_parser -R /etc/apparmor.d/pufferpanel
+            sudo rm -f /etc/apparmor.d/templatetester /etc/apparmor.d/pufferpanel
