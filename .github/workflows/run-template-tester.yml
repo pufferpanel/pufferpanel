@@ -60,14 +60,14 @@ jobs:
 
       - name: AppArmor nonsense
         run: |
-          echo "abi <abi/3.0>,
-              include <tunables/global>
-              $(pwd)/templatetester_${{ matrix.arch }} flags=(unconfined) {
+          echo "abi <abi/3.0>, \
+              include <tunables/global> \
+              $(pwd)/templatetester_${{ matrix.arch }} flags=(unconfined) { \
             }" > sudo tee /etc/apparmor.d/templatetester
 
-          echo "abi <abi/3.0>,
-              include <tunables/global>
-              $(pwd)/pufferpanel_${{ matrix.arch }} flags=(unconfined) {
+          echo "abi <abi/3.0>, \
+              include <tunables/global> \
+              $(pwd)/pufferpanel_${{ matrix.arch }} flags=(unconfined) { \
             }" > sudo tee /etc/apparmor.d/pufferpanel
 
           sudo bash -c \"
