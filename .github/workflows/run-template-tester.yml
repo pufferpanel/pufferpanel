@@ -33,10 +33,10 @@ jobs:
           sudo bash -c "\
             apt-get update && \
             apt-get install -y dirmngr gnupg apt-transport-https ca-certificates software-properties-common curl && \
-            gpg --homedir /tmp --no-tty --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+            gpg --homedir /tmp --batch --yes --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
             echo 'deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main' > /etc/apt/sources.list.d/mono-official-stable.list && \
             mkdir -p /etc/apt/keyrings && \
-            curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --no-tty --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+            curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
             echo 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main' > /etc/apt/sources.list.d/nodesource.list && \
             apt-get update && \
             apt-get install -y wget build-essential zip unzip tar git xz-utils nodejs
