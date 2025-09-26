@@ -58,8 +58,33 @@ jobs:
           getent group pufferpanel ||sudo groupadd pufferpanel
           sudo usermod -a -G pufferpanel $USER
 
+      - name: AppArmor nonsense
+        run: |
+          echo "abi <abi/3.0>,
+              include <tunables/global>
+              $(pwd)/templatetester_${{ matrix.arch }} flags=(unconfined) {
+            }" > sudo tee /etc/apparmor.d/templatetester
+
+          echo "abi <abi/3.0>,
+              include <tunables/global>
+              $(pwd)/pufferpanel_${{ matrix.arch }} flags=(unconfined) {
+            }" > sudo tee /etc/apparmor.d/pufferpanel
+
+          sudo bash -c \"
+            apparmor_parser -r /etc/apparmor.d/templatetester && \
+            apparmor_parser -r /etc/apparmor.d/pufferpanel
+          "
+
         # Run the tester on the template provided
       - name: Run
         run: |
           chmod +x pufferpanel_* templatetester_*
           ./templatetester_${{ matrix.arch }} --skip=* --require=${{ matrix.template }} --binary=$(pwd)/pufferpanel_${{ matrix.arch }}
+
+      - name: Cleanup
+        run: |
+          sudo bash -c \"
+              apparmor_parser -R /etc/apparmor.d/templatetester && \
+              apparmor_parser -R /etc/apparmor.d/pufferpanel && \
+              rm -f /etc/apparmor.d/templatetester /etc/apparmor.d/pufferpanel
+            "
