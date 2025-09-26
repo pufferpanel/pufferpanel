@@ -117,7 +117,6 @@
             group: ghrunner
 
         - name: Download file
-          when: ansible_facts.architecture == "aarch64"
           ansible.builtin.get_url:
             url: "https://github.com/actions/runner/releases/download/v{{ ghrunnerVersion }}/actions-runner-linux-{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'x64' }}-{{ ghrunnerVersion }}.tar.gz"
             dest: /home/ghrunner/actions-runner/actions-runner.tar.gz
