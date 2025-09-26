@@ -55,9 +55,9 @@ type ExecutionData struct {
 	Variables        map[string]interface{}
 	Callback         func(exitCode int)
 	StdInConfig      StdinConsoleConfiguration
-	DisableStdin     bool
-	DisableQuery     bool
-	DisableStats     bool
+	//DisableStdin     bool
+	DisableQuery bool
+	DisableStats bool
 }
 
 type ExecutionFunction func(steps ExecutionData) (err error)

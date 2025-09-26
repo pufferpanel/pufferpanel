@@ -22,11 +22,11 @@ import (
 )
 
 type tty struct {
-	mainProcess         *exec.Cmd
-	statLocker          sync.Mutex
-	lastStats           *pufferpanel.ServerStats
-	lastStatTime        time.Time
-	disableStdin        bool
+	mainProcess  *exec.Cmd
+	statLocker   sync.Mutex
+	lastStats    *pufferpanel.ServerStats
+	lastStatTime time.Time
+	//disableStdin        bool
 	disableSpecialStats bool
 
 	DisableUnshare bool     `json:"disableUnshare"`
@@ -76,7 +76,7 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 	})
 
 	t.disableSpecialStats = steps.DisableStats
-	t.disableStdin = steps.DisableStdin
+	//t.disableStdin = steps.DisableStdin
 
 	processTty, err := pty.Start(pr)
 	if err != nil {
@@ -84,9 +84,10 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 		return
 	}
 
-	if !t.disableStdin {
-		environment.CreateConsoleStdinProxy(steps.StdInConfig, processTty)
-	}
+	//if !t.disableStdin {
+	//	environment.CreateConsoleStdinProxy(steps.StdInConfig, processTty)
+	//}
+	environment.CreateConsoleStdinProxy(steps.StdInConfig, processTty)
 
 	environment.Console.Start()
 
@@ -263,7 +264,7 @@ func (t *tty) handleClose(environment *pufferpanel.Environment, callback func(ex
 		Type: pufferpanel.MessageTypeStatus,
 	})
 
-	t.disableStdin = false
+	//t.disableStdin = false
 	t.disableSpecialStats = false
 
 	if callback != nil {

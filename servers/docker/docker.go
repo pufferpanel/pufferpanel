@@ -40,13 +40,13 @@ type Docker struct {
 	Labels        map[string]string    `json:"labels,omitempty"`
 	Config        container.Config     `json:"config,omitempty"`
 
-	connection          types.HijackedResponse
-	cli                 *client.Client
-	downloadingImage    bool
-	statLocker          sync.Mutex
-	lastStats           *pufferpanel.ServerStats
-	lastStatTime        time.Time
-	disableStdin        bool
+	connection       types.HijackedResponse
+	cli              *client.Client
+	downloadingImage bool
+	statLocker       sync.Mutex
+	lastStats        *pufferpanel.ServerStats
+	lastStatTime     time.Time
+	//disableStdin        bool
 	disableSpecialStats bool
 }
 
@@ -79,7 +79,7 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 	}
 
 	d.disableSpecialStats = steps.DisableStats
-	d.disableStdin = steps.DisableStdin
+	//d.disableStdin = steps.DisableStdin
 
 	cfg := container.AttachOptions{
 		Stdin:  true,
@@ -100,9 +100,10 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 		_, _ = io.Copy(environment.Wrapper, d.connection.Reader)
 	}()
 
-	if !d.disableStdin {
-		environment.CreateConsoleStdinProxy(steps.StdInConfig, d.connection.Conn)
-	}
+	//if !d.disableStdin {
+	//	environment.CreateConsoleStdinProxy(steps.StdInConfig, d.connection.Conn)
+	//}
+	environment.CreateConsoleStdinProxy(steps.StdInConfig, d.connection.Conn)
 
 	environment.Console.Start()
 
@@ -610,6 +611,7 @@ func (d *Docker) handleClose(environment *pufferpanel.Environment, client *clien
 	})
 
 	_ = environment.Console.Close()
+	d.disableSpecialStats = false
 
 	if callback != nil {
 		callback(exitCode)
