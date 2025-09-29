@@ -268,6 +268,15 @@ func disableOtp(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Get registered passkeys
+// @Description Gets descriptors of the known passkeys the logged-in user has registered
+// @Success 200 {object} []models.WebauthnCredentialView
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/passkey [GET]
+// @Security OAuth2Application[self.edit]
 func getPasskeys(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -282,6 +291,15 @@ func getPasskeys(c *gin.Context) {
 	c.JSON(http.StatusOK, credentials)
 }
 
+// @Summary Start registering a new passkey
+// @Success 200 {object} protocol.CredentialCreation
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Param request body EnrollPasskeyRequest true "Information for the passkey to register"
+// @Router /api/self/passkey [POST]
+// @Security OAuth2Application[self.edit]
 func startPasskeyEnroll(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -315,6 +333,15 @@ func startPasskeyEnroll(c *gin.Context) {
 	c.JSON(http.StatusOK, creation)
 }
 
+// @Summary Complete registering a new passkey
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Param request body protocol.CredentialCreationResponse true "The response object for the passkeys registration challenge"
+// @Router /api/self/passkey [PUT]
+// @Security OAuth2Application[self.edit]
 func validatePasskeyEnroll(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -339,9 +366,17 @@ func validatePasskeyEnroll(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.Status(http.StatusNoContent)
 }
 
+// @Summary Remove a passkey
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/passkey/:id [DELETE]
+// @Security OAuth2Application[self.edit]
 func deletePasskey(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -353,9 +388,17 @@ func deletePasskey(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.Status(http.StatusNoContent)
 }
 
+// @Summary Set if passwordless login is allowed for the current user or not
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/passwordless/:value [PUT]
+// @Security OAuth2Application[self.edit]
 func setPasswordlessLogin(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -371,7 +414,7 @@ func setPasswordlessLogin(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.Status(http.StatusNoContent)
 }
 
 // @Summary Gets registered OAuth2 clients

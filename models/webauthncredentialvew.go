@@ -5,7 +5,7 @@ import (
 )
 
 type WebauthnCredentialView struct {
-	ID webauthnProto.URLEncodedBase64 `json:"id"`
+	ID webauthnProto.URLEncodedBase64 `json:"id" swaggertype:"string"`
 	Name string `json:"name"`
 	Descriptor webauthnProto.CredentialDescriptor `json:"descriptor"`
 }
