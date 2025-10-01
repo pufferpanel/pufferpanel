@@ -4,7 +4,7 @@
   "Console": "Консоль",
   "SFTPInfo": "Информация о SFTP",
   "Start": "Запуск",
-  "Restart": "Restart",
+  "Restart": "Перезапуск",
   "Stop": "Выключить",
   "Kill": "Убить",
   "Install": "Установить",
@@ -57,5 +57,5 @@
   "IncompatibleArch": "Несовместимо с архитектурой '{arch}'",
   "IncompatibleOs": "Несовместимо с ОС '{os}'",
   "IncompatibleEnv": "Несовместимо с окружением '{env}'",
-  "AdvancedSettings": "Advanced Settings"
+  "AdvancedSettings": "Дополнительные настройки"
 }
