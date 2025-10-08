@@ -32,6 +32,7 @@
   "NoSettings": "Sellel serveril ei ole sätteid, mida saaksid muuta",
   "Delete": "Kustuta Server",
   "ConfirmDelete": "Kas soovid kindlasti kustutada seda serverit? (seda ei saa tagasi võtta)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Kustutatud Server",
   "SftpConnection": "Ühenda SFTP-ga",
   "EditDefinition": "Muuda serveri definitsiooni",
