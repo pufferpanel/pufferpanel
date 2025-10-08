@@ -308,7 +308,7 @@ func (us *User) DisableOtp(userId uint) error {
 
 		user.OtpSecret = ""
 		user.OtpActive = false
-		return us.Update(user)
+		return tx.Save(user).Error
 	})
 }
 
