@@ -32,6 +32,7 @@
   "NoSettings": "このサーバーには変更できる設定がありません",
   "Delete": "サーバーを削除",
   "ConfirmDelete": "サーバー「{name}」を削除してもよろしいですか? この操作は元に戻すことができません。",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "サーバーを削除しました",
   "SftpConnection": "SFTP に接続",
   "EditDefinition": "サーバー設定を編集",
