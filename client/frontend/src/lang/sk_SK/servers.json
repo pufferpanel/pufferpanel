@@ -32,6 +32,7 @@
   "NoSettings": "Tento server nemá nastavenia, ktoré môžete upravovať",
   "Delete": "Zmazať server",
   "ConfirmDelete": "Do you really want to delete this server? (this cannot be undone)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server vymazaný",
   "SftpConnection": "Pripojenie k SFTP",
   "EditDefinition": "Upraviť definíciu servera",
