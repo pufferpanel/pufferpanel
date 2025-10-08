@@ -32,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Ta bort server",
   "ConfirmDelete": "Vill du verkligen ta bort denna server? (detta kan inte ångras)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server borttagen",
   "SftpConnection": "Anslut till SFTP",
   "EditDefinition": "Redigera serverdefinition",
