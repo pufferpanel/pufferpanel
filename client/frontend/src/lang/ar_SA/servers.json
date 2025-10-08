@@ -32,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "حذف الخادم",
   "ConfirmDelete": "هل تريد حذف هذا الخادم حقاً؟ (لا يمكن التراجع عن هذا)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "الخادم المحذوف",
   "SftpConnection": "الاتصال بـ SFTP",
   "EditDefinition": "Edit Server Definition",
