@@ -32,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Sunucuyu Sil",
   "ConfirmDelete": "Sunucuyu cidden silmek istiyor musun? (geri getiremezsin)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Silinmiş Sunucu",
   "SftpConnection": "SFTP Bağlan",
   "EditDefinition": "Sunucu tanımını düzenle",
