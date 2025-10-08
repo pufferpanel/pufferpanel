@@ -32,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "删除服务器",
   "ConfirmDelete": "您真的想要删除此服务器吗？（此操作无法撤销）",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "已删除服务器",
   "SftpConnection": "连接至 SFTP",
   "EditDefinition": "编辑服务器定义",
