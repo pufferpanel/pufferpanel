@@ -32,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Xóa máy chủ",
   "ConfirmDelete": "Bạn thật sự muốn xóa máy chủ này? (việc này không thể hủy bỏ được)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Máy chủ đã bị xoá",
   "SftpConnection": "Kết nối bằng SFTP",
   "EditDefinition": "Chỉnh sửa khai báo máy chủ",
