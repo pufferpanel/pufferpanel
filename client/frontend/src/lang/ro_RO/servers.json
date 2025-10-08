@@ -32,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Șterge Server",
   "ConfirmDelete": "Ești sigur ca vrei sa ștergi comentariul acesta? Acțiunea aceasta nu poate fi anulată",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server șters",
   "SftpConnection": "Conectare la SFTP",
   "EditDefinition": "Editează Definiția Serverului",
