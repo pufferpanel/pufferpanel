@@ -32,6 +32,7 @@
   "NoSettings": "Ezzen a szerveren nem beállításokat megváltoztatni",
   "Delete": "Szerver törlése",
   "ConfirmDelete": "Biztosan törli ezt a szervert? (A művelet nem visszavonható)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Szerver törölve",
   "SftpConnection": "Kapcsolódás az SFTPhez",
   "EditDefinition": "Szerver újradefiniálása",
