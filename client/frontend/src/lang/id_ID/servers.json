@@ -32,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Hapus server",
   "ConfirmDelete": "Anda yakin ingin menghapus server ini ?",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server yang Dihapus",
   "SftpConnection": "Sambung ke SFTP",
   "EditDefinition": "Edit Definisi Server",
