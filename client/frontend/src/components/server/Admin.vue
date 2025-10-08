@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import Ace from '@/components/ui/Ace.vue'
 import Btn from '@/components/ui/Btn.vue'
 import Icon from '@/components/ui/Icon.vue'
+import Loader from '../ui/Loader.vue'
 import Overlay from '@/components/ui/Overlay.vue'
 import Tab from '@/components/ui/Tab.vue'
 import Tabs from '@/components/ui/Tabs.vue'
@@ -23,6 +24,12 @@ const router = useRouter()
 const props = defineProps({
   server: { type: Object, required: true }
 })
+
+const def = ref({})
+const edit = ref("")
+const editorOpen = ref(false)
+const serverJson = ref(null)
+const deleting = ref(false)
 
 function editDefinition() {
   edit.value = JSON.stringify(def.value, undefined, 4)
@@ -50,6 +57,7 @@ function deleteServer() {
       icon: 'remove',
       color: 'error',
       action: async () => {
+        deleting.value = true
         await props.server.delete()
         toast.success(t('servers.Deleted'))
         // delay 500ms to prevent running into sqlite dbs still being locked
@@ -61,11 +69,6 @@ function deleteServer() {
     }
   )
 }
-
-const def = ref({})
-const edit = ref("")
-const editorOpen = ref(false)
-const serverJson = ref(null)
 
 function definitionTabChanged(newTab) {
   if (newTab === 'json' && serverJson.value) serverJson.value.refresh()
@@ -108,6 +111,10 @@ onMounted(async () => {
         <btn v-hotkey="'Escape'" color="error" @click="cancelEdit()"><icon name="close" />{{ t('common.Cancel') }}</btn>
         <btn :disabled="!server.hasScope('server.definition.edit')" color="primary" @click="saveDefinition()"><icon name="save" />{{ t('common.Save') }}</btn>
       </div>
+    </overlay>
+
+    <overlay v-model="deleting" class="deleting">
+      <loader :text="t('servers.Deleting')" />
     </overlay>
   </div>
 </template>

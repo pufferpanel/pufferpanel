@@ -360,7 +360,7 @@ func (p *Server) Destroy() (err error) {
 	p.Log(logging.Info, "Destroying server %s", p.Id())
 
 	p.Log(logging.Debug, "Stopping scheduler")
-	if p.Scheduler != nil {
+	if p.Scheduler != nil && p.Scheduler.IsRunning() {
 		p.Scheduler.Stop()
 	}
 

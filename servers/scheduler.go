@@ -113,7 +113,9 @@ func (s *Scheduler) Init() error {
 }
 
 func (s *Scheduler) Stop() {
-	_ = s.scheduler.Shutdown()
+	if s.scheduler.Shutdown() == nil {
+		s.scheduler = nil
+	}
 }
 
 func (s *Scheduler) Start() {
