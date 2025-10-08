@@ -32,6 +32,7 @@
   "NoSettings": "Tento server nemá žádné nastavení, které můžete změnit",
   "Delete": "Odstranit server",
   "ConfirmDelete": "Opravdu chcete smazat tento server? (toto nelze vrátit zpět)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Smazaný server",
   "SftpConnection": "Připojit k SFTP",
   "EditDefinition": "Upravit definici serveru",
