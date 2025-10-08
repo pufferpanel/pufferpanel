@@ -32,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Server Verwijderen",
   "ConfirmDelete": "Weet je zeker dat je deze server wilt verwijderen? (dit kan niet ongedaan worden gemaakt)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server Verwijderd",
   "SftpConnection": "Verbinden met SFTP",
   "EditDefinition": "Serverdefinitie bewerken",
