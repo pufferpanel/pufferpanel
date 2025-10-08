@@ -32,6 +32,7 @@
   "NoSettings": "Dieser Server hat keine Einstellungen die Sie ändern können",
   "Delete": "Server löschen",
   "ConfirmDelete": "Willst du den Server \"{name}\" wirklich löschen? (Dies kann nicht rückgängig gemacht werden)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server gelöscht",
   "SftpConnection": "Mit SFTP verbinden",
   "EditDefinition": "Server-Definition bearbeiten",
