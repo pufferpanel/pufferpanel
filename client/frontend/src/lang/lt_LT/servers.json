@@ -32,6 +32,7 @@
   "NoSettings": "Šis serveris neturi jokių nustatymų, kuriuos galėtumėte redaguoti",
   "Delete": "Ištrinti serverį",
   "ConfirmDelete": "Ar tikrai norite ištrinti serverį, pavadinimu \"{name}\"?",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Serveris ištrintas",
   "SftpConnection": "Prisijungti prie SFTP",
   "EditDefinition": "Redaguoti serverio definiciją",
