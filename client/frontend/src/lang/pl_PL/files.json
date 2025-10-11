@@ -1,15 +1,15 @@
 {
-  "Refresh": "Refresh",
+  "Refresh": "Odśwież",
   "CreateFile": "Utwórz Plik",
   "CreateFolder": "Stwórz Folder",
-  "ArchiveCurrent": "Archive current folder",
-  "UploadFile": "Upload file",
-  "UploadFolder": "Upload folder",
-  "Archive": "Archive",
-  "Extract": "Extract",
-  "Download": "Download",
+  "ArchiveCurrent": "Archiwizuj bieżący folder",
+  "UploadFile": "Prześlij plik",
+  "UploadFolder": "Prześlij folder",
+  "Archive": "Archiwizuj",
+  "Extract": "Wyodrębnij",
+  "Download": "Pobierz",
   "Delete": "Usuń",
-  "ConfirmDelete": "Czy na pewno chcesz usunąć ten plik?",
+  "ConfirmDelete": "Czy na pewno chcesz usunąć {name}?",
   "UploadSuccess": "Pliki zostały przesłane pomyślnie",
   "UploadFailed": "Nie udało się przesłać plików",
   "UploadProgress": "Postęp przesyłania",
@@ -20,5 +20,5 @@
   "Total": "Ogółem",
   "OpenLargeFile": "Ten plik może powodować problemy z wydajnością przeglądarki ze względu na jego rozmiar, czy chcesz go otworzyć mimo to?",
   "OpenAnyways": "Otwórz mimo to",
-  "Saved": "File saved"
+  "Saved": "Plik został zapisany"
 }
