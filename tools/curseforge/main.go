@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -18,9 +19,9 @@ var tests = []UnitTest{
 	{
 		CanFail: false,
 		Data: curseforge.CurseForge{
-			//All the Mods 9 https://www.curseforge.com/minecraft/modpacks/all-the-mods-9/files/5016170
+			//All the Mods 9 https://www.curseforge.com/minecraft/modpacks/all-the-mods-9/files/7097957
 			ProjectId: 715572,
-			FileId:    5016170,
+			FileId:    7097957,
 		},
 	},
 	{
@@ -62,6 +63,14 @@ var tests = []UnitTest{
 			FileId:    5842863,
 		},
 	},
+	{
+		CanFail: false,
+		Data: curseforge.CurseForge{
+			//Farmopolis https://www.curseforge.com/minecraft/modpacks/farmopolis/files/7112573
+			ProjectId: 1270262,
+			FileId:    7112573,
+		},
+	},
 }
 
 func main() {
@@ -73,13 +82,25 @@ func main() {
 	}
 
 	_ = config.ConsoleForward.Set(true, false)
+	_ = config.SecurityDisableUnshare.Set(true, false)
 
 	logging.OriginalStdOut = os.Stdout
+
+	var specificId uint
+	flag.UintVar(&specificId, "projectId", 0, "Specific project id")
+	flag.Parse()
 
 	results := make(map[UnitTest]error)
 
 	for _, unitTest := range tests {
 		test := unitTest.Data
+
+		if specificId != 0 {
+			if test.ProjectId != specificId {
+				continue
+			}
+		}
+
 		fmt.Printf("Testing %d\n", test.ProjectId)
 		if test.JavaBinary == "" {
 			test.JavaBinary = "java"
@@ -90,12 +111,14 @@ func main() {
 		_ = os.Mkdir(serverId, 0755)
 
 		server := servers.CreateProgram()
+		server.Identifier = serverId
 
 		env, err := servers.CreateEnvironment("host", serverId, "", server.Server)
 		if err != nil {
 			results[unitTest] = err
 			continue
 		}
+		server.RunningEnvironment = env
 
 		fs, err := files.NewFileServer(serverId, os.Getuid(), os.Getgid())
 		if err != nil {
@@ -116,7 +139,7 @@ func main() {
 			continue
 		}
 		var fi os.FileInfo
-		if fi, err = os.Lstat(filepath.Join(serverId, "server.jar")); err == nil && !fi.IsDir() {
+		if fi, err = os.Lstat(filepath.Join(server.RunningEnvironment.GetRootDirectory(), "server.jar")); err == nil && !fi.IsDir() {
 			results[unitTest] = nil
 		} else {
 			op := resolveforgeversion.ResolveForgeVersion{OutputVariable: "result"}
@@ -126,7 +149,7 @@ func main() {
 				continue
 			}
 			if result.VariableOverrides == nil || result.VariableOverrides["result"] == "" {
-				results[unitTest] = errors.New("failed to resolve to specific MC Forge version based on unix_args.txt")
+				results[unitTest] = errors.New("failed to resolve to specific version based on unix_args.txt")
 			} else {
 				results[unitTest] = nil
 			}
