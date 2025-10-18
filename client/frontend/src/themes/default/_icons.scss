@@ -6658,7 +6658,7 @@ $mdi-icons: (
   @include icon-name(menu);
 }
 .icon-menu {
-  @include icon-name(dots-vertical);
+  @include icon-name(dots-horizontal);
 }
 .icon-plus {
   @include icon-name(plus);
@@ -6770,6 +6770,12 @@ $mdi-icons: (
 }
 .icon-restore {
   @include icon-name(restore);
+}
+.icon-server-root {
+  @include icon-name(home);
+}
+.icon-path-separator {
+  @include icon-name(chevron-right);
 }
 html[dir="ltr"] {
   .icon-back {

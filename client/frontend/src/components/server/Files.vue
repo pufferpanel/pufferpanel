@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onMounted, onUnmounted, inject } from 'vue'
+import { ref, onMounted, onUnmounted, inject, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
+import ContextMenu from '@/components/ui/ContextMenu.vue'
 import Icon from '@/components/ui/Icon.vue'
 import Loader from '@/components/ui/Loader.vue'
 import Overlay from '@/components/ui/Overlay.vue'
@@ -51,6 +52,11 @@ onUnmounted(async () => {
   if (task) props.server.stopTask(task)
 })
 
+watch(currentPath, async (newPath) => {
+  const res = await props.server.getFile(newPath.map(e => e.name).join('/'))
+  files.value = res.sort(sortFiles)
+}, {deep: true})
+
 async function refresh(manual = false) {
   if (manual) files.value = null // cause visual feedback on manual refresh
   const res = await props.server.getFile(getCurrentPath())
@@ -84,16 +90,11 @@ async function openFile(f, overrideWarn = false) {
     editorOpen.value = true
     loading.value = false
   } else {
-    let path = ''
     if (f.name === '..') {
       currentPath.value.pop()
-      path = getCurrentPath()
     } else {
-      path = getCurrentPath() + `/${f.name}`
+      currentPath.value.push(f)
     }
-    const res = await props.server.getFile(path)
-    files.value = res.sort(sortFiles)
-    if (f.name !== '..') currentPath.value.push(f)
   }
 }
 
@@ -250,8 +251,13 @@ async function archive(file) {
   }
 }
 
-function downloadLink(file) {
-  return props.server.getFileUrl(getCurrentPath() + '/' + file.name)
+function download(file) {
+  const a = document.createElement('a')
+  a.href = props.server.getFileUrl(getCurrentPath() + '/' + file.name)
+  a.download = a.href.split('/').pop()
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
 }
 
 function fileListHotkey() {
@@ -261,20 +267,66 @@ function fileListHotkey() {
 function trackFileEl(index) {
   return (el) => fileEls.value[index] = el
 }
+
+function contextActionsForFile(file) {
+  const actions = []
+  if (canEdit && file.name !== '..' && !file.isFile) {
+    actions.push({
+      icon: 'archive',
+      label: t('files.Archive'),
+      hotkey: 'a',
+      action: () => archive(file)
+    })
+  }
+  if (canEdit && file.isFile && isArchive(file)) {
+    actions.push({
+      icon: 'extract',
+      label: t('files.Extract'),
+      hotkey: 'e',
+      action: () => extract(file)
+    })
+  }
+  if (file.isFile) {
+    actions.push({
+      icon: 'download',
+      label: t('files.Download'),
+      hotkey: 'd',
+      action: () => download(file)
+    })
+  }
+  if (canEdit && file.name !== '..') {
+    actions.push({
+      icon: 'remove',
+      label: t('files.Delete'),
+      hotkey: 'Delete',
+      class: 'action-delete',
+      action: () => deleteFile(file)
+    })
+  }
+  return actions
+}
 </script>
 
 <template>
   <div class="file-manager">
     <div class="header">
       <h2 v-text="t('servers.Files')" />
-      <h3 v-text="'/' + getCurrentPath()" />
+      <h3>
+        <a @click="currentPath = []"><icon name="server-root" /></a>
+        <span v-for="segment, index in currentPath" :key="index">
+          <icon name="path-separator" />
+          <a @click="currentPath.splice(index + 1)" v-text="segment.name" />
+        </span>
+      </h3>
       <span class="spacer" />
-      <btn v-if="canEdit" v-hotkey="'f a'" variant="icon" :tooltip="t('files.ArchiveCurrent')" @click="archiveCurrentDirectory()"><icon name="archive" /></btn>
-      <upload v-if="canEdit" :path="getCurrentPath()" :server="server" hotkey="f u" @uploaded="refresh()" />
-      <upload v-if="canEdit && allowDirectoryUpload" :path="getCurrentPath()" :server="server" folder hotkey="f d" @uploaded="refresh()" />
-      <btn v-if="canEdit" v-hotkey="'f c f'" variant="icon" :tooltip="t('files.CreateFile')" @click="startCreateFile()"><icon name="file-create" /></btn>
-      <btn v-if="canEdit" v-hotkey="'f c d'" variant="icon" :tooltip="t('files.CreateFolder')" @click="startCreateFolder()"><icon name="folder-create" /></btn>
-      <btn v-hotkey="'f r'" variant="icon" :tooltip="t('files.Refresh')" @click="refresh(true)"><icon name="reload" /></btn>
+      <span class="controls">
+        <btn v-if="canEdit" v-hotkey="'f a'" variant="icon" :tooltip="t('files.ArchiveCurrent')" @click="archiveCurrentDirectory()"><icon name="archive" /></btn>
+        <upload v-if="canEdit" :path="getCurrentPath()" :server="server" hotkey="f u" @uploaded="refresh()" />
+        <upload v-if="canEdit && allowDirectoryUpload" :path="getCurrentPath()" :server="server" folder hotkey="f d" @uploaded="refresh()" />
+        <btn v-if="canEdit" v-hotkey="'f c f'" variant="icon" :tooltip="t('files.CreateFile')" @click="startCreateFile()"><icon name="file-create" /></btn>
+        <btn v-if="canEdit" v-hotkey="'f c d'" variant="icon" :tooltip="t('files.CreateFolder')" @click="startCreateFolder()"><icon name="folder-create" /></btn>
+        <btn v-hotkey="'f r'" variant="icon" :tooltip="t('files.Refresh')" @click="refresh(true)"><icon name="reload" /></btn>
+      </span>
     </div>
     <div v-hotkey="'f l'" class="file-list" @hotkey="fileListHotkey">
       <loader v-if="!Array.isArray(files)" />
@@ -285,20 +337,19 @@ function trackFileEl(index) {
           <div class="name">{{ file.name }}</div>
           <div v-if="file.isFile" class="size">{{ formatFileSize(file.size) }}</div>
         </div>
-        <btn v-if="canEdit && file.name !== '..' && !file.isFile" tabindex="-1" variant="icon" :tooltip="t('files.Archive')" @click.stop="archive(file)">
-          <icon name="archive" />
-        </btn>
-        <btn v-if="canEdit && file.isFile && isArchive(file)" tabindex="-1" variant="icon" :tooltip="t('files.Extract')" @click.stop="extract(file)">
-          <icon name="extract" />
-        </btn>
-        <a v-if="file.isFile" tabindex="-1" class="dl-link" :href="downloadLink(file)" target="_blank" rel="noopener">
-          <btn tabindex="-1" variant="icon" :tooltip="t('files.Download')" @click.stop="">
-            <icon name="download" />
-          </btn>
-        </a>
-        <btn v-if="canEdit && file.name !== '..'" tabindex="-1" variant="icon" :tooltip="t('files.Delete')" @click.stop="deleteFile(file)">
-          <icon name="remove" />
-        </btn>
+        <context-menu :title="file.name" :actions="contextActionsForFile(file)">
+          <template #title>
+            <li class="context-title">
+              <span class="name" v-text="file.name" />
+              <span v-if="file.isFile" class="size" v-text="formatFileSize(file.size)" />
+            </li>
+          </template>
+          <template #activator="contextMenu">
+            <btn v-if="contextMenu.canOpen" tabindex="-1" variant="icon" @click.stop="contextMenu.onClick">
+              <icon name="menu" />
+            </btn>
+          </template>
+        </context-menu>
       </a>
     </div>
     <overlay v-model="fileSizeWarn" closable :title="t('files.OpenLargeFile')">

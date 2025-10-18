@@ -148,6 +148,110 @@ hr {
 }
 
 
+@include breakpoint-down(md) {
+  .context-menu-wrapper::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: var(--text-disabled);
+    pointer-events: none;
+    transform: translateZ(1px);
+    z-index: 50;
+  }
+  .context-menu {
+    @include card;
+    list-style-type: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    transform: translateZ(2px);
+    z-index: 51;
+    .context-title {
+      font-family: var(--headline-font);
+      font-size: 1.5em;
+      font-weight: bolder;
+    }
+    .context-action a {
+      @include clickable;
+      @include link;
+      padding: .5rem 0;
+      margin-top: .5rem;
+      display: flex;
+      align-items: center;
+      .icon::before {
+        font-size: 2em;
+      }
+      .label {
+        margin-left: .5rem;
+        font-size: 1.25em;
+      }
+    }
+  }
+}
+@include breakpoint(md) {
+  .context-menu {
+    @include card;
+    position: absolute;
+    top: var(--layer-y);
+    left: var(--layer-x);
+    list-style-type: none;
+    margin-top: 0;
+    padding: .75rem 0;
+    min-width: 200px;
+    transform: translateZ(1px);
+    z-index: 50;
+    &[data-suggested-direction*="top"] {
+      top: calc(var(--layer-y) - var(--height));
+    }
+    &[data-suggested-direction*="left"] {
+      left: calc(var(--layer-x) - var(--width));
+    }
+    .context-title {
+      font-weight: bolder;
+      font-size: 1.125em;
+      margin-bottom: .5rem;
+      padding-left: .75rem;
+      padding-right: .75rem;
+    }
+    .context-action a {
+      @include clickable;
+      @include link;
+      padding: .25rem;
+      padding-left: .5rem;
+      display: flex;
+      align-items: center;
+      .icon::before {
+        font-size: 1.5em;
+      }
+      .label {
+        margin-left: .5rem;
+      }
+    }
+  }
+}
+
+@include high-contrast-mode {
+  @include breakpoint-down(md) {
+    .context-menu-wrapper::before{
+      background-color: #000e;
+    }
+  }
+
+  .context-menu .context-action a:hover {
+    background-color: unset;
+    .label {
+      text-decoration: underline dashed;
+    }
+  }
+}
+
+
 .hotkey-list {
   @include row;
   & {
@@ -500,6 +604,10 @@ hr {
 
   .stop .icon::before, .kill .icon::before {
     color: var(--error);
+  }
+
+  .icon-menu {
+    @include icon-name(dots-vertical)
   }
 }
 
@@ -1325,50 +1433,59 @@ html[dir="rtl"] .settings .panel .master-url .icon {
 .file-manager {
   .header {
     display: flex;
+    flex-wrap: wrap-reverse;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     h3 {
-      color: var(--text-disabled);
       font-size: 0.9em;
       margin-left: 0.5rem;
       margin-right: 0.5rem;
+      a {
+        color: var(--text);
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      span {
+        display: inline-block;
+      }
+      .icon {
+        display: inline-flex;
+        font-size: 1rem;
+      }
     }
     .spacer {
       flex-grow: 1;
     }
-    .icon {
-      font-size: 2rem;
+    .controls {
       display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-
-  .file-list {
-    .file {
-      @include clickable;
-      @include link;
-      & {
-        padding: 0.5em;
-        display: flex;
-      }
-      .details {
-        flex-grow: 1;
-        padding-left: 1rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        .size {
-          color: var(--text-disabled);
-          font-size: 0.9em;
-        }
-      }
-      .icon, .button {
+      flex-wrap: wrap;
+      .icon {
         font-size: 2rem;
         display: flex;
         align-items: center;
         justify-content: center;
       }
+    }
+  }
+
+  .file-list {
+    .context-menu {
+      .size {
+        display: block;
+        color: var(--text-disabled);
+        font-size: .8em;
+        margin-top: .25rem;
+      }
+      .action-delete {
+        .label, .icon::before {
+          color: var(--error)
+        }
+      }
+    }
+    .file {
+      @include clickable;
+      @include link;
     }
   }
 
@@ -1399,6 +1516,111 @@ html[dir="rtl"] .settings .panel .master-url .icon {
 
   input[type="file"] {
     display: none;
+  }
+}
+
+@include breakpoint-down(md) {
+  .file-manager .file-list .file {
+    padding: 0.5em;
+    display: flex;
+    .details {
+      flex-grow: 1;
+      padding-left: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      .size {
+        color: var(--text-disabled);
+        font-size: 0.9em;
+      }
+    }
+    .file-icon, .button.icon {
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+@include breakpoint(md) {
+  .file-manager .file-list {
+    display: grid;
+    justify-content: space-around;
+    grid-template-columns: repeat(auto-fill, 125px);
+    transform-style: preserve-3d;
+    justify-content: space-between;
+    .file {
+      display: block;
+      width: 125px;
+      margin-bottom: 1.25rem;
+      position: relative;
+      padding: 0 .25rem .25rem;
+      &:hover {
+        margin-bottom: 0;
+      }
+      & > .icon:not(.button) {
+        text-align: center;
+        width: 100%;
+        font-size: 6em;
+        display: block;
+      }
+      .details {
+        text-align: center;
+        margin-top: -.5rem;
+        display: block;
+        width: 100%;
+        .size {
+          display: none;
+        }
+        .name {
+          width: 100%;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+      &:hover .details .name {
+        text-overflow: unset;
+        white-space: unset;
+        overflow-wrap: break-word;
+      }
+      .button.icon {
+        display: none;
+      }
+      &:hover .button.icon {
+        display: flex;
+        position: absolute;
+        top: .5rem;
+        right: .5rem;
+        background-color: var(--background);
+        width: 1.5rem;
+        min-width: 1.5rem;
+        height: 1.5rem;
+      }
+      .context-menu.source-activator {
+        margin-top: .5rem;
+        margin-left: calc(100% - 2rem);
+      }
+    }
+  }
+}
+
+@include high-contrast-mode {
+  .file-manager .file-list .file {
+    &:hover {
+      background-color: unset;
+      .details .name {
+        text-decoration: underline dashed;
+      }
+    }
+    .context-menu {
+      border: 3px solid var(--text);
+      .action-delete {
+        .label, .icon::before {
+          color: var(--text);
+        }
+      }
+    }
   }
 }
 

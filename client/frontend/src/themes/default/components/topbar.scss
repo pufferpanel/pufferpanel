@@ -166,6 +166,12 @@
 }
 
 @include high-contrast-mode {
+  @include breakpoint-down(md) {
+    .topbar.sidebar-exists .sidebar-toggle::before {
+      color: var(--text);
+    }
+  }
+
   .topbar {
     background-color: var(--background);
     border-bottom: 3px solid var(--text);
