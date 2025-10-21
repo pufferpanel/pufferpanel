@@ -1,7 +1,7 @@
 {
     "Backup": "Backup",
     "Name": "Nome",
-    "Create": "Criar \"backup\"",
+    "Create": "Criar backup",
     "BackupStarted": "Backup Iniciado",
     "BackupsHeader": "Backups disponíveis",
     "Restore": "Restaurar",
