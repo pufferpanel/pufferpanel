@@ -87,7 +87,7 @@ $breakpoints: (
     }
 
     .text, .title, .subline {
-      overflow: hidden;
+      overflow: clip visible;
       white-space: nowrap;
       text-overflow: ellipsis;
       width: 100%;

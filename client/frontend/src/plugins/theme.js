@@ -120,7 +120,7 @@ const themeApi = {
     styles.textContent = newTheme === 'PufferPanel' ? defaultStyles : (manifest.keepDefaultCss ? defaultStyles + '\n' + themeData.css : themeData.css)
     sidebarClosedBelow.value = manifest.sidebarClosedBelow || 1200
     if (manifest.keepDefaultCss && newTheme !== 'PufferPanel') {
-      Object.keys(defaultManifest.settings).map(key => {
+      Object.keys(defaultManifest.settings).filter(key => !manifest.settings[key]).map(key => {
         handleSetting(key, defaultManifest.settings[key])
       })
     }

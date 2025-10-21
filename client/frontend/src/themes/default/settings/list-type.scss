@@ -62,7 +62,7 @@
 
       .#{$t} {
         .title, .subline {
-          overflow: hidden;
+          overflow: clip visible;
           white-space: nowrap;
           text-overflow: ellipsis;
           max-width: 100%;
@@ -154,7 +154,7 @@
 
       .#{$t} {
         .title, .subline {
-          overflow: hidden;
+          overflow: clip visible;
           white-space: nowrap;
           text-overflow: ellipsis;
           max-width: 100%;
