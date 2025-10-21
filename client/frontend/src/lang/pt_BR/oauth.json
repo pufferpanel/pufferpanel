@@ -1,13 +1,13 @@
 {
   "Credentials": "Credenciais do cliente OAuth2",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "Clients": "OAuth2 Clients",
-  "Delete": "Delete {clientName}?",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions"
+  "ClientId": "ID do cliente",
+  "ClientSecret": "Segredo do cliente",
+  "NewClientWarning": "Anote o segredo do cliente. Após fechar esta caixa de diálogo, ele nunca mais será exibido. Perdê-lo ou esquecê-lo tornará este cliente completamente inutilizável.",
+  "Create": "Criar novo cliente OAuth2",
+  "UnnamedClient": "Cliente OAuth2 sem nome",
+  "Docs": "Encontre a documentação da API aqui",
+  "Clients": "Clientes OAuth2",
+  "Delete": "Excluir cliente OAuth2",
+  "ConfirmDelete": "Você realmente deseja excluir o cliente OAuth2 {name}? Você não poderá recriá-lo com as mesmas credenciais!",
+  "AccountDescription": "Os clientes OAuth2 listados aqui herdam todas as permissões de suas contas"
 }
