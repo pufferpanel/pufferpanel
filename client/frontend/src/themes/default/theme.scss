@@ -350,6 +350,17 @@ hr {
   }
 }
 
+@include high-contrast-mode {
+  [data-tooltip]::before {
+    border-top-color: #fff;
+    border-width: 8px;
+  }
+  [data-tooltip]::after {
+    border: 2px solid #fff;
+    background-color: #000;
+  }
+}
+
 .input-field .post-tooltip {
   &::after {
     right: 0;
@@ -614,10 +625,10 @@ hr {
 @include high-contrast-mode {
   .menu.open {
     border: 3px solid var(--text);
-    .button {
-      border: 2px solid var(--text);
-      &:not(:first-child) {
-        margin-top: .5rem;
+    .button:hover {
+      background-color: unset;
+      .text {
+        text-decoration: underline dashed;
       }
     }
   }

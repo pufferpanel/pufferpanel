@@ -122,3 +122,12 @@
     }
   }
 }
+
+@include high-contrast-mode {
+  .tab-button:hover {
+    background-color: transparent;
+    .title {
+      text-decoration: underline dashed;
+    }
+  }
+}

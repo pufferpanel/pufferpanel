@@ -63,7 +63,7 @@ html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
       color: var(--primary);
     }
     &:hover {
-      background-color: var(--primary-hover);
+      text-decoration: underline dashed;
     }
   }
 }
@@ -90,7 +90,7 @@ html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
       color: var(--error);
     }
     &:hover {
-      background-color: var(--error-bg);
+      text-decoration: underline dashed;
     }
   }
 }
@@ -101,6 +101,13 @@ html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
 
 .button.text:hover {
   background-color: var(--primary-hover);
+}
+
+@include high-contrast-mode {
+  .button.text:hover {
+    background-color: unset;
+    text-decoration: underline dashed;
+  }
 }
 
 .button.disabled:not(.icon) {
