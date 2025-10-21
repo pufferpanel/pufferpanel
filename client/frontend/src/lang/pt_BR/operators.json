@@ -1,72 +1,72 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "Execute esta etapa somente se esta condição for atendida",
   "mojangdl": {
     "generic": "Baixar Minecraft",
     "formatted": "Baixar Minecraft"
   },
   "writefile": {
-    "generic": "Write to file",
-    "formatted": "Write to file {target}"
+    "generic": "Escrever no arquivo",
+    "formatted": "Escrever no arquivo {target}"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
-    "formatted": "Resolve Minecraft Forge Version"
+    "generic": "Resolver a versão do Minecraft Forge",
+    "formatted": "Resolver a versão do Minecraft Forge"
   },
   "download": {
-    "generic": "Download file(s)",
-    "formatted": "Download {file} | Download {n} files",
-    "files": "Files"
+    "generic": "Baixar arquivo(s)",
+    "formatted": "Baixar {file} | Baixar {n} arquivos",
+    "files": "Arquivos"
   },
   "command": {
-    "generic": "Run command(s)",
-    "formatted": "Run {command} | Run {n} commands",
-    "commands": "Commands"
+    "generic": "Executar comando(s)",
+    "formatted": "Executar {command} | Executar {n} comandos",
+    "commands": "Comandos"
   },
   "alterfile": {
-    "generic": "Modify a file",
-    "formatted": "Modify file {target}",
-    "regex": "Treat search string as regular expression",
-    "search": "Search",
-    "replace": "Replace matches with"
+    "generic": "Modificar um arquivo",
+    "formatted": "Modificar arquivo {target}",
+    "regex": "Tratar sequência de pesquisa como expressão regular",
+    "search": "Pesquisar",
+    "replace": "Substitua os fósforos por"
   },
   "move": {
-    "generic": "Move or rename a file",
-    "formatted": "Move file {source} to {target}",
-    "source": "Source Path",
-    "target": "Target Path"
+    "generic": "Mover ou renomear um arquivo",
+    "formatted": "Mover arquivo {source} para {target}",
+    "source": "Caminho de origem",
+    "target": "Caminho do alvo"
   },
   "mkdir": {
-    "generic": "Create a directory",
-    "formatted": "Create directory {target}"
+    "generic": "Criar um diretório",
+    "formatted": "Criar diretório {target}"
   },
   "steamgamedl": {
-    "generic": "Install from Steam",
-    "formatted": "Install Steam App ID {appId}",
-    "appId": "Steam App ID"
+    "generic": "Instalar do Steam",
+    "formatted": "Instalar o aplicativo Steam ID {appId}",
+    "appId": "ID do aplicativo Steam"
   },
   "javadl": {
-    "generic": "Install Java",
-    "formatted": "Install Java {version}"
+    "generic": "Instalar Java",
+    "formatted": "Instalar Java {version}"
   },
   "forgedl": {
-    "generic": "Download Minecraft Forge",
-    "formatted": "Download Minecraft Forge"
+    "generic": "Baixar Minecraft Forge",
+    "formatted": "Baixar Minecraft Forge"
   },
   "spongeforgedl": {
-    "generic": "Download Minecraft SpongeForge",
-    "formatted": "Download Minecraft SpongeForge",
-    "releaseType": "Release Type"
+    "generic": "Baixar Minecraft SpongeForge",
+    "formatted": "Baixar Minecraft SpongeForge",
+    "releaseType": "Tipo de liberação"
   },
   "fabricdl": {
-    "generic": "Download Minecraft Fabric",
-    "formatted": "Download Minecraft Fabric"
+    "generic": "Baixar Minecraft Fabric",
+    "formatted": "Baixar Minecraft Fabric"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
+    "generic": "Baixar do CurseForge",
     "formatted": "Baixar do CurseForge"
   },
   "nodejsdl": {
-    "generic": "Install Node.js",
-    "formatted": "Install Node.js {version}"
+    "generic": "Instalar Node.js",
+    "formatted": "Instalar Node.js {version}"
   }
 }
