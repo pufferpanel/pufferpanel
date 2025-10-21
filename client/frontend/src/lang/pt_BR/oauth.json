@@ -1,5 +1,5 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
+  "Credentials": "Credenciais do cliente OAuth2",
   "ClientId": "Client ID",
   "ClientSecret": "Client Secret",
   "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
