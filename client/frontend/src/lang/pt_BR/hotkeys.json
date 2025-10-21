@@ -8,7 +8,7 @@
     "g s": "Ir para Servidores",
     "g t": "Ir para Modelos",
     "g u": "Ir para Usuários",
-    "/": "Global Search"
+    "/": "Pesquisa global"
   },
   "Self": {
     "Title": "Conta",
@@ -33,8 +33,8 @@
     "t 6": "Ir para aba SFTP",
     "t 7": "Vá para a aba Api",
     "t a": "Vá para a aba Administrador",
-    "c c": "Focus Command Input",
-    "c x": "Clear Console",
+    "c c": "Entrada de comando de foco",
+    "c x": "Limpar console",
     "r r": "Iniciar Servidor",
     "r s": "Parar Servidor",
     "r k": " Finalizar Servidor",
@@ -66,12 +66,12 @@
   },
   "Template": {
     "Title": "Editor de Modelo",
-    "t e": "Go to Environment tab",
-    "t g": "Go to General tab",
-    "t h": "Go to Hooks tab",
-    "t i": "Go to Install tab",
-    "t j": "Go to JSON tab",
-    "t r": "Go to Run Configuration tab",
+    "t e": "Vá para a aba Ambiente",
+    "t g": "Vá para a aba Geral",
+    "t h": "Vá para a aba Ganchos",
+    "t i": "Vá para a aba Instalar",
+    "t j": "Vá para a aba JSON",
+    "t r": "Vá para a aba Configuração de Execução",
     "t v": "Ir para aba de variáveis"
   }
 }
