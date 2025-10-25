@@ -42,6 +42,8 @@
     "f a": "Archiver le contenu du répertoire actuel",
     "f c d": "Créer un nouveau répertoire",
     "f c f": "Créer un nouveau fichier",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Téléverser un dossier",
     "f l": "Focus premier fichier/dossier dans la liste",
     "f r": "Recharger la liste des fichiers",
