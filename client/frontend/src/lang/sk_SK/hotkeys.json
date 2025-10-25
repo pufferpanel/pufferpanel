@@ -42,6 +42,8 @@
     "f a": "Archivácia aktuálneho obsahu priečinka",
     "f c d": "Vytvoriť nový priečnok",
     "f c f": "Vytvoriť nový súbor",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Nahraj adresár",
     "f l": "Zameraj prvý súbor/priečinok v zozname",
     "f r": "Znova načítať zoznam",
