@@ -42,6 +42,8 @@
     "f a": "Archiveer huidige inhoud van map",
     "f c d": "Nieuwe map aanmaken",
     "f c f": "Nieuw bestand maken",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Upload map",
     "f l": "Focus eerste bestand/map in de lijst",
     "f r": "Herlaad bestandslijst",
