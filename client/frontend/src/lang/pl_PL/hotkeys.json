@@ -42,6 +42,8 @@
     "f a": "Zarchiwizuj zawartość bieżącego katalogu",
     "f c d": "Stwórz nowy folder",
     "f c f": "Stwórz nowy plik",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Prześlij katalog",
     "f l": "Przejdź do pierwszego pliku/folderu na liście",
     "f r": "Przeładuj listę",
