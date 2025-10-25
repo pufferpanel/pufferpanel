@@ -14,6 +14,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"sync"
@@ -336,6 +337,7 @@ func (t *tty) initiateJCMD() (*net.UnixConn, error) {
 }
 
 var cmdList = []string{
+	"mount --make-rprivate --make-rslave --bind . .",
 	"mkdir -p {dev,bin,usr,lib,etc,tmp,proc}",
 	"mount -t tmpfs -o size=50m tmpfs tmp",
 	"mount --bind /bin bin",
@@ -373,6 +375,26 @@ func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
 			)
 		}
 
+		var lstat os.FileInfo
+		lstat, err = os.Lstat("/etc/resolv.conf")
+		if err != nil && !errors.Is(err, os.ErrNotExist) {
+			return
+		}
+		if err == nil && lstat.Mode()&os.ModeSymlink != 0 {
+			var absPath string
+			absPath, err = filepath.EvalSymlinks("/etc/resolv.conf")
+			if err != nil {
+				return
+			}
+			localPath := removeRoot(absPath)
+			dir := removeRoot(filepath.Dir(absPath))
+			unshareArgs = append(unshareArgs,
+				fmt.Sprintf("mkdir -p %s", dir),
+				fmt.Sprintf("touch %s", localPath),
+				fmt.Sprintf("mount --rbind %s %s", absPath, localPath),
+			)
+		}
+
 		unshareArgs = append(unshareArgs,
 			fmt.Sprintf("mkdir -p {%s}", strings.Join(mountFolders, ",")),
 			fmt.Sprintf("mount --bind %s %s", workDir, workDirMount),
@@ -384,8 +406,17 @@ func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
 			unshareArgs = append(unshareArgs, fmt.Sprintf("mount --bind %s %s", v, removeRoot(v)))
 		}
 
-		unshareArgs = append(unshareArgs, "mount --rbind / .",
-			fmt.Sprintf("unshare -UR . -w %s --map-user=%d --map-group=%d %s", workDir, os.Getuid(), os.Getgid(), cmd))
+		unshareArgs = append(unshareArgs,
+			//move cwd to bind mounted instace of .
+			"cd .",
+			"mkdir -p old-root",
+			//make . the root for everything in the current namespace
+			"pivot_root . old-root",
+			//make the old root unaccessible by unmounting it
+			//needs to be lazy because the old root is considered busy as it's still the root outside the namespace
+			"umount -l /old-root",
+			"rm -r /old-root",
+			fmt.Sprintf("unshare -U -w %s --map-user=%d --map-group=%d %s", workDir, os.Getuid(), os.Getgid(), cmd))
 
 		pr = exec.Command("bash", "-c", strings.Join(unshareArgs, " && "))
 		pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
