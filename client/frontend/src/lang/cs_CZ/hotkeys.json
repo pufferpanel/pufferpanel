@@ -42,6 +42,8 @@
     "f a": "Archivovat aktuální obsah adresáře",
     "f c d": "Vytvořit nový adresář",
     "f c f": "Vytvořit nový soubor",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Adresář pro nahrávání",
     "f l": "Zaměřit první soubor/složku v seznamu",
     "f r": "Obnovit seznam souborů",
