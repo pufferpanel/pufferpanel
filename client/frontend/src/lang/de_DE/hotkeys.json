@@ -42,6 +42,8 @@
     "f a": "Aktuellen Verzeichnisinhalt archivieren",
     "f c d": "Neues Verzeichnis erstellen",
     "f c f": "Neue Datei erstellen",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Upload-Verzeichnis",
     "f l": "Erste Datei/Ordner in der Liste fokussieren",
     "f r": "Dateiliste neu laden",
