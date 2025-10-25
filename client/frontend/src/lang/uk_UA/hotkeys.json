@@ -42,6 +42,8 @@
     "f a": "Archive current directory contents",
     "f c d": "Create new directory",
     "f c f": "Create new file",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Upload directory",
     "f l": "Focus first file/folder in the list",
     "f r": "Reload file list",
