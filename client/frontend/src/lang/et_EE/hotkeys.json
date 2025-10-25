@@ -42,6 +42,8 @@
     "f a": "Arhiveeri praeguse kausta sisu",
     "f c d": "Loo uus kaust",
     "f c f": "Loo uus fail",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Kausta üleslaadimine",
     "f l": "Fokuseeri esimene fail/kaust nimekirjas",
     "f r": "Värskenda failide nimekiri",
