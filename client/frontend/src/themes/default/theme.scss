@@ -1471,6 +1471,11 @@ html[dir="rtl"] .settings .panel .master-url .icon {
     .controls {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
+      .selection-count {
+        margin-left: .5rem;
+        margin-right: .5rem;
+      }
       .icon {
         font-size: 2rem;
         display: flex;
@@ -1497,6 +1502,9 @@ html[dir="rtl"] .settings .panel .master-url .icon {
     .file {
       @include clickable;
       @include link;
+    }
+    .file.selected {
+      background-color: var(--primary-hover);
     }
   }
 
@@ -1551,11 +1559,15 @@ html[dir="rtl"] .settings .panel .master-url .icon {
       align-items: center;
       justify-content: center;
     }
+    .file-select {
+      display: none;
+    }
   }
 }
 @include breakpoint(md) {
   .file-manager .file-list {
     display: grid;
+    row-gap: 4px;
     justify-content: space-around;
     grid-template-columns: repeat(auto-fill, 125px);
     transform-style: preserve-3d;
@@ -1566,7 +1578,7 @@ html[dir="rtl"] .settings .panel .master-url .icon {
       margin-bottom: 1.25rem;
       position: relative;
       padding: 0 .25rem .25rem;
-      &:hover {
+      &:hover, &.selected {
         margin-bottom: 0;
       }
       & > .icon:not(.button) {
@@ -1595,7 +1607,7 @@ html[dir="rtl"] .settings .panel .master-url .icon {
         white-space: unset;
         overflow-wrap: break-word;
       }
-      .button.icon {
+      .button.icon, .file-select {
         display: none;
       }
       &:hover .button.icon {
@@ -1607,6 +1619,35 @@ html[dir="rtl"] .settings .panel .master-url .icon {
         width: 1.5rem;
         min-width: 1.5rem;
         height: 1.5rem;
+      }
+      &:hover .file-select {
+        display: flex;
+        position: absolute;
+        top: .5rem;
+        left: .5rem;
+        width: 1.5rem;
+        min-width: 1.5rem;
+        height: 1.5rem;
+        .switch:before {
+          display: none;
+        }
+        .switch:after {
+          @include icon-base;
+          @include icon-name-base('plus');
+          background-color: var(--background);
+          top: 0;
+          left: 0;
+          box-shadow: none;
+          font-size: 1.35rem;
+          text-align: center;
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+        input:checked + .switch:after {
+          @include icon-name-base('minus');
+          background-color: var(--primary-hover);
+          transform: unset;
+        }
       }
       .context-menu.source-activator {
         margin-top: .5rem;

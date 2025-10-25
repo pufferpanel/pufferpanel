@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, inject, watch } from 'vue'
+import { computed, ref, onMounted, onUnmounted, inject, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
 import ContextMenu from '@/components/ui/ContextMenu.vue'
@@ -9,6 +9,7 @@ import Overlay from '@/components/ui/Overlay.vue'
 import Editor, { skipDownload } from './files/Editor.vue'
 import Upload from './files/Upload.vue'
 import TextField from '@/components/ui/TextField.vue'
+import Toggle from '@/components/ui/Toggle.vue'
 
 const { t } = useI18n()
 const events = inject('events')
@@ -31,7 +32,11 @@ const editorOpen = ref(false)
 const loading = ref(false)
 const createFileOpen = ref(false)
 const createFolderOpen = ref(false)
+const archiveSelectedOpen = ref(false)
 const newItemName = ref('')
+const selection = computed(() => {
+  return (files.value || []).filter(f => f.isSelected)
+})
 
 let task
 let unbindEvent
@@ -39,11 +44,11 @@ onMounted(() => {
   refresh()
 
   unbindEvent = props.server.on('status', () => {
-    refresh()
+    if (selection.value.length === 0) refresh()
   })
 
   task = props.server.startTask(() => {
-    refresh()
+    if (selection.value.length === 0) refresh()
   }, 5 * 60 * 1000)
 })
 
@@ -270,6 +275,14 @@ function trackFileEl(index) {
 
 function contextActionsForFile(file) {
   const actions = []
+  if (file.name !== '..') {
+    actions.push({
+      icon: file.isSelected ? 'deselect' :'select',
+      label: t(file.isSelected ? 'files.Deselect' : 'files.Select'),
+      hotkey: 's',
+      action: () => file.isSelected = !file.isSelected
+    })
+  }
   if (canEdit && file.name !== '..' && !file.isFile) {
     actions.push({
       icon: 'archive',
@@ -305,10 +318,71 @@ function contextActionsForFile(file) {
   }
   return actions
 }
+
+async function archiveSelected() {
+  const archiveName = newItemName.value
+  newItemName.value = ''
+  archiveSelectedOpen.value = false
+  loading.value = true
+  try {
+    await props.server.archiveFile(
+      await makeArchiveName(archiveName),
+      selection.value.map(f => {
+        return `${getCurrentPath()}/${f.name}`
+      })
+    )
+  } finally {
+    setTimeout(async () => {
+      await refresh()
+      loading.value = false
+    }, 500)
+  }
+}
+
+function deleteSelected() {
+  events.emit(
+    'confirm',
+    t('files.ConfirmDeleteSelected', undefined, selection.value.length),
+    {
+      text: t('files.Delete'),
+      icon: 'remove',
+      color: 'error',
+      action: async () => {
+        loading.value = true
+        try {
+          await Promise.all(
+            selection.value.map(f => props.server.deleteFile(getCurrentPath() + '/' + f.name))
+          )
+        } finally {
+          await refresh()
+          loading.value = false
+        }
+      }
+    },
+    {
+      color: 'primary'
+    }
+  )
+}
+
+function deselectAll() {
+  files.value = files.value.map(f => {
+    f.isSelected = false
+    return f
+  })
+}
+
+function selectAll() {
+  if (files.value === null) return
+  files.value = files.value.map(f => {
+    f.isSelected = f.name !== '..'
+    return f
+  })
+}
 </script>
 
 <template>
-  <div class="file-manager">
+  <div v-hotkey="'Control+a'" class="file-manager" @hotkey="selectAll()">
     <div class="header">
       <h2 v-text="t('servers.Files')" />
       <h3>
@@ -319,7 +393,7 @@ function contextActionsForFile(file) {
         </span>
       </h3>
       <span class="spacer" />
-      <span class="controls">
+      <span v-if="selection.length === 0" class="controls">
         <btn v-if="canEdit" v-hotkey="'f a'" variant="icon" :tooltip="t('files.ArchiveCurrent')" @click="archiveCurrentDirectory()"><icon name="archive" /></btn>
         <upload v-if="canEdit" :path="getCurrentPath()" :server="server" hotkey="f u" @uploaded="refresh()" />
         <upload v-if="canEdit && allowDirectoryUpload" :path="getCurrentPath()" :server="server" folder hotkey="f d" @uploaded="refresh()" />
@@ -327,16 +401,23 @@ function contextActionsForFile(file) {
         <btn v-if="canEdit" v-hotkey="'f c d'" variant="icon" :tooltip="t('files.CreateFolder')" @click="startCreateFolder()"><icon name="folder-create" /></btn>
         <btn v-hotkey="'f r'" variant="icon" :tooltip="t('files.Refresh')" @click="refresh(true)"><icon name="reload" /></btn>
       </span>
+      <span v-else class="controls">
+        <span class="selection-count" v-text="t('files.Selected', undefined, selection.length)" />
+        <btn v-if="canEdit" v-hotkey="'f s a'" variant="icon" :tooltip="t('files.ArchiveSelected')" @click="archiveSelectedOpen = true"><icon name="archive" /></btn>
+        <btn v-if="canEdit" v-hotkey="'f s d'" variant="icon" :tooltip="t('files.DeleteSelected', undefined, selection.length)" @click="deleteSelected()"><icon name="remove" /></btn>
+        <btn v-hotkey="'Escape'" variant="icon" :tooltip="t('files.DeselectAll')" @click="deselectAll()"><icon name="close" /></btn>
+      </span>
     </div>
     <div v-hotkey="'f l'" class="file-list" @hotkey="fileListHotkey">
       <loader v-if="!Array.isArray(files)" />
       <!-- eslint-disable-next-line vue/no-template-shadow -->
-      <a v-for="(file, index) in files" v-else :key="file.name" :ref="trackFileEl(index)" tabindex="0" class="file" @click="openFile(file)" @keydown.enter="openFile(file)">
+      <a v-for="(file, index) in files" v-else :key="file.name" :ref="trackFileEl(index)" tabindex="0" :class="['file', file.isSelected ? 'selected' : '']" @click="openFile(file)" @keydown.enter="openFile(file)" @keydown.space="file.isSelected = !file.isSelected">
         <icon class="file-icon" :name="getIcon(file)" />
         <div class="details">
           <div class="name">{{ file.name }}</div>
           <div v-if="file.isFile" class="size">{{ formatFileSize(file.size) }}</div>
         </div>
+        <toggle v-if="file.name !== '..'" v-model="file.isSelected" class="file-select" @click.stop="" />
         <context-menu :title="file.name" :actions="contextActionsForFile(file)">
           <template #title>
             <li class="context-title">
@@ -363,6 +444,10 @@ function contextActionsForFile(file) {
     <overlay v-model="createFolderOpen" closable :title="t('files.CreateFolder')">
       <text-field v-model="newItemName" />
       <btn color="primary" :disabled="!newItemName || newItemName.trim() === ''" @click="createFolder()"><icon name="check" />{{ t('files.CreateFolder') }}</btn>
+    </overlay>
+    <overlay v-model="archiveSelectedOpen" closable :title="t('files.ArchiveSelectedName')">
+      <text-field v-model="newItemName" />
+      <btn color="primary" :disabled="!newItemName || newItemName.trim() === ''" @click="archiveSelected()"><icon name="check" />{{ t('files.ArchiveSelected') }}</btn>
     </overlay>
     <overlay v-model="loading" class="loader-overlay">
       <loader />

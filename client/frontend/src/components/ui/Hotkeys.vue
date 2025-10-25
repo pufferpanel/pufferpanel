@@ -23,6 +23,7 @@ function currentHotkeys() {
     contextual: (h[route.name] || [])
       .flat()
       .filter(e => e !== 'Escape')
+      .filter(e => e !== 'Control+a')
       .filter(e => !/^. \d \d$/.test(e))
       .sort(),
     context: getContext()

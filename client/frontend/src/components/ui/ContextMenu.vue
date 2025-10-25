@@ -79,7 +79,7 @@ onUnmounted(() => {
       </slot>
       <slot v-for="action, index in actions" :key="index" name="action" :action="{...action, action: () => click(action)}">
         <li :class="['context-action', action.class || '']">
-          <a v-hotkey="action.hotkey" @click.stop="click(action)">
+          <a v-hotkey="action.hotkey" tabindex="0" @click.stop="click(action)" @keydown.enter.stop="click(action)">
             <icon v-if="action.icon" :name="action.icon" />
             <span class="label" v-text="action.label" />
           </a>

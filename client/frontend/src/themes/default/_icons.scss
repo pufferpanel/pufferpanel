@@ -6750,6 +6750,12 @@ $mdi-icons: (
 .icon-extract {
   @include icon-name(archive-arrow-up);
 }
+.icon-select {
+  @include icon-name(select);
+}
+.icon-deselect {
+  @include icon-name(select-remove);
+}
 .icon-2fa {
   @include icon-name(two-factor-authentication);
 }
