@@ -42,6 +42,8 @@
     "f a": "Arhivați conținutul curent al folderului",
     "f c d": "Crează un folder nou",
     "f c f": "Crează un fișier nou",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Incarcă un folder",
     "f l": "Evidențiază primul fişier/dosar în listă",
     "f r": "Reîncarcă lista de fișiere",
