@@ -42,6 +42,8 @@
     "f a": "Aktuális könyvtár tartalmának archiválása",
     "f c d": "Új könyvtár létrehozása",
     "f c f": "Új fájl létrehozása",
+    "f s a": "Archive selected files",
+    "f s d": "Delete selected files",
     "f d": "Könyvtár feltöltése",
     "f l": "Fókuszálás a lista első fájljára/mappájára",
     "f r": "Fájl lista újratöltése",
