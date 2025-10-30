@@ -2,25 +2,70 @@ package pufferpanel
 
 import (
 	"encoding/json"
+	"log"
+
 	"github.com/gorilla/websocket"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"io"
-	"sync"
 )
 
 type Tracker struct {
-	sockets []*Socket
-	locker  sync.Mutex
+	sockets    map[*Socket]bool
+	broadcast  chan []byte
+	register   chan *Socket
+	unregister chan *Socket
 }
 
 func CreateTracker() *Tracker {
-	return &Tracker{sockets: make([]*Socket, 0)}
+	tracker := &Tracker{
+		sockets:    make(map[*Socket]bool),
+		broadcast:  make(chan []byte),
+		register:   make(chan *Socket),
+		unregister: make(chan *Socket),
+	}
+
+	go tracker.pump()
+
+	return tracker
 }
 
-func (ws *Tracker) Register(conn *Socket) {
-	ws.locker.Lock()
-	defer ws.locker.Unlock()
-	ws.sockets = append(ws.sockets, conn)
+func (tracker *Tracker) pump() {
+	for {
+		select {
+		case conn := <-tracker.register:
+			tracker.sockets[conn] = true
+		case conn := <-tracker.unregister:
+			if _, ok := tracker.sockets[conn]; ok {
+				delete(tracker.sockets, conn)
+				conn.Close()
+			}
+		case message := <-tracker.broadcast:
+			for socket := range tracker.sockets {
+				select {
+				case socket.send <- message:
+					// message sent to client's channel
+				default:
+					// client too slow, disconnect
+					close(socket.send)
+					delete(tracker.sockets, socket)
+					socket.Close()
+				}
+			}
+		}
+	}
+}
+
+func (socket *Socket) WritePump() {
+	for msg := range socket.send {
+		err := socket.conn.WriteMessage(websocket.TextMessage, msg)
+		if err != nil {
+			log.Println("Write error:", err)
+			break
+		}
+	}
+	socket.Close()
+}
+
+func (tracker *Tracker) Register(conn *Socket) {
+	tracker.register <- conn
 }
 
 func (ws *Tracker) WriteMessage(msg Transmission) error {
@@ -28,28 +73,7 @@ func (ws *Tracker) WriteMessage(msg Transmission) error {
 	if err != nil {
 		return err
 	}
-	ws.locker.Lock()
-	defer ws.locker.Unlock()
-
-	for i := 0; i < len(ws.sockets); i++ {
-		go func(conn *Socket, data []byte) {
-			_, err := conn.Write(data)
-			if err != nil {
-				logging.Debug.Printf("websocket encountered error, dropping (%s)", err.Error())
-				ws.locker.Lock()
-				defer ws.locker.Unlock()
-				for i, k := range ws.sockets {
-					if k == conn {
-						ws.sockets[i] = ws.sockets[len(ws.sockets)-1]
-						ws.sockets[len(ws.sockets)-1] = nil
-						ws.sockets = ws.sockets[:len(ws.sockets)-1]
-						break
-					}
-				}
-			}
-		}(ws.sockets[i], d)
-	}
-
+	ws.broadcast <- d
 	return nil
 }
 
@@ -64,13 +88,15 @@ func (ws *Tracker) Write(source []byte) (n int, e error) {
 }
 
 func Create(ws *websocket.Conn) *Socket {
-	return &Socket{conn: ws}
+	return &Socket{
+		conn: ws,
+		send: make(chan []byte, 256),
+	}
 }
 
 type Socket struct {
-	conn   *websocket.Conn
-	locker sync.Mutex
-	io.WriteCloser
+	conn *websocket.Conn
+	send chan []byte
 }
 
 func (s *Socket) WriteMessage(msg Transmission) error {
@@ -78,9 +104,8 @@ func (s *Socket) WriteMessage(msg Transmission) error {
 }
 
 func (s *Socket) Write(data []byte) (int, error) {
-	s.locker.Lock()
-	defer s.locker.Unlock()
-	return len(data), s.conn.WriteMessage(websocket.TextMessage, data)
+	s.send <- data
+	return len(data), nil
 }
 
 func (s *Socket) WriteJSON(data interface{}) error {

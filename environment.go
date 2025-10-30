@@ -2,15 +2,16 @@ package pufferpanel
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/connections"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
 	"log"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/connections"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
 
 type EnvironmentImpl interface {
