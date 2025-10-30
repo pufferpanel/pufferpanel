@@ -2,9 +2,9 @@ package pufferpanel
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/gorilla/websocket"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
 
 type Tracker struct {
@@ -16,10 +16,10 @@ type Tracker struct {
 
 func CreateTracker() *Tracker {
 	tracker := &Tracker{
-		sockets:    make(map[*Socket]bool),
-		broadcast:  make(chan []byte),
-		register:   make(chan *Socket),
-		unregister: make(chan *Socket),
+		sockets:    make(map[*Socket]bool, 4),
+		broadcast:  make(chan []byte, 256),
+		register:   make(chan *Socket, 4),
+		unregister: make(chan *Socket, 4),
 	}
 
 	go tracker.pump()
@@ -57,7 +57,7 @@ func (socket *Socket) WritePump() {
 	for msg := range socket.send {
 		err := socket.conn.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
-			log.Println("Write error:", err)
+			logging.Debug.Printf("websocket encountered error, dropping (%s)", err.Error())
 			break
 		}
 	}
@@ -88,10 +88,14 @@ func (ws *Tracker) Write(source []byte) (n int, e error) {
 }
 
 func Create(ws *websocket.Conn) *Socket {
-	return &Socket{
+	socket := &Socket{
 		conn: ws,
 		send: make(chan []byte, 256),
 	}
+
+	go socket.WritePump()
+
+	return socket
 }
 
 type Socket struct {
