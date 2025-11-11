@@ -1,5 +1,5 @@
 {
-  "Name": "Jméno ",
+  "Name": "Jméno",
   "Language": "Jazyk",
   "Online": "Zapnut",
   "Offline": "Vypnut",
@@ -34,7 +34,7 @@
     "mode": {
       "Light": "Světlý",
       "Dark": "Tmavý",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Tmavý (Vysoký kontrast)",
       "Auto": "Automaticky"
     },
     "BaseColor": "Základní barva",
@@ -48,14 +48,14 @@
       "Grid": "Tabulka",
       "List": "Seznam"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Velikost písma",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Výchozí"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Řez písma",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Výchozí",
+      "A11y": "Dostupnost optimalizována"
     }
   },
   "NoResults": "Žádné výsledky",
