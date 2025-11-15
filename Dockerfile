@@ -41,7 +41,7 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN ~/go/bin/swag init --md . -o web/swagger -g web/loader.go
+RUN ~/go/bin/swag init --pd --md . -o web/swagger -g web/loader.go
 
 COPY --from=node /build/frontend/dist /build/pufferpanel/client/frontend/dist
 
