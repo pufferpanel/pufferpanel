@@ -25,3 +25,16 @@
     }
   }
 }
+.button .loader {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: inherit;
+  .text {
+    font-size: 1.25rem;
+    color: inherit;
+  }
+  .icon {
+    margin-right: .25rem;
+    font-size: 1.5rem;
+  }
+}

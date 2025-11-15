@@ -20,6 +20,12 @@
     outline: 2px solid transparent;
     width: 3.5em;
     transition: all 0.1s ease-in-out;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
   input:focus {
     caret-color: var(--primary);

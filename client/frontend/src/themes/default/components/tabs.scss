@@ -82,6 +82,26 @@
   }
 }
 
+@include high-contrast-mode {
+  .tabs .scroll-left, .tabs .scroll-right {
+    display: inline-block;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .tabs .scroll-left ~ .tab-buttons {
+    box-shadow: inset 5px 0 4px -4px var(--scrollshadow-color);
+  }
+
+  .tabs .scroll-right ~ .tab-buttons {
+    box-shadow: inset -5px 0 4px -4px var(--scrollshadow-color);
+  }
+
+  .tabs .scroll-left ~ .scroll-right ~ .tab-buttons {
+    box-shadow: inset 5px 0 4px -4px var(--scrollshadow-color), inset -5px 0 4px -4px var(--scrollshadow-color);
+  }
+}
+
 .tab-buttons {
   display: flex;
   margin-bottom: 1em;

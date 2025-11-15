@@ -1,11 +1,16 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
+	"net/http"
+	"strconv"
+
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/gofrs/uuid/v5"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -29,6 +34,17 @@ func registerSelf(g *gin.RouterGroup) {
 	g.Handle("POST", "/otp/recovery", middleware.RequiresPermission(scopes.ScopeSelfEdit), regenerateOtpRecoveryCodes)
 	g.Handle("DELETE", "/otp/:token", middleware.RequiresPermission(scopes.ScopeSelfEdit), disableOtp)
 	g.Handle("OPTIONS", "/otp/:token", response.CreateOptions("POST", "DELETE"))
+
+	g.Handle("GET", "/passkey", middleware.RequiresPermission(scopes.ScopeSelfEdit), getPasskeys)
+	g.Handle("POST", "/passkey", middleware.RequiresPermission(scopes.ScopeSelfEdit), startPasskeyEnroll)
+	g.Handle("PUT", "/passkey", middleware.RequiresPermission(scopes.ScopeSelfEdit), validatePasskeyEnroll)
+	g.Handle("OPTIONS", "/passkey", response.CreateOptions("GET", "OPTIONS", "PUT"))
+
+	g.Handle("DELETE", "/passkey/:id", middleware.RequiresPermission(scopes.ScopeSelfEdit), deletePasskey)
+	g.Handle("OPTIONS", "/passkey/:id", response.CreateOptions("DELETE"))
+
+	g.Handle("PUT", "/passwordless/:value", middleware.RequiresPermission(scopes.ScopeSelfEdit), setPasswordlessLogin)
+	g.Handle("OPTIONS", "/passwordless/:value", response.CreateOptions("PUT"))
 
 	g.Handle("GET", "/oauth2", middleware.RequiresPermission(scopes.ScopeSelfClients), getPersonalOAuth2Clients)
 	g.Handle("POST", "/oauth2", middleware.RequiresPermission(scopes.ScopeSelfClients), createPersonalOAuth2Client)
@@ -252,6 +268,155 @@ func disableOtp(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Get registered passkeys
+// @Description Gets descriptors of the known passkeys the logged-in user has registered
+// @Success 200 {object} []models.WebauthnCredentialView
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/passkey [GET]
+// @Security OAuth2Application[self.edit]
+func getPasskeys(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	user := c.MustGet("user").(*models.User)
+
+	credentials, err := us.GetPasskeyDescriptors(user.ID)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, credentials)
+}
+
+// @Summary Start registering a new passkey
+// @Success 200 {object} protocol.CredentialCreation
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Param request body EnrollPasskeyRequest true "Information for the passkey to register"
+// @Router /api/self/passkey [POST]
+// @Security OAuth2Application[self.edit]
+func startPasskeyEnroll(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	user := c.MustGet("user").(*models.User)
+
+	var request EnrollPasskeyRequest
+	err := c.BindJSON(&request)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	creation, sessionData, err := us.StartPasskeyEnroll(user.ID)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	sessionDataJson, err := json.Marshal(sessionData)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	userSession := sessions.Default(c)
+	userSession.Set("passkeyName", request.Name)
+	userSession.Set("passkeyEnroll", sessionDataJson)
+	err = userSession.Save()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, creation)
+}
+
+// @Summary Complete registering a new passkey
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Param request body protocol.CredentialCreationResponse true "The response object for the passkeys registration challenge"
+// @Router /api/self/passkey [PUT]
+// @Security OAuth2Application[self.edit]
+func validatePasskeyEnroll(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	user := c.MustGet("user").(*models.User)
+
+	sessionData := webauthn.SessionData{}
+	userSession := sessions.Default(c)
+	name := userSession.Get("passkeyName").(string)
+	sessionDataJson := userSession.Get("passkeyEnroll").([]byte)
+	err := json.Unmarshal(sessionDataJson, &sessionData)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	err = us.ValidatePasskeyEnroll(user.ID, name, c.Request, sessionData)
+	if errors.Is(err, pufferpanel.ErrInvalidCredentials) {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+// @Summary Remove a passkey
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/passkey/:id [DELETE]
+// @Security OAuth2Application[self.edit]
+func deletePasskey(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	id := c.Param("id")
+
+	err := us.DeletePasskey(id)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+// @Summary Set if passwordless login is allowed for the current user or not
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/passwordless/:value [PUT]
+// @Security OAuth2Application[self.edit]
+func setPasswordlessLogin(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	user := c.MustGet("user").(*models.User)
+	value, err := strconv.ParseBool(c.Param("value"))
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	err = us.SetPasswordlessLogin(user.ID, value)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
 // @Summary Gets registered OAuth2 clients
 // @Description Gets known OAuth2 clients the logged-in user has registered
 // @Success 200 {object} []models.Client
@@ -373,4 +538,8 @@ func deletePersonalOAuth2Client(c *gin.Context) {
 
 type ValidateOtpRequest struct {
 	Token string `json:"token"`
+}
+
+type EnrollPasskeyRequest struct {
+	Name string `json:"name"`
 }

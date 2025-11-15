@@ -8,8 +8,11 @@ import (
 	"image"
 	"image/png"
 	"math/big"
+	"net/http"
 	"strings"
 
+	webauthnProto "github.com/go-webauthn/webauthn/protocol"
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -49,30 +52,62 @@ func (us *User) GetById(id uint) (*models.User, error) {
 	return model, nil
 }
 
-func (us *User) ValidateLogin(email string, password string) (user *models.User, otpNeeded bool, err error) {
-	user = &models.User{
+type PasswordLoginResult struct {
+	User *models.User `json:"-"`
+	NeedsSecondFactor bool `json:"needsSecondFactor"`
+	OtpEnabled bool `json:"otpEnabled"`
+	WebauthnChallenge *webauthnProto.CredentialAssertion `json:"webauthnChallenge"`
+	WebauthnSessionData *webauthn.SessionData `json:"-"`
+}
+
+func (us *User) ValidatePasswordLogin(email string, password string) (result PasswordLoginResult, err error) {
+	result.User = &models.User{
 		Email: email,
 	}
 
-	err = us.DB.Where(user).First(user).Error
+	err = us.DB.Where(result.User).First(result.User).Error
 
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return
 	}
 
-	if user.ID == 0 || errors.Is(err, gorm.ErrRecordNotFound) {
+	if result.User.ID == 0 || errors.Is(err, gorm.ErrRecordNotFound) {
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
 
-	if !us.IsValidCredentials(user, password) {
+	if !us.IsValidCredentials(result.User, password) {
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
 
-	if user.OtpActive {
-		otpNeeded = true
+	if result.User.OtpActive {
+		result.NeedsSecondFactor = true
+		result.OtpEnabled = true
+	}
+
+	passkeys, err := us.getPasskeys(result.User.ID)
+	if err != nil {
 		return
+	}
+
+	if len(passkeys) > 0 {
+		result.NeedsSecondFactor = true
+		w, err := us.webAuthn()
+		if err != nil {
+			return result, err
+		}
+
+		assertion, sessionData, err := w.BeginMediatedLogin(
+			&models.WebAuthnUser{
+				User: result.User,
+				Credentials: passkeys,
+			},
+			webauthnProto.MediationDefault,
+		)
+		result.WebauthnChallenge = assertion
+		result.WebauthnSessionData = sessionData
+		return result, err
 	}
 	return
 }
@@ -310,6 +345,215 @@ func (us *User) DisableOtp(userId uint) error {
 		user.OtpActive = false
 		return tx.Save(user).Error
 	})
+}
+
+func (us *User) webAuthn() (*webauthn.WebAuthn, error) {
+	rpConfig := &webauthn.Config{
+		RPDisplayName: config.CompanyName.Value(),
+		RPID: strings.TrimPrefix(config.MasterUrl.Value(), "https://"),
+		RPOrigins: []string{config.MasterUrl.Value()},
+	}
+
+	return webauthn.New(rpConfig)
+}
+
+func (us *User) getPasskeys(userId uint) ([]webauthn.Credential, error) {
+	var credentials []*models.WebauthnCredential
+	model := &models.WebauthnCredential{UserId: userId}
+	err := us.DB.Where(model).Find(&credentials).Error
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]webauthn.Credential, len(credentials))
+	for k, v := range credentials {
+		result[k] = v.Credential
+	}
+
+	return result, nil
+}
+
+func (us *User) GetPasskeyDescriptors(userId uint) ([]models.WebauthnCredentialView, error) {
+	var credentials []*models.WebauthnCredential
+	model := &models.WebauthnCredential{UserId: userId}
+	err := us.DB.Where(model).Find(&credentials).Error
+	if err != nil {
+		return nil, err
+	}
+
+	views := make([]models.WebauthnCredentialView, len(credentials))
+
+	for k, v := range credentials {
+		views[k] = models.WebauthnCredentialView{
+			ID: v.ID,
+			Name: v.Name,
+			Descriptor: v.Credential.Descriptor(),
+		}
+	}
+
+	return views, nil
+}
+
+func (us *User) StartPasskeyEnroll(userId uint) (*webauthnProto.CredentialCreation, *webauthn.SessionData, error) {
+	w, err := us.webAuthn()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	user, err := us.GetById(userId)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	knownCredentials, err := us.getPasskeys(user.ID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	c, s, err := w.BeginMediatedRegistration(
+		&models.WebAuthnUser{
+			User: user,
+			Credentials: knownCredentials,
+		},
+		webauthnProto.MediationDefault,
+		webauthn.WithExclusions(webauthn.Credentials(knownCredentials).CredentialDescriptors()),
+		webauthn.WithExtensions(map[string]any{"credProps": true}),
+	)
+	return c, s, err
+}
+
+func (us *User) ValidatePasskeyEnroll(userId uint, name string, request *http.Request, sessionData webauthn.SessionData) error {
+	w, err := us.webAuthn()
+	if err != nil {
+		return err
+	}
+
+	user, err := us.GetById(userId)
+	if err != nil {
+		return err
+	}
+
+	knownCredentials, err := us.getPasskeys(userId)
+	if err != nil {
+		return err
+	}
+
+	credential, err := w.FinishRegistration(
+		&models.WebAuthnUser{
+			User: user,
+			Credentials: knownCredentials,
+		},
+		sessionData,
+		request,
+	)
+	if err != nil {
+		return err
+	}
+
+	model := &models.WebauthnCredential{
+		ID: credential.ID,
+		Name: name,
+		UserId: user.ID,
+		Credential: *credential,
+	}
+
+	return us.DB.Create(model).Error
+}
+
+func (us *User) StartPasskeyLogin(email string) (*webauthnProto.CredentialAssertion, *webauthn.SessionData, error) {
+	w, err := us.webAuthn()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	user, err := us.GetByEmail(email)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil, pufferpanel.ErrInvalidCredentials
+	} else if err != nil {
+		return nil, nil, err
+	}
+
+	if !user.AllowPasswordlessLogin {
+		return nil, nil, pufferpanel.ErrInvalidCredentials
+	}
+
+	knownCredentials, err := us.getPasskeys(user.ID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if len(knownCredentials) == 0 {
+		return nil, nil, pufferpanel.ErrInvalidCredentials
+	}
+
+	return w.BeginMediatedLogin(
+		&models.WebAuthnUser{
+			User: user,
+			Credentials: knownCredentials,
+		},
+		webauthnProto.MediationDefault,
+	)
+}
+
+func (us *User) ValidatePasskeyLogin(email string, request *http.Request, sessionData webauthn.SessionData) (*models.User, error) {
+	w, err := us.webAuthn()
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := us.GetByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	credentials, err := us.getPasskeys(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	credential, err := w.FinishLogin(
+		&models.WebAuthnUser{
+			User: user,
+			Credentials: credentials,
+		},
+		*&sessionData,
+		request,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	model := &models.WebauthnCredential{
+		ID: credential.ID,
+		UserId: user.ID,
+	}
+
+	return user, us.DB.Model(model).Updates(models.WebauthnCredential{Credential: *credential}).Error
+}
+
+func (us *User) DeletePasskey(id string) error {
+	data := []byte(id)
+	out := make([]byte, base64.RawURLEncoding.DecodedLen(len(data)))
+	_, err := base64.RawURLEncoding.Decode(out, data)
+	if err != nil {
+		return err
+	}
+
+	model := &models.WebauthnCredential{
+		ID: out,
+	}
+
+	return us.DB.Delete(model).Error
+}
+
+func (us *User) SetPasswordlessLogin(userId uint, value bool) error {
+	user, err := us.GetById(userId)
+	if err != nil {
+		return err
+	}
+
+	user.AllowPasswordlessLogin = value
+	return us.DB.Save(user).Error
 }
 
 func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) ([]*models.User, int64, error) {

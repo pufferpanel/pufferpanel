@@ -16,6 +16,7 @@
   --ace-theme: monokai;
   --chartjs-tooltip-background-color: rgba(30, 30, 30, 0.7);
   --chartjs-grid-color: rgba(0, 0, 0, 0.3);
+  --scrollshadow-color: #1d1d1d;
 }
 
 @mixin dark-highcontrast {
@@ -36,6 +37,8 @@
   --ace-theme: vibrant_ink;
   --chartjs-tooltip-background-color: rgba(30, 30, 30, 0.7);
   --chartjs-grid-color: rgba(0, 0, 0, 0.3);
+  // indicating scroll with a shadows seems like a bad idea for high contrast
+  --scrollshadow-color: #0000;
 }
 
 @mixin light {
@@ -56,6 +59,7 @@
   --ace-theme: github;
   --chartjs-tooltip-background-color: rgba(220, 220, 220, 0.7);
   --chartjs-grid-color: rgba(220, 220, 220, 0.7);
+  --scrollshadow-color: #d9d9d9;
 }
 
 .mode-dark {

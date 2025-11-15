@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	webauthnProto "github.com/go-webauthn/webauthn/protocol"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"gorm.io/gorm"
@@ -35,7 +36,12 @@ func CreateOptions(options ...string) gin.HandlerFunc {
 
 func HandleError(c *gin.Context, err error, statusCode int) bool {
 	if err != nil {
-		logging.Error.Printf("%s", err.Error())
+		switch e := err.(type) {
+		case *webauthnProto.Error:
+			logging.Error.Printf("%s: %s", e.Details, e.DevInfo)
+		default:
+			logging.Error.Printf("%s", err.Error())
+		}
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.AbortWithStatus(http.StatusNotFound)
