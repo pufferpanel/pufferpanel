@@ -31,7 +31,7 @@ func InitContainerMountSource() (err error) {
 	if err != nil {
 		return
 	}
-	defer os.Remove(path)
+	defer os.RemoveAll(path)
 
 	id, err := uuid.NewV4()
 	if err != nil {
