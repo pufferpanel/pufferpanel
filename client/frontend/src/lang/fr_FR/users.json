@@ -12,6 +12,7 @@
   "PasswordChanged": "Votre mot de passe a bien été modifié",
   "AccountPassword": "Mot de passe du compte",
   "Edit": "Modifier l'utilisateur",
+  "ChangeEmail": "Change Email",
   "Login": "Connexion",
   "LoginLink": "Ou connectez-vous ici",
   "Logout": "Déconnexion",
