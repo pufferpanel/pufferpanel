@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from 'vue'
+import { ref, inject, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import TextField from '@/components/ui/TextField.vue'
@@ -21,6 +21,7 @@ const loading = ref(false)
 const step = ref('email')
 const email = ref('')
 const emailError = ref(false)
+const emailInput = ref(null)
 const password = ref('')
 const passwordError = ref(false)
 const otpRecovery = ref(false)
@@ -121,7 +122,8 @@ function canNextStep() {
   }
 }
 
-async function nextStep() {
+async function nextStep(e) {
+  if (e) e.preventDefault()
   if (!canNextStep()) return
 
   if (step.value === 'email') {
@@ -162,8 +164,9 @@ async function nextStep() {
 <template>
   <div :class="['login', step]">
     <h1 v-text="t('users.Login')" />
-    <form @keydown.enter="nextStep()">
+    <form @keydown.enter="nextStep($event)">
       <text-field
+        ref="emailInput"
         v-model="email"
         type="email"
         name="email"
@@ -175,6 +178,7 @@ async function nextStep() {
         @blur="validateEmail"
         @change="validateEmail(true)"
       />
+      <a v-if="step !== 'email'" class="change-email" @click="step = 'email'; nextTick(() => emailInput.focus())" v-text="t('users.ChangeEmail')" />
       <text-field
         v-if="step !== 'email'"
         v-model="password"

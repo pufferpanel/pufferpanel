@@ -961,6 +961,15 @@ html[dir="rtl"] .menu.open {
   }
 }
 
+.login .change-email {
+  display: block;
+  text-align: end;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
 .self.loading {
   @include cols(12);
   @include row;

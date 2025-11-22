@@ -44,6 +44,12 @@ function onBlur(e) {
 function onFocus(e) {
   emit('focus', e)
 }
+
+function focus() {
+  if (input.value) input.value.focus()
+}
+
+defineExpose({focus})
 </script>
 
 <template>
