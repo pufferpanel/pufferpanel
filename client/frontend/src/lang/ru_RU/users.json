@@ -12,6 +12,7 @@
   "PasswordChanged": "Ваш пароль был успешно изменён",
   "AccountPassword": "Пароль учетной записи",
   "Edit": "Редактировать пользователя",
+  "ChangeEmail": "Change Email",
   "Login": "Вход",
   "LoginLink": "Или войдите здесь",
   "Logout": "Выйти",
