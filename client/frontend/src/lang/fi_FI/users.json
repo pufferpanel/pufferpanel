@@ -12,6 +12,7 @@
   "PasswordChanged": "Sinun salasana on muutettu",
   "AccountPassword": "Tilin salasana",
   "Edit": "Muokkaa käyttäjää",
+  "ChangeEmail": "Change Email",
   "Login": "Kirjaudu",
   "LoginLink": "Tai kirjaudu tässä",
   "Logout": "Kirjaudu ulos",
