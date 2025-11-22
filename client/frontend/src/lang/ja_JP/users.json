@@ -12,6 +12,7 @@
   "PasswordChanged": "パスワードが変更されました",
   "AccountPassword": "アカウントパスワード",
   "Edit": "ユーザーを編集",
+  "ChangeEmail": "Change Email",
   "Login": "ログイン",
   "LoginLink": "またはこちらからログイン",
   "Logout": "ログアウト",
