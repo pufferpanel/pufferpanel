@@ -13,7 +13,8 @@ const { t } = useI18n()
 const api = inject('api')
 const toast = inject('toast')
 
-const passkeysSupported = isSecureContext && window.navigator && navigator.credentials
+// isSecureContext is true on localhost, but localhost isn't allowed for webauthn, using location instead
+const passkeysSupported = location.protocol === 'https:' && (location.port === "" || location.port === "443") && window.navigator && navigator.credentials
 
 const loading = ref(false)
 const otpEnabled = ref(false)
