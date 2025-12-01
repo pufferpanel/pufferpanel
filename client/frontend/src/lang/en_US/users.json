@@ -12,6 +12,7 @@
   "PasswordChanged": "Your password has been changed",
   "AccountPassword": "Account Password",
   "Edit": "Edit User",
+  "ChangeEmail": "Change Email",
   "Login": "Login",
   "LoginLink": "Or login here",
   "Logout": "Logout",
