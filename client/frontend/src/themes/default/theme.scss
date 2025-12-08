@@ -1425,6 +1425,22 @@ html[dir="rtl"] .settings .panel .master-url .icon {
   }
 
   .settings {
+    .setting-input-wrapper.required .input-field-wrapper {
+      label::after {
+        content: '*';
+        color: var(--error);
+        font-weight: bold;
+        position: relative;
+        padding: .3rem;
+      }
+      input:focus ~ label::after, input:not(:placeholder-shown) ~ label::after {
+        padding-left: 0;
+      }
+      .dropdown label {
+        padding-right: 0;
+      }
+    }
+
     .button {
       @include cols(6, md);
     }

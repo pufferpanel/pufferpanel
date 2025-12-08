@@ -20,7 +20,7 @@ function onInput(event) {
 </script>
 
 <template>
-  <div class="setting-input-wrapper">
+  <div :class="['setting-input-wrapper', modelValue.required ? 'required' : '']">
     <toggle v-if="modelValue.type === 'boolean'" :model-value="modelValue.value" class="setting-input" :disabled="disabled" :label="modelValue.display" :hint="modelValue.desc" @update:modelValue="onInput($event)" />
     <dropdown v-else-if="modelValue.type === 'option'" :model-value="modelValue.value" label-prop="display" class="setting-input" :disabled="disabled" :options="modelValue.options" :label="modelValue.display" :hint="modelValue.desc" @update:modelValue="onInput($event)" />
     <suggestion v-else-if="modelValue.options" :model-value="modelValue.value" label-prop="display" class="setting-input" :disabled="disabled" :options="modelValue.options" :label="modelValue.display" :hint="modelValue.desc" @update:modelValue="onInput($event)" />
