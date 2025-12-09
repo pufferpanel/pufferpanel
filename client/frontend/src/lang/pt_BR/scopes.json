@@ -38,25 +38,25 @@
     "server-users-delete": "Pode remover usuários do servidor",
     "server-start": "Pode iniciar o servidor",
     "server-stop": "Pode parar o servidor",
-    "server-kill": "Can kill the server",
-    "server-install": "Can install the server",
-    "server-files-view": "Can view files",
-    "server-files-edit": "Can edit files",
-    "server-sftp": "Can access files via SFTP",
-    "server-console": "Can see the console",
-    "server-console-send": "Can send commands to the console",
-    "server-stats": "Can see resource usage",
-    "server-status": "Can see the current server status",
-    "server-backup-view": "View and download backups",
-    "server-backup-create": "Create a new backup",
-    "server-backup-restore": "Restore server from a backup",
-    "server-backup-delete": "Delete a backup"
+    "server-kill": "Pode encerrar o servidor",
+    "server-install": "Pode instalar o servidor",
+    "server-files-view": "Pode ver arquivos",
+    "server-files-edit": "Pode editar arquivos",
+    "server-sftp": "Pode acessar arquivos via SFTP",
+    "server-console": "Pode ver o console",
+    "server-console-send": "Pode enviar comandos para o console",
+    "server-stats": "Pode ver o uso de recursos",
+    "server-status": "Pode ver o status atual do servidor",
+    "server-backup-view": "Ver e baixar backups",
+    "server-backup-create": "Criar um backup",
+    "server-backup-restore": "Restaurar servidor a partir de um backup",
+    "server-backup-delete": "Excluir um backup"
   },
   "hint": {
-    "admin": "Grants all permissions",
-    "login": "Allows the user to log in",
-    "self-edit": "Lets the user change their password, update their email and manage 2FA for their account",
-    "settings-edit": "Allows editing global panel settings like master url, email integration etc"
+    "admin": "Conceder todas as permissões",
+    "login": "Permitir que o usuário faça login",
+    "self-edit": "Permite ao usuário alterar sua senha, atualizar seu e-mail e gerenciar a 2FA para sua conta",
+    "settings-edit": "Permite editar configurações globais do painel, como url mestre, integração de e-mail, etc"
   },
   "ServersEdit": "Editar o servidor",
   "ServersInstall": "Instalar o servidor",
@@ -70,7 +70,7 @@
   "ServersFilesPut": "Editar e enviar arquivos usando o gerenciador de arquivos",
   "ServersEditUsers": "Editar acesso do usuário a este servidor",
   "Admin": "Administrador (concede todas as permissões possíveis)",
-  "ViewServers": "See Servers",
+  "ViewServers": "Ver Servidores",
   "CreateServers": "Criar novos servidores",
   "DeleteServers": "Excluir Servidores",
   "EditServerAdmin": "Editar configurações do servidor",
@@ -81,5 +81,5 @@
   "EditTemplates": "Editar modelos",
   "ViewUsers": "Ver todos os usuários",
   "EditUsers": "Editar outros usuários",
-  "PanelSettings": "Change panel settings"
+  "PanelSettings": "Alterar configurações do painel"
 }
