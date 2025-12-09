@@ -20,7 +20,7 @@
   },
   "ServerList": {
     "Title": "Servidores",
-    "c": "Criar um novo servidor",
+    "c": "Criar um servidor",
     "l": "Focar o primeiro servidor na lista"
   },
   "ServerView": {
@@ -40,8 +40,8 @@
     "r k": "Finalizar Servidor",
     "r i": "Instalar Servidor",
     "f a": "Arquivar conteúdo do diretório atual",
-    "f c d": "Criar nova pasta",
-    "f c f": "Criar novo arquivo",
+    "f c d": "Criar diretório",
+    "f c f": "Criar arquivo",
     "f s a": "Arquivar arquivos selecionados",
     "f s d": "Excluir arquivos selecionados",
     "f d": "Diretório de upload",
@@ -49,31 +49,31 @@
     "f r": "Recarregar lista de arquivos",
     "f u": "Enviar arquivos",
     "a e": "Editar Configurações do Servidor",
-    "a r": "Recarregar definição de servidor do disco"
+    "a r": "Recarregar Configurações do Servidor a partir do disco"
   },
   "NodeList": {
     "Title": "Nós",
-    "c": "Criar um novo nó",
+    "c": "Criar um nó",
     "l": "Focar o primeiro nó na lista"
   },
   "UserList": {
     "Title": "Usuários",
-    "c": "Criar um usuário ",
-    "l": "Focar o primeiro servidor na lista"
+    "c": "Criar um usuário",
+    "l": "Focar o primeiro usuário na lista"
   },
   "TemplateList": {
     "Title": "Modelos",
-    "c": "Criar um  modelo",
+    "c": "Criar um modelo",
     "l": "Focar o primeiro modelo na lista"
   },
   "Template": {
     "Title": "Editor de Modelo",
-    "t e": "Vá para a aba Ambiente",
-    "t g": "Vá para a aba Geral",
-    "t h": "Vá para a aba Ganchos",
-    "t i": "Vá para a aba Instalar",
-    "t j": "Vá para a aba JSON",
-    "t r": "Vá para a aba Configuração de Execução",
-    "t v": "Ir para aba de variáveis"
+    "t e": "Ir para a guia Ambiente",
+    "t g": "Ir para a guia Geral",
+    "t h": "Ir para a guia Hooks",
+    "t i": "Ir para a guia Instalação",
+    "t j": "Ir para a guia JSON",
+    "t r": "Ir para a guia Configuração de Execução",
+    "t v": "Ir para a guia Variáveis"
   }
 }
