@@ -21,12 +21,12 @@
   "OpenLargeFile": "Esse arquivo pode causar problemas de desempenho para o seu navegador devido ao seu tamanho, deseja abri-lo de qualquer maneira?",
   "OpenAnyways": "Abrir mesmo assim",
   "Saved": "Arquivo salvo",
-  "Select": "Select file",
-  "Deselect": "Deselect file",
-  "Selected": "1 file selected | {n} files selected",
-  "ArchiveSelected": "Archive selected files",
-  "ArchiveSelectedName": "Archive Name",
-  "DeselectAll": "Deselect all",
-  "DeleteSelected": "Delete 1 file | Delete {n} files",
-  "ConfirmDeleteSelected": "Do you really want to delete this file? | Do you really want to delete these {n} files?"
+  "Select": "Selecionar arquivo",
+  "Deselect": "Desmarcar arquivos",
+  "Selected": "1 arquivo selecionado | {n} arquivos selecionados",
+  "ArchiveSelected": "Arquivar arquivos selecionados",
+  "ArchiveSelectedName": "Nome do Arquivo",
+  "DeselectAll": "Desmarcar todos",
+  "DeleteSelected": "Excluir 1 arquivo | Excluir {n} arquivos",
+  "ConfirmDeleteSelected": "Você realmente quer excluir este arquivo? | Você realmente quer excluir {n} arquivos?"
 }
