@@ -38,12 +38,12 @@
   "CommandConditionHint": "Use este comando apenas se esta condição for cumprida",
   "AddCommand": "Adicionar Comando",
   "AddEnvironment": "Adicionar Ambiente",
-  "AddRepo": "Add Template Repository",
-  "RepoName": "Repository Name",
-  "RepoUrl": "Repository URL",
-  "RepoBranch": "Repository Branch",
-  "ConfirmDeleteRepo": "Are you sure you want to delete the repository '{name}'?",
-  "DeleteRepo": "Delete Repository",
+  "AddRepo": "Adicionar Repositório de Modelos",
+  "RepoName": "Nome do Repositório",
+  "RepoUrl": "URL do Repositório",
+  "RepoBranch": "Branch do Repositório",
+  "ConfirmDeleteRepo": "Você tem certeza que quer excluir o repositório '{name}'?",
+  "DeleteRepo": "Excluir Repositório",
   "signals": {
     "1": "SIGHUP",
     "2": "SIGINT (CTRL+C)",
@@ -51,48 +51,48 @@
     "15": "SIGTERM"
   },
   "errors": {
-    "NameInvalid": "A template name cannot be blank and cannot contain spaces or special characters",
-    "DisplayInvalid": "The display name cannot be blank",
-    "TypeInvalid": "The type cannot be blank",
-    "CommandInvalid": "The command cannot be blank"
+    "NameInvalid": "O nome do modelo não pode estar em branco e não pode conter espaços ou caracteres especiais",
+    "DisplayInvalid": "O nome de exibição não pode estar em branco",
+    "TypeInvalid": "O tipo não pode estar em branco",
+    "CommandInvalid": "O comando não pode ficar em branco"
   },
   "variables": {
-    "Description": "Description",
-    "Type": "Type",
-    "Value": "Default Value",
-    "Required": "This variable is required",
-    "UserEdit": "Non-admin users can edit this variable",
-    "Internal": "Internal (never shown to users or admins)",
-    "Options": "Options",
-    "ConditionHint": "Only show this group if this condition is met",
+    "Description": "Descrição",
+    "Type": "Tipo",
+    "Value": "Valor Padrão",
+    "Required": "Esta variável é necessária",
+    "UserEdit": "Usuários não-administradores podem editar essa variável",
+    "Internal": "Interno (nunca mostrado aos usuários ou administradores)",
+    "Options": "Opções",
+    "ConditionHint": "Mostrar este grupo apenas se esta condição for atendida",
     "types": {
-      "String": "String",
-      "Boolean": "Boolean",
-      "Number": "Number",
-      "Options": "Options"
+      "String": "Texto",
+      "Boolean": "Booleano",
+      "Number": "Número",
+      "Options": "Opções"
     },
-    "EditGroup": "Edit group",
-    "RemoveGroup": "Remove group",
-    "MoveToGroup": "Move to different group",
-    "Remove": "Remove"
+    "EditGroup": "Editar grupo",
+    "RemoveGroup": "Excluir grupo",
+    "MoveToGroup": "Mover para um grupo diferente",
+    "Remove": "Excluir"
   },
   "description": {
-    "Name": "This name is used as an identifier for the template",
-    "Display": "This is the name that will be displayed to users for example during server creation",
-    "Type": "This is used to group different templates and to decide what icon to display for it on the server list",
-    "Variables": "Variables will be shown to users as settings on a server, they are useful for example to let the user define what version to use or to define some settings like the port to use",
-    "Install": "Here you define what steps will be run when a user hits the install button of a server created from this template",
-    "Command": "This is the command that will be executed to start the server",
-    "StopCommand": "Write a command to the servers console when a users hits the srvers stop button",
-    "StopSignal": "Send a signal to the server when a users hits the srvers stop button, this can for example be used to emulate hitting CTRL+C",
-    "PreRunHook": "Here you can define some steps to run every time just before the server starts",
-    "PostRunHook": "Here you can define some steps to run every time after the server stops"
+    "Name": "Este nome é usado como um identificador para o modelo",
+    "Display": "Este é o nome que será exibido aos usuários, por exemplo, durante a criação do servidor",
+    "Type": "Isto é usado para agrupar diferentes modelos e decidir qual ícone exibir para ele na lista de servidores",
+    "Variables": "As variáveis serão mostradas aos usuários como configurações em um servidor, são úteis, por exemplo, para deixar o usuário definir qual versão usar ou para definir algumas configurações, como a porta a ser usada",
+    "Install": "Aqui você define quais etapas serão executadas quando um usuário utiliza o botão de instalação de um servidor criado a partir deste modelo",
+    "Command": "Este é o comando que será executado para iniciar o servidor",
+    "StopCommand": "Escreve um comando no console do servidor quando o usuário utiliza o botão de parar",
+    "StopSignal": "Envia um sinal ao servidor quando o usuário utiliza o botão de parar; isso permite, por exemplo, simular o efeito de pressionar CTRL+C",
+    "PreRunHook": "Aqui você pode definir alguns passos a serem executados antes do início do servidor",
+    "PostRunHook": "Aqui você pode definir alguns passos a serem executados sempre após o servidor parar"
   },
-  "WorkingDirectory": "Working Directory",
-  "General": "General",
+  "WorkingDirectory": "Diretório de Trabalho",
+  "General": "Geral",
   "Hooks": "Hooks",
-  "Import": "Import template",
+  "Import": "Importar modelo",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties"
+    "CommunityWarning": "Estes modelos são feitos pela comunidade e sem qualquer garantia de pleno funcionamento"
   }
 }
