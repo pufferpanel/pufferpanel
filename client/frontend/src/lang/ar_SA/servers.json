@@ -4,6 +4,7 @@
   "Console": "وحدة التحكم",
   "SFTPInfo": "معلومات SFTP",
   "Start": "بدء",
+  "Restart": "Restart",
   "Stop": "إيقاف",
   "Kill": "فرض الإيقاف",
   "Install": "تثبيت",
@@ -31,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "حذف الخادم",
   "ConfirmDelete": "هل تريد حذف هذا الخادم حقاً؟ (لا يمكن التراجع عن هذا)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "الخادم المحذوف",
   "SftpConnection": "الاتصال بـ SFTP",
   "EditDefinition": "Edit Server Definition",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

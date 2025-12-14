@@ -4,6 +4,7 @@
   "Console": "Konzole",
   "SFTPInfo": "SFTP informace",
   "Start": "Spustit",
+  "Restart": "Restartovat",
   "Stop": "Zastavit",
   "Kill": "Shodit",
   "Install": "Instalovat",
@@ -31,6 +32,7 @@
   "NoSettings": "Tento server nemá žádné nastavení, které můžete změnit",
   "Delete": "Odstranit server",
   "ConfirmDelete": "Opravdu chcete smazat tento server? (toto nelze vrátit zpět)",
+  "Deleting": "Odstraňování serveru, čekejte prosím...",
   "Deleted": "Smazaný server",
   "SftpConnection": "Připojit k SFTP",
   "EditDefinition": "Upravit definici serveru",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "Tyto šablony nejsou kompatibilní s alespoň jedním z vašich předchozích výběrů",
   "IncompatibleArch": "Nekompatibilní s architekturou '{arch}'",
   "IncompatibleOs": "Nekompatibilní s operačním systémem '{os}'",
-  "IncompatibleEnv": "Nekompatibilní s prostředím '{env}'"
+  "IncompatibleEnv": "Nekompatibilní s prostředím '{env}'",
+  "AdvancedSettings": "Pokročilá nastavení"
 }

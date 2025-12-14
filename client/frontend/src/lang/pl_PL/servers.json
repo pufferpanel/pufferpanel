@@ -4,6 +4,7 @@
   "Console": "Konsola",
   "SFTPInfo": "Informacje SFTP",
   "Start": "Uruchom",
+  "Restart": "Restart",
   "Stop": "Zatrzymaj",
   "Kill": "Zabij",
   "Install": "Zainstaluj",
@@ -31,6 +32,7 @@
   "NoSettings": "Ten serwer nie posiada żadnych ustawień, które możesz zmienić",
   "Delete": "Usuń serwer",
   "ConfirmDelete": "Czy chcesz usunąć ten serwer? (tego nie można cofnąć)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Serwer usunięty",
   "SftpConnection": "Połącz z SFTP",
   "EditDefinition": "Edytuj definicję serwera",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

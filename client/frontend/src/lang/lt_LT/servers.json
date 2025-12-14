@@ -4,6 +4,7 @@
   "Console": "Konsolė",
   "SFTPInfo": "SFTP informacija",
   "Start": "Startuoti",
+  "Restart": "Restart",
   "Stop": "Sustabdyti",
   "Kill": "Baigti",
   "Install": "Instaliuoti",
@@ -31,6 +32,7 @@
   "NoSettings": "Šis serveris neturi jokių nustatymų, kuriuos galėtumėte redaguoti",
   "Delete": "Ištrinti serverį",
   "ConfirmDelete": "Ar tikrai norite ištrinti serverį, pavadinimu \"{name}\"?",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Serveris ištrintas",
   "SftpConnection": "Prisijungti prie SFTP",
   "EditDefinition": "Redaguoti serverio definiciją",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

@@ -64,5 +64,9 @@
   "curseforge": {
     "generic": "Stáhnout přes CurseForge",
     "formatted": "Stáhnout přes CurseForge"
+  },
+  "nodejsdl": {
+    "generic": "Nainstalovat Node.js",
+    "formatted": "Instalovat Node.js {version}"
   }
 }

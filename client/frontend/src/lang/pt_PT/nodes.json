@@ -6,7 +6,7 @@
   "Create": "Criar nó",
   "Update": "Atualizar nó",
   "Delete": "Apagar nó",
-  "ConfirmDelete": "Queres apagar o nó {name}?",
+  "ConfirmDelete": "Tens a certeza de que queres apagar o nó {name}?",
   "Created": "Nó criado",
   "Updated": "Nó atualizado",
   "Deleted": "Nó apagado",

@@ -12,7 +12,7 @@
   "RegistrationEnabledHint": "自己登録ユーザーは、パーミッションが与えられるまで何もできません。\n\nこれを無効にすると、直接登録ができなくなるだけで、サーバーへの招待やユーザーページには影響しません。",
   "EmailProvider": "メールのプロバイダ",
   "emailProviders": {
-    "none": "未設定",
+    "none": "なし",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"

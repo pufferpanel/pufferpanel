@@ -4,6 +4,7 @@
   "Console": "Consolă",
   "SFTPInfo": "Informații SFTP",
   "Start": "Start",
+  "Restart": "Restart",
   "Stop": "Stop",
   "Kill": "Termina",
   "Install": "Instalează",
@@ -31,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Șterge Server",
   "ConfirmDelete": "Ești sigur ca vrei sa ștergi comentariul acesta? Acțiunea aceasta nu poate fi anulată",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server șters",
   "SftpConnection": "Conectare la SFTP",
   "EditDefinition": "Editează Definiția Serverului",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

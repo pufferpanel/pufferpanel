@@ -20,5 +20,13 @@
   "Total": "Total",
   "OpenLargeFile": "Esse arquivo pode causar problemas de desempenho para o seu navegador devido ao seu tamanho, deseja abri-lo de qualquer maneira?",
   "OpenAnyways": "Abrir mesmo assim",
-  "Saved": "File saved"
+  "Saved": "Arquivo salvo",
+  "Select": "Selecionar arquivo",
+  "Deselect": "Desmarcar arquivos",
+  "Selected": "1 arquivo selecionado | {n} arquivos selecionados",
+  "ArchiveSelected": "Arquivar arquivos selecionados",
+  "ArchiveSelectedName": "Nome do Arquivo",
+  "DeselectAll": "Desmarcar todos",
+  "DeleteSelected": "Excluir 1 arquivo | Excluir {n} arquivos",
+  "ConfirmDeleteSelected": "Você realmente quer excluir este arquivo? | Você realmente quer excluir {n} arquivos?"
 }

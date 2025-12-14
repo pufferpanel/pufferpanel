@@ -4,6 +4,7 @@
   "Console": "Konsoll",
   "SFTPInfo": "SFTP Informasjon",
   "Start": "Start",
+  "Restart": "Restart",
   "Stop": "Stopp",
   "Kill": "Avslutt",
   "Install": "Installer",
@@ -31,6 +32,7 @@
   "NoSettings": "Denne serveren har ikke noe instillinger du kan endre",
   "Delete": "Slett serveren",
   "ConfirmDelete": "Er du sikker på at du vil slette denne serveren? (dette kan ikke angres)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Slettet serveren",
   "SftpConnection": "Koble til SFTP",
   "EditDefinition": "Redigere serverdefinisjon",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

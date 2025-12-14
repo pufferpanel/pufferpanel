@@ -4,6 +4,7 @@
   "Console": "Термінал",
   "SFTPInfo": "Відомості про SFTP",
   "Start": "Запустити",
+  "Restart": "Restart",
   "Stop": "Остановити",
   "Kill": "Вбити",
   "Install": "Встановити",
@@ -31,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Видалити сервер",
   "ConfirmDelete": "Ви дійсно бажаєте видалити цей сервер? (це не можна скасувати)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Сервер був видален",
   "SftpConnection": "Підключення до SFTP",
   "EditDefinition": "Редагувати визначення сервера",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

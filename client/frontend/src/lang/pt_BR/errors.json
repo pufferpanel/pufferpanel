@@ -43,13 +43,13 @@
   "ErrDirectoryUploadNotSupported": "Não é possível enviar pastas",
   "ErrDockerNotSupported": "O Docker não é compatível com este nó",
   "ErrMissingBinary": "Binário ausente: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
-  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}",
+  "ErrUnsupportedOS": "SO ({actual}) não suportado. SO suportado: {expected}",
+  "ErrUnsupportedArch": "Arquitetura {actual} não suportada. Arquiteturas suportadas: {expected}",
   "ErrNoCommand": "Nenhum comando pode ser determinado a ser usado para este servidor",
-  "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
-  "ErrBackupServerRunning": "The server is currently running. Please stop the server before doing backups or restores",
-  "ErrContainerNotUnique": "Multiple containers found",
-  "ErrNoContainerNoneFound": "No container found",
-  "ErrNoMountFound": "No mount found",
-  "ErrUnsupportedMountType": "Unsupported mount type"
+  "ErrBackupInProgress": "O servidor está executando um backup ou restauração. Aguarde a conclusão deste processo",
+  "ErrBackupServerRunning": "O servidor está em execução. Pare o servidor antes de fazer backups ou restaurações",
+  "ErrContainerNotUnique": "Vários contêineres encontrados",
+  "ErrNoContainerNoneFound": "Nenhum contêiner encontrado",
+  "ErrNoMountFound": "Nenhuma montagem encontrada",
+  "ErrUnsupportedMountType": "Tipo de montagem não suportado"
 }

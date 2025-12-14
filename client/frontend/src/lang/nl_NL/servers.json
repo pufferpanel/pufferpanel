@@ -4,6 +4,7 @@
   "Console": "Console",
   "SFTPInfo": "SFTP Informatie",
   "Start": "Start",
+  "Restart": "Restart",
   "Stop": "Stop",
   "Kill": "Beëindigen",
   "Install": "Installeren",
@@ -31,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Server Verwijderen",
   "ConfirmDelete": "Weet je zeker dat je deze server wilt verwijderen? (dit kan niet ongedaan worden gemaakt)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server Verwijderd",
   "SftpConnection": "Verbinden met SFTP",
   "EditDefinition": "Serverdefinitie bewerken",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

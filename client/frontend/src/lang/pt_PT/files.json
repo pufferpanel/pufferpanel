@@ -9,7 +9,7 @@
   "Extract": "Extract",
   "Download": "Transferir",
   "Delete": "Apagar",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
+  "ConfirmDelete": "Tens a certeza de que queres apagar {name}?",
   "UploadSuccess": "Ficheiros carregados com sucesso",
   "UploadFailed": "Erro ao carregar os ficheiros",
   "UploadProgress": "Progresso do carregamento",
@@ -20,5 +20,13 @@
   "Total": "Total",
   "OpenLargeFile": "This file may cause performance issues for your browser due to its size, do you want to open it anyways?",
   "OpenAnyways": "Abrir mesmo assim",
-  "Saved": "File saved"
+  "Saved": "File saved",
+  "Select": "Select file",
+  "Deselect": "Deselect file",
+  "Selected": "1 file selected | {n} files selected",
+  "ArchiveSelected": "Archive selected files",
+  "ArchiveSelectedName": "Archive Name",
+  "DeselectAll": "Deselect all",
+  "DeleteSelected": "Delete 1 file | Delete {n} files",
+  "ConfirmDeleteSelected": "Tens a certeza de que queres apagar este ficheiro? | Tens a certeza de que queres apagar {n} ficheiros?"
 }

@@ -47,10 +47,10 @@
     "server-console-send": "Může posílat příkazy do konzole",
     "server-stats": "Může zobrazit využití zdrojů",
     "server-status": "Může zobrazit aktuální stav serveru",
-    "server-backup-view": "View and download backups",
-    "server-backup-create": "Create a new backup",
-    "server-backup-restore": "Restore server from a backup",
-    "server-backup-delete": "Delete a backup"
+    "server-backup-view": "Zobrazit a stáhnout zálohy",
+    "server-backup-create": "Vytvořit novou zálohu",
+    "server-backup-restore": "Obnovit server ze zálohy",
+    "server-backup-delete": "Odstranit zálohu"
   },
   "hint": {
     "admin": "Udělit všechna oprávnění",

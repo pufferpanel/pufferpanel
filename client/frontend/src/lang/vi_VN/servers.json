@@ -4,6 +4,7 @@
   "Console": "Bảng điều khiển",
   "SFTPInfo": "Thông tin SFTP",
   "Start": "Khởi động",
+  "Restart": "Restart",
   "Stop": "Dừng lại",
   "Kill": "Buộc dừng",
   "Install": "Cài đặt",
@@ -31,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Xóa máy chủ",
   "ConfirmDelete": "Bạn thật sự muốn xóa máy chủ này? (việc này không thể hủy bỏ được)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Máy chủ đã bị xoá",
   "SftpConnection": "Kết nối bằng SFTP",
   "EditDefinition": "Chỉnh sửa khai báo máy chủ",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

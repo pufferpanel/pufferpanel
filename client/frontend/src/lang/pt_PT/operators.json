@@ -64,5 +64,9 @@
   "curseforge": {
     "generic": "Transferir do CurseForge",
     "formatted": "Transferir do CurseForge"
+  },
+  "nodejsdl": {
+    "generic": "Install Node.js",
+    "formatted": "Install Node.js {version}"
   }
 }

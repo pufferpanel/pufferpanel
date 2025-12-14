@@ -64,5 +64,9 @@
   "curseforge": {
     "generic": "Parsiųsti iš „CurseForge“",
     "formatted": "Parsiųsti iš „CurseForge“"
+  },
+  "nodejsdl": {
+    "generic": "Install Node.js",
+    "formatted": "Install Node.js {version}"
   }
 }

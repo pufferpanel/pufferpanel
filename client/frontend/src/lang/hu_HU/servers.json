@@ -4,6 +4,7 @@
   "Console": "Konzol",
   "SFTPInfo": "SFTP információk",
   "Start": "Indítás",
+  "Restart": "Restart",
   "Stop": "Leállítás",
   "Kill": "Kilövés",
   "Install": "Telepítés",
@@ -31,6 +32,7 @@
   "NoSettings": "Ezzen a szerveren nem beállításokat megváltoztatni",
   "Delete": "Szerver törlése",
   "ConfirmDelete": "Biztosan törli ezt a szervert? (A művelet nem visszavonható)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Szerver törölve",
   "SftpConnection": "Kapcsolódás az SFTPhez",
   "EditDefinition": "Szerver újradefiniálása",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "Ezek a sablonok nem kompatibilisek legalább az egyik korábbi választásoddal",
   "IncompatibleArch": "Nem kompatibilis a(z) '{arch}' architektúrával",
   "IncompatibleOs": "Nem kompatibilis a(z) '{os}' operációs rendszerrel",
-  "IncompatibleEnv": "Nem kompatibilis a(z) '{env}' környezettel"
+  "IncompatibleEnv": "Nem kompatibilis a(z) '{env}' környezettel",
+  "AdvancedSettings": "Advanced Settings"
 }

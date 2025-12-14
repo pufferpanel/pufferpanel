@@ -20,5 +20,13 @@
   "Total": "合計",
   "OpenLargeFile": "このファイルは、ブラウザのサイズのためにパフォーマンスの問題を引き起こす可能性があります。開きますか?",
   "OpenAnyways": "とにかく開く",
-  "Saved": "File saved"
+  "Saved": "ファイルを保存しました",
+  "Select": "Select file",
+  "Deselect": "Deselect file",
+  "Selected": "1 file selected | {n} files selected",
+  "ArchiveSelected": "Archive selected files",
+  "ArchiveSelectedName": "Archive Name",
+  "DeselectAll": "Deselect all",
+  "DeleteSelected": "Delete 1 file | Delete {n} files",
+  "ConfirmDeleteSelected": "Do you really want to delete this file? | Do you really want to delete these {n} files?"
 }

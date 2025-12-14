@@ -4,6 +4,7 @@
   "Console": "Konsool",
   "SFTPInfo": "SFTP Informatsioon",
   "Start": "Käivita",
+  "Restart": "Restart",
   "Stop": "Peata",
   "Kill": "Hävita",
   "Install": "Paigalda",
@@ -31,6 +32,7 @@
   "NoSettings": "Sellel serveril ei ole sätteid, mida saaksid muuta",
   "Delete": "Kustuta Server",
   "ConfirmDelete": "Kas soovid kindlasti kustutada seda serverit? (seda ei saa tagasi võtta)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Kustutatud Server",
   "SftpConnection": "Ühenda SFTP-ga",
   "EditDefinition": "Muuda serveri definitsiooni",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

@@ -4,6 +4,7 @@
   "Console": "Konsol",
   "SFTPInfo": "SFTP-information",
   "Start": "Starta",
+  "Restart": "Restart",
   "Stop": "Stoppa",
   "Kill": "Döda",
   "Install": "Installera",
@@ -31,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "Ta bort server",
   "ConfirmDelete": "Vill du verkligen ta bort denna server? (detta kan inte ångras)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server borttagen",
   "SftpConnection": "Anslut till SFTP",
   "EditDefinition": "Redigera serverdefinition",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

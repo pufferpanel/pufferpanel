@@ -4,6 +4,7 @@
   "Console": "Konzola",
   "SFTPInfo": "Informácie SFTP",
   "Start": "Štart",
+  "Restart": "Restart",
   "Stop": "Stop",
   "Kill": "Vynútené zastavenie",
   "Install": "Inštalovať",
@@ -31,6 +32,7 @@
   "NoSettings": "Tento server nemá nastavenia, ktoré môžete upravovať",
   "Delete": "Zmazať server",
   "ConfirmDelete": "Do you really want to delete this server? (this cannot be undone)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server vymazaný",
   "SftpConnection": "Pripojenie k SFTP",
   "EditDefinition": "Upraviť definíciu servera",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "Tieto šablóny nie sú kompatibilné s aspoň jedným z vašich predchádzajúcich výberov",
   "IncompatibleArch": "Nekompatibilné s architektúrou '{arch}'",
   "IncompatibleOs": "Nekompatibilné s OS '{os}'",
-  "IncompatibleEnv": "Nekompatibilné s prostredím '{env}'"
+  "IncompatibleEnv": "Nekompatibilné s prostredím '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

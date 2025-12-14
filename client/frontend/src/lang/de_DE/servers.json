@@ -4,6 +4,7 @@
   "Console": "Konsole",
   "SFTPInfo": "SFTP-Informationen",
   "Start": "Starten",
+  "Restart": "Restart",
   "Stop": "Stoppen",
   "Kill": "Stopp erzwingen",
   "Install": "Einrichten",
@@ -31,6 +32,7 @@
   "NoSettings": "Dieser Server hat keine Einstellungen die Sie ändern können",
   "Delete": "Server löschen",
   "ConfirmDelete": "Willst du den Server \"{name}\" wirklich löschen? (Dies kann nicht rückgängig gemacht werden)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "Server gelöscht",
   "SftpConnection": "Mit SFTP verbinden",
   "EditDefinition": "Server-Definition bearbeiten",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "Diese Vorlagen sind mit mindestens einer deiner vorherigen Auswahloptionen nicht kompatibel",
   "IncompatibleArch": "Inkompatibel mit der Architektur '{arch}‘",
   "IncompatibleOs": "Inkompatibel mit dem Betriebssystem '{os}‘",
-  "IncompatibleEnv": "Inkompatibel mit der Umgebung '{env}‘"
+  "IncompatibleEnv": "Inkompatibel mit der Umgebung '{env}‘",
+  "AdvancedSettings": "Advanced Settings"
 }

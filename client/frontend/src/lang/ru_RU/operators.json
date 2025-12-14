@@ -64,5 +64,9 @@
   "curseforge": {
     "generic": "Скачать с CurseForge",
     "formatted": "Скачать с CurseForge"
+  },
+  "nodejsdl": {
+    "generic": "Установить Node.js",
+    "formatted": "Установить Node.js {version}"
   }
 }

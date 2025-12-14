@@ -20,5 +20,13 @@
   "Total": "Celkem",
   "OpenLargeFile": "Tento soubor může způsobit problémy s výkonem vašeho prohlížeče kvůli jeho velikosti, přesto jej chcete otevřít?",
   "OpenAnyways": "Přesto otevřít",
-  "Saved": "File saved"
+  "Saved": "File saved",
+  "Select": "Select file",
+  "Deselect": "Deselect file",
+  "Selected": "1 file selected | {n} files selected",
+  "ArchiveSelected": "Archive selected files",
+  "ArchiveSelectedName": "Archive Name",
+  "DeselectAll": "Deselect all",
+  "DeleteSelected": "Delete 1 file | Delete {n} files",
+  "ConfirmDeleteSelected": "Do you really want to delete this file? | Do you really want to delete these {n} files?"
 }

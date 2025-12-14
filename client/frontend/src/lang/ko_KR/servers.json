@@ -4,6 +4,7 @@
   "Console": "콘솔",
   "SFTPInfo": "SFTP 정보",
   "Start": "시작",
+  "Restart": "Restart",
   "Stop": "정지",
   "Kill": "강제 중지",
   "Install": "설치",
@@ -31,6 +32,7 @@
   "NoSettings": "This server does not have any settings you can change",
   "Delete": "서버 삭제",
   "ConfirmDelete": "이 서버를 삭제할까요?(되돌릴 수 없습니다.)",
+  "Deleting": "Removing Server, please wait...",
   "Deleted": "서버가 삭제되었습니다.",
   "SftpConnection": "SFTP 연결",
   "EditDefinition": "서버 정의 변경",
@@ -55,5 +57,6 @@
   "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
   "IncompatibleArch": "Incompatible with architecture '{arch}'",
   "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'"
+  "IncompatibleEnv": "Incompatible with environment '{env}'",
+  "AdvancedSettings": "Advanced Settings"
 }

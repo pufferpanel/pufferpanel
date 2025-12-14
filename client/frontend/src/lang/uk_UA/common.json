@@ -3,10 +3,10 @@
   "Language": "Мова",
   "Online": "У мережі",
   "Offline": "Не в мережі",
-  "Installing": "Installing",
+  "Installing": "Встановлення",
   "Unknown": "Не вказано",
   "Loading": "Завантаження...",
-  "Description": "Description",
+  "Description": "Опис",
   "Save": "Зберегти",
   "Cancel": "Скасувати",
   "Close": "Закрити",
@@ -14,9 +14,9 @@
   "Port": "Порт",
   "Collapse": "Згорнути",
   "Expand": "Розгорнути",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copy": "Копіювати до буфера обміну",
+  "Copied": "Скопійовано до буфера обміну",
+  "Back": "Назад",
   "Next": "Далі",
   "Details": "Подробиці",
   "ErrorDetails": "Деталі помилки",
@@ -24,18 +24,18 @@
   "Protocol": "Протокол",
   "Add": "Додати",
   "Apply": "Застосувати",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Confirm": "Підтвердити",
+  "Condition": "Умова",
+  "Discard": "Скасовувати",
+  "ConfirmLeave": "У вас є незбережені зміни, ви хочете скасувати ці зміни та залишити цю сторінку?",
   "theme": {
     "Theme": "Тема",
     "Mode": "Режим",
     "mode": {
       "Light": "Світла",
       "Dark": "Темна",
-      "DarkHighContrast": "Dark (High Contrast)",
-      "Auto": "Auto"
+      "DarkHighContrast": "Темна (Високий контраст)",
+      "Auto": "Автоматично"
     },
     "BaseColor": "Основний колір",
     "ServerTypeDisplay": "Тип сервера",
@@ -48,17 +48,17 @@
       "Grid": "Сітка",
       "List": "Список"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Розмір шрифту",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Стандартний"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Набір шрифтів",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Стандартний",
+      "A11y": "Оптимізовано доступність"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "Нічого не знайдено",
+  "Yes": "Так",
+  "No": "Ні"
 }
