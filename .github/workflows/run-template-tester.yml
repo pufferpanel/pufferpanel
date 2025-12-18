@@ -55,7 +55,7 @@ jobs:
         # Add our user to the pufferpanel group so we can kick off our binary
       - name: Create user
         run: |
-          getent group pufferpanel ||sudo groupadd pufferpanel
+          getent group pufferpanel || sudo groupadd pufferpanel
           sudo usermod -a -G pufferpanel $USER
 
       - name: AppArmor nonsense
@@ -70,7 +70,9 @@ jobs:
       - name: Run
         run: |
           chmod +x pufferpanel_* templatetester_*
-          ./templatetester_${{ matrix.arch }} --skip=* --require=${{ matrix.template }} --binary=$(pwd)/pufferpanel_${{ matrix.arch }}
+          rm -rf template-tester-rundir
+          mkdir -p template-tester-rundir
+          ./templatetester_${{ matrix.arch }} --skip=* --require=${{ matrix.template }} --binary=$(pwd)/pufferpanel_${{ matrix.arch }} --workDir=$(pwd)/template-tester-rundir
 
       - name: Cleanup
         if: ${{ ! endsWith(matrix.template, '-docker') }}
