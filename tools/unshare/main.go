@@ -2,9 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/servers/tty"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"syscall"
 )
 
@@ -72,19 +76,19 @@ func main() {
 	}
 
 	//as soon as you add the third command, this no longer functions
-	unshare(dir, "pwd")                        //are we in the right place
-	unshare(dir, "ls", "-l")                   //do we see anything
-	unshare(dir, "whoami")                     //are we the correct user
-	unshare(dir, "touch", "test")              //can we write and it persist
-	unshare(dir, "curl", "1.1.1.1")            //can we access an IP
-	unshare(dir, "curl", "google.com")         //does DNS work
-	unshare(dir, "curl", "https://google.com") //does SSL work
-	unshare(dir, "ls", "-l", "/")              //is root clean
+	unshareImplementation(dir, "pwd")                        //are we in the right place
+	unshareImplementation(dir, "ls", "-l")                   //do we see anything
+	unshareImplementation(dir, "whoami")                     //are we the correct user
+	unshareImplementation(dir, "touch", "test")              //can we write and it persist
+	unshareImplementation(dir, "curl", "1.1.1.1")            //can we access an IP
+	unshareImplementation(dir, "curl", "google.com")         //does DNS work
+	unshareImplementation(dir, "curl", "https://google.com") //does SSL work
+	unshareImplementation(dir, "ls", "-l", "/")              //is root clean
 
 	//now let's test the servers!
 	//unshare(dir, "ls", "-l", "/usr/lib/jvm/java-21-openjdk-amd64/lib")
 	//unshare(dir, "env")
-	unshare(dir, "java", "-Xmx4G", "-jar", "server.jar", "nogui")
+	unshareImplementation(dir, "java", "-Xmx4G", "-jar", "server.jar", "nogui")
 }
 
 var cmdList = []string{
@@ -99,7 +103,33 @@ var cmdList = []string{
 	"mount --rbind /proc proc",
 }
 
-func unshare(dir, cmd string, args ...string) {
+func unshareImplementation(dir, cmd string, args ...string) {
+	factory := tty.EnvironmentFactory{}
+
+	env := pufferpanel.Environment{
+		RootDirectory: dir, Wait: &sync.WaitGroup{}, ConsoleBuffer: pufferpanel.CreateCache(), ConsoleTracker: pufferpanel.CreateTracker(),
+		StatsTracker: pufferpanel.CreateTracker(), StatusTracker: pufferpanel.CreateTracker(),
+		Wrapper: os.Stdout,
+	}
+	env.Implementation = factory.Create()
+
+	c := cmd
+	if len(args) > 0 {
+		c += " " + utils.MergeArguments(args)
+	}
+
+	err := env.Execute(pufferpanel.ExecutionData{
+		Command:      c,
+		StdInConfig:  pufferpanel.StdinConsoleConfiguration{},
+		DisableQuery: true,
+		DisableStats: true,
+	})
+	if err != nil {
+		panic(err)
+	}
+}
+
+func unshareDirect(dir, cmd string, args ...string) {
 	var err error
 
 	c := exec.Command("bash", "-c",
