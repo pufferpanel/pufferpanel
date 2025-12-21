@@ -87,6 +87,6 @@ WORKDIR /var/lib/pufferpanel
 
 #USER pufferpanel
 
-RUN /pufferpanel/bin/pufferpanel dbmigrate
+RUN /pufferpanel/bin/pufferpanel db upgrade
 
 ENTRYPOINT ["sh", "/pufferpanel/bin/entrypoint.sh"]
