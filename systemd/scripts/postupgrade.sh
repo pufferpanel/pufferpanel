@@ -19,13 +19,6 @@ chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/log/pufferpanel /var/lib/
 exitCode=$?
 [ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
 
-if [ $wasRunning -eq 0 ]; then
-  systemctl restart pufferpanel
-fi
-
-exitCode=$?
-[ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
-
 if command -v apparmor_parser >/dev/null 2>&1
 then
     apparmor_parser -r /etc/apparmor.d/pufferpanel
@@ -33,3 +26,11 @@ fi
 
 chmod o-rx /etc/pufferpanel
 chmod o-rx /var/lib/pufferpanel
+
+
+if [ $wasRunning -eq 0 ]; then
+  systemctl restart pufferpanel
+fi
+
+exitCode=$?
+[ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
