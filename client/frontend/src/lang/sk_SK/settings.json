@@ -8,7 +8,7 @@
   "MasterUrlHint": "Základná adresa URL panela je dostupná vo formáte http://localhost:8080",
   "CompanyName": "Názov spoločnosti",
   "DefaultTheme": "Predvolená téma",
-  "RegistrationEnabled": "Umožniť používateľom zaregistrovať sa",
+  "RegistrationEnabled": "Umožniť užívateľom zaregistrovať sa",
   "RegistrationEnabledHint": "Samostatne registrovaní používatelia nemôžu robiť nič, kým nedostanú povolenia\n\nZakázanie tejto funkcie zabráni iba priamej registrácii, pozvánky na server a stránka Používatelia nie sú ovplyvnené",
   "EmailProvider": "Poskytovateľ e-mailových služieb",
   "emailProviders": {
