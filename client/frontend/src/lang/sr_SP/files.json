@@ -9,7 +9,7 @@
   "Extract": "Extract",
   "Download": "Download",
   "Delete": "Delete",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
+  "ConfirmDelete": "Do you really want to delete {name}?",
   "UploadSuccess": "Files uploaded successfully",
   "UploadFailed": "Failed uploading files",
   "UploadProgress": "Upload progress",
