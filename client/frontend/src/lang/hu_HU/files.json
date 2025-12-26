@@ -21,12 +21,12 @@
   "OpenLargeFile": "Ez a fájl méretéből adódóan teljesítményproblémákat okozhat a böngészőjének, mégis meg akarja nyitni?",
   "OpenAnyways": "Megnyitás akkor is",
   "Saved": "Fájl elmentve",
-  "Select": "Select file",
-  "Deselect": "Deselect file",
-  "Selected": "1 file selected | {n} files selected",
-  "ArchiveSelected": "Archive selected files",
-  "ArchiveSelectedName": "Archive Name",
-  "DeselectAll": "Deselect all",
-  "DeleteSelected": "Delete 1 file | Delete {n} files",
-  "ConfirmDeleteSelected": "Do you really want to delete this file? | Do you really want to delete these {n} files?"
+  "Select": "Fájl kiválasztása",
+  "Deselect": "Fájl kiválasztás megszüntetése",
+  "Selected": "1 fájl kiválasztva | {n} fájlok kiválasztva",
+  "ArchiveSelected": "Archivum fájlok kiválasztása",
+  "ArchiveSelectedName": "Archívum neve",
+  "DeselectAll": "Összes kijelölés megszüntetése",
+  "DeleteSelected": "1 fájl törlése | {n} fájlok törlése",
+  "ConfirmDeleteSelected": "Tényleg törölni szeretné ezt a fájlt? | Tényleg törölni szeretné ezeket {n} fájlokat?"
 }
