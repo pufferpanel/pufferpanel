@@ -11,54 +11,54 @@
   "Cancel": "ביטול",
   "Close": "סגור",
   "Host": "מארח",
-  "Port": "Port",
-  "Collapse": "Collapse",
-  "Expand": "Expand",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
-  "Next": "Next",
-  "Details": "Details",
-  "ErrorDetails": "Error Details",
-  "HelpTranslate": "Help us translate PufferPanel",
-  "Protocol": "Protocol",
-  "Add": "Add",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Port": "פורט",
+  "Collapse": "צמצום",
+  "Expand": "הרחב",
+  "Copy": "העתקה ללוח",
+  "Copied": "הועתק ללוח",
+  "Back": "חזרה",
+  "Next": "המשך",
+  "Details": "פרטים",
+  "ErrorDetails": "פרטי השגיאה",
+  "HelpTranslate": "סייעו לנו לתרגם את PufferPanel",
+  "Protocol": "פרוטוקול",
+  "Add": "הוספה",
+  "Apply": "החל",
+  "Confirm": "אישור",
+  "Condition": "תנאי",
+  "Discard": "למחוק",
+  "ConfirmLeave": "יש לך שינויים לא שמורים, האם אתה רוצה למחוק את השינויים האלו ולעזוב את העמוד הזה?",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "ערכת נושא",
+    "Mode": "מצב",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "DarkHighContrast": "Dark (High Contrast)",
-      "Auto": "Auto"
+      "Light": "בהיר",
+      "Dark": "כהה",
+      "DarkHighContrast": "כהה (ניגודיות גבוהה)",
+      "Auto": "אוטומטי"
     },
-    "BaseColor": "Base Color",
+    "BaseColor": "צבע בסיס",
     "ServerTypeDisplay": "Server Type Display",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "סמל",
+      "None": "כלום"
     },
-    "ListType": "List Type",
+    "ListType": "סוג רשימה",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "רשת",
+      "List": "רשימה"
     },
-    "FontSize": "Font Size",
+    "FontSize": "גודל גופן",
     "fontSize": {
-      "Default": "Default"
+      "Default": "ברירת מחדל"
     },
     "FontFace": "Font Face",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "ברירת מחדל",
+      "A11y": "נגישות מותאמת"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "אין תוצאות",
+  "Yes": "כן",
+  "No": "לא"
 }
