@@ -14,7 +14,7 @@
   "ErrServiceInvalidProvider": "{service} ne supporte pas {provider}",
   "ErrFieldRequired": "\"{field}\" est requis",
   "ErrFieldMustBePrintable": "{field} doit être des caractères ASCII affichables",
-  "ErrFieldHasURICharacters": "{field} ne doit pas contenir de caractères qui ne peuvent pas être utilisés dans les URIs",
+  "ErrFieldHasURICharacters": "{field} ne doit pas contenir de caractères qui ne peuvent pas être utilisés dans les URL",
   "ErrFieldIsInvalidHost": "{field} doit être une IP valide ou un nom de domaine",
   "ErrFieldIsInvalidIP": "{field} doit être une IP valide",
   "ErrFieldTooLarge": "{field} ne peut pas être plus grand que {max}",
