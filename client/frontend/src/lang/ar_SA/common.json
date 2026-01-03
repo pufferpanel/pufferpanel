@@ -34,7 +34,7 @@
     "mode": {
       "Light": "ساطع",
       "Dark": "داكن",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "داكن (تباين عالي)",
       "Auto": "تلقائي"
     },
     "BaseColor": "اللون الأساسي",
@@ -48,14 +48,14 @@
       "Grid": "شبكي",
       "List": "قائمة"
     },
-    "FontSize": "Font Size",
+    "FontSize": "حجم الخط",
     "fontSize": {
-      "Default": "Default"
+      "Default": "افتراضية"
     },
-    "FontFace": "Font Face",
+    "FontFace": "وجه الخط",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "افتراضية",
+      "A11y": "تم تحسين إمكانية الوصول"
     }
   },
   "NoResults": "لا توجد نتائج.",
