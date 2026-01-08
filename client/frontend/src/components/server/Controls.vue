@@ -7,6 +7,7 @@ import Icon from '@/components/ui/Icon.vue'
 const { t } = useI18n()
 
 const menuOpen = ref(false)
+const restartDisabled = ref(false)
 
 function hideMenu() {
   if (!menuOpen.value) return
@@ -38,6 +39,13 @@ const showMenu =
   props.server.hasScope('server.stop') || 
   props.server.hasScope('server.kill') || 
   props.server.hasScope('server.install')
+
+function restart() {
+  if (!props.server.hasScope('servers.start') || !props.server.hasScope('servers.stop')) return
+  props.server.restart()
+  restartDisabled.value = true
+  setTimeout(() => restartDisabled.value = false, 3000)
+}
 </script>
 
 <template>
@@ -46,7 +54,7 @@ const showMenu =
       <icon name="play" />
       <span class="text">{{ t('servers.Start') }}</span>
     </btn>
-    <btn v-if="server.hasScope('server.start') && server.hasScope('server.stop')" class="restart" @click="server.restart()">
+    <btn v-if="server.hasScope('server.start') && server.hasScope('server.stop')" class="restart" :disabled="restartDisabled" @click="restart()">
       <icon name="restart" />
       <span class="text">{{ t('servers.Restart') }}</span>
     </btn>
@@ -70,10 +78,10 @@ const showMenu =
         <icon name="play" />
         <span class="text">{{ t('servers.Start') }}</span>
       </btn>
-    <btn v-if="server.hasScope('server.start') && server.hasScope('server.stop')" class="restart" @click="menuOpen = false; server.restart()">
-      <icon name="restart" />
-      <span class="text">{{ t('servers.Restart') }}</span>
-    </btn>
+      <btn v-if="server.hasScope('server.start') && server.hasScope('server.stop')" class="restart" :disabled="restartDisabled" @click="menuOpen = false; restart()">
+        <icon name="restart" />
+        <span class="text">{{ t('servers.Restart') }}</span>
+      </btn>
       <btn v-if="server.hasScope('server.stop')" class="stop" @click="menuOpen = false; server.stop()">
         <icon name="stop" />
         <span class="text">{{ t('servers.Stop') }}</span>
