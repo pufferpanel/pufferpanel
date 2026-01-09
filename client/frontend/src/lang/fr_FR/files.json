@@ -20,13 +20,13 @@
   "Total": "Total",
   "OpenLargeFile": "Ce fichier peut entraîner des problèmes de performances pour votre navigateur en raison de sa taille, voulez-vous quand même l'ouvrir ?",
   "OpenAnyways": "Ouvrir quand même",
-  "Saved": "File saved",
-  "Select": "Select file",
-  "Deselect": "Deselect file",
-  "Selected": "1 file selected | {n} files selected",
-  "ArchiveSelected": "Archive selected files",
-  "ArchiveSelectedName": "Archive Name",
-  "DeselectAll": "Deselect all",
-  "DeleteSelected": "Delete 1 file | Delete {n} files",
-  "ConfirmDeleteSelected": "Do you really want to delete this file? | Do you really want to delete these {n} files?"
+  "Saved": "Fichier enregistré",
+  "Select": "Sélectionner le fichier",
+  "Deselect": "Désélectionner le fichier",
+  "Selected": "1 fichier sélectionné | {n} fichiers sélectionnés",
+  "ArchiveSelected": "Archiver les fichiers sélectionnés",
+  "ArchiveSelectedName": "Nom de l'archive",
+  "DeselectAll": "Désélectionner tous",
+  "DeleteSelected": "Supprimer 1 fichier | Supprimer {n} fichiers",
+  "ConfirmDeleteSelected": "Voulez-vous vraiment supprimer ce fichier ? | Voulez-vous vraiment supprimer ces {n} fichiers ?"
 }

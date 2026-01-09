@@ -4,7 +4,7 @@
   "Console": "Console",
   "SFTPInfo": "Informations SFTP",
   "Start": "Démarrer",
-  "Restart": "Restart",
+  "Restart": "Redémarrer",
   "Stop": "Arrêter",
   "Kill": "Forcer l'arrêt",
   "Install": "Installer",
@@ -32,7 +32,7 @@
   "NoSettings": "Ce serveur n'a pas de paramètres que vous pouvez changer",
   "Delete": "Supprimer le serveur",
   "ConfirmDelete": "Êtes-vous vraiment sûr de vouloir supprimer ce serveur ? (cette opération est irréversible)",
-  "Deleting": "Removing Server, please wait...",
+  "Deleting": "Suppression du serveur, veuillez patienter...",
   "Deleted": "Serveur supprimé",
   "SftpConnection": "Se connecter au SFTP",
   "EditDefinition": "Modifier la définition du serveur",
@@ -53,10 +53,10 @@
     "autoRestartOnGraceful": "Redémarrer le serveur lorsqu'il s'arrête normalement",
     "autoRestartOnCrash": "Redémarrer le serveur quand il plante"
   },
-  "IncompatibleTemplates": "Incompatible templates",
-  "IncompatibleTemplatesDescription": "These templates are incompatible with at least one of your previous selections",
-  "IncompatibleArch": "Incompatible with architecture '{arch}'",
-  "IncompatibleOs": "Incompatible with OS '{os}'",
-  "IncompatibleEnv": "Incompatible with environment '{env}'",
-  "AdvancedSettings": "Advanced Settings"
+  "IncompatibleTemplates": "Modèles incompatibles",
+  "IncompatibleTemplatesDescription": "Ces modèles sont incompatibles avec au moins une de vos sélections précédentes",
+  "IncompatibleArch": "Incompatible avec l’architecture '{arch}'",
+  "IncompatibleOs": "Incompatible avec OS '{os}'",
+  "IncompatibleEnv": "Incompatible avec l’environnement '{env}'",
+  "AdvancedSettings": "Paramètres avancés"
 }
