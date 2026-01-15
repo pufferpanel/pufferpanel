@@ -4,7 +4,7 @@
   "Console": "コンソール",
   "SFTPInfo": "SFTP 情報",
   "Start": "起動",
-  "Restart": "Restart",
+  "Restart": "再起動",
   "Stop": "停止",
   "Kill": "強制終了",
   "Install": "インストール",
@@ -32,7 +32,7 @@
   "NoSettings": "このサーバーには変更できる設定がありません",
   "Delete": "サーバーを削除",
   "ConfirmDelete": "サーバー「{name}」を削除してもよろしいですか? この操作は元に戻すことができません。",
-  "Deleting": "Removing Server, please wait...",
+  "Deleting": "サーバーを削除しています。お待ちください…",
   "Deleted": "サーバーを削除しました",
   "SftpConnection": "SFTP に接続",
   "EditDefinition": "サーバー設定を編集",
@@ -58,5 +58,5 @@
   "IncompatibleArch": "アーキテクチャ 『{arch}』 と互換性がありません",
   "IncompatibleOs": "OS 『{os}』 と互換性がありません",
   "IncompatibleEnv": "環境 『{env}』 と互換性がありません",
-  "AdvancedSettings": "Advanced Settings"
+  "AdvancedSettings": "詳細設定"
 }
