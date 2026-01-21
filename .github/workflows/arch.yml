@@ -1,0 +1,41 @@
+name: Deploy Arch
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        type: string
+
+jobs:
+  Build:
+    name: Deploy
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux
+    permissions:
+      contents: read
+      packages: read
+    environment: 'Release'
+
+    steps:
+      - name: Run
+        run: |
+          pacman -Sy --needed --noconfirm sudo fakeroot debugedit git pacman-contrib openssh
+          useradd builduser -m
+          mkdir /pkgbuild
+          chown -R $(id -u builduser) /pkgbuild
+          passwd -d builduser
+          cd /pkgbuild
+          su builduser sh -c "
+            mkdir ~/.ssh
+            echo "${{ secrets.ARCH_SSH_KEY }}" > ~/.ssh/id_ed25519
+            chmod 600 ~/.ssh/id_ed25519
+            git clone https://aur.archlinux.org/pufferpanel-bin.git .
+            sed -i 's/^pkgver=.*/pkgver=${{ inputs.version }}/' PKGBUILD
+            updpkgsums
+            makepkg --printsrcinfo > .SRCINFO
+
+            cat PKGBUILD
+            cat .SRCINFO
+          "
