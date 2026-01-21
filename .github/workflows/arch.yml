@@ -26,11 +26,14 @@ jobs:
           mkdir /pkgbuild
           chown -R $(id -u builduser) /pkgbuild
           passwd -d builduser
+
+          mkdir /home/builduser/.ssh
+          echo "${{ secrets.ARCH_SSH_KEY }}" > /home/builduser/.ssh/id_ed25519
+          chmod 600 /home/builduser/.ssh/id_ed25519
+          chown -R $(id -u builduser):$(id -g builduser) /home/builduser/.ssh
+
           cd /pkgbuild
           su builduser sh -c "
-            mkdir ~/.ssh
-            echo "${{ secrets.ARCH_SSH_KEY }}" > ~/.ssh/id_ed25519
-            chmod 600 ~/.ssh/id_ed25519
             git clone https://aur.archlinux.org/pufferpanel-bin.git .
             sed -i 's/^pkgver=.*/pkgver=${{ inputs.version }}/' PKGBUILD
             updpkgsums
