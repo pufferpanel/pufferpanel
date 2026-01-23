@@ -12,5 +12,5 @@
     "Delete": "Delete",
     "Deleted": "Backup deleted successfully",
     "DeletePrompt": "Permanently delete backup",
-    "DeletePromptBody": "Do you really want to delete the backup permanently?"
+    "DeletePromptBody": "Yedeği kalıcı olarak silmek istediğinizden emin misiniz?"
 }
