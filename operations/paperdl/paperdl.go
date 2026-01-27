@@ -15,14 +15,15 @@ import (
 	"strings"
 )
 
-const VersionsUrl = "https://fill.papermc.io/v3/projects/paper/versions"
-const BuildUrl = "https://fill.papermc.io/v3/projects/paper/versions/${mcVersion}/builds/${build}"
+const VersionsUrl = "https://fill.papermc.io/v3/projects/${project}/versions"
+const BuildUrl = "https://fill.papermc.io/v3/projects/${project}/versions/${mcVersion}/builds/${build}"
 var UserAgent = pufferpanel.Display + " https://github.com/pufferpanel/pufferpanel"
 
 type PaperDl struct {
 	MinecraftVersion string
 	Build            string
 	Filename         string
+	Project          string
 }
 
 func (op PaperDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
@@ -30,7 +31,7 @@ func (op PaperDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRes
 
 	if op.MinecraftVersion == "latest" {
 		logging.Info.Printf("PaperDL got Minecraft version 'latest', looking up latest version supported by Paper")
-		mcVersion, err := getLatestMCVersion()
+		mcVersion, err := op.getLatestMCVersion()
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
@@ -56,8 +57,8 @@ func (op PaperDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRes
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func getLatestMCVersion() (string, error) {
-	path, err := url.Parse(VersionsUrl)
+func (op PaperDL) getLatestMCVersion() (string, error) {
+	path, err := url.Parse(strings.Replace(VersionsUrl, "${project}", op.Project, -1))
 	if err != nil {
 		return "", err
 	}
@@ -95,7 +96,10 @@ func getLatestMCVersion() (string, error) {
 }
 
 func (op PaperDl) getDownloadUrlAndHash(env *pufferpanel.Environment) (string, string, error) {
-	path, err := url.Parse(strings.Replace(strings.Replace(BuildUrl, "${mcVersion}", op.MinecraftVersion, -1), "${build}", op.Build, -1))
+	buildUrl := strings.Replace(BuildUrl, "${mcVersion}", op.MinecraftVersion, -1)
+	buildUrl = strings.Replace(buildUrl, "${build}", op.Build, -1)
+	buildUrl = strings.Replace(buildUrl, "${project}", op.Project, -1)
+	path, err := url.Parse(buildUrl)
 	if err != nil {
 		return "", "", err
 	}

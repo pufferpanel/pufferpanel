@@ -14,6 +14,7 @@ func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.O
 	minecraftVersion := cast.ToString(op.OperationArgs["minecraftVersion"])
 	build := cast.ToString(op.OperationArgs["build"])
 	filename := cast.ToString(op.OperationArgs["target"])
+	project := cast.ToString(op.OperationArgs["project"])
 
 	if minecraftVersion == "" {
 		return nil, errors.New("missing minecraftVersion")
@@ -21,6 +22,14 @@ func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.O
 
 	if build == "" {
 		return nil, errors.New("missing build")
+	}
+
+	if filename == "" {
+		return nil, errors.New("missing target")
+	}
+
+	if project == "" {
+		project = "paper"
 	}
 
 	return PaperDl{MinecraftVersion: minecraftVersion, Build: build, Filename: filename}, nil
