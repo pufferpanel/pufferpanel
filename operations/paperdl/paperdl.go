@@ -57,7 +57,7 @@ func (op PaperDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRes
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func (op PaperDL) getLatestMCVersion() (string, error) {
+func (op PaperDl) getLatestMCVersion() (string, error) {
 	path, err := url.Parse(strings.Replace(VersionsUrl, "${project}", op.Project, -1))
 	if err != nil {
 		return "", err
