@@ -192,6 +192,7 @@ async function nextStep(e) {
         @blur="validatePassword"
         @change="validatePassword(true)"
       />
+      <input v-else v-model="password" name="password" type="password" style="display:none;visibility:hidden;opacity:0;" />
       <div v-if="step === 'secondFactor' && secondFactorData.otpEnabled">
         <otp-input
           v-if="!otpRecovery"
