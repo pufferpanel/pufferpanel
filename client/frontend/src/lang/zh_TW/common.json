@@ -3,62 +3,62 @@
   "Language": "語言",
   "Online": "線上",
   "Offline": "離線",
-  "Installing": "Installing",
+  "Installing": "安裝中",
   "Unknown": "不明",
   "Loading": "載入中⋯⋯",
-  "Description": "Description",
+  "Description": "說明",
   "Save": "儲存",
   "Cancel": "取消",
-  "Close": "Close",
+  "Close": "關閉",
   "Host": "主機",
-  "Port": "端口",
-  "Collapse": "收起",
-  "Expand": "Expand",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Port": "連接埠",
+  "Collapse": "折疊",
+  "Expand": "展開",
+  "Copy": "複製到剪貼簿",
+  "Copied": "已複製到剪貼簿",
+  "Back": "返回",
   "Next": "下一個",
   "Details": "詳細資料",
   "ErrorDetails": "錯誤訊息",
   "HelpTranslate": "幫助我們翻譯 PufferPanel",
   "Protocol": "通訊協定",
   "Add": "新增",
-  "Apply": "Apply",
-  "Confirm": "Confirm",
-  "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Apply": "套用",
+  "Confirm": "確認",
+  "Condition": "狀態",
+  "Discard": "捨棄",
+  "ConfirmLeave": "有尚未儲存的變更，是否捨棄這些變更並離開？",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "主題",
+    "Mode": "模式",
     "mode": {
-      "Light": "Light",
-      "Dark": "Dark",
-      "DarkHighContrast": "Dark (High Contrast)",
-      "Auto": "Auto"
+      "Light": "淺色",
+      "Dark": "深色",
+      "DarkHighContrast": "深色（高對比度）",
+      "Auto": "自動"
     },
-    "BaseColor": "Base Color",
-    "ServerTypeDisplay": "Server Type Display",
+    "BaseColor": "基本顏色",
+    "ServerTypeDisplay": "伺服器類型顯示模式",
     "serverTypeDisplay": {
-      "Icon": "Icon",
-      "None": "None"
+      "Icon": "圖示",
+      "None": "無"
     },
-    "ListType": "List Type",
+    "ListType": "清單類型",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "圖示",
+      "List": "清單"
     },
-    "FontSize": "Font Size",
+    "FontSize": "字形大小",
     "fontSize": {
-      "Default": "Default"
+      "Default": "預設"
     },
-    "FontFace": "Font Face",
+    "FontFace": "字形",
     "fontFace": {
-      "Default": "Default",
+      "Default": "預設",
       "A11y": "Accessibility optimized"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "沒有結果",
+  "Yes": "是",
+  "No": "否"
 }
