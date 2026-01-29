@@ -9,7 +9,7 @@
   "Extract": "提取",
   "Download": "下載",
   "Delete": "刪除",
-  "ConfirmDelete": "您確定要刪除這個檔案？",
+  "ConfirmDelete": "您確定要刪除 {name}？",
   "UploadSuccess": "檔案上傳成功",
   "UploadFailed": "檔案上傳失敗",
   "UploadProgress": "上傳進度",
@@ -26,7 +26,7 @@
   "Selected": "已選擇 1 個檔案 | {n} 個檔案已選擇",
   "ArchiveSelected": "壓縮目前選擇的檔案",
   "ArchiveSelectedName": "壓縮檔名稱",
-  "DeselectAll": "Deselect all",
-  "DeleteSelected": "Delete 1 file | Delete {n} files",
-  "ConfirmDeleteSelected": "Do you really want to delete this file? | Do you really want to delete these {n} files?"
+  "DeselectAll": "全部取消選取",
+  "DeleteSelected": "刪除 1 個檔案 | 刪除 {n} 個檔案",
+  "ConfirmDeleteSelected": "你是否要刪除這個檔案？ | 你是否要刪除 {n} 個檔案？"
 }
