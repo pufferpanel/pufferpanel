@@ -35,7 +35,7 @@
   "Deleting": "Removing Server, please wait...",
   "Deleted": "伺服器已刪除",
   "SftpConnection": "連接 SFTP",
-  "EditDefinition": "編輯伺服器定義",
+  "EditDefinition": "編輯伺服器資料",
   "Reload": "從硬碟重新讀取伺服器資料",
   "Reloaded": "已重新讀取伺服器資料",
   "Create": "Create Server",
