@@ -1,72 +1,72 @@
 {
-  "ConditionHint": "Only execute this step if this condition is met",
+  "ConditionHint": "僅在符合條件時執行此步驟",
   "mojangdl": {
-    "generic": "Download Minecraft",
-    "formatted": "Download Minecraft"
+    "generic": "下載 Minecraft",
+    "formatted": "下載 Minecraft"
   },
   "writefile": {
-    "generic": "Write to file",
-    "formatted": "Write to file {target}"
+    "generic": "寫入檔案",
+    "formatted": "寫入檔案 {target}"
   },
   "resolveforgeversion": {
-    "generic": "Resolve Minecraft Forge Version",
-    "formatted": "Resolve Minecraft Forge Version"
+    "generic": "解析 Minecraft Forge 版本",
+    "formatted": "解析 Minecraft Forge 版本"
   },
   "download": {
-    "generic": "Download file(s)",
-    "formatted": "Download {file} | Download {n} files",
-    "files": "Files"
+    "generic": "下載檔案",
+    "formatted": "下載 {file} | 下載 {n} 個檔案",
+    "files": "檔案清單"
   },
   "command": {
-    "generic": "Run command(s)",
-    "formatted": "Run {command} | Run {n} commands",
-    "commands": "Commands"
+    "generic": "執行命令",
+    "formatted": "執行命令 | 執行 {n} 條命令",
+    "commands": "命令列表"
   },
   "alterfile": {
-    "generic": "Modify a file",
-    "formatted": "Modify file {target}",
-    "regex": "Treat search string as regular expression",
-    "search": "Search",
-    "replace": "Replace matches with"
+    "generic": "修改檔案",
+    "formatted": "修改檔案 {target}",
+    "regex": "以正規表達式進行搜尋",
+    "search": "搜尋",
+    "replace": "將符合的項目取代為"
   },
   "move": {
-    "generic": "Move or rename a file",
-    "formatted": "Move file {source} to {target}",
-    "source": "Source Path",
-    "target": "Target Path"
+    "generic": "移動或重新命名檔案",
+    "formatted": "將檔案從 {source} 移動到 {target}",
+    "source": "來源路徑",
+    "target": "目標路徑"
   },
   "mkdir": {
-    "generic": "Create a directory",
-    "formatted": "Create directory {target}"
+    "generic": "建立資料夾",
+    "formatted": "建立資料夾 {target}"
   },
   "steamgamedl": {
-    "generic": "Install from Steam",
-    "formatted": "Install Steam App ID {appId}",
+    "generic": "從 Steam 安裝",
+    "formatted": "安裝 Steam App ID {appId}",
     "appId": "Steam App ID"
   },
   "javadl": {
-    "generic": "Install Java",
-    "formatted": "Install Java {version}"
+    "generic": "安裝 Java",
+    "formatted": "安裝 Java {version}"
   },
   "forgedl": {
-    "generic": "Download Minecraft Forge",
-    "formatted": "Download Minecraft Forge"
+    "generic": "下載 Minecraft Forge",
+    "formatted": "下載 Minecraft Forge"
   },
   "spongeforgedl": {
-    "generic": "Download Minecraft SpongeForge",
-    "formatted": "Download Minecraft SpongeForge",
-    "releaseType": "Release Type"
+    "generic": "下載 Minecraft SpongeForge",
+    "formatted": "下載 Minecraft SpongeForge",
+    "releaseType": "版本類型"
   },
   "fabricdl": {
-    "generic": "Download Minecraft Fabric",
-    "formatted": "Download Minecraft Fabric"
+    "generic": "下載 Minecraft Fabric",
+    "formatted": "下載 Minecraft Fabric"
   },
   "curseforge": {
-    "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "generic": "從 CurseForge 下載",
+    "formatted": "從 CurseForge 下載"
   },
   "nodejsdl": {
-    "generic": "Install Node.js",
-    "formatted": "Install Node.js {version}"
+    "generic": "安裝 Node.js",
+    "formatted": "安裝 Node.js {version}"
   }
 }
