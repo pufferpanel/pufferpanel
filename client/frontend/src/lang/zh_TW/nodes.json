@@ -1,50 +1,50 @@
 {
   "Node": "節點",
-  "Nodes": "節點",
+  "Nodes": "節點清單",
   "Edit": "編輯節點",
   "Add": "新增節點",
-  "Create": "Create Node",
+  "Create": "建立節點",
   "Update": "更新節點",
   "Delete": "刪除節點",
-  "ConfirmDelete": "Do you really want to delete the node {name}?",
-  "Created": "Created Node",
-  "Updated": "Updated Node",
-  "Deleted": "Deleted Node",
-  "Reachable": "This node is correctly set up and running",
-  "Unreachable": "This node is either not set up correctly or currently unavailable",
+  "ConfirmDelete": "是否刪除節點 {name}？",
+  "Created": "已建立節點",
+  "Updated": "已更新節點",
+  "Deleted": "已刪除節點",
+  "Reachable": "此節點已正確設定並正在執行",
+  "Unreachable": "此節點尚未被正確設定或目前不可用",
   "features": {
     "os": {
-      "label": "Operating System",
+      "label": "作業系統",
       "linux": "Linux",
       "windows": "Windows"
     },
     "arch": {
-      "label": "CPU Architecture",
-      "amd64": "x86 64bit",
-      "arm": "ARM 32bit",
-      "arm64": "ARM 64bit"
+      "label": "CPU 架構",
+      "amd64": "x86 64位元",
+      "arm": "ARM 32位元",
+      "arm64": "ARM 64位元"
     },
     "docker": {
-      "true": "Docker available",
-      "false": "Docker not available"
+      "true": "Docker 可用",
+      "false": "Docker 不可用"
     },
-    "envs": "Available Environments"
+    "envs": "可用的環境"
   },
-  "PublicHost": "公用主機名稱",
-  "PublicPort": "公用連線埠",
+  "PublicHost": "公開主機名稱",
+  "PublicPort": "公開連線埠",
   "PrivateHost": "私人主機名稱",
-  "PrivatePort": "私人連線埠",
-  "SftpPort": "SFTP 連線埠",
-  "WithPrivateAddress": "Use a different host/port for server to server communication",
-  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
-  "LocalNodeEdit": "The local node does not have any editable settings\n\nTo change the host displayed with servers hosted on this node adjust the panels master url in the panel settings",
-  "Deploy": "Deploy Node",
+  "PrivatePort": "私人連接埠",
+  "SftpPort": "SFTP 連接埠",
+  "WithPrivateAddress": "使伺服器之間的通訊使用不同的主機/連接埠",
+  "WithPrivateAddressHint": "當主節點需要與新節點通訊時，才會使用這個單獨的位址。例如兩節點位在同一個內網時。",
+  "LocalNodeEdit": "此本地節點沒有可以編輯的設定\n\n如要更改此節點所託管的伺服器顯示的主機，請更改面板上的主 URL",
+  "Deploy": "部署節點",
   "deploy": {
-    "Step1": "## Step 1\n\nInstall PufferPanel on the new server, [see the docs for details](https://docs.pufferpanel.com/en/latest/installing.html)",
-    "Step2": "## Step 2\n\nStop the PufferPanel service on the new server if it was started during installation by running `sudo systemctl stop pufferpanel`",
-    "Step3": "## Step 3\n\nReplace the contents of the PufferPanel config file on the new server with the code below\n\nThe config file is usually found at `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
-    "Step4": "## Step 4\n\nEnable and (re)start the PufferPanel service on the new server by running `sudo systemctl enable --now pufferpanel`",
-    "Step5": "### Your new node is now set up and ready to go"
+    "Step1": "## 步驟 1\n\n在新伺服器上安裝 PufferPanel [查看文件以得知細節](https://docs.pufferpanel.com/en/latest/installing.html)",
+    "Step2": "## 步驟 2\n\n如果新伺服器上的 PufferPanel 服務在安裝過程中使用 `sudo systemctl stop pufferpanel` 啟動，請將其停止",
+    "Step3": "## 步驟 3\n\n將新伺服的設定檔案覆寫為下方的內容\n\n設定檔通常位於 `/etc/pufferpanel/config.json`\n\n```\n{config}\n```",
+    "Step4": "## 步驟 4\n\n執行 `sudo systemctl enable --now pufferpanel` 命令以啟用並啟動新伺服器上的 PufferPanel 服務",
+    "Step5": "### 你已完成新節點的設定"
   },
   "DeploymentInstruction": "要部署該節點，請在新伺服器上安裝 PufferPanel 後將設定檔案放在 `/etc/pufferpanel/`中。<br/>然後在新伺服器上重新啟動 PufferPanel 。"
 }
