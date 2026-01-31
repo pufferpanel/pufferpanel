@@ -429,11 +429,10 @@ jobs:
           images: |
             name=${{ vars.REGISTRY != 'docker.com' && format('{0}/', env.REGISTRY) || '' }}${{ env.IMAGE_NAME }},enable=${{ vars.REGISTRY != 'docker.com' }}
             name=${{ env.IMAGE_NAME }},enable=${{ vars.REGISTRY == 'docker.com' }}
-          flavor: |
-            latest=false
           tags: |
             type=ref,prefix=branch-,event=branch
             type=semver,pattern={{version}}
+            type=raw,value
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v4

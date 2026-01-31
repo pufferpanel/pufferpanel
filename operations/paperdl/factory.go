@@ -32,7 +32,7 @@ func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.O
 		project = "paper"
 	}
 
-	return PaperDl{MinecraftVersion: minecraftVersion, Build: build, Filename: filename}, nil
+	return PaperDl{MinecraftVersion: minecraftVersion, Build: build, Filename: filename, Project: project}, nil
 }
 
 func (of OperationFactory) Key() string {
