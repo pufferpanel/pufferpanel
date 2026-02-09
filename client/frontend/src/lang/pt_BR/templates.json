@@ -44,6 +44,7 @@
   "RepoBranch": "Branch do Repositório",
   "ConfirmDeleteRepo": "Você tem certeza que quer excluir o repositório '{name}'?",
   "DeleteRepo": "Excluir Repositório",
+  "MinecraftVersion": "Minecraft Version",
   "signals": {
     "1": "SIGHUP",
     "2": "SIGINT (CTRL+C)",
