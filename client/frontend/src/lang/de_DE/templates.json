@@ -44,6 +44,7 @@
   "RepoBranch": "Repository-Abteilung",
   "ConfirmDeleteRepo": "Sind sie sicher, dass sie das Repository '{name}' löschen möchten?",
   "DeleteRepo": "Repository löschen",
+  "MinecraftVersion": "Minecraft Version",
   "signals": {
     "1": "SIGHUP",
     "2": "SIGINT (STRG+C)",
