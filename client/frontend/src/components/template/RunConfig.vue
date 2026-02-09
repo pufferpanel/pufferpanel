@@ -63,9 +63,11 @@ function updateStopType() {
 function addCommand() {
   if (!template.value.run.command) {
     template.value.run.command = []
+    update()
   } else if (!Array.isArray(template.value.run.command)) {
     const tmp = template.value.run.command
     template.value.run.command = [{ command: tmp, if: '' }]
+    update()
   }
   editIndex.value = template.value.run.command.length
   edit.value = { command: '', if: '' }
@@ -97,6 +99,7 @@ function cancelEdit() {
 }
 
 function confirmEdit() {
+  console.log('commands', JSON.stringify(template.value.run.command))
   editOpen.value = false
   template.value.run.command[editIndex.value] = edit.value
   editIndex.value = 0
