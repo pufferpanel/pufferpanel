@@ -14,7 +14,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 
 const typeSelect = ref({})
 const model = ref({ ...props.modelValue })
@@ -39,6 +39,11 @@ function typeChanged(newType) {
 function getLabel(field) {
   return field.label ? t(field.label) : t(`operators.${model.value.type}.${field.name}`)
 }
+
+function getHint(field) {
+  if (field.hint) return t(field.hint)
+  if (te(`operators.${model.value.type}.${field.name}Hint`)) return t(`operators.${model.value.type}.${field.name}Hint`)
+}
 </script>
 
 <template>
@@ -46,10 +51,10 @@ function getLabel(field) {
     <dropdown ref="typeSelect" v-model="model.type" :options="types" @update:modelValue="typeChanged" />
     <text-field v-model="model.if" :label="t('common.Condition')" :hint="t('operators.ConditionHint')" @update:modelValue="update" />
     <div v-for="field in operators[model.type]" :key="field.name">
-      <text-field v-if="field.type === 'text'" v-model="model[field.name]" :label="getLabel(field)" @update:modelValue="update" />
-      <toggle v-if="field.type === 'boolean'" v-model="model[field.name]" :label="getLabel(field)" @update:modelValue="update" />
+      <text-field v-if="field.type === 'text'" v-model="model[field.name]" :label="getLabel(field)" :hint="getHint(field)" @update:modelValue="update" />
+      <toggle v-if="field.type === 'boolean'" v-model="model[field.name]" :label="getLabel(field)" :hint="getHint(field)" @update:modelValue="update" />
       <ace v-if="field.type === 'textarea'" :id="`var-${field.name}-editor`" v-model="model[field.name]" :file="field.modeFile ? model[field.modeFile] : undefined" @update:modelValue="update" />
-      <list-input v-if="field.type === 'list'" v-model="model[field.name]" :label="getLabel(field)" allow-swap @update:modelValue="update" />
+      <list-input v-if="field.type === 'list'" v-model="model[field.name]" :label="getLabel(field)" :hint="getHint(field)" allow-swap @update:modelValue="update" />
     </div>
   </div>
 </template>

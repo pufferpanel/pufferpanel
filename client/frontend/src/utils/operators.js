@@ -10,6 +10,10 @@ export function generateOperatorLabel(t, o) {
       c = Array.isArray(o.commands) ? o.commands.length : 1
       if (c === 1) params.command = Array.isArray(o.commands) ? o.commands[0] : o.commands
       return t(`operators.${o.type}.formatted`, params, c)
+    case "archive":
+      c = Array.isArray(o.source) ? o.source.length : 1
+      if (c === 1) params.file = Array.isArray(o.source) ? o.source[0] : o.source
+      return t(`operators.${o.type}.formatted`, params, c)
     default:
       return t(`operators.${o.type}.formatted`, params, c)
   }
@@ -87,6 +91,46 @@ export const operators = {
       default: ''
     }
   ],
+  archive: [
+    {
+      name: 'source',
+      type: 'list',
+      default: []
+    },
+    {
+      name: 'destination',
+      type: 'text',
+      label: 'templates.Filename',
+      default: ''
+    }
+  ],
+  extract: [
+    {
+      name: 'source',
+      type: 'text',
+      label: 'templates.Filename',
+      default: ''
+    },
+    {
+      name: 'destination',
+      type: 'text',
+      default: ''
+    }
+  ],
+  console: [
+    {
+      name: 'message',
+      type: 'text',
+      default: ''
+    }
+  ],
+  sleep: [
+    {
+      name: 'duration',
+      type: 'text',
+      default: '5s'
+    }
+  ],
   steamgamedl: [
     {
       name: 'appId',
@@ -118,15 +162,51 @@ export const operators = {
   ],
   forgedl: [
     {
+      name: 'minecraftVersion',
+      type: 'text',
+      label: 'templates.MinecraftVersion',
+      default: 'latest'
+    },
+    {
       name: 'version',
       type: 'text',
       label: 'templates.Version',
       default: ''
     },
     {
-      name: 'filename',
+      name: 'target',
       type: 'text',
       label: 'templates.Filename',
+      default: ''
+    },
+    {
+      name: 'outputVariable',
+      type: 'text',
+      default: ''
+    }
+  ],
+  neoforgedl: [
+    {
+      name: 'minecraftVersion',
+      type: 'text',
+      label: 'templates.MinecraftVersion',
+      default: 'latest'
+    },
+    {
+      name: 'version',
+      type: 'text',
+      label: 'templates.Version',
+      default: ''
+    },
+    {
+      name: 'target',
+      type: 'text',
+      label: 'templates.Filename',
+      default: ''
+    },
+    {
+      name: 'outputVariable',
+      type: 'text',
       default: ''
     }
   ],
@@ -143,6 +223,47 @@ export const operators = {
       type: 'text',
       label: 'templates.Filename',
       default: ''
+    }
+  ],
+  paperdl: [
+    {
+      name: 'project',
+      type: 'text',
+      default: 'paper'
+    },
+    {
+      name: 'minecraftVersion',
+      type: 'text',
+      label: 'templates.MinecraftVersion',
+      default: 'latest'
+    },
+    {
+      name: 'build',
+      type: 'text',
+      default: 'latest'
+    },
+    {
+      name: 'target',
+      type: 'text',
+      label: 'templates.Filename',
+      default: 'server.jar'
+    }
+  ],
+  curseforge: [
+    {
+      name: 'projectId',
+      type: 'text',
+      default: ''
+    },
+    {
+      name: 'fileId',
+      type: 'text',
+      default: ''
+    },
+    {
+      name: 'java',
+      type: 'text',
+      default: 'java'
     }
   ],
   nodejsdl: [
