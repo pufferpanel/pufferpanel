@@ -44,6 +44,7 @@
   "RepoBranch": "リポジトリブランチ",
   "ConfirmDeleteRepo": "リポジトリ「{name}」を削除してもよろしいですか？",
   "DeleteRepo": "リポジトリを削除",
+  "MinecraftVersion": "Minecraft Version",
   "signals": {
     "1": "登録",
     "2": "SIGINT (CTRL+C)",
