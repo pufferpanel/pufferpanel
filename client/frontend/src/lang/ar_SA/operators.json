@@ -39,6 +39,27 @@
     "generic": "Create a directory",
     "formatted": "Create directory {target}"
   },
+  "archive": {
+    "generic": "Archive files",
+    "formatted": "Archive {file} to {destination} | Archive {n} files to {destination}",
+    "source": "Files to archive"
+  },
+  "extract": {
+    "generic": "Extract archive",
+    "formatted": "Extract {source} to {destination}",
+    "destination": "Destination"
+  },
+  "console": {
+    "generic": "Console message",
+    "formatted": "Print \"{message}\" to console",
+    "message": "Message"
+  },
+  "sleep": {
+    "generic": "Wait",
+    "formatted": "Wait for {duration}",
+    "duration": "Duration",
+    "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
+  },
   "steamgamedl": {
     "generic": "Install from Steam",
     "formatted": "Install Steam App ID {appId}",
@@ -50,7 +71,13 @@
   },
   "forgedl": {
     "generic": "Download Minecraft Forge",
-    "formatted": "Download Minecraft Forge"
+    "formatted": "Download Minecraft Forge",
+    "outputVariable": "Output variable"
+  },
+  "neoforgedl": {
+    "generic": "Download Minecraft Neoforge",
+    "formatted": "Download Minecraft Neoforge",
+    "outputVariable": "Output variable"
   },
   "spongeforgedl": {
     "generic": "Download Minecraft SpongeForge",
@@ -61,9 +88,18 @@
     "generic": "Download Minecraft Fabric",
     "formatted": "Download Minecraft Fabric"
   },
+  "paperdl": {
+    "generic": "Download PaperMC project",
+    "formatted": "Download {project} to {target}",
+    "project": "PaperMC project",
+    "build": "Build number"
+  },
   "curseforge": {
     "generic": "Download From CurseForge",
-    "formatted": "Download From CurseForge"
+    "formatted": "Download From CurseForge",
+    "projectId": "Project ID",
+    "fileId": "File ID",
+    "java": "Java"
   },
   "nodejsdl": {
     "generic": "Install Node.js",
