@@ -39,6 +39,27 @@
     "generic": "建立資料夾",
     "formatted": "建立資料夾 {target}"
   },
+  "archive": {
+    "generic": "Archive files",
+    "formatted": "Archive {file} to {destination} | Archive {n} files to {destination}",
+    "source": "Files to archive"
+  },
+  "extract": {
+    "generic": "Extract archive",
+    "formatted": "Extract {source} to {destination}",
+    "destination": "Destination"
+  },
+  "console": {
+    "generic": "Console message",
+    "formatted": "Print \"{message}\" to console",
+    "message": "Message"
+  },
+  "sleep": {
+    "generic": "Wait",
+    "formatted": "Wait for {duration}",
+    "duration": "Duration",
+    "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
+  },
   "steamgamedl": {
     "generic": "從 Steam 安裝",
     "formatted": "安裝 Steam App ID {appId}",
@@ -50,7 +71,13 @@
   },
   "forgedl": {
     "generic": "下載 Minecraft Forge",
-    "formatted": "下載 Minecraft Forge"
+    "formatted": "下載 Minecraft Forge",
+    "outputVariable": "Output variable"
+  },
+  "neoforgedl": {
+    "generic": "Download Minecraft Neoforge",
+    "formatted": "Download Minecraft Neoforge",
+    "outputVariable": "Output variable"
   },
   "spongeforgedl": {
     "generic": "下載 Minecraft SpongeForge",
@@ -61,9 +88,18 @@
     "generic": "下載 Minecraft Fabric",
     "formatted": "下載 Minecraft Fabric"
   },
+  "paperdl": {
+    "generic": "Download PaperMC project",
+    "formatted": "Download {project} to {target}",
+    "project": "PaperMC project",
+    "build": "Build number"
+  },
   "curseforge": {
     "generic": "從 CurseForge 下載",
-    "formatted": "從 CurseForge 下載"
+    "formatted": "從 CurseForge 下載",
+    "projectId": "Project ID",
+    "fileId": "File ID",
+    "java": "Java"
   },
   "nodejsdl": {
     "generic": "安裝 Node.js",
