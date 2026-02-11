@@ -40,6 +40,7 @@
     "BaseColor": "基础颜色",
     "ServerTypeDisplay": "服务器类型",
     "serverTypeDisplay": {
+      "IconBackground": "Icon + Background",
       "Icon": "图标",
       "None": "无"
     },
