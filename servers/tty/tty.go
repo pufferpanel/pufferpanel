@@ -3,13 +3,6 @@ package tty
 import (
 	"errors"
 	"fmt"
-	"github.com/creack/pty"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"github.com/shirou/gopsutil/process"
-	"github.com/spf13/cast"
 	"io"
 	"net"
 	"os"
@@ -20,6 +13,14 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/creack/pty"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
+	"github.com/shirou/gopsutil/process"
+	"github.com/spf13/cast"
 )
 
 type tty struct {
@@ -35,8 +36,6 @@ type tty struct {
 }
 
 func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
-	environment.Wait.Add(1)
-
 	pr, err := t.createCmd(environment.GetRootDirectory(), steps.Command)
 	if err != nil {
 		return err
@@ -81,7 +80,6 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 
 	processTty, err := pty.Start(pr)
 	if err != nil {
-		environment.Wait.Done()
 		return
 	}
 
@@ -255,8 +253,6 @@ func (t *tty) handleClose(environment *pufferpanel.Environment, callback func(ex
 
 	t.mainProcess = nil
 
-	environment.Wait.Done()
-
 	_ = environment.StatusTracker.WriteMessage(pufferpanel.Transmission{
 		Message: pufferpanel.ServerRunning{
 			Running:    false,
@@ -267,6 +263,8 @@ func (t *tty) handleClose(environment *pufferpanel.Environment, callback func(ex
 
 	//t.disableStdin = false
 	t.disableSpecialStats = false
+
+	environment.Wait.Unlock()
 
 	if callback != nil {
 		callback(exitCode)

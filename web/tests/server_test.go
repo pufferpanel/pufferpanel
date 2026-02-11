@@ -6,6 +6,15 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/gorilla/websocket"
 	"github.com/pkg/sftp"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -20,14 +29,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/ssh"
-	"io"
-	"net/http"
-	"net/url"
-	"os"
-	"path/filepath"
-	"strings"
-	"testing"
-	"time"
 )
 
 func TestServers(t *testing.T) {
@@ -281,126 +282,128 @@ func TestServers(t *testing.T) {
 				}
 			}(c)
 
-			t.Run("AddSubUser", func(t *testing.T) {
-				var data = []byte(`{"scopes": ["server.view", "server.data.view"]}`)
-				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoLoginUser.Email, data, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
-			})
-
-			t.Run("GetSubUsers", func(t *testing.T) {
-				response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
-				if !assert.Equal(t, http.StatusOK, response.Code) {
-					return
-				}
-				var data []*models.UserPermissionsView
-				err := json.NewDecoder(response.Body).Decode(&data)
-				if !assert.NoError(t, err) {
-					return
-				}
-
-				if assert.NotEmpty(t, data) {
-					return
-				}
-				found := false
-				for _, v := range data {
-					if v.Email == loginNoLoginUser.Email {
-						var expectedScopes = []*scopes.Scope{
-							scopes.ScopeServerView, scopes.ScopeServerViewData,
-						}
-						if !assert.Equal(t, expectedScopes, v.Scopes) {
-							return
-						}
-						found = true
+			t.Run("SubUsers", func(t *testing.T) {
+				t.Run("Add", func(t *testing.T) {
+					var data = []byte(`{"scopes": ["server.view", "server.data.view"]}`)
+					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoLoginUser.Email, data, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
 					}
-				}
+				})
 
-				if !found {
-					assert.Fail(t, "Failed to locate user")
-				}
-			})
-
-			t.Run("GrantUserPermissions", func(t *testing.T) {
-				var data = []byte(`{"scopes": ["server.view", "server.data.view", "server.start", "server.users.view", "server.users.edit"]}`)
-				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoLoginUser.Email, data, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
-
-				response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
-				if !assert.Equal(t, http.StatusOK, response.Code) {
-					return
-				}
-				var perms []*models.UserPermissionsView
-				err := json.NewDecoder(response.Body).Decode(&perms)
-				if !assert.NoError(t, err) {
-					return
-				}
-
-				if assert.NotEmpty(t, perms) {
-					return
-				}
-				found := false
-				for _, v := range perms {
-					if v.Email == loginNoLoginUser.Email {
-						var expectedScopes = []*scopes.Scope{
-							scopes.ScopeServerView, scopes.ScopeServerViewData, scopes.ScopeServerStart, scopes.ScopeServerUserView, scopes.ScopeServerUserEdit,
-						}
-						if !assert.Equal(t, expectedScopes, v.Scopes) {
-							return
-						}
-						found = true
+				t.Run("GetAll", func(t *testing.T) {
+					response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
+					if !assert.Equal(t, http.StatusOK, response.Code) {
+						return
 					}
-				}
-
-				if !found {
-					assert.Fail(t, "Failed to locate user")
-				}
-			})
-
-			t.Run("SubuserGrantUserPermissions", func(t *testing.T) {
-				//first get a session for the fake user
-				testSession, err := createSession(db, loginNoLoginUser)
-				if !assert.NoError(t, err) {
-					return
-				}
-
-				var data = []byte(`{"scopes": ["server.view", "server.start", "server.stop"]}`)
-				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoAdminWithServersUser.Email, data, testSession)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
-
-				response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
-				if !assert.Equal(t, http.StatusOK, response.Code) {
-					return
-				}
-				var perms []*models.UserPermissionsView
-				err = json.NewDecoder(response.Body).Decode(&perms)
-				if !assert.NoError(t, err) {
-					return
-				}
-
-				if assert.NotEmpty(t, perms) {
-					return
-				}
-				found := false
-				for _, v := range perms {
-					if v.Email == loginNoAdminWithServersUser.Email {
-						var expectedScopes = []*scopes.Scope{
-							scopes.ScopeServerView, scopes.ScopeServerStart,
-						}
-						if !assert.Equal(t, expectedScopes, v.Scopes) {
-							return
-						}
-						found = true
+					var data []*models.UserPermissionsView
+					err := json.NewDecoder(response.Body).Decode(&data)
+					if !assert.NoError(t, err) {
+						return
 					}
-				}
 
-				if !found {
-					assert.Fail(t, "Failed to locate user")
-				}
+					if assert.NotEmpty(t, data) {
+						return
+					}
+					found := false
+					for _, v := range data {
+						if v.Email == loginNoLoginUser.Email {
+							var expectedScopes = []*scopes.Scope{
+								scopes.ScopeServerView, scopes.ScopeServerViewData,
+							}
+							if !assert.Equal(t, expectedScopes, v.Scopes) {
+								return
+							}
+							found = true
+						}
+					}
+
+					if !found {
+						assert.Fail(t, "Failed to locate user")
+					}
+				})
+
+				t.Run("GrantUserPermissions", func(t *testing.T) {
+					var data = []byte(`{"scopes": ["server.view", "server.data.view", "server.start", "server.users.view", "server.users.edit"]}`)
+					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoLoginUser.Email, data, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+
+					response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
+					if !assert.Equal(t, http.StatusOK, response.Code) {
+						return
+					}
+					var perms []*models.UserPermissionsView
+					err := json.NewDecoder(response.Body).Decode(&perms)
+					if !assert.NoError(t, err) {
+						return
+					}
+
+					if assert.NotEmpty(t, perms) {
+						return
+					}
+					found := false
+					for _, v := range perms {
+						if v.Email == loginNoLoginUser.Email {
+							var expectedScopes = []*scopes.Scope{
+								scopes.ScopeServerView, scopes.ScopeServerViewData, scopes.ScopeServerStart, scopes.ScopeServerUserView, scopes.ScopeServerUserEdit,
+							}
+							if !assert.Equal(t, expectedScopes, v.Scopes) {
+								return
+							}
+							found = true
+						}
+					}
+
+					if !found {
+						assert.Fail(t, "Failed to locate user")
+					}
+				})
+
+				t.Run("SubuserGrantUserPermissions", func(t *testing.T) {
+					//first get a session for the fake user
+					testSession, err := createSession(db, loginNoLoginUser)
+					if !assert.NoError(t, err) {
+						return
+					}
+
+					var data = []byte(`{"scopes": ["server.view", "server.start", "server.stop"]}`)
+					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoAdminWithServersUser.Email, data, testSession)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+
+					response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
+					if !assert.Equal(t, http.StatusOK, response.Code) {
+						return
+					}
+					var perms []*models.UserPermissionsView
+					err = json.NewDecoder(response.Body).Decode(&perms)
+					if !assert.NoError(t, err) {
+						return
+					}
+
+					if assert.NotEmpty(t, perms) {
+						return
+					}
+					found := false
+					for _, v := range perms {
+						if v.Email == loginNoAdminWithServersUser.Email {
+							var expectedScopes = []*scopes.Scope{
+								scopes.ScopeServerView, scopes.ScopeServerStart,
+							}
+							if !assert.Equal(t, expectedScopes, v.Scopes) {
+								return
+							}
+							found = true
+						}
+					}
+
+					if !found {
+						assert.Fail(t, "Failed to locate user")
+					}
+				})
 			})
 
 			t.Run("UpdateVariable", func(t *testing.T) {
@@ -496,41 +499,50 @@ func TestServers(t *testing.T) {
 				}
 			})
 
-			t.Run("StartServer", func(t *testing.T) {
-				response := CallAPI("POST", "/api/servers/"+ServerId+"/start", nil, session)
-				assert.Equal(t, http.StatusAccepted, response.Code)
+			t.Run("RunServer", func(t *testing.T) {
+				var startServer = func(t *testing.T) {
+					response := CallAPI("POST", "/api/servers/"+ServerId+"/start?wait=true", nil, session)
+					assert.Equal(t, http.StatusNoContent, response.Code)
 
-				time.Sleep(1000 * time.Millisecond)
-			})
-
-			t.Run("StopServer", func(t *testing.T) {
-				response := CallAPI("POST", "/api/servers/"+ServerId+"/stop", nil, session)
-				if !assert.Equal(t, http.StatusAccepted, response.Code) {
-					return
+					time.Sleep(5 * time.Second)
 				}
-
-				//now we wait for the install to finish
-				timeout := 60
-				counter := 0
-				for counter < timeout {
-					time.Sleep(time.Second)
-					response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
-					assert.Equal(t, http.StatusOK, response.Code)
-					var msg pufferpanel.ServerRunning
-					err := json.NewDecoder(response.Body).Decode(&msg)
-					if !assert.NoError(t, err) {
+				var stopServer = func(t *testing.T) {
+					response := CallAPI("POST", "/api/servers/"+ServerId+"/stop", nil, session)
+					if !assert.Equal(t, http.StatusAccepted, response.Code) {
 						return
 					}
 
-					if msg.Running {
-						counter++
-					} else {
-						break
+					//now we wait for the operation to finish
+					timeout := 60
+					counter := 0
+					for counter < timeout {
+						time.Sleep(time.Second)
+						response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
+						assert.Equal(t, http.StatusOK, response.Code)
+						var msg pufferpanel.ServerRunning
+						err := json.NewDecoder(response.Body).Decode(&msg)
+						if !assert.NoError(t, err) {
+							return
+						}
+
+						if msg.Running {
+							counter++
+						} else {
+							break
+						}
+					}
+					if counter >= timeout {
+						assert.Fail(t, "Server took too long to stop, assuming test failed")
 					}
 				}
-				if counter >= timeout {
-					assert.Fail(t, "Server took too long to stop, assuming test failed")
-				}
+
+				t.Run("StartServer", startServer)
+
+				t.Run("StopServer", stopServer)
+
+				t.Run("StartServerAgain", startServer)
+
+				t.Run("StopServerAgain", stopServer)
 			})
 
 			listening = false
@@ -666,93 +678,96 @@ func TestServers(t *testing.T) {
 				})
 			})
 
-			var taskId = "testtask"
-			t.Run("CreateTask", func(t *testing.T) {
-				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/tasks/"+taskId, TaskDefinition, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
-				assert.FileExists(t, filepath.Join(config.ServersFolder.Value(), ServerId+".cron"))
-			})
+			t.Run("Tasks", func(t *testing.T) {
+				var taskId = "testtask"
 
-			t.Run("GetTasks", func(t *testing.T) {
-				response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks", nil, session)
-				if !assert.Equal(t, http.StatusOK, response.Code) {
-					return
-				}
+				t.Run("Create", func(t *testing.T) {
+					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/tasks/"+taskId, TaskDefinition, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+					assert.FileExists(t, filepath.Join(config.ServersFolder.Value(), ServerId+".cron"))
+				})
 
-				var res pufferpanel.ServerTasks
-				err := json.NewDecoder(response.Body).Decode(&res)
-				if !assert.NoError(t, err) {
-					return
-				}
-				if !assert.NotEmpty(t, res.Tasks) {
-					return
-				}
-			})
+				t.Run("GetAll", func(t *testing.T) {
+					response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks", nil, session)
+					if !assert.Equal(t, http.StatusOK, response.Code) {
+						return
+					}
 
-			t.Run("GetTask", func(t *testing.T) {
-				response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks/"+taskId, nil, session)
-				if !assert.Equal(t, http.StatusOK, response.Code) {
-					return
-				}
+					var res pufferpanel.ServerTasks
+					err := json.NewDecoder(response.Body).Decode(&res)
+					if !assert.NoError(t, err) {
+						return
+					}
+					if !assert.NotEmpty(t, res.Tasks) {
+						return
+					}
+				})
 
-				var res pufferpanel.ServerTask
-				err := json.NewDecoder(response.Body).Decode(&res)
-				if !assert.NoError(t, err) {
-					return
-				}
-				assert.NotEmpty(t, res.Operations)
-			})
+				t.Run("Get", func(t *testing.T) {
+					response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks/"+taskId, nil, session)
+					if !assert.Equal(t, http.StatusOK, response.Code) {
+						return
+					}
 
-			t.Run("RunTask", func(t *testing.T) {
-				eulaFile := filepath.Join(serverDir, "eula.txt")
-				err := os.Remove(eulaFile)
-				if !assert.NoError(t, err) {
-					return
-				}
+					var res pufferpanel.ServerTask
+					err := json.NewDecoder(response.Body).Decode(&res)
+					if !assert.NoError(t, err) {
+						return
+					}
+					assert.NotEmpty(t, res.Operations)
+				})
 
-				response := CallAPIRaw("POST", "/api/servers/"+ServerId+"/tasks/"+taskId+"/run", nil, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
+				t.Run("Run", func(t *testing.T) {
+					eulaFile := filepath.Join(serverDir, "eula.txt")
+					err := os.Remove(eulaFile)
+					if !assert.NoError(t, err) {
+						return
+					}
 
-				time.Sleep(5 * time.Second)
+					response := CallAPIRaw("POST", "/api/servers/"+ServerId+"/tasks/"+taskId+"/run", nil, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
 
-				assert.FileExists(t, eulaFile)
-			})
+					time.Sleep(5 * time.Second)
 
-			t.Run("EditTask", func(t *testing.T) {
-				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/tasks/"+taskId, TaskDefinition, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
-				if !assert.Len(t, servers.GetFromCache(ServerId).Scheduler.GetTasks(), 1) {
-					return
-				}
-				e := servers.GetFromCache(ServerId).Scheduler.GetExecutor()
-				if !assert.Len(t, e.Jobs(), 1) {
-					return
-				}
-			})
+					assert.FileExists(t, eulaFile)
+				})
 
-			t.Run("DeleteTask", func(t *testing.T) {
-				response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/tasks/"+taskId, nil, session)
-				if !assert.Equal(t, http.StatusNoContent, response.Code) {
-					return
-				}
+				t.Run("Edit", func(t *testing.T) {
+					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/tasks/"+taskId, TaskDefinition, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
+					if !assert.Len(t, servers.GetFromCache(ServerId).Scheduler.GetTasks(), 1) {
+						return
+					}
+					e := servers.GetFromCache(ServerId).Scheduler.GetExecutor()
+					if !assert.Len(t, e.Jobs(), 1) {
+						return
+					}
+				})
 
-				response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks", nil, session)
-				if !assert.Equal(t, http.StatusOK, response.Code) {
-					return
-				}
+				t.Run("Delete", func(t *testing.T) {
+					response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/tasks/"+taskId, nil, session)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						return
+					}
 
-				var res pufferpanel.ServerTasks
-				err := json.NewDecoder(response.Body).Decode(&res)
-				if !assert.NoError(t, err) {
-					return
-				}
-				assert.Empty(t, res.Tasks)
+					response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks", nil, session)
+					if !assert.Equal(t, http.StatusOK, response.Code) {
+						return
+					}
+
+					var res pufferpanel.ServerTasks
+					err := json.NewDecoder(response.Body).Decode(&res)
+					if !assert.NoError(t, err) {
+						return
+					}
+					assert.Empty(t, res.Tasks)
+				})
 			})
 
 			t.Run("FileManager", func(t *testing.T) {

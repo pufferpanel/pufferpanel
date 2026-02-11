@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/servers/tty"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"os"
 	"os/exec"
 	"strings"
 	"sync"
 	"syscall"
+
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/servers/tty"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 // This is a test package to see how unshare/chroot works in the Golang work
@@ -107,7 +108,7 @@ func unshareImplementation(dir, cmd string, args ...string) {
 	factory := tty.EnvironmentFactory{}
 
 	env := pufferpanel.Environment{
-		RootDirectory: dir, Wait: &sync.WaitGroup{}, ConsoleBuffer: pufferpanel.CreateCache(), ConsoleTracker: pufferpanel.CreateTracker(),
+		RootDirectory: dir, Wait: &sync.Mutex{}, ConsoleBuffer: pufferpanel.CreateCache(), ConsoleTracker: pufferpanel.CreateTracker(),
 		StatsTracker: pufferpanel.CreateTracker(), StatusTracker: pufferpanel.CreateTracker(),
 		Wrapper: os.Stdout,
 	}

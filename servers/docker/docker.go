@@ -93,8 +93,6 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 		return err
 	}
 
-	environment.Wait.Add(1)
-
 	go func() {
 		defer d.connection.Close()
 		_, _ = io.Copy(environment.Wrapper, d.connection.Reader)
@@ -599,9 +597,6 @@ func (d *Docker) handleClose(environment *pufferpanel.Environment, client *clien
 	}
 
 	environment.LastExitCode = exitCode
-
-	environment.Wait.Done()
-
 	_ = environment.StatusTracker.WriteMessage(pufferpanel.Transmission{
 		Message: pufferpanel.ServerRunning{
 			Running:    false,
@@ -612,6 +607,8 @@ func (d *Docker) handleClose(environment *pufferpanel.Environment, client *clien
 
 	_ = environment.Console.Close()
 	d.disableSpecialStats = false
+
+	environment.Wait.Unlock()
 
 	if callback != nil {
 		callback(exitCode)

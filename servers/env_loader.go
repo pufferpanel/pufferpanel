@@ -2,12 +2,13 @@ package servers
 
 import (
 	"fmt"
+	"path/filepath"
+	"sync"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/servers/docker"
 	"github.com/pufferpanel/pufferpanel/v3/servers/tty"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"path/filepath"
-	"sync"
 )
 
 var envMapping = make(map[string]pufferpanel.EnvironmentFactory)
@@ -34,7 +35,7 @@ func CreateEnvironment(environmentType, folder string, backupFolder string, serv
 		StatsTracker:    pufferpanel.CreateTracker(),
 		ConsoleBuffer:   pufferpanel.CreateCache(),
 		BackupDirectory: filepath.Join(backupFolder, server.Identifier),
-		Wait:            &sync.WaitGroup{},
+		Wait:            &sync.Mutex{},
 		Server:          server,
 	}
 	item.Implementation = factory.Create()

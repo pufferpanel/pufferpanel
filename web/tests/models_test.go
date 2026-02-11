@@ -1,13 +1,14 @@
 package tests
 
 import (
+	"sync"
+
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
-	"sync"
 )
 
 var loginNoLoginUser = &models.User{
@@ -546,11 +547,7 @@ var EditServerData = []byte(`{
   "run": {
     "command": [
       {
-        "command": "java${javaversion} -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar",
-        "if": "os != \"windows\""
-      },
-      {
-        "command": "java -Xmx${memory}M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar"
+        "command": "sleep 10"
       }
     ],
     "stop": "stop"

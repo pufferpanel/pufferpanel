@@ -34,7 +34,7 @@ type Environment struct {
 	RootDirectory   string          `json:"root,omitempty"`
 	BackupDirectory string          `json:"-"`
 	ConsoleBuffer   *MemoryCache    `json:"-"`
-	Wait            *sync.WaitGroup `json:"-"`
+	Wait            *sync.Mutex     `json:"-"`
 	ServerId        string          `json:"-"`
 	LastExitCode    int             `json:"-"`
 	Wrapper         io.Writer       `json:"-"` //our proxy back to the main
@@ -83,7 +83,12 @@ func (e *Environment) ExecuteAsync(steps ExecutionData) (err error) {
 	//update configs
 	steps.StdInConfig = steps.StdInConfig.Replace(steps.Variables)
 
-	return e.Implementation.ExecuteAsyncImpl(e, steps)
+	e.Wait.Lock()
+	err = e.Implementation.ExecuteAsyncImpl(e, steps)
+	if err != nil {
+		e.Wait.Unlock()
+	}
+	return err
 }
 
 func (e *Environment) CreateConsoleStdinProxy(config StdinConsoleConfiguration, base io.WriteCloser) {
@@ -185,14 +190,17 @@ func (e *Environment) WaitForMainProcessFor(timeout time.Duration) (err error) {
 		return
 	}
 	if running {
+		//if we can get the lock, the process is fully done
+		//but we then need to unlock it, so we can let whatever needs to run "run"
+		defer e.Wait.Unlock()
 		if timeout > 0 {
 			var timer = time.AfterFunc(timeout, func() {
 				err = e.Kill()
 			})
-			e.Wait.Wait()
+			e.Wait.Lock()
 			timer.Stop()
 		} else {
-			e.Wait.Wait()
+			e.Wait.Lock()
 		}
 	}
 	return
