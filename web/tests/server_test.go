@@ -47,6 +47,8 @@ func TestServers(t *testing.T) {
 		Node     *models.Node
 	}
 
+	_ = config.SecurityDisableUnshare.Set(true, false)
+
 	RemoteNode.PublicPort = models.LocalNode.PublicPort
 	RemoteNode.PrivatePort = models.LocalNode.PrivatePort
 	RemoteNode.SFTPPort = models.LocalNode.SFTPPort
