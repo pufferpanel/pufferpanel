@@ -40,6 +40,7 @@
     "BaseColor": "Põhivärv",
     "ServerTypeDisplay": "Serveri Tüüpi Näitaja",
     "serverTypeDisplay": {
+      "IconBackground": "Icon + Background",
       "Icon": "Ikoon",
       "None": "Puudub"
     },
