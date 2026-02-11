@@ -40,6 +40,7 @@
     "BaseColor": "Cor base",
     "ServerTypeDisplay": "Exibição do tipo de servidor",
     "serverTypeDisplay": {
+      "IconBackground": "Icon + Background",
       "Icon": "Ícone",
       "None": "Nenhum"
     },
