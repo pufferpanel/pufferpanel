@@ -40,6 +40,7 @@
     "BaseColor": "Pagrindinė spalva",
     "ServerTypeDisplay": "Serverio tipo rodymas",
     "serverTypeDisplay": {
+      "IconBackground": "Icon + Background",
       "Icon": "Paveiksliukas",
       "None": "Joks"
     },
