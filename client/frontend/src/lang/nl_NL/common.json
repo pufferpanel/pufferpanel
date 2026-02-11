@@ -40,6 +40,7 @@
     "BaseColor": "Basis kleur",
     "ServerTypeDisplay": "Server Type Weergave",
     "serverTypeDisplay": {
+      "IconBackground": "Icon + Background",
       "Icon": "Pictogram",
       "None": "Geen"
     },
