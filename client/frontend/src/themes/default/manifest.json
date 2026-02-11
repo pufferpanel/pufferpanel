@@ -50,6 +50,11 @@
       "options": [
         {
           "value": "server-type-icon",
+          "tkey": "common.theme.serverTypeDisplay.IconBackground",
+          "default": true
+        },
+        {
+          "value": "server-type-icon server-type-nobackground",
           "tkey": "common.theme.serverTypeDisplay.Icon",
           "default": true
         },

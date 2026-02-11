@@ -53,12 +53,38 @@ $serverTypes: (
   'eco',
   'factorio',
   'gmod',
+  'hytale',
   'minecraft-bedrock',
   'minecraft-java',
   'rust',
+  'satisfactory',
+  'squad',
   'starbound',
-  'terraria'
+  'terraria',
+  'tf2',
+  'valheim',
+  'vintage-story',
+  'zomboid'
 );
+
+@each $type in $serverTypes {
+  .server-type-icon:not(.server-type-nobackground) .server-wrapper-#{$type} > a {
+    background-image: url('/img/heros/' + $type + '.jpg');
+    background-position: center center;
+    background-size: 100%;
+    display: block;
+    border-radius: calc(var(--border-radius) + 1px);
+  }
+}
+
+.server-type-icon:not(.server-type-nobackground) {
+  .server-satisfactory, .server-csgo, .server-dontstarvetogether {
+    backdrop-filter: saturate(70%);
+  }
+  .server-gmod {
+    backdrop-filter: saturate(40%);
+  }
+}
 
 .server-type-icon .server {
   position: relative;

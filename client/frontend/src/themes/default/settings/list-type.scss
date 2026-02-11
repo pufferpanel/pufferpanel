@@ -23,34 +23,30 @@
             outline-offset: -3px;
           }
         }
-        @include breakpoint(md) {
-          @include gridlist;
-          .#{$t} {
-            @include card;
-            margin-top: 0;
+        @include gridlist;
+        .#{$t} {
+          @include card;
+          background: color-mix(in srgb, var(--background) 87.5%, #fff0 12.5%);
+          margin-top: 0;
+        }
+        .#{$t}:not(.disabled) {
+          @include link;
+          &:hover {
+            background: color-mix(in srgb, var(--primary) 20%, color-mix(in srgb, var(--background) 85%, #fff0 15%) 80%);
           }
-          .#{$t}:not(.disabled) {
-            @include link;
-          }
-          .#{$t}.disabled {
-            background-color: var(--backdrop);
-          }
+        }
+        .#{$t}.disabled {
+          background-color: var(--backdrop);
         }
 
         @include breakpoint-only(xs) {
-          @include baselist;
+          grid-gap: .75rem;
+          gap: .75rem;
           .list-item {
             padding: 0;
             a {
               width: 100%;
             }
-          }
-          .#{$t} {
-            @include link;
-            padding: 1em;
-          }
-          .createLink {
-            margin-top: 1em;
           }
         }
       }

@@ -92,7 +92,7 @@ function focusList() {
   <div class="serverlist">
     <h1 v-text="t('servers.Servers')" />
     <div v-hotkey="'l'" class="list" @hotkey="focusList()">
-      <div v-for="server in servers" :key="server.id" class="list-item">
+      <div v-for="server in servers" :key="server.id" :class="['list-item', 'server-wrapper', `server-wrapper-${(server.icon || 'none')}`]">
         <router-link :ref="setFirstEntry" :to="{ name: 'ServerView', params: { id: server.id } }">
           <div
             :class="['server', `server-${(server.icon || 'none')}`]"
