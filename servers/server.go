@@ -38,6 +38,7 @@ type Server struct {
 	restoring          bool
 	keepAlive          *time.Ticker
 	keepAliveChan      chan bool
+	isUnsafeRunning    *sync.Mutex
 }
 
 var queue *list.List
@@ -172,32 +173,46 @@ func CreateProgram() *Server {
 	}
 	p.stopChan = make(chan bool, 1)
 	p.waitForConsole = &sync.Mutex{}
+	p.isUnsafeRunning = &sync.Mutex{}
 	p.keepAliveChan = make(chan bool)
 	return p
 }
 
 // Start Starts the program.
 // This includes starting the environment if it is not running.
-func (p *Server) Start() error {
-	if err := p.IsIdle(); err != nil {
-		return err
+func (p *Server) Start() (err error) {
+	if err = p.IsIdle(); err != nil {
+		return
 	}
+
+	if !p.isUnsafeRunning.TryLock() {
+		return pufferpanel.ErrServerRunning
+	}
+
+	defer func() {
+		if err != nil {
+			//since we had an issue starting, we need to "unlock"
+			//otherwise, the afterExit will unlock this at the end
+			p.isUnsafeRunning.Unlock()
+		}
+	}()
 
 	p.Log(logging.Info, "Starting server %s", p.Id())
 	p.RunningEnvironment.DisplayToConsole(true, "Starting server\n")
 
-	process, err := GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
+	var process OperationProcess
+	process, err = GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
 		p.Log(logging.Error, "Error generating pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
-		return err
+		return
 	}
 
 	err = process.Run(p)
 	if err != nil {
 		p.Log(logging.Error, "Error running pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
-		return err
+		return
 	}
 
 	var command pufferpanel.Command
@@ -558,19 +573,20 @@ func (p *Server) afterExit(exitCode int) {
 
 	processes, err := GenerateProcess(p.Execution.PostExecution, p.RunningEnvironment, mapping, p.Execution.EnvironmentVariables)
 	if err != nil {
-		p.Log(logging.Error, "Error running post processing for server %s: %s", p.Id(), err)
+		p.Log(logging.Error, "Error generating post processing tasks for server %s: %s", p.Id(), err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n")
-		return
-	}
-	p.RunningEnvironment.DisplayToConsole(true, "Running post-execution steps\n")
-	p.Log(logging.Info, "Running post execution steps: %s", p.Id())
+	} else {
+		p.RunningEnvironment.DisplayToConsole(true, "Running post-execution steps\n")
+		p.Log(logging.Info, "Running post execution steps: %s", p.Id())
 
-	err = processes.Run(p)
-	if err != nil {
-		p.Log(logging.Error, "Error running post processing for server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n")
-		return
+		err = processes.Run(p)
+		if err != nil {
+			p.Log(logging.Error, "Error running post processing for server: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n")
+		}
 	}
+
+	p.isUnsafeRunning.Unlock()
 
 	if graceful && p.Execution.AutoRestartFromGraceful {
 		StartViaService(p)
