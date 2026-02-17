@@ -11,10 +11,12 @@ type OperationFactory struct {
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	o := SteamGameDl{
-		AppId:     cast.ToString(op.OperationArgs["appId"]),
-		Username:  cast.ToString(op.OperationArgs["username"]),
-		Password:  cast.ToString(op.OperationArgs["password"]),
-		ExtraArgs: cast.ToStringSlice(op.OperationArgs["extraArgs"]),
+		AppId:          cast.ToString(op.OperationArgs["appId"]),
+		Username:       cast.ToString(op.OperationArgs["username"]),
+		Password:       cast.ToString(op.OperationArgs["password"]),
+		Branch:         cast.ToString(op.OperationArgs["branch"]),
+		BranchPassword: cast.ToString(op.OperationArgs["branchPassword"]),
+		ExtraArgs:      cast.ToStringSlice(op.OperationArgs["extraArgs"]),
 	}
 	return o, nil
 }

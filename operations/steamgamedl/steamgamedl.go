@@ -3,16 +3,17 @@ package steamgamedl
 import (
 	"bufio"
 	"fmt"
-	"github.com/mholt/archiver/v3"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"github.com/spf13/cast"
 	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
+
+	"github.com/mholt/archiver/v3"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
+	"github.com/spf13/cast"
 )
 
 var downloader sync.Mutex
@@ -23,10 +24,12 @@ func init() {
 }
 
 type SteamGameDl struct {
-	AppId     string
-	Username  string
-	Password  string
-	ExtraArgs []string
+	AppId          string
+	Username       string
+	Password       string
+	Branch         string
+	BranchPassword string
+	ExtraArgs      []string
 }
 
 func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
@@ -65,6 +68,14 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 	if !config.DepotDownloaderDisableLancache.Value() {
 		cmdArgs = append(cmdArgs, "-use-lancache")
 	}
+
+	if c.Branch != "" {
+		cmdArgs = append(cmdArgs, "-branch", c.Branch)
+		if c.BranchPassword != "" {
+			cmdArgs = append(cmdArgs, "-branchpassword", c.BranchPassword)
+		}
+	}
+
 	cmdArgs = append(cmdArgs, c.ExtraArgs...)
 
 	ch := make(chan int, 1)
