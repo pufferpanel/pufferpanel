@@ -63,7 +63,9 @@
   "steamgamedl": {
     "generic": "Installi Steami kaudu",
     "formatted": "Installi Steami App ID {appId}",
-    "appId": "Steami App ID"
+    "appId": "Steami App ID",
+    "branch": "Branch (leave blank for default)",
+    "branchPassword": "Branch Password (if needed)"
   },
   "javadl": {
     "generic": "Installi Java",
