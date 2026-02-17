@@ -63,7 +63,9 @@
   "steamgamedl": {
     "generic": "Nainštalovať zo Steamu",
     "formatted": "Nainštalovať Steam aplikáciu s ID {appId}",
-    "appId": "ID Steam aplikácie"
+    "appId": "ID Steam aplikácie",
+    "branch": "Branch (leave blank for default)",
+    "branchPassword": "Branch Password (if needed)"
   },
   "javadl": {
     "generic": "Nainštalovať Javu",
