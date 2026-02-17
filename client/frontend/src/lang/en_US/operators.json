@@ -65,7 +65,7 @@
     "formatted": "Install Steam App ID {appId}",
     "appId": "Steam App ID",
     "branch": "Branch (leave blank for default)",
-    "banchPassword": "Branch Password (if needed)"
+    "branchPassword": "Branch Password (if needed)"
   },
   "javadl": {
     "generic": "Install Java",
