@@ -65,7 +65,7 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 
 	t.mainProcess = pr
 	environment.DisplayToConsole(true, "Starting process: %s", steps.Command)
-	environment.Log(logging.Info, "Starting process in directory [%s]: %s", t.mainProcess.Dir, strings.Join(t.mainProcess.Args, " "))
+	environment.Log(logging.Info, "Starting process in directory [%s]: %s", t.mainProcess.Dir, strings.Replace(strings.Join(t.mainProcess.Args, " "), "${PUFFERPANEL_SERVER_COMMAND}", steps.Command, 1))
 
 	_ = environment.StatusTracker.WriteMessage(pufferpanel.Transmission{
 		Message: pufferpanel.ServerRunning{
@@ -414,9 +414,10 @@ func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
 			//needs to be lazy because the old root is considered busy as it's still the root outside the namespace
 			"umount -l /old-root",
 			"rm -r /old-root",
-			fmt.Sprintf("unshare -U -w %s --map-user=%d --map-group=%d %s", workDir, os.Getuid(), os.Getgid(), cmd))
+			fmt.Sprintf("unshare -U -w %s --map-user=%d --map-group=%d bash -c '${PUFFERPANEL_SERVER_COMMAND}'", workDir, os.Getuid(), os.Getgid()))
 
 		pr = exec.Command("bash", "-c", strings.Join(unshareArgs, " && "))
+		pr.Env = append(pr.Env, fmt.Sprintf("PUFFERPANEL_SERVER_COMMAND=%s", cmd));
 		pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
 		if err != nil {
 			return
