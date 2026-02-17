@@ -63,7 +63,9 @@
   "steamgamedl": {
     "generic": "Install from Steam",
     "formatted": "Install Steam App ID {appId}",
-    "appId": "Steam App ID"
+    "appId": "Steam App ID",
+    "branch": "Branch (leave blank for default)",
+    "branchPassword": "Branch Password (if needed)"
   },
   "javadl": {
     "generic": "Install Java",
