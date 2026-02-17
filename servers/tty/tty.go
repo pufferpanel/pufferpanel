@@ -337,7 +337,7 @@ func (t *tty) initiateJCMD() (*net.UnixConn, error) {
 
 var cmdList = []string{
 	"mount --make-rprivate --make-rslave --bind . .",
-	"mkdir -p {dev,bin,usr,lib,etc,tmp,proc}",
+	"mkdir -p dev bin usr lib etc tmp proc",
 	"mount -t tmpfs -o size=50m tmpfs tmp",
 	"mount --bind /bin bin",
 	"mount --bind /lib lib",
@@ -347,106 +347,107 @@ var cmdList = []string{
 	"mount --rbind /proc proc",
 }
 
+const Shell = "sh"
+
 func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
 	if t.DisableUnshare || config.SecurityDisableUnshare.Value() {
-		c, args := utils.SplitArguments(cmd)
-		pr = exec.Command(c, args...)
+		pr = exec.Command(Shell, "-c", "${PUFFERPANEL_SERVER_COMMAND}")
 		pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 		pr.Dir = workDir
 		return
-	} else {
-		workDirMount := removeRoot(workDir)
-		binaryFolderMount := removeRoot(config.BinariesFolder.Value())
-		cacheFolderMount := removeRoot(config.CacheFolder.Value())
+	}
 
-		mountFolders := []string{workDirMount, binaryFolderMount, cacheFolderMount}
-		for _, v := range t.Mounts {
-			mountFolders = append(mountFolders, removeRoot(v))
-		}
+	workDirMount := removeRoot(workDir)
+	binaryFolderMount := removeRoot(config.BinariesFolder.Value())
+	cacheFolderMount := removeRoot(config.CacheFolder.Value())
 
-		unshareArgs := make([]string, len(cmdList))
-		copy(unshareArgs, cmdList)
+	mountFolders := []string{workDirMount, binaryFolderMount, cacheFolderMount}
+	for _, v := range t.Mounts {
+		mountFolders = append(mountFolders, removeRoot(v))
+	}
 
-		if runtime.GOARCH == "amd64" {
-			unshareArgs = append(unshareArgs,
-				"mkdir -p lib64",
-				"mount --bind /lib64 lib64",
-			)
-		}
+	unshareArgs := make([]string, len(cmdList))
+	copy(unshareArgs, cmdList)
 
-		var lstat os.FileInfo
-		lstat, err = os.Lstat("/etc/resolv.conf")
-		if err != nil && !errors.Is(err, os.ErrNotExist) {
-			return
-		}
-		if err == nil && lstat.Mode()&os.ModeSymlink != 0 {
-			var absPath string
-			absPath, err = filepath.EvalSymlinks("/etc/resolv.conf")
-			if err != nil {
-				return
-			}
-			localPath := removeRoot(absPath)
-			dir := removeRoot(filepath.Dir(absPath))
-			unshareArgs = append(unshareArgs,
-				fmt.Sprintf("mkdir -p %s", dir),
-				fmt.Sprintf("touch %s", localPath),
-				fmt.Sprintf("mount --rbind %s %s", absPath, localPath),
-			)
-		}
-
+	if runtime.GOARCH == "amd64" {
 		unshareArgs = append(unshareArgs,
-			fmt.Sprintf("mkdir -p {%s}", strings.Join(mountFolders, ",")),
-			fmt.Sprintf("mount --bind %s %s", workDir, workDirMount),
-			fmt.Sprintf("mount --bind %s %s", config.BinariesFolder.Value(), binaryFolderMount),
-			fmt.Sprintf("mount --bind %s %s", config.CacheFolder.Value(), cacheFolderMount),
+			"mkdir -p lib64",
+			"mount --bind /lib64 lib64",
 		)
+	}
 
-		for _, v := range t.Mounts {
-			unshareArgs = append(unshareArgs, fmt.Sprintf("mount --bind %s %s", v, removeRoot(v)))
-		}
-
-		unshareArgs = append(unshareArgs,
-			//move cwd to bind mounted instace of .
-			"cd .",
-			"mkdir -p old-root",
-			//make . the root for everything in the current namespace
-			"pivot_root . old-root",
-			//make the old root unaccessible by unmounting it
-			//needs to be lazy because the old root is considered busy as it's still the root outside the namespace
-			"umount -l /old-root",
-			"rm -r /old-root",
-			fmt.Sprintf("unshare -U -w %s --map-user=%d --map-group=%d bash -c '${PUFFERPANEL_SERVER_COMMAND}'", workDir, os.Getuid(), os.Getgid()))
-
-		pr = exec.Command("bash", "-c", strings.Join(unshareArgs, " && "))
-		pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
+	var lstat os.FileInfo
+	lstat, err = os.Lstat("/etc/resolv.conf")
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return
+	}
+	if err == nil && lstat.Mode()&os.ModeSymlink != 0 {
+		var absPath string
+		absPath, err = filepath.EvalSymlinks("/etc/resolv.conf")
 		if err != nil {
 			return
 		}
-		pr.SysProcAttr = &syscall.SysProcAttr{
-			Setctty: true,
-			Setsid:  true,
-			Unshareflags: syscall.CLONE_NEWUSER |
-				syscall.CLONE_NEWNS |
-				syscall.CLONE_FILES |
-				syscall.CLONE_NEWCGROUP |
-				syscall.CLONE_NEWIPC |
-				syscall.CLONE_NEWUTS,
-			Credential: &syscall.Credential{Uid: 0, Gid: 0, NoSetGroups: true},
-			UidMappings: []syscall.SysProcIDMap{
-				{
-					ContainerID: 0,
-					HostID:      os.Getuid(),
-					Size:        1,
-				},
+		localPath := removeRoot(absPath)
+		dir := removeRoot(filepath.Dir(absPath))
+		unshareArgs = append(unshareArgs,
+			fmt.Sprintf("mkdir -p %s", dir),
+			fmt.Sprintf("touch %s", localPath),
+			fmt.Sprintf("mount --rbind %s %s", absPath, localPath),
+		)
+	}
+
+	unshareArgs = append(unshareArgs,
+		fmt.Sprintf("mkdir -p %s", strings.Join(mountFolders, " ")),
+		fmt.Sprintf("mount --bind %s %s", workDir, workDirMount),
+		fmt.Sprintf("mount --bind %s %s", config.BinariesFolder.Value(), binaryFolderMount),
+		fmt.Sprintf("mount --bind %s %s", config.CacheFolder.Value(), cacheFolderMount),
+	)
+
+	for _, v := range t.Mounts {
+		unshareArgs = append(unshareArgs, fmt.Sprintf("mount --bind %s %s", v, removeRoot(v)))
+	}
+
+	unshareArgs = append(unshareArgs,
+		//move cwd to bind mounted instace of .
+		"cd .",
+		"mkdir -p old-root",
+		//make . the root for everything in the current namespace
+		"pivot_root . old-root",
+		//make the old root unaccessible by unmounting it
+		//needs to be lazy because the old root is considered busy as it's still the root outside the namespace
+		"umount -l /old-root",
+		"rm -r /old-root",
+		fmt.Sprintf("unshare -U -w %s --map-user=%d --map-group=%d %s -c '${PUFFERPANEL_SERVER_COMMAND}'", workDir, os.Getuid(), os.Getgid(), Shell))
+
+	pr = exec.Command(Shell, "-c", strings.Join(unshareArgs, " && "))
+	pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
+	if err != nil {
+		return
+	}
+	pr.SysProcAttr = &syscall.SysProcAttr{
+		Setctty: true,
+		Setsid:  true,
+		Unshareflags: syscall.CLONE_NEWUSER |
+			syscall.CLONE_NEWNS |
+			syscall.CLONE_FILES |
+			syscall.CLONE_NEWCGROUP |
+			syscall.CLONE_NEWIPC |
+			syscall.CLONE_NEWUTS,
+		Credential: &syscall.Credential{Uid: 0, Gid: 0, NoSetGroups: true},
+		UidMappings: []syscall.SysProcIDMap{
+			{
+				ContainerID: 0,
+				HostID:      os.Getuid(),
+				Size:        1,
 			},
-			GidMappings: []syscall.SysProcIDMap{
-				{
-					ContainerID: 0,
-					HostID:      os.Getgid(),
-					Size:        1,
-				},
+		},
+		GidMappings: []syscall.SysProcIDMap{
+			{
+				ContainerID: 0,
+				HostID:      os.Getgid(),
+				Size:        1,
 			},
-		}
+		},
 	}
 	return
 }

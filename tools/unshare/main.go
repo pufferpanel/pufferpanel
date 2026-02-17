@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/servers/tty"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
@@ -76,20 +77,28 @@ func main() {
 		dir = os.Args[1]
 	}
 
-	//as soon as you add the third command, this no longer functions
-	unshareImplementation(dir, "pwd")                        //are we in the right place
-	unshareImplementation(dir, "ls", "-l")                   //do we see anything
-	unshareImplementation(dir, "whoami")                     //are we the correct user
-	unshareImplementation(dir, "touch", "test")              //can we write and it persist
-	unshareImplementation(dir, "curl", "1.1.1.1")            //can we access an IP
-	unshareImplementation(dir, "curl", "google.com")         //does DNS work
-	unshareImplementation(dir, "curl", "https://google.com") //does SSL work
-	unshareImplementation(dir, "ls", "-l", "/")              //is root clean
+	for _, unshare := range []bool{true, false} {
+		_ = config.SecurityDisableUnshare.Set(unshare, false)
 
-	//now let's test the servers!
-	//unshare(dir, "ls", "-l", "/usr/lib/jvm/java-21-openjdk-amd64/lib")
-	//unshare(dir, "env")
-	unshareImplementation(dir, "java", "-Xmx4G", "-jar", "server.jar", "nogui")
+		fmt.Printf("Unshare status: %t", config.SecurityDisableUnshare.Value())
+
+		//as soon as you add the third command, this no longer functions
+		unshareImplementation(dir, "pwd")                        //are we in the right place
+		unshareImplementation(dir, "ls", "-l")                   //do we see anything
+		unshareImplementation(dir, "whoami")                     //are we the correct user
+		unshareImplementation(dir, "touch", "test")              //can we write and it persist
+		unshareImplementation(dir, "curl", "1.1.1.1")            //can we access an IP
+		unshareImplementation(dir, "curl", "google.com")         //does DNS work
+		unshareImplementation(dir, "curl", "https://google.com") //does SSL work
+		unshareImplementation(dir, "ls", "-l", "/")              //is root clean
+
+		//now let's test the servers!
+		//unshare(dir, "ls", "-l", "/usr/lib/jvm/java-21-openjdk-amd64/lib")
+		//unshare(dir, "env")
+		//unshareImplementation(dir, "java", "-Xmx4G", "-jar", "server.jar", "nogui")
+
+		unshareImplementation(dir, "pwd && pwd")
+	}
 }
 
 var cmdList = []string{
