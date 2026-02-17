@@ -55,6 +55,7 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 	}
 	envVars["HOME"] = environment.GetRootDirectory()
 	envVars["TERM"] = "xterm-256color"
+	envVars["PUFFERPANEL_SERVER_COMMAND"] = steps.Command
 	for k, v := range steps.Environment {
 		envVars[k] = v
 	}
@@ -417,7 +418,6 @@ func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
 			fmt.Sprintf("unshare -U -w %s --map-user=%d --map-group=%d bash -c '${PUFFERPANEL_SERVER_COMMAND}'", workDir, os.Getuid(), os.Getgid()))
 
 		pr = exec.Command("bash", "-c", strings.Join(unshareArgs, " && "))
-		pr.Env = append(pr.Env, fmt.Sprintf("PUFFERPANEL_SERVER_COMMAND=%s", cmd));
 		pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
 		if err != nil {
 			return
