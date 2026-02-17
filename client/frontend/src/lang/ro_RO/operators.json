@@ -63,7 +63,9 @@
   "steamgamedl": {
     "generic": "Instalați de pe Steam",
     "formatted": "Instalează Steam App ID {appId}",
-    "appId": "Steam App ID"
+    "appId": "Steam App ID",
+    "branch": "Branch (leave blank for default)",
+    "branchPassword": "Branch Password (if needed)"
   },
   "javadl": {
     "generic": "Instalează Java",
