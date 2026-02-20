@@ -42,30 +42,30 @@
   "archive": {
     "generic": "Архивировать файлы",
     "formatted": "Архивировать {file} в {destination} | Архивировать {n} файл(а/ов) в {destination}",
-    "source": "Files to archive"
+    "source": "Файлы для архивации"
   },
   "extract": {
     "generic": "Извлечь архив",
     "formatted": "Извлечь {source} в {destination}",
-    "destination": "Destination"
+    "destination": "Назначение"
   },
   "console": {
-    "generic": "Console message",
-    "formatted": "Print \"{message}\" to console",
-    "message": "Message"
+    "generic": "Сообщение в консоль",
+    "formatted": "Напечатать \"{message}\" в консоль",
+    "message": "Сообщение"
   },
   "sleep": {
-    "generic": "Wait",
-    "formatted": "Wait for {duration}",
-    "duration": "Duration",
-    "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
+    "generic": "Ждать",
+    "formatted": "Ждать {duration}",
+    "duration": "Продолжительность",
+    "durationHint": "Допустимые единицы времени — ns, us, ms, m и h. Единицы можно комбинировать. Например `1m45s`"
   },
   "steamgamedl": {
     "generic": "Установить из Steam",
     "formatted": "Установить приложение Steam с ID {appId}",
     "appId": "ID приложения Steam",
-    "branch": "Branch (leave blank for default)",
-    "branchPassword": "Branch Password (if needed)"
+    "branch": "Ветка (по умолчанию - оставьте пустым)",
+    "branchPassword": "Пароль ветки (если необходим)"
   },
   "javadl": {
     "generic": "Установка Java",
@@ -74,12 +74,12 @@
   "forgedl": {
     "generic": "Скачать Minecraft Forge",
     "formatted": "Скачать Minecraft Forge",
-    "outputVariable": "Output variable"
+    "outputVariable": "Переменная вывода"
   },
   "neoforgedl": {
-    "generic": "Download Minecraft Neoforge",
-    "formatted": "Download Minecraft Neoforge",
-    "outputVariable": "Output variable"
+    "generic": "Скачать Minecraft Neoforge",
+    "formatted": "Скачать Minecraft Neoforge",
+    "outputVariable": "Переменная вывода"
   },
   "spongeforgedl": {
     "generic": "Скачать Minecraft SpongeForge",
@@ -91,8 +91,8 @@
     "formatted": "Скачать Minecraft Fabric"
   },
   "paperdl": {
-    "generic": "Download PaperMC project",
-    "formatted": "Download {project} to {target}",
+    "generic": "Скачать проект PaperMC",
+    "formatted": "Скачать {project} в {target}",
     "project": "Проект PaperMC",
     "build": "Номер сборки"
   },
