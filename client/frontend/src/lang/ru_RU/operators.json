@@ -40,13 +40,13 @@
     "formatted": "Создать каталог {target}"
   },
   "archive": {
-    "generic": "Archive files",
-    "formatted": "Archive {file} to {destination} | Archive {n} files to {destination}",
+    "generic": "Архивировать файлы",
+    "formatted": "Архивировать {file} в {destination} | Архивировать {n} файл(а/ов) в {destination}",
     "source": "Files to archive"
   },
   "extract": {
-    "generic": "Extract archive",
-    "formatted": "Extract {source} to {destination}",
+    "generic": "Извлечь архив",
+    "formatted": "Извлечь {source} в {destination}",
     "destination": "Destination"
   },
   "console": {
@@ -93,14 +93,14 @@
   "paperdl": {
     "generic": "Download PaperMC project",
     "formatted": "Download {project} to {target}",
-    "project": "PaperMC project",
-    "build": "Build number"
+    "project": "Проект PaperMC",
+    "build": "Номер сборки"
   },
   "curseforge": {
     "generic": "Скачать с CurseForge",
     "formatted": "Скачать с CurseForge",
-    "projectId": "Project ID",
-    "fileId": "File ID",
+    "projectId": "ID проекта",
+    "fileId": "ID файла",
     "java": "Java"
   },
   "nodejsdl": {
