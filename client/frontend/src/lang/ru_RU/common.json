@@ -40,7 +40,7 @@
     "BaseColor": "Основной цвет",
     "ServerTypeDisplay": "Тип отображения сервера",
     "serverTypeDisplay": {
-      "IconBackground": "Icon + Background",
+      "IconBackground": "Иконка + Фон",
       "Icon": "Иконка",
       "None": "Отсутствует"
     },
