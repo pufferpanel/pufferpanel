@@ -40,32 +40,32 @@
     "formatted": "Ordner {target} erstellen"
   },
   "archive": {
-    "generic": "Archive files",
-    "formatted": "Archive {file} to {destination} | Archive {n} files to {destination}",
-    "source": "Files to archive"
+    "generic": "Archivdateien",
+    "formatted": "",
+    "source": "Zu archivierende Dateien"
   },
   "extract": {
-    "generic": "Extract archive",
-    "formatted": "Extract {source} to {destination}",
-    "destination": "Destination"
+    "generic": "Archiv extrahieren",
+    "formatted": "Entpacke {source} in {destination}",
+    "destination": "Ziel"
   },
   "console": {
-    "generic": "Console message",
-    "formatted": "Print \"{message}\" to console",
-    "message": "Message"
+    "generic": "Konsolen-Nachricht",
+    "formatted": "Drucke \"{message}\" auf die Konsole",
+    "message": "Nachricht"
   },
   "sleep": {
-    "generic": "Wait",
-    "formatted": "Wait for {duration}",
-    "duration": "Duration",
-    "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
+    "generic": "Warte",
+    "formatted": "Warte auf {duration}",
+    "duration": "Dauer",
+    "durationHint": "Gültige Zeiteinheiten sind ns, uns, ms, s, m und h. Mehrere Einheiten können kombiniert werden. Zum Beispiel `1m45s`"
   },
   "steamgamedl": {
     "generic": "Von Steam installieren",
     "formatted": "Steam App ID {appId} installieren",
     "appId": "Steam App ID",
-    "branch": "Branch (leave blank for default)",
-    "branchPassword": "Branch Password (if needed)"
+    "branch": "Zweig (für Standardeinstellung leer lassen)",
+    "branchPassword": "Zweig (falls erforderlich)"
   },
   "javadl": {
     "generic": "Java installieren",
@@ -74,12 +74,12 @@
   "forgedl": {
     "generic": "Minecraft Forge herunterladen",
     "formatted": "Minecraft Forge herunterladen",
-    "outputVariable": "Output variable"
+    "outputVariable": "Ausgangsvariablen"
   },
   "neoforgedl": {
-    "generic": "Download Minecraft Neoforge",
-    "formatted": "Download Minecraft Neoforge",
-    "outputVariable": "Output variable"
+    "generic": "Download von Minecraft Neoforge",
+    "formatted": "Download von Minecraft Neoforge",
+    "outputVariable": "Ausgangsvariablen"
   },
   "spongeforgedl": {
     "generic": "Minecraft SpongeForge herunterladen",
@@ -91,16 +91,16 @@
     "formatted": "Minecraft Fabric herunterladen"
   },
   "paperdl": {
-    "generic": "Download PaperMC project",
-    "formatted": "Download {project} to {target}",
-    "project": "PaperMC project",
-    "build": "Build number"
+    "generic": "PaperMC-Projekt herunterladen",
+    "formatted": "Lade {project} zu {target} herunter\n",
+    "project": "PaperMC-Projekt",
+    "build": "Systemversionsnummer"
   },
   "curseforge": {
     "generic": "Von CurseForge herunterladen",
     "formatted": "Von CurseForge herunterladen",
-    "projectId": "Project ID",
-    "fileId": "File ID",
+    "projectId": "Projektnummer",
+    "fileId": "Dateinummer",
     "java": "Java"
   },
   "nodejsdl": {
