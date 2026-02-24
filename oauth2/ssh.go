@@ -19,10 +19,18 @@ type WebSSHAuthorization struct {
 }
 
 func (ws *WebSSHAuthorization) ValidatePassword(username string, password string) (*ssh.Permissions, error) {
+	return ws.validate(username, "password", password)
+}
+
+func (ws *WebSSHAuthorization) ValidatePublicKey(username string, key ssh.PublicKey) (*ssh.Permissions, error) {
+	return ws.validate(username, "public_key", string(key.Marshal()))
+}
+
+func (ws *WebSSHAuthorization) validate(username, grantType, secret string) (*ssh.Permissions, error) {
 	data := url.Values{}
-	data.Set("grant_type", "password")
+	data.Set("grant_type", grantType)
 	data.Set("username", username)
-	data.Set("password", password)
+	data.Set(grantType, secret)
 	data.Set("scope", "sftp")
 
 	request := createRequest(data)
@@ -67,8 +75,4 @@ func (ws *WebSSHAuthorization) ValidatePassword(username string, password string
 		}
 	}
 	return nil, errors.New("incorrect username or password")
-}
-
-func (ws *WebSSHAuthorization) ValidatePublicKey(username string, key ssh.PublicKey) (*ssh.Permissions, error) {
-	return nil, pufferpanel.ErrNotImplemented
 }

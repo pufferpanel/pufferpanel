@@ -1,17 +1,17 @@
 package oauth2
 
 import (
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/oauth2"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/services"
-	"net/http"
-	"strings"
-	"time"
 )
 
 const expiresIn = int64(time.Hour / time.Second)
@@ -106,6 +106,7 @@ func handleTokenRequest(c *gin.Context) {
 			return
 		}
 	case "password":
+	case "public_key":
 		{
 			auth := strings.TrimSpace(c.GetHeader("Authorization"))
 			if auth == "" || !strings.HasPrefix(auth, "Bearer ") {
@@ -149,15 +150,27 @@ func handleTokenRequest(c *gin.Context) {
 				return
 			}
 
-			//validate their credentials
-			var token string
-			result, err := us.ValidatePasswordLogin(user.Email, request.Password)
-			if err != nil {
+			if request.GrantType == "password" {
+				result, err := us.ValidatePasswordLogin(user.Email, request.Password)
+				if err != nil {
+					c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
+					return
+				}
+				user = result.User
+			} else if request.GrantType == "public_key" {
+				keys, err := us.GetPublicKeys(user.Email)
+				if err != nil {
+					c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
+					return
+				}
+				if !keys.Contains(request.PublicKey) {
+					c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
+					return
+				}
+			} else {
 				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
 			}
-
-			user = result.User
 
 			//confirm user has access to this server
 			ps := &services.Permission{DB: db}
@@ -172,20 +185,11 @@ func handleTokenRequest(c *gin.Context) {
 				return
 			}
 
-			//at this point, their login credentials were valid, and we need to shortcut because otp
-			sessionService := &services.Session{DB: db}
-			token, err = sessionService.CreateForUser(user)
-			if err != nil {
-				logging.Error.Printf("Error generating token: %s", err.Error())
-				c.JSON(http.StatusBadRequest, &oauth2.ErrorResponse{Error: "invalid_request", ErrorDescription: "no access"})
-				return
-			}
-
 			c.JSON(http.StatusOK, &oauth2.TokenResponse{
-				AccessToken: token,
-				TokenType:   "Bearer",
+				AccessToken: "-",    //this is a dead access token
+				TokenType:   "SFTP", //we're using a new token type, since this isn't a bearer
 				Scope:       server.Identifier + ":" + scopes.ScopeServerSftp.String(),
-				ExpiresIn:   expiresIn,
+				ExpiresIn:   1, //no TTL basically, since... this isn't a useful token
 			})
 		}
 	default:
@@ -199,4 +203,5 @@ type OAuth2TokenRequest struct {
 	ClientSecret string `form:"client_secret"`
 	Username     string `form:"username"`
 	Password     string `form:"password"`
+	PublicKey    string `form:"public_key"`
 } //@name OAuth2TokenRequest
