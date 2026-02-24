@@ -52,6 +52,14 @@ func registerSelf(g *gin.RouterGroup) {
 
 	g.Handle("DELETE", "/oauth2/:clientId", middleware.RequiresPermission(scopes.ScopeSelfClients), deletePersonalOAuth2Client)
 	g.Handle("OPTIONS", "/oauth2/:clientId", response.CreateOptions("DELETE"))
+
+	g.Handle("GET", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit))
+	g.Handle("PUT", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit))
+	g.Handle("OPTIONS", "/sshkey", response.CreateOptions("GET", "PUT"))
+
+	g.Handle("GET", "/sshkey/:id", middleware.RequiresPermission(scopes.ScopeSelfEdit))
+	g.Handle("DELETE", "/sshkey/:id", middleware.RequiresPermission(scopes.ScopeSelfEdit))
+	g.Handle("OPTIONS", "/sshkey/:id", response.CreateOptions("GET", "DELETE"))
 }
 
 // @Summary Get your user info

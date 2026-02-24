@@ -53,11 +53,11 @@ func (us *User) GetById(id uint) (*models.User, error) {
 }
 
 type PasswordLoginResult struct {
-	User *models.User `json:"-"`
-	NeedsSecondFactor bool `json:"needsSecondFactor"`
-	OtpEnabled bool `json:"otpEnabled"`
-	WebauthnChallenge *webauthnProto.CredentialAssertion `json:"webauthnChallenge"`
-	WebauthnSessionData *webauthn.SessionData `json:"-"`
+	User                *models.User                       `json:"-"`
+	NeedsSecondFactor   bool                               `json:"needsSecondFactor"`
+	OtpEnabled          bool                               `json:"otpEnabled"`
+	WebauthnChallenge   *webauthnProto.CredentialAssertion `json:"webauthnChallenge"`
+	WebauthnSessionData *webauthn.SessionData              `json:"-"`
 }
 
 func (us *User) ValidatePasswordLogin(email string, password string) (result PasswordLoginResult, err error) {
@@ -100,7 +100,7 @@ func (us *User) ValidatePasswordLogin(email string, password string) (result Pas
 
 		assertion, sessionData, err := w.BeginMediatedLogin(
 			&models.WebAuthnUser{
-				User: result.User,
+				User:        result.User,
 				Credentials: passkeys,
 			},
 			webauthnProto.MediationDefault,
@@ -295,7 +295,7 @@ func (us *User) ValidateOtpEnroll(userId uint, token string) ([]string, error) {
 
 	user.OtpActive = true
 	return codes, us.Update(user)
-	
+
 }
 
 func (us *User) RegenerateOtpRecoveryCodes(userId uint) ([]string, error) {
@@ -347,11 +347,27 @@ func (us *User) DisableOtp(userId uint) error {
 	})
 }
 
+func (us *User) GetPublicKeys(email string) (models.PublicKeys, error) {
+	user, err := us.GetByEmail(email)
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = nil
+		}
+		return models.PublicKeys{}, err
+	}
+
+	results := models.PublicKeys{}
+	err = us.DB.Where(&models.PublicKey{UserId: &user.ID}).Find(&results).Error
+
+	return results, err
+}
+
 func (us *User) webAuthn() (*webauthn.WebAuthn, error) {
 	rpConfig := &webauthn.Config{
 		RPDisplayName: config.CompanyName.Value(),
-		RPID: strings.TrimPrefix(config.MasterUrl.Value(), "https://"),
-		RPOrigins: []string{config.MasterUrl.Value()},
+		RPID:          strings.TrimPrefix(config.MasterUrl.Value(), "https://"),
+		RPOrigins:     []string{config.MasterUrl.Value()},
 	}
 
 	return webauthn.New(rpConfig)
@@ -385,8 +401,8 @@ func (us *User) GetPasskeyDescriptors(userId uint) ([]models.WebauthnCredentialV
 
 	for k, v := range credentials {
 		views[k] = models.WebauthnCredentialView{
-			ID: v.ID,
-			Name: v.Name,
+			ID:         v.ID,
+			Name:       v.Name,
 			Descriptor: v.Credential.Descriptor(),
 		}
 	}
@@ -412,7 +428,7 @@ func (us *User) StartPasskeyEnroll(userId uint) (*webauthnProto.CredentialCreati
 
 	c, s, err := w.BeginMediatedRegistration(
 		&models.WebAuthnUser{
-			User: user,
+			User:        user,
 			Credentials: knownCredentials,
 		},
 		webauthnProto.MediationDefault,
@@ -440,7 +456,7 @@ func (us *User) ValidatePasskeyEnroll(userId uint, name string, request *http.Re
 
 	credential, err := w.FinishRegistration(
 		&models.WebAuthnUser{
-			User: user,
+			User:        user,
 			Credentials: knownCredentials,
 		},
 		sessionData,
@@ -451,9 +467,9 @@ func (us *User) ValidatePasskeyEnroll(userId uint, name string, request *http.Re
 	}
 
 	model := &models.WebauthnCredential{
-		ID: credential.ID,
-		Name: name,
-		UserId: user.ID,
+		ID:         credential.ID,
+		Name:       name,
+		UserId:     user.ID,
 		Credential: *credential,
 	}
 
@@ -488,7 +504,7 @@ func (us *User) StartPasskeyLogin(email string) (*webauthnProto.CredentialAssert
 
 	return w.BeginMediatedLogin(
 		&models.WebAuthnUser{
-			User: user,
+			User:        user,
 			Credentials: knownCredentials,
 		},
 		webauthnProto.MediationDefault,
@@ -513,7 +529,7 @@ func (us *User) ValidatePasskeyLogin(email string, request *http.Request, sessio
 
 	credential, err := w.FinishLogin(
 		&models.WebAuthnUser{
-			User: user,
+			User:        user,
 			Credentials: credentials,
 		},
 		*&sessionData,
@@ -524,7 +540,7 @@ func (us *User) ValidatePasskeyLogin(email string, request *http.Request, sessio
 	}
 
 	model := &models.WebauthnCredential{
-		ID: credential.ID,
+		ID:     credential.ID,
 		UserId: user.ID,
 	}
 

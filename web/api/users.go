@@ -1,6 +1,8 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
@@ -10,7 +12,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/spf13/cast"
-	"net/http"
 )
 
 func registerUsers(g *gin.RouterGroup) {

@@ -1,9 +1,10 @@
 package config
 
 import (
+	"path/filepath"
+
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
-	"path/filepath"
 )
 
 var LogsFolder = asString("logs", "logs")

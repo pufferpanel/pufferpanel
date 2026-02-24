@@ -18,4 +18,6 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 	rg.POST("reauth", middleware.AuthMiddleware, middleware.NeedsDatabase, Reauth)
 
 	rg.GET("publickey", TokenServiceGetPublicKey)
+
+	rg.GET("publickey/:email", middleware.NeedsDatabase, GetUserPublicKeys)
 }

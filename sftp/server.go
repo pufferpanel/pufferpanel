@@ -3,6 +3,9 @@ package sftp
 import (
 	"crypto/x509"
 	"encoding/pem"
+	"net"
+	"os"
+
 	"github.com/pkg/sftp"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -12,8 +15,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh"
-	"net"
-	"os"
 )
 
 var sftpServer net.Listener
@@ -43,8 +44,12 @@ func runServer() error {
 	}
 
 	serverConfig := &ssh.ServerConfig{
+		PublicKeyAuthAlgorithms: ssh.SupportedAlgorithms().PublicKeyAuths,
+		PublicKeyCallback: func(c ssh.ConnMetadata, key ssh.PublicKey) (*ssh.Permissions, error) {
+			return auth.ValidatePublicKey(c.User(), key)
+		},
 		PasswordCallback: func(c ssh.ConnMetadata, pass []byte) (*ssh.Permissions, error) {
-			return auth.Validate(c.User(), string(pass))
+			return auth.ValidatePassword(c.User(), string(pass))
 		},
 	}
 

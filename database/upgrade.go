@@ -1,6 +1,10 @@
 package database
 
 import (
+	"os"
+	"path/filepath"
+	"time"
+
 	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/pterm/pterm"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -10,9 +14,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"gorm.io/gorm"
-	"os"
-	"path/filepath"
-	"time"
 )
 
 var dbObjects = []interface{}{
@@ -28,6 +29,7 @@ var dbObjects = []interface{}{
 	&models.Backup{},
 	&models.RecoveryCode{},
 	&models.WebauthnCredential{},
+	&models.PublicKey{},
 }
 
 func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {

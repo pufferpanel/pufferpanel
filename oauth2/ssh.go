@@ -3,25 +3,22 @@ package oauth2
 import (
 	"encoding/json"
 	"errors"
+	"io"
+	"net/http"
+	"net/url"
+	"strings"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"golang.org/x/crypto/ssh"
-	"io"
-	"net/http"
-	"net/url"
-	"strings"
 )
 
 type WebSSHAuthorization struct {
 }
 
-func (ws *WebSSHAuthorization) Validate(username string, password string) (*ssh.Permissions, error) {
-	return validateSSH(username, password, true)
-}
-
-func validateSSH(username string, password string, recurse bool) (*ssh.Permissions, error) {
+func (ws *WebSSHAuthorization) ValidatePassword(username string, password string) (*ssh.Permissions, error) {
 	data := url.Values{}
 	data.Set("grant_type", "password")
 	data.Set("username", username)
@@ -70,4 +67,8 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 		}
 	}
 	return nil, errors.New("incorrect username or password")
+}
+
+func (ws *WebSSHAuthorization) ValidatePublicKey(username string, key ssh.PublicKey) (*ssh.Permissions, error) {
+	return nil, pufferpanel.ErrNotImplemented
 }
