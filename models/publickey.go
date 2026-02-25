@@ -6,8 +6,8 @@ type PublicKey struct {
 	ID uint `gorm:"column:id;primaryKey;autoIncrement" json:"-"`
 
 	//owners of this permission set
-	UserId *uint `gorm:"column:user_id;index" json:"-"`
-	User   User  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
+	UserId uint `gorm:"column:user_id;index" json:"-"`
+	User   User `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
 	Key string `gorm:"column:sshkey;size:8000" json:"-" validate:"-"`
 }

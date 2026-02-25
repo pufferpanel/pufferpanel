@@ -53,13 +53,10 @@ func registerSelf(g *gin.RouterGroup) {
 	g.Handle("DELETE", "/oauth2/:clientId", middleware.RequiresPermission(scopes.ScopeSelfClients), deletePersonalOAuth2Client)
 	g.Handle("OPTIONS", "/oauth2/:clientId", response.CreateOptions("DELETE"))
 
-	g.Handle("GET", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit))
-	g.Handle("PUT", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit))
-	g.Handle("OPTIONS", "/sshkey", response.CreateOptions("GET", "PUT"))
-
-	g.Handle("GET", "/sshkey/:id", middleware.RequiresPermission(scopes.ScopeSelfEdit))
-	g.Handle("DELETE", "/sshkey/:id", middleware.RequiresPermission(scopes.ScopeSelfEdit))
-	g.Handle("OPTIONS", "/sshkey/:id", response.CreateOptions("GET", "DELETE"))
+	g.Handle("GET", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit), getPublicKeys)
+	g.Handle("PUT", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit), addPublicKey)
+	g.Handle("DELETE", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit), deletePublicKey)
+	g.Handle("OPTIONS", "/sshkey", response.CreateOptions("GET", "PUT", "DELETE"))
 }
 
 // @Summary Get your user info
@@ -72,7 +69,7 @@ func registerSelf(g *gin.RouterGroup) {
 // @Router /api/self [get]
 // @Security OAuth2Application[login]
 func getSelf(c *gin.Context) {
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	c.JSON(http.StatusOK, models.FromUser(user))
 }
@@ -91,7 +88,7 @@ func updateSelf(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	var viewModel models.UserView
 	if err := c.BindJSON(&viewModel); response.HandleError(c, err, http.StatusBadRequest) {
@@ -160,7 +157,7 @@ func getOtpStatus(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	otpEnabled, err := us.GetOtpStatus(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -176,7 +173,7 @@ func startOtpEnroll(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	secret, img, err := us.StartOtpEnroll(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -193,7 +190,7 @@ func validateOtpEnroll(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	request := &ValidateOtpRequest{}
 
@@ -224,7 +221,7 @@ func regenerateOtpRecoveryCodes(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	request := &ValidateOtpRequest{}
 
@@ -256,7 +253,7 @@ func disableOtp(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 	token := c.Param("token")
 
 	_, err := us.ValidOtp(user.Email, token)
@@ -289,7 +286,7 @@ func getPasskeys(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	credentials, err := us.GetPasskeyDescriptors(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -312,7 +309,7 @@ func startPasskeyEnroll(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	var request EnrollPasskeyRequest
 	err := c.BindJSON(&request)
@@ -354,7 +351,7 @@ func validatePasskeyEnroll(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	sessionData := webauthn.SessionData{}
 	userSession := sessions.Default(c)
@@ -411,7 +408,7 @@ func setPasswordlessLogin(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 	value, err := strconv.ParseBool(c.Param("value"))
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -435,7 +432,7 @@ func setPasswordlessLogin(c *gin.Context) {
 // @Router /api/self/oauth2 [GET]
 // @Security OAuth2Application[self.clients]
 func getPersonalOAuth2Clients(c *gin.Context) {
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
@@ -458,7 +455,7 @@ func getPersonalOAuth2Clients(c *gin.Context) {
 // @Router /api/self/oauth2 [POST]
 // @Security OAuth2Application[self.clients]
 func createPersonalOAuth2Client(c *gin.Context) {
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 
 	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
@@ -515,7 +512,7 @@ func createPersonalOAuth2Client(c *gin.Context) {
 // @Router /api/self/oauth2/{id} [DELETE]
 // @Security OAuth2Application[self.clients]
 func deletePersonalOAuth2Client(c *gin.Context) {
-	user := c.MustGet("user").(*models.User)
+	user := getUserFromContext(c)
 	clientId := c.Param("clientId")
 
 	db := middleware.GetDatabase(c)
@@ -544,10 +541,93 @@ func deletePersonalOAuth2Client(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Gets public keys for the current user
+// @Success 200 {object} models.PublicKeyView
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/keys [GET]
+// @Security OAuth2Application[self.edit]
+func getPublicKeys(c *gin.Context) {
+	user := getUserFromContext(c)
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	keys, err := us.GetPublicKeysForUser(user.ID)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, keys.ToView())
+}
+
+// @Summary Adds the given key to the current user
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/keys [PUT]
+// @Security OAuth2Application[self.edit]
+func addPublicKey(c *gin.Context) {
+	user := getUserFromContext(c)
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	keys := &KeyRequest{}
+	err := c.BindJSON(&keys)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	err = us.AddPublicKey(user.ID, keys.Key)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+// @Summary Removes the given key to the current user
+// @Success 204 {object} nil
+// @Failure 400 {object} pufferpanel.ErrorResponse
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 404 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/keys [DELETE]
+// @Security OAuth2Application[self.edit]
+func deletePublicKey(c *gin.Context) {
+	user := getUserFromContext(c)
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	keys := &KeyRequest{}
+	err := c.BindJSON(&keys)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	err = us.DeletePublicKey(user.ID, keys.Key)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func getUserFromContext(c *gin.Context) *models.User {
+	return c.MustGet("user").(*models.User)
+}
+
 type ValidateOtpRequest struct {
 	Token string `json:"token"`
 }
 
 type EnrollPasskeyRequest struct {
 	Name string `json:"name"`
+}
+
+type KeyRequest struct {
+	Key string `json:"key"`
 }

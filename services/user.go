@@ -357,10 +357,30 @@ func (us *User) GetPublicKeys(email string) (models.PublicKeys, error) {
 		return models.PublicKeys{}, err
 	}
 
+	return us.GetPublicKeysForUser(user.ID)
+}
+
+func (us *User) GetPublicKeysForUser(userId uint) (models.PublicKeys, error) {
 	results := models.PublicKeys{}
-	err = us.DB.Where(&models.PublicKey{UserId: &user.ID}).Find(&results).Error
+	err := us.DB.Where(&models.PublicKey{UserId: userId}).Find(&results).Error
 
 	return results, err
+}
+
+func (us *User) AddPublicKey(userId uint, key string) error {
+	//_, err := pem.Decode([]byte(key))
+
+	return us.DB.Create(&models.PublicKey{
+		UserId: userId,
+		Key:    key,
+	}).Error
+}
+
+func (us *User) DeletePublicKey(userId uint, key string) error {
+	return us.DB.Delete(&models.PublicKey{
+		UserId: userId,
+		Key:    key,
+	}).Error
 }
 
 func (us *User) webAuthn() (*webauthn.WebAuthn, error) {
