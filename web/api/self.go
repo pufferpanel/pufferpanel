@@ -53,10 +53,10 @@ func registerSelf(g *gin.RouterGroup) {
 	g.Handle("DELETE", "/oauth2/:clientId", middleware.RequiresPermission(scopes.ScopeSelfClients), deletePersonalOAuth2Client)
 	g.Handle("OPTIONS", "/oauth2/:clientId", response.CreateOptions("DELETE"))
 
-	g.Handle("GET", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit), getPublicKeys)
-	g.Handle("PUT", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit), addPublicKey)
-	g.Handle("DELETE", "/sshkey", middleware.RequiresPermission(scopes.ScopeSelfEdit), deletePublicKey)
-	g.Handle("OPTIONS", "/sshkey", response.CreateOptions("GET", "PUT", "DELETE"))
+	g.Handle("GET", "/publickey", middleware.RequiresPermission(scopes.ScopeSelfEdit), getPublicKeys)
+	g.Handle("PUT", "/publickey", middleware.RequiresPermission(scopes.ScopeSelfEdit), addPublicKey)
+	g.Handle("DELETE", "/publickey", middleware.RequiresPermission(scopes.ScopeSelfEdit), deletePublicKey)
+	g.Handle("OPTIONS", "/publickey", response.CreateOptions("GET", "PUT", "DELETE"))
 }
 
 // @Summary Get your user info
@@ -547,7 +547,7 @@ func deletePersonalOAuth2Client(c *gin.Context) {
 // @Failure 403 {object} pufferpanel.ErrorResponse
 // @Failure 404 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
-// @Router /api/self/keys [GET]
+// @Router /api/self/publickey [GET]
 // @Security OAuth2Application[self.edit]
 func getPublicKeys(c *gin.Context) {
 	user := getUserFromContext(c)
@@ -568,7 +568,7 @@ func getPublicKeys(c *gin.Context) {
 // @Failure 403 {object} pufferpanel.ErrorResponse
 // @Failure 404 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
-// @Router /api/self/keys [PUT]
+// @Router /api/self/publickey [PUT]
 // @Security OAuth2Application[self.edit]
 func addPublicKey(c *gin.Context) {
 	user := getUserFromContext(c)
@@ -595,7 +595,7 @@ func addPublicKey(c *gin.Context) {
 // @Failure 403 {object} pufferpanel.ErrorResponse
 // @Failure 404 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
-// @Router /api/self/keys [DELETE]
+// @Router /api/self/publickey [DELETE]
 // @Security OAuth2Application[self.edit]
 func deletePublicKey(c *gin.Context) {
 	user := getUserFromContext(c)
