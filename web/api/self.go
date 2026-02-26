@@ -629,5 +629,7 @@ type EnrollPasskeyRequest struct {
 }
 
 type KeyRequest struct {
-	Key string `json:"key"`
+	Key         string `json:"key"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }

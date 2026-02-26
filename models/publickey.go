@@ -9,32 +9,36 @@ type PublicKey struct {
 	UserId uint `gorm:"column:user_id;index" json:"-"`
 	User   User `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
-	Key string `gorm:"column:sshkey;size:8000" json:"-" validate:"-"`
+	Name        string `gorm:"column:name;size:100" json:"-" validate:"-"`
+	Key         string `gorm:"column:sshkey;size:8000" json:"-" validate:"required"`
+	Description string `gorm:"column:description;size:1000" json:"-" validate:"-"`
 }
 
 type PublicKeys []*PublicKey
 
 type PublicKeyView struct {
-	Id  uint   `json:"id"`
-	Key string `json:"publickey"`
-}
+	Key         string `json:"publickey"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+} //@name PublicKeyView
 
 type PublicKeysView struct {
-	Keys []string `json:"keys"`
-}
+	Keys []PublicKeyView `json:"keys"`
+} //@name PublicKeysView
 
 func (pk *PublicKey) ToView() PublicKeyView {
 	return PublicKeyView{
-		Id:  pk.ID,
-		Key: pk.Key,
+		Key:         pk.Key,
+		Name:        pk.Name,
+		Description: pk.Description,
 	}
 }
 
 func (pks PublicKeys) ToView() PublicKeysView {
-	keys := make([]string, len(pks))
+	keys := make([]PublicKeyView, len(pks))
 
 	for i, v := range pks {
-		keys[i] = v.Key
+		keys[i] = v.ToView()
 	}
 
 	return PublicKeysView{Keys: keys}
