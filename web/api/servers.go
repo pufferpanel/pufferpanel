@@ -4,6 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
+	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid/v5"
@@ -18,11 +24,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
-	"io"
-	"net/http"
-	"net/url"
-	"strconv"
-	"strings"
 )
 
 func registerServers(g *gin.RouterGroup) {
@@ -1301,17 +1302,27 @@ func proxyServerRequest(c *gin.Context) {
 }
 
 func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
-	callResponse, err := ns.CallNode(node, c.Request.Method, path, c.Request.Body, c.Request.Header)
+	if node.IsLocal() {
+		var err error
+		c.Request.URL, err = url.Parse("http://localhost:8080" + path)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
 
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
+		pufferpanel.Engine.Handler().ServeHTTP(c.Writer, c.Request)
+	} else {
+		callResponse, err := ns.CallNode(node, c.Request.Method, path, c.Request.Body, c.Request.Header)
+
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+
+		defer utils.CloseResponse(callResponse)
+
+		newHeaders := cleanHttpReturnErrors(callResponse.Header)
+
+		c.DataFromReader(callResponse.StatusCode, callResponse.ContentLength, callResponse.Header.Get("Content-Type"), callResponse.Body, newHeaders)
 	}
-
-	defer utils.CloseResponse(callResponse)
-
-	newHeaders := cleanHttpReturnErrors(callResponse.Header)
-
-	c.DataFromReader(callResponse.StatusCode, callResponse.ContentLength, callResponse.Header.Get("Content-Type"), callResponse.Body, newHeaders)
 }
 
 func cleanHttpReturnErrors(currentHeaders http.Header) map[string]string {
