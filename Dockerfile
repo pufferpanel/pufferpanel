@@ -16,7 +16,7 @@ FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
 
 FROM --platform=$BUILDPLATFORM golang:1.24-alpine AS builder
 
-RUN apk add clang lld
+RUN apk add clang lld bash
 COPY --from=xx / /
 
 ARG tags
@@ -48,7 +48,7 @@ COPY --from=node /build/frontend/dist /build/pufferpanel/client/frontend/dist
 ARG TARGETPLATFORM
 ARG curseforgeKey=''
 
-RUN xx-apk add musl-dev gcc bash
+RUN xx-apk add musl-dev gcc
 RUN xx-go build -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config.curseforgeKey=$curseforgeKey' -X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
 RUN go test ./...
 RUN xx-verify /pufferpanel/pufferpanel
