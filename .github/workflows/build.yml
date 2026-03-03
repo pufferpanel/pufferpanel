@@ -432,7 +432,6 @@ jobs:
           tags: |
             type=ref,prefix=branch-,event=branch
             type=semver,pattern={{version}}
-            type=raw,value
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v4
