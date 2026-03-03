@@ -347,7 +347,7 @@ var cmdList = []string{
 	"mount --rbind /proc proc",
 }
 
-const Shell = "sh"
+const Shell = "bash"
 
 func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
 	if t.DisableUnshare || config.SecurityDisableUnshare.Value() {
