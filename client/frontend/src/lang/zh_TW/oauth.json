@@ -5,7 +5,7 @@
   "NewClientWarning": "關閉此對話框後，用戶端金鑰將不會再次顯示，因此請將其抄下。遺失或忘記金鑰會導致無法使用此用戶端。",
   "Create": "建立新的 OAuth2 用戶端",
   "UnnamedClient": "未命名的 OAuth2 用戶端",
-  "Docs": "Find API documentation here",
+  "Docs": "這裡查看 API 文檔",
   "Clients": "OAuth2 用戶端",
   "Delete": "刪除 OAuth2 用戶端",
   "ConfirmDelete": "確定要刪除 OAuth2 用戶端 {name}？你將無法使用相同憑證重新建立用戶端！",
