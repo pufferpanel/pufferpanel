@@ -40,32 +40,32 @@
     "formatted": "建立資料夾 {target}"
   },
   "archive": {
-    "generic": "Archive files",
-    "formatted": "Archive {file} to {destination} | Archive {n} files to {destination}",
-    "source": "Files to archive"
+    "generic": "壓縮檔案",
+    "formatted": "{file} 壓縮至 {destination} | 壓縮 {n} 個檔案至 {destination}",
+    "source": "要壓縮的檔案"
   },
   "extract": {
-    "generic": "Extract archive",
-    "formatted": "Extract {source} to {destination}",
-    "destination": "Destination"
+    "generic": "解壓縮檔案",
+    "formatted": "解壓縮 {source} 至 {destination}",
+    "destination": "目標"
   },
   "console": {
-    "generic": "Console message",
-    "formatted": "Print \"{message}\" to console",
-    "message": "Message"
+    "generic": "控制台訊息",
+    "formatted": "輸出 \"{message}\" 至控制台",
+    "message": "訊息"
   },
   "sleep": {
-    "generic": "Wait",
-    "formatted": "Wait for {duration}",
-    "duration": "Duration",
-    "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
+    "generic": "等待",
+    "formatted": "等待 {duration}",
+    "duration": "持續時間",
+    "durationHint": "納秒、微秒、毫秒、秒、分鐘及小時為有效時間單位。可以結合多種單位。例如 `1m45s`"
   },
   "steamgamedl": {
     "generic": "從 Steam 安裝",
     "formatted": "安裝 Steam App ID {appId}",
     "appId": "Steam App ID",
-    "branch": "Branch (leave blank for default)",
-    "branchPassword": "Branch Password (if needed)"
+    "branch": "分支 (留空使用預設值)",
+    "branchPassword": "分支密碼 (如果需要)"
   },
   "javadl": {
     "generic": "安裝 Java",
@@ -74,12 +74,12 @@
   "forgedl": {
     "generic": "下載 Minecraft Forge",
     "formatted": "下載 Minecraft Forge",
-    "outputVariable": "Output variable"
+    "outputVariable": "輸出變數"
   },
   "neoforgedl": {
-    "generic": "Download Minecraft Neoforge",
-    "formatted": "Download Minecraft Neoforge",
-    "outputVariable": "Output variable"
+    "generic": "下載 Minecraft Neoforge",
+    "formatted": "下載 Minecraft Neoforge",
+    "outputVariable": "輸出變數"
   },
   "spongeforgedl": {
     "generic": "下載 Minecraft SpongeForge",
@@ -91,16 +91,16 @@
     "formatted": "下載 Minecraft Fabric"
   },
   "paperdl": {
-    "generic": "Download PaperMC project",
-    "formatted": "Download {project} to {target}",
-    "project": "PaperMC project",
-    "build": "Build number"
+    "generic": "下載 PaperMC 專案",
+    "formatted": "下載 {project} 至 {target}",
+    "project": "PaperMC 專案",
+    "build": "建置編號"
   },
   "curseforge": {
     "generic": "從 CurseForge 下載",
     "formatted": "從 CurseForge 下載",
-    "projectId": "Project ID",
-    "fileId": "File ID",
+    "projectId": "專案 ID",
+    "fileId": "檔案 ID",
     "java": "Java"
   },
   "nodejsdl": {
