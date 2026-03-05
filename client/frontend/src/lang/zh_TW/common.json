@@ -40,7 +40,7 @@
     "BaseColor": "基本顏色",
     "ServerTypeDisplay": "伺服器類型顯示模式",
     "serverTypeDisplay": {
-      "IconBackground": "Icon + Background",
+      "IconBackground": "圖示 + 背景",
       "Icon": "圖示",
       "None": "無"
     },
@@ -56,7 +56,7 @@
     "FontFace": "字形",
     "fontFace": {
       "Default": "預設",
-      "A11y": "Accessibility optimized"
+      "A11y": "可讀性優化"
     }
   },
   "NoResults": "沒有結果",
