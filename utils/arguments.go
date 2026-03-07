@@ -1,14 +1,15 @@
 package utils
 
 import (
-	"fmt"
 	"strings"
+
+	"github.com/spf13/cast"
 )
 
 func ReplaceTokens(msg string, mapping map[string]interface{}) string {
 	newmsg := msg
 	for key, value := range mapping {
-		newmsg = strings.Replace(newmsg, "${"+key+"}", fmt.Sprint(value), -1)
+		newmsg = strings.Replace(newmsg, "${"+key+"}", cast.ToString(value), -1)
 	}
 	return newmsg
 }
