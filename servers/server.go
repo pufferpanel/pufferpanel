@@ -5,6 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"log"
+	"os"
+	"path"
+	"path/filepath"
+	"runtime"
+	"sync"
+	"time"
+
 	"github.com/gofrs/uuid/v5"
 	"github.com/mholt/archiver/v3"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -14,18 +23,10 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/spf13/cast"
-	"io"
-	"log"
-	"os"
-	"path"
-	"path/filepath"
-	"runtime"
-	"sync"
-	"time"
 )
 
 type Server struct {
-	pufferpanel.DaemonServer
+	pufferpanel.DaemonServer `json:"-"`
 	pufferpanel.Server
 
 	CrashCounter       int                      `json:"-"`
