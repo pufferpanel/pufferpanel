@@ -36,7 +36,7 @@ type tty struct {
 }
 
 func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
-	pr, err := t.createCmd(environment.GetRootDirectory(), steps.Command)
+	pr, err := t.createCmd(environment.GetRootDirectory(), steps.WorkingDirectory, steps.Command)
 	if err != nil {
 		return err
 	}
@@ -349,7 +349,13 @@ var cmdList = []string{
 
 const Shell = "bash"
 
-func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
+func (t *tty) createCmd(rootDir, workDir, cmd string) (pr *exec.Cmd, err error) {
+	if workDir == "" {
+		workDir = rootDir
+	} else {
+		workDir = filepath.Join(rootDir, workDir)
+	}
+
 	if t.DisableUnshare || config.SecurityDisableUnshare.Value() {
 		pr = exec.Command(Shell, "-c", "${PUFFERPANEL_SERVER_COMMAND}")
 		pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
@@ -357,11 +363,11 @@ func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
 		return
 	}
 
-	workDirMount := removeRoot(workDir)
+	rootDirMount := removeRoot(rootDir)
 	binaryFolderMount := removeRoot(config.BinariesFolder.Value())
 	cacheFolderMount := removeRoot(config.CacheFolder.Value())
 
-	mountFolders := []string{workDirMount, binaryFolderMount, cacheFolderMount}
+	mountFolders := []string{rootDirMount, binaryFolderMount, cacheFolderMount}
 	for _, v := range t.Mounts {
 		mountFolders = append(mountFolders, removeRoot(v))
 	}
@@ -398,7 +404,7 @@ func (t *tty) createCmd(workDir, cmd string) (pr *exec.Cmd, err error) {
 
 	unshareArgs = append(unshareArgs,
 		fmt.Sprintf("mkdir -p %s", strings.Join(mountFolders, " ")),
-		fmt.Sprintf("mount --bind %s %s", workDir, workDirMount),
+		fmt.Sprintf("mount --bind %s %s", rootDir, rootDirMount),
 		fmt.Sprintf("mount --bind %s %s", config.BinariesFolder.Value(), binaryFolderMount),
 		fmt.Sprintf("mount --bind %s %s", config.CacheFolder.Value(), cacheFolderMount),
 	)

@@ -270,11 +270,12 @@ func (p *Server) Start() (err error) {
 
 	commandLine := utils.ReplaceTokens(command.Command, data)
 	err = p.RunningEnvironment.ExecuteAsync(pufferpanel.ExecutionData{
-		Command:     commandLine,
-		Environment: utils.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data),
-		Variables:   p.DataToMap(),
-		Callback:    p.afterExit,
-		StdInConfig: command.StdIn,
+		WorkingDirectory: p.Server.Execution.WorkingDirectory,
+		Command:          commandLine,
+		Environment:      utils.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data),
+		Variables:        p.DataToMap(),
+		Callback:         p.afterExit,
+		StdInConfig:      command.StdIn,
 	})
 
 	if err != nil {
