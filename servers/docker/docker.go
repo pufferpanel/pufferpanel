@@ -5,8 +5,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"slices"
+
+	"github.com/pufferpanel/pufferpanel/v3/utils"
+
+	"io"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"sync"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -21,13 +30,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/spf13/cast"
-	"io"
-	"os"
-	"path/filepath"
-	"runtime"
-	"strings"
-	"sync"
-	"time"
 )
 
 type Docker struct {
@@ -394,9 +396,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 	cmdSlice := strslice.StrSlice{}
 	if data.Command != "" {
 		cmdSlice = append(cmdSlice, cmd)
-	}
-	for _, v := range args {
-		cmdSlice = append(cmdSlice, v)
+		cmdSlice = append(cmdSlice, args...)
 	}
 
 	environment.Log(logging.Debug, "Container command: %s\n", cmdSlice)
