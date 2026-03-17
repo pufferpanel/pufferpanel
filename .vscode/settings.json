@@ -1,3 +1,4 @@
 {
-    "chat.disableAIFeatures": true
+    "chat.disableAIFeatures": true,
+    "go.testTimeout": "5m"
 }
