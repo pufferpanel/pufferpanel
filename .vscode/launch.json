@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Go: Run Panel",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd",
+            "cwd": "${workspaceFolder}/out",
+            "args": ["runService"],
+            "preLaunchTask": "go-requirements"
+        },
+        {
+            "name": "Go: Add user",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd",
+            "cwd": "${workspaceFolder}/out",
+            "args": ["user", "add"],
+            "console": "integratedTerminal",
+            "preLaunchTask": "out-configure"
+        },
+        {
+            "name": "NPM: Build",
+            "request": "launch",
+            "runtimeArgs": [
+                "run-script",
+                "build"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "cwd": "${workspaceFolder}/client",
+            "preLaunchTask": "npm-install-client"
+        }
+    ]
+}

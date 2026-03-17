@@ -1,0 +1,41 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "npm-install-client",
+            "command": "npm",
+            "args": [
+                "install"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/client"
+            }
+        },
+        {
+            "label": "npm-build",
+            "command": "npm",
+            "args": [
+                "run-script",
+                "build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/client"
+            }
+        },
+        {
+            "label": "out-configure",
+            "command": "mkdir",
+            "args": [
+                "-p",
+                "out"
+            ]
+        },
+        {
+            "label": "go-requirements",
+            "dependsOn": [
+                "out-configure",
+                "npm-install-client"
+            ]
+        }
+    ]
+}

@@ -2,5 +2,12 @@
 	"image": "mcr.microsoft.com/devcontainers/universal:2",
 	"features": {
 		"ghcr.io/dhoeric/features/act:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"golang.go"
+			]
+		}
 	}
 }

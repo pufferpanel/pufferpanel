@@ -5,6 +5,7 @@
 *.iml
 *.pem
 .DS_Store
+__*
 
 logs/
 config.json
@@ -25,3 +26,5 @@ favicon.ico
 .wix/
 /pufferpanel.msi
 /pufferpanel.wixpdb
+
+out/
