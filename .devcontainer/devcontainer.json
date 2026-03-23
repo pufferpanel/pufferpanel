@@ -6,5 +6,6 @@
 				"golang.Go"
 			]
 		}
-	}
+	},
+	"postCreateCommand": "go install github.com/swaggo/swag/cmd/swag@latest"
 }

@@ -36,6 +36,21 @@
                 "out-configure",
                 "npm-install-client"
             ]
+        },
+        {
+            "label": "Build Swagger",
+            "command": "swag",
+            "args": [
+                "init",
+                "--pd",
+                "--md",
+                ".",
+                "-o",
+                "web/swagger",
+                "-g",
+                "web/loader.go"
+            ],
+            "problemMatcher": []
         }
     ]
 }

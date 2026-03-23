@@ -548,6 +548,7 @@ func deletePersonalOAuth2Client(c *gin.Context) {
 // @Failure 404 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse
 // @Router /api/self/publickey [GET]
+// @Param key query string true "Key to delete"
 // @Security OAuth2Application[self.edit]
 func getPublicKeys(c *gin.Context) {
 	user := getUserFromContext(c)
