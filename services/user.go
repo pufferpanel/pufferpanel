@@ -367,12 +367,14 @@ func (us *User) GetPublicKeysForUser(userId uint) (models.PublicKeys, error) {
 	return results, err
 }
 
-func (us *User) AddPublicKey(userId uint, key string) error {
+func (us *User) AddPublicKey(userId uint, key, name, description string) error {
 	//_, err := pem.Decode([]byte(key))
 
 	return us.DB.Create(&models.PublicKey{
-		UserId: userId,
-		Key:    key,
+		UserId:      userId,
+		Key:         key,
+		Name:        name,
+		Description: description,
 	}).Error
 }
 

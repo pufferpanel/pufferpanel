@@ -581,7 +581,7 @@ func addPublicKey(c *gin.Context) {
 		return
 	}
 
-	err = us.AddPublicKey(user.ID, keys.Key)
+	err = us.AddPublicKey(user.ID, keys.Key, keys.Name, keys.Description)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -602,13 +602,13 @@ func deletePublicKey(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	keys := &KeyRequest{}
-	err := c.BindJSON(&keys)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
+	key := c.Param("key")
+	if key == "" {
+		response.HandleError(c, pufferpanel.ErrFieldRequired("key"), http.StatusBadRequest)
 		return
 	}
 
-	err = us.DeletePublicKey(user.ID, keys.Key)
+	err := us.DeletePublicKey(user.ID, key)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
