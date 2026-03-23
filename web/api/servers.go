@@ -1078,7 +1078,7 @@ func createBackup(c *gin.Context) {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Param backupId path string true "Backup ID"
-// @Router /api/servers/{id}/backup/Delete/{backupId} [delete]
+// @Router /api/servers/{id}/backup/{backupId} [DELETE]
 // @Security OAuth2Application[server.backup.delete]
 func deleteBackup(c *gin.Context) {
 	server := getServerFromGin(c)
@@ -1130,7 +1130,7 @@ func deleteBackup(c *gin.Context) {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Param backupId path string true "Backup ID"
-// @Router /api/servers/{id}/backup/Delete/{backupId} [delete]
+// @Router /api/servers/{id}/backup/restore/{backupId} [POST]
 // @Security OAuth2Application[server.backup.restore]
 func restoreBackup(c *gin.Context) {
 	server := getServerFromGin(c)
@@ -1177,7 +1177,7 @@ func restoreBackup(c *gin.Context) {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Param backupId path string true "Backup ID"
-// @Router /api/servers/{id}/backup/Delete/{backupId} [delete]
+// @Router /api/servers/{id}/backup/download/{backupId} [GET]
 // @Security OAuth2Application[server.backup.restore]
 func downloadBackup(c *gin.Context) {
 	server := getServerFromGin(c)
