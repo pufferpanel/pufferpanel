@@ -870,6 +870,7 @@ func extract(c *gin.Context) {
 	}
 }
 
+//Docs defined on parent
 func createBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	isRunning, err := server.IsRunning()
@@ -901,13 +902,7 @@ func deleteBackup(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// @Summary Restore backup
-// @Description Restore a full backup of the server
-// @Success 202 {object} nil
-// @Param id path string true "Server ID"
-// @Param fileName query string true "File Name"
-// @Router /api/servers/{id}/backup/restore [post]
-// @Security OAuth2Application[server.backup.restore]
+//Docs defined on parent
 func restoreBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	fileName := c.Query("fileName")
@@ -927,13 +922,7 @@ func restoreBackup(c *gin.Context) {
 	c.Status(http.StatusAccepted)
 }
 
-// @Summary Download backup
-// @Description Download a backup of the server
-// @Success 204 {object} nil
-// @Param id path string true "Server ID"
-// @Param fileName query string true "File Name"
-// @Router /api/servers/{id}/backup/restore [post]
-// @Security OAuth2Application[server.backup.restore]
+// Docs defined on parent
 func downloadBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	fileName := c.Query("fileName")
