@@ -46,18 +46,18 @@
   },
   "extract": {
     "generic": "Archívum Kicsomagolása",
-    "formatted": "Extract {source} to {destination}",
-    "destination": "Destination"
+    "formatted": "Kicsomagolni {source} a {destination}-ba",
+    "destination": "Cél"
   },
   "console": {
-    "generic": "Console message",
-    "formatted": "Print \"{message}\" to console",
-    "message": "Message"
+    "generic": "Konzol üzenet",
+    "formatted": "A \"{message}\" nyomtatása a konzolba",
+    "message": "Üzenet"
   },
   "sleep": {
-    "generic": "Wait",
-    "formatted": "Wait for {duration}",
-    "duration": "Duration",
+    "generic": "Kérem Várjon",
+    "formatted": "Kérem várjon {duration}",
+    "duration": "Időtartam",
     "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
   },
   "steamgamedl": {
