@@ -40,7 +40,7 @@
     "BaseColor": "Alap szín",
     "ServerTypeDisplay": "Szerver fajta mutatás",
     "serverTypeDisplay": {
-      "IconBackground": "Icon + Background",
+      "IconBackground": "Ikon + Háttér",
       "Icon": "Ikon",
       "None": "Semmi"
     },
