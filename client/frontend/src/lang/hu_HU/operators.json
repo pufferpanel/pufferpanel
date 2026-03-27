@@ -40,12 +40,12 @@
     "formatted": "Mappa létrehozzása {target}"
   },
   "archive": {
-    "generic": "Archive files",
-    "formatted": "Archive {file} to {destination} | Archive {n} files to {destination}",
-    "source": "Files to archive"
+    "generic": "Archív Fájlok",
+    "formatted": "Archíválni {file} a {destination}-ba | Archíválni {n} fájlokat {destination}-ba",
+    "source": "Archíválandó Fájlok"
   },
   "extract": {
-    "generic": "Extract archive",
+    "generic": "Archívum Kicsomagolása",
     "formatted": "Extract {source} to {destination}",
     "destination": "Destination"
   },
