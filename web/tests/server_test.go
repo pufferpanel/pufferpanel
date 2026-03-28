@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/mholt/archiver/v3"
 	"github.com/pkg/sftp"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -608,6 +609,66 @@ func TestServers(t *testing.T) {
 						return
 					}
 				})
+			})
+
+			t.Run("Archive-IndirectFile", func(t *testing.T) {
+				_ = os.Remove(filepath.Join(serverDir, "archive.zip"))
+
+				d, e := filepath.Abs(serverDir)
+				r, e := filepath.Rel(d, "/etc/passwd")
+				if !assert.NoError(t, e) {
+					return
+				}
+				response := CallAPI("POST", "/api/servers/"+ServerId+"/archive/archive.zip", []string{r}, session)
+				if !assert.Equal(t, http.StatusInternalServerError, response.Code) {
+					return
+				}
+
+				//now we can validate the zip is empty
+				exists := false
+				e = archiver.Walk(filepath.Join(serverDir, "archive.zip"), func(archiver.File) error {
+					exists = true
+					return nil
+				})
+
+				if !assert.NoError(t, e) || !assert.False(t, exists, "zip is not empty") {
+					return
+				}
+			})
+
+			t.Run("Extract-IndirectFile", func(t *testing.T) {
+				tmpFile, e := os.CreateTemp("", "pptest-*.txt")
+				defer os.Remove(tmpFile.Name())
+				if !assert.NoError(t, e) {
+					return
+				}
+				_, _ = tmpFile.WriteString("this is a test")
+				_ = tmpFile.Close()
+
+				tmpZip, e := os.CreateTemp("", "pptest-*.zip")
+				_ = tmpZip.Close()
+				_ = os.Remove(tmpZip.Name())
+
+				e = archiver.Archive([]string{tmpFile.Name()}, tmpZip.Name())
+				if !assert.NoError(t, e) {
+					return
+				}
+
+				d, e := filepath.Abs(serverDir)
+				if !assert.NoError(t, e) {
+					return
+				}
+				r, e := filepath.Rel(d, tmpZip.Name())
+				if !assert.NoError(t, e) {
+					return
+				}
+				response := CallAPI("POST", "/api/servers/"+ServerId+"/extract/"+r, []string{r}, session)
+				if !assert.Equal(t, http.StatusInternalServerError, response.Code) {
+					return
+				}
+				if !assert.NoFileExists(t, filepath.Join(serverDir, filepath.Base(tmpFile.Name()))) {
+					return
+				}
 			})
 
 			t.Run("SFTP", func(t *testing.T) {

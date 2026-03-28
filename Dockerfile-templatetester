@@ -1,7 +1,7 @@
 FROM ubuntu:22.04 AS go
 
 ARG aptproxy=""
-ARG GOVERSION="1.24.1"
+ARG GOVERSION="1.25.7"
 ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /home/pufferpanel/build

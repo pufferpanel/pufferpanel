@@ -3,13 +3,14 @@ package files
 import (
 	"archive/tar"
 	"errors"
-	"github.com/klauspost/compress/zip"
-	"github.com/mholt/archiver/v3"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/klauspost/compress/zip"
+	"github.com/mholt/archiver/v3"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 const PathSeparator = "/"
@@ -56,7 +57,7 @@ func DetermineIfSingleRoot(sourceFile string) (bool, error) {
 
 func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool, forcedType Walker) error {
 	if fs != nil {
-		sourceFile = filepath.Join(fs.Prefix(), sourceFile)
+		sourceFile = filepath.Join(fs.Prefix(), filepath.Clean("/"+sourceFile))
 	}
 
 	if skipRoot {
@@ -85,6 +86,7 @@ func Compress(fs FileServer, targetFile string, files []string) error {
 		targetFile = filepath.Join(p, targetFile)
 
 		for k, v := range files {
+			v = filepath.Clean("/" + v)
 			files[k] = filepath.Join(p, v)
 		}
 	}
