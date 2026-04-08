@@ -52,5 +52,4 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             sha: ${{ github.sha }}
-            version: ${{ env.VERSION }}
           platforms: ${{ matrix.platform }}

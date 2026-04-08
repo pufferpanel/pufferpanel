@@ -3,7 +3,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"golang.go"
+				"golang.Go",
+				"GitHub.vscode-github-actions"
 			]
 		}
 	}

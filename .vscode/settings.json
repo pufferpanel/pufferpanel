@@ -1,4 +1,5 @@
 {
     "chat.disableAIFeatures": true,
-    "go.testTimeout": "5m"
+    "go.testTimeout": "5m",
+    "go.diagnostic.vulncheck": "Off"
 }

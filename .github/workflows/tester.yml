@@ -17,6 +17,9 @@ jobs:
     name: Build Tool
     runs-on: ubuntu-latest
 
+    env:
+      TEMPLATES:
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4

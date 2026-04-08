@@ -36,7 +36,7 @@ type tty struct {
 }
 
 func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
-	pr, err := t.createCmd(environment.GetRootDirectory(), steps.WorkingDirectory, steps.Command)
+	pr, err := t.createCmd(environment.GetRootDirectory(), steps.WorkingDirectory)
 	if err != nil {
 		return err
 	}
@@ -152,7 +152,7 @@ func (t *tty) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.S
 	if !t.disableSpecialStats && environment.Server.Stats.Type == "jcmd" {
 		var socket *net.UnixConn
 		if socket, err = t.initiateJCMD(); err == nil && socket != nil {
-			for _, s := range []string{"1", "\x00", "jcmd", "\x00", "GC.heap_info", "\x00", "\x00", "\x00"} {
+			for _, s := range jcmdCommand {
 				_, err = socket.Write([]byte(s))
 				if err != nil {
 					logging.Error.Printf("unable to send command to Java process: %v", err)
@@ -349,7 +349,7 @@ var cmdList = []string{
 
 const Shell = "bash"
 
-func (t *tty) createCmd(rootDir, workDir, cmd string) (pr *exec.Cmd, err error) {
+func (t *tty) createCmd(rootDir, workDir string) (pr *exec.Cmd, err error) {
 	if workDir == "" {
 		workDir = rootDir
 	} else {
@@ -461,3 +461,5 @@ func (t *tty) createCmd(rootDir, workDir, cmd string) (pr *exec.Cmd, err error) 
 func removeRoot(path string) string {
 	return strings.TrimPrefix(path, "/")
 }
+
+var jcmdCommand = []string{"1", "\x00", "jcmd", "\x00", "GC.heap_info", "\x00", "\x00", "\x00"}
