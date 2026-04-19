@@ -12,9 +12,9 @@ type Template struct {
 	pufferpanel.Server `gorm:"-"`
 
 	Name     string `gorm:"column:name;size:100;primaryKey" json:"name"`
-	RawValue string `gorm:"column:raw_value;not null;size:8000" json:"-"`
+	RawValue string `gorm:"column:raw_value;not null;size:65536" json:"-"`
 
-	Readme string `gorm:"column:readme;size:8000" json:"readme,omitempty"`
+	Readme string `gorm:"column:readme;size:65536" json:"readme,omitempty"`
 } //@name Template
 
 func (t *Template) AfterFind(*gorm.DB) error {
