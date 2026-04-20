@@ -107,8 +107,6 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 
 	environment.Console.Start()
 
-	go d.handleClose(environment, dockerClient, steps.Callback)
-
 	startOpts := container.StartOptions{}
 
 	_ = environment.StatusTracker.WriteMessage(pufferpanel.Transmission{
@@ -125,6 +123,7 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 		return err
 	}
 
+	go d.handleClose(environment, dockerClient, steps.Callback)
 	return err
 }
 
