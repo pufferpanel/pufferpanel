@@ -44,6 +44,7 @@
   "RepoBranch": "Tároló Branchje",
   "ConfirmDeleteRepo": "Biztonsan törölni szeretnéd tárolót {name}?",
   "DeleteRepo": "Tároló törlése",
+  "MinecraftVersion": "Minecraft Version",
   "signals": {
     "1": "SIGHUP",
     "2": "SIGINT (CTRL+C)",

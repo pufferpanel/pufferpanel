@@ -14,9 +14,9 @@
   "Port": "Port",
   "Collapse": "Daralt",
   "Expand": "Genişlet",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copy": "Panoya kopyala",
+  "Copied": "Panoya kopyalandı",
+  "Back": "Geri",
   "Next": "İleri",
   "Details": "Detaylar",
   "ErrorDetails": "Hata Detayları",
@@ -26,20 +26,21 @@
   "Apply": "Uygula",
   "Confirm": "Onayla",
   "Condition": "Şart",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Discard": "İptal Et",
+  "ConfirmLeave": "Kaydedilmemiş değişiklikleriniz var, bu değişiklikleri silip sayfadan ayrılmak istiyor musunuz?",
   "theme": {
     "Theme": "Tema",
     "Mode": "Mod",
     "mode": {
       "Light": "Aydınlık",
       "Dark": "Karanlık",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Koyu (Yüksek Kontrast)",
       "Auto": "Otomatik"
     },
     "BaseColor": "Ana Renk",
     "ServerTypeDisplay": "Sunucu Tipini Göster",
     "serverTypeDisplay": {
+      "IconBackground": "Icon + Background",
       "Icon": "İkon",
       "None": "Hiçbiri"
     },
@@ -48,17 +49,17 @@
       "Grid": "Izgara",
       "List": "Liste"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Yazı Tipi Boyutu",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Varsayılan"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Yazı Tipi",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Varsayılan",
+      "A11y": "Erişilebilirlik odaklı yazı tipi"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "Sonuç Bulunamadı",
+  "Yes": "Evet",
+  "No": "Hayır"
 }

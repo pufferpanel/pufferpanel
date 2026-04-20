@@ -21,12 +21,12 @@
   "OpenLargeFile": "このファイルは、ブラウザのサイズのためにパフォーマンスの問題を引き起こす可能性があります。開きますか?",
   "OpenAnyways": "とにかく開く",
   "Saved": "ファイルを保存しました",
-  "Select": "Select file",
-  "Deselect": "Deselect file",
-  "Selected": "1 file selected | {n} files selected",
-  "ArchiveSelected": "Archive selected files",
-  "ArchiveSelectedName": "Archive Name",
-  "DeselectAll": "Deselect all",
-  "DeleteSelected": "Delete 1 file | Delete {n} files",
-  "ConfirmDeleteSelected": "Do you really want to delete this file? | Do you really want to delete these {n} files?"
+  "Select": "ファイルを選択",
+  "Deselect": "ファイルの選択を解除",
+  "Selected": "1 個のファイルを選択しました | {n} 個のファイルを選択しました",
+  "ArchiveSelected": "選択したファイルをアーカイブ",
+  "ArchiveSelectedName": "アーカイブ名",
+  "DeselectAll": "選択を全て解除",
+  "DeleteSelected": "1 つのファイルを削除| {n} ファイルを削除",
+  "ConfirmDeleteSelected": "本当にこのファイルを削除しますか? | これらの {n} ファイルを削除してもよろしいですか？"
 }

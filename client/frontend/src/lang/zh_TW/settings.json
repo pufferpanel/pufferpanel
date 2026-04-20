@@ -1,15 +1,15 @@
 {
   "Settings": "設定",
   "PanelSettings": "面板設定",
-  "SavePanelSettings": "Save Panel Settings",
+  "SavePanelSettings": "儲存面板設定",
   "EmailSettings": "電子郵件設定",
-  "SaveEmailSettings": "Save Email Settings",
+  "SaveEmailSettings": "儲存電子郵件設定",
   "MasterUrl": "主 URL",
   "MasterUrlHint": "可以用來存取本面板的 URL 基底，格式為 http://localhost:8080",
   "CompanyName": "公司名稱",
   "DefaultTheme": "預設主題",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabled": "允許使用者自行註冊",
+  "RegistrationEnabledHint": "自行註冊的使用者在獲得權限之前無法進行任何操作\n\n停用這個只會避免直接註冊，邀請至伺服器和使用者頁面不會受到影響",
   "EmailProvider": "電子信箱提供者",
   "emailProviders": {
     "none": "無",
@@ -18,15 +18,15 @@
     "mailjet": "Mailjet"
   },
   "email": {
-    "from": "Sender Address",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "寄件者地址",
+    "domain": "網域",
+    "key": "API 金鑰",
+    "host": "主機",
+    "username": "使用者名稱",
+    "password": "密碼"
   },
-  "Saved": "Saved",
-  "TestEmail": "Test Email",
-  "TestEmailSent": "Test email sent",
-  "TestEmailFailed": "Test email failed to send"
+  "Saved": "已儲存",
+  "TestEmail": "測試電子郵件",
+  "TestEmailSent": "已封送測試電子郵件",
+  "TestEmailFailed": "測試電子郵件發送失敗"
 }

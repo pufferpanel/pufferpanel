@@ -39,10 +39,33 @@
     "generic": "ディレクトリを作成",
     "formatted": "{target}を作成"
   },
+  "archive": {
+    "generic": "Archive files",
+    "formatted": "Archive {file} to {destination} | Archive {n} files to {destination}",
+    "source": "Files to archive"
+  },
+  "extract": {
+    "generic": "Extract archive",
+    "formatted": "Extract {source} to {destination}",
+    "destination": "Destination"
+  },
+  "console": {
+    "generic": "Console message",
+    "formatted": "Print \"{message}\" to console",
+    "message": "Message"
+  },
+  "sleep": {
+    "generic": "Wait",
+    "formatted": "Wait for {duration}",
+    "duration": "Duration",
+    "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
+  },
   "steamgamedl": {
     "generic": "Steamからインストール",
     "formatted": "SteamからアプリID {appId}をインストール",
-    "appId": "Steam アプリID"
+    "appId": "Steam アプリID",
+    "branch": "Branch (leave blank for default)",
+    "branchPassword": "Branch Password (if needed)"
   },
   "javadl": {
     "generic": "Java のインストール",
@@ -50,7 +73,13 @@
   },
   "forgedl": {
     "generic": "Minecraft Forgeをダウンロード",
-    "formatted": "Minecraft Forgeをダウンロード"
+    "formatted": "Minecraft Forgeをダウンロード",
+    "outputVariable": "Output variable"
+  },
+  "neoforgedl": {
+    "generic": "Download Minecraft Neoforge",
+    "formatted": "Download Minecraft Neoforge",
+    "outputVariable": "Output variable"
   },
   "spongeforgedl": {
     "generic": "Minecraft SpongeForgeをダウンロード",
@@ -61,12 +90,21 @@
     "generic": "Minecraft Fabricをダウンロード",
     "formatted": "Minecraft Fabricをダウンロード"
   },
+  "paperdl": {
+    "generic": "Download PaperMC project",
+    "formatted": "Download {project} to {target}",
+    "project": "PaperMC project",
+    "build": "Build number"
+  },
   "curseforge": {
     "generic": "CurseForge からダウンロード",
-    "formatted": "CurseForge からダウンロード"
+    "formatted": "CurseForge からダウンロード",
+    "projectId": "Project ID",
+    "fileId": "File ID",
+    "java": "Java"
   },
   "nodejsdl": {
-    "generic": "Install Node.js",
-    "formatted": "Install Node.js {version}"
+    "generic": "Node.jsをインストール",
+    "formatted": "Node.js {version} をインストール"
   }
 }

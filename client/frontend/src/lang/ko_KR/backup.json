@@ -12,5 +12,5 @@
     "Delete": "Delete",
     "Deleted": "Backup deleted successfully",
     "DeletePrompt": "Permanently delete backup",
-    "DeletePromptBody": "Do you really want to delete the backup permanently?"
+    "DeletePromptBody": "이 서버를 삭제할까요?(되돌릴 수 없습니다.)?"
 }

@@ -44,6 +44,7 @@
   "RepoBranch": "Branches du dépôt",
   "ConfirmDeleteRepo": "Êtes-vous sûr de vouloir supprimer le dépôt '{name}' ?",
   "DeleteRepo": "Supprimer le dépôt",
+  "MinecraftVersion": "Minecraft Version",
   "signals": {
     "1": "INSCRIPTION",
     "2": "SIGINT (CTRL+C)",

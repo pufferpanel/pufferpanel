@@ -40,6 +40,7 @@
     "BaseColor": "Pohjaväri",
     "ServerTypeDisplay": "Palvelimen Tyypin Näyttö",
     "serverTypeDisplay": {
+      "IconBackground": "Icon + Background",
       "Icon": "Kuvake",
       "None": "Tyhjä"
     },

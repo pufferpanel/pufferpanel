@@ -44,6 +44,7 @@
   "RepoBranch": "Ветка репозитория",
   "ConfirmDeleteRepo": "Вы уверены, что хотите удалить репозиторий '{name}'?",
   "DeleteRepo": "Удалить репозиторий",
+  "MinecraftVersion": "Версия Minecraft",
   "signals": {
     "1": "SIGHUP",
     "2": "SIGINT (CTRL+C)",

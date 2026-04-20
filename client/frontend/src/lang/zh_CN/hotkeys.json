@@ -1,30 +1,30 @@
 {
-  "Title": "Keyboard Shortcuts",
+  "Title": "键盘快捷键",
   "Global": {
-    "Title": "Global",
-    "g a": "Go to Account",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users",
-    "/": "Global Search"
+    "Title": "全局",
+    "g a": "前往账户页面",
+    "g c": "前往面板配置页",
+    "g n": "前往节点页面",
+    "g s": "前往服务器页面",
+    "g t": "前往模板页面",
+    "g u": "前往用户页面",
+    "/": "全局搜索"
   },
   "Self": {
-    "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
-    "t s": "Go to Preferences tab"
+    "Title": "账户",
+    "t 2": "转到两步认证页面",
+    "t a": "前往账户详情页",
+    "t o": "前往 OAuth 页面",
+    "t p": "前往密码页面",
+    "t s": "前往偏好页面"
   },
   "ServerList": {
-    "Title": "Servers",
-    "c": "Create a new server",
+    "Title": "服务器列表",
+    "c": "新建服务器",
     "l": "Focus the first server in the list"
   },
   "ServerView": {
-    "Title": "Server",
+    "Title": "服务器",
     "t c": "Go to Console tab",
     "t i": "Go to Statistics tab",
     "t f": "Go to Files tab",

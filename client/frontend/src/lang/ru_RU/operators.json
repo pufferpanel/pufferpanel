@@ -39,10 +39,33 @@
     "generic": "Создать каталог",
     "formatted": "Создать каталог {target}"
   },
+  "archive": {
+    "generic": "Архивировать файлы",
+    "formatted": "Архивировать {file} в {destination} | Архивировать {n} файл(а/ов) в {destination}",
+    "source": "Файлы для архивации"
+  },
+  "extract": {
+    "generic": "Извлечь архив",
+    "formatted": "Извлечь {source} в {destination}",
+    "destination": "Назначение"
+  },
+  "console": {
+    "generic": "Сообщение в консоль",
+    "formatted": "Напечатать \"{message}\" в консоль",
+    "message": "Сообщение"
+  },
+  "sleep": {
+    "generic": "Ждать",
+    "formatted": "Ждать {duration}",
+    "duration": "Продолжительность",
+    "durationHint": "Допустимые единицы времени — ns, us, ms, m и h. Единицы можно комбинировать. Например `1m45s`"
+  },
   "steamgamedl": {
     "generic": "Установить из Steam",
     "formatted": "Установить приложение Steam с ID {appId}",
-    "appId": "ID приложения Steam"
+    "appId": "ID приложения Steam",
+    "branch": "Ветка (по умолчанию - оставьте пустым)",
+    "branchPassword": "Пароль ветки (если необходим)"
   },
   "javadl": {
     "generic": "Установка Java",
@@ -50,7 +73,13 @@
   },
   "forgedl": {
     "generic": "Скачать Minecraft Forge",
-    "formatted": "Скачать Minecraft Forge"
+    "formatted": "Скачать Minecraft Forge",
+    "outputVariable": "Переменная вывода"
+  },
+  "neoforgedl": {
+    "generic": "Скачать Minecraft Neoforge",
+    "formatted": "Скачать Minecraft Neoforge",
+    "outputVariable": "Переменная вывода"
   },
   "spongeforgedl": {
     "generic": "Скачать Minecraft SpongeForge",
@@ -61,9 +90,18 @@
     "generic": "Скачать Minecraft Fabric",
     "formatted": "Скачать Minecraft Fabric"
   },
+  "paperdl": {
+    "generic": "Скачать проект PaperMC",
+    "formatted": "Скачать {project} в {target}",
+    "project": "Проект PaperMC",
+    "build": "Номер сборки"
+  },
   "curseforge": {
     "generic": "Скачать с CurseForge",
-    "formatted": "Скачать с CurseForge"
+    "formatted": "Скачать с CurseForge",
+    "projectId": "ID проекта",
+    "fileId": "ID файла",
+    "java": "Java"
   },
   "nodejsdl": {
     "generic": "Установить Node.js",

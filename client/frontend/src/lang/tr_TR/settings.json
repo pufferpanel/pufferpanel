@@ -1,15 +1,15 @@
 {
   "Settings": "Ayarlar",
   "PanelSettings": "Panel ayarları",
-  "SavePanelSettings": "Save Panel Settings",
+  "SavePanelSettings": "Panel Ayarlarını Kaydet",
   "EmailSettings": "E-posta ayarları",
-  "SaveEmailSettings": "Save Email Settings",
+  "SaveEmailSettings": "Mail Ayarlarını Kaydet",
   "MasterUrl": "Ana URL",
   "MasterUrlHint": "Panelin altında ulaşılabilen temel URL, http://localhost:8080 biçimindedir",
   "CompanyName": "Şirket adı",
   "DefaultTheme": "Varsayılan tema",
   "RegistrationEnabled": "Kullanıcıların kayıt olmasına izin ver",
-  "RegistrationEnabledHint": "Self registered users can't do anything until given permissions\n\nDisabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabledHint": "Kendi kendine kayıt olan kullanıcılar, izin verilene kadar hiçbir işlem yapamazlar.\n\nBunu devre dışı bırakmak yalnızca doğrudan kaydı engeller; bir sunucuya davet edilme ve Kullanıcılar sayfası bu durumdan etkilenmez",
   "EmailProvider": "E-Posta sağlayıcısı",
   "emailProviders": {
     "none": "Hiçbiri",
@@ -18,15 +18,15 @@
     "mailjet": "Mailjet"
   },
   "email": {
-    "from": "Sender Address",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "Gönderen Adresi",
+    "domain": "Alan Adı",
+    "key": "API Anahtarı",
+    "host": "Sunucu",
+    "username": "Kullanıcı Adı",
+    "password": "Şifre"
   },
-  "Saved": "Saved",
-  "TestEmail": "Test Email",
-  "TestEmailSent": "Test email sent",
-  "TestEmailFailed": "Test email failed to send"
+  "Saved": "Kaydedildi",
+  "TestEmail": "Test E-postası",
+  "TestEmailSent": "Test e-postası gönderildi",
+  "TestEmailFailed": "Test e-postası gönderilemedi"
 }

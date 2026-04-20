@@ -40,6 +40,7 @@
     "BaseColor": "צבע בסיס",
     "ServerTypeDisplay": "Server Type Display",
     "serverTypeDisplay": {
+      "IconBackground": "Icon + Background",
       "Icon": "סמל",
       "None": "כלום"
     },

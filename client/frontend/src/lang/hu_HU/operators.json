@@ -39,10 +39,33 @@
     "generic": "Mappa létrehozása",
     "formatted": "Mappa létrehozzása {target}"
   },
+  "archive": {
+    "generic": "Archív Fájlok",
+    "formatted": "Archíválni {file} a {destination}-ba | Archíválni {n} fájlokat {destination}-ba",
+    "source": "Archíválandó Fájlok"
+  },
+  "extract": {
+    "generic": "Archívum Kicsomagolása",
+    "formatted": "Kicsomagolni {source} a {destination}-ba",
+    "destination": "Cél"
+  },
+  "console": {
+    "generic": "Konzol üzenet",
+    "formatted": "A \"{message}\" nyomtatása a konzolba",
+    "message": "Üzenet"
+  },
+  "sleep": {
+    "generic": "Kérem Várjon",
+    "formatted": "Kérem várjon {duration}",
+    "duration": "Időtartam",
+    "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
+  },
   "steamgamedl": {
     "generic": "Steamről telepítése",
     "formatted": "Streamről App id-ben telepítése {appId}",
-    "appId": "Steam App ID"
+    "appId": "Steam App ID",
+    "branch": "Branch (leave blank for default)",
+    "branchPassword": "Branch Password (if needed)"
   },
   "javadl": {
     "generic": "Java telepítése",
@@ -50,7 +73,13 @@
   },
   "forgedl": {
     "generic": "Minecraft Forge Letöltése",
-    "formatted": "Minecraft Forge Letöltése"
+    "formatted": "Minecraft Forge Letöltése",
+    "outputVariable": "Output variable"
+  },
+  "neoforgedl": {
+    "generic": "Download Minecraft Neoforge",
+    "formatted": "Download Minecraft Neoforge",
+    "outputVariable": "Output variable"
   },
   "spongeforgedl": {
     "generic": "Minecraft SpongeForge Letöltése",
@@ -61,9 +90,18 @@
     "generic": "Minecraft Fabric Letöltése",
     "formatted": "Minecraft Fabric Letöltése"
   },
+  "paperdl": {
+    "generic": "Download PaperMC project",
+    "formatted": "Download {project} to {target}",
+    "project": "PaperMC project",
+    "build": "Build number"
+  },
   "curseforge": {
     "generic": "Curseforgeról letöltés",
-    "formatted": "Curseforgeról letöltés"
+    "formatted": "Curseforgeról letöltés",
+    "projectId": "Project ID",
+    "fileId": "File ID",
+    "java": "Java"
   },
   "nodejsdl": {
     "generic": "Node.js telepítése",

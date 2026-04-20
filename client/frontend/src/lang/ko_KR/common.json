@@ -3,7 +3,7 @@
   "Language": "언어",
   "Online": "온라인",
   "Offline": "오프라인",
-  "Installing": "Installing",
+  "Installing": "설치중",
   "Unknown": "알 수 없음",
   "Loading": "불러오는중...",
   "Description": "Description",
@@ -40,6 +40,7 @@
     "BaseColor": "Base Color",
     "ServerTypeDisplay": "Server Type Display",
     "serverTypeDisplay": {
+      "IconBackground": "Icon + Background",
       "Icon": "Icon",
       "None": "None"
     },
@@ -60,5 +61,5 @@
   },
   "NoResults": "No Results",
   "Yes": "Yes",
-  "No": "No"
+  "No": "아니오"
 }

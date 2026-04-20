@@ -1,79 +1,79 @@
 {
-  "Title": "Keyboard Shortcuts",
+  "Title": "鍵盤快捷鍵",
   "Global": {
-    "Title": "Global",
-    "g a": "Go to Account",
-    "g c": "Go to Panel Configuration",
-    "g n": "Go to Nodes",
-    "g s": "Go to Servers",
-    "g t": "Go to Templates",
-    "g u": "Go to Users",
-    "/": "Global Search"
+    "Title": "全域",
+    "g a": "跳至帳號設定",
+    "g c": "跳至面板設定",
+    "g n": "跳至節點",
+    "g s": "跳至伺服器清單",
+    "g t": "跳至模板清單",
+    "g u": "跳至使用者清單",
+    "/": "全域搜尋"
   },
   "Self": {
-    "Title": "Account",
-    "t 2": "Go to 2-Factor-Auth tab",
-    "t a": "Go to Account Details tab",
-    "t o": "Go to OAuth tab",
-    "t p": "Go to Password tab",
-    "t s": "Go to Preferences tab"
+    "Title": "帳號設定",
+    "t 2": "跳至二步驟驗證",
+    "t a": "跳至帳號詳細資料設定",
+    "t o": "跳至 OAuth 設定",
+    "t p": "跳至密碼設定",
+    "t s": "跳至偏好選項"
   },
   "ServerList": {
-    "Title": "Servers",
-    "c": "Create a new server",
-    "l": "Focus the first server in the list"
+    "Title": "伺服器清單",
+    "c": "建立伺服器",
+    "l": "選取清單中的第一個伺服器"
   },
   "ServerView": {
-    "Title": "Server",
-    "t c": "Go to Console tab",
-    "t i": "Go to Statistics tab",
-    "t f": "Go to Files tab",
-    "t s": "Go to Settings tab",
-    "t u": "Go to Users tab",
-    "t 6": "Go to SFTP tab",
-    "t 7": "Go to Api tab",
-    "t a": "Go to Admin tab",
-    "c c": "Focus Command Input",
-    "c x": "Clear Console",
-    "r r": "Start Server",
-    "r s": "Stop Server",
-    "r k": "Kill Server",
-    "r i": "Install Server",
-    "f a": "Archive current directory contents",
-    "f c d": "Create new directory",
-    "f c f": "Create new file",
-    "f s a": "Archive selected files",
-    "f s d": "Delete selected files",
-    "f d": "Upload directory",
-    "f l": "Focus first file/folder in the list",
-    "f r": "Reload file list",
-    "f u": "Upload files",
-    "a e": "Edit Server Definition",
-    "a r": "Reload Server Definiton from disk"
+    "Title": "伺服器",
+    "t c": "跳至控制台",
+    "t i": "跳至統計頁面",
+    "t f": "跳至檔案管理",
+    "t s": "跳至設定頁面",
+    "t u": "跳至使用者清單",
+    "t 6": "跳至 SFTP 頁面",
+    "t 7": "跳至 Api 頁面",
+    "t a": "跳至管理員頁面",
+    "c c": "選取命令輸入欄",
+    "c x": "清空控制台",
+    "r r": "啟動伺服器",
+    "r s": "停止伺服器",
+    "r k": "強制停止伺服器",
+    "r i": "安裝伺服器",
+    "f a": "壓縮目前目錄內容",
+    "f c d": "建立資料夾",
+    "f c f": "建立檔案",
+    "f s a": "壓縮所選的檔案",
+    "f s d": "刪除所選的檔案",
+    "f d": "上傳資料夾",
+    "f l": "選取清單中第一個檔案/資料夾",
+    "f r": "重新載入檔案清單",
+    "f u": "上傳多個檔案",
+    "a e": "編輯伺服器資料",
+    "a r": "從硬碟重新讀取伺服器資料"
   },
   "NodeList": {
-    "Title": "Nodes",
-    "c": "Create a new node",
-    "l": "Focus the first node in the list"
+    "Title": "節點清單",
+    "c": "建立節點",
+    "l": "選取清單中第一個節點"
   },
   "UserList": {
-    "Title": "Users",
-    "c": "Create a new user",
-    "l": "Focus the first user in the list"
+    "Title": "使用者清單",
+    "c": "建立使用者",
+    "l": "選取清單中第一個使用者"
   },
   "TemplateList": {
-    "Title": "Templates",
-    "c": "Create a new template",
-    "l": "Focus the first template in the list"
+    "Title": "模板清單",
+    "c": "建立模板",
+    "l": "選取清單中第一個模板"
   },
   "Template": {
-    "Title": "Template Editor",
-    "t e": "Go to Environment tab",
-    "t g": "Go to General tab",
-    "t h": "Go to Hooks tab",
-    "t i": "Go to Install tab",
-    "t j": "Go to JSON tab",
-    "t r": "Go to Run Configuration tab",
-    "t v": "Go to Variables tab"
+    "Title": "模板編輯器",
+    "t e": "跳至環境設定",
+    "t g": "跳至一般頁面",
+    "t h": "跳至掛夠",
+    "t i": "跳至安裝頁面",
+    "t j": "跳至 JSON 頁面",
+    "t r": "跳至執行設定",
+    "t v": "跳至變數"
   }
 }
