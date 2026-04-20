@@ -494,7 +494,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 		}
 	}
 	if binaryFolder != "" {
-		bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+"/var/lib/pufferpanel/binaries")
+		bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+"/var/lib/pufferpanel/binaries:ro")
 	}
 
 	for k, v := range d.Binds {
