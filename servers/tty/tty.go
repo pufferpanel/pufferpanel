@@ -405,8 +405,8 @@ func (t *tty) createCmd(rootDir, workDir string) (pr *exec.Cmd, err error) {
 	unshareArgs = append(unshareArgs,
 		fmt.Sprintf("mkdir -p %s", strings.Join(mountFolders, " ")),
 		fmt.Sprintf("mount --bind %s %s", rootDir, rootDirMount),
-		fmt.Sprintf("mount --bind %s %s", config.BinariesFolder.Value(), binaryFolderMount),
-		fmt.Sprintf("mount --bind %s %s", config.CacheFolder.Value(), cacheFolderMount),
+		fmt.Sprintf("mount --bind -o ro %s %s", config.BinariesFolder.Value(), binaryFolderMount),
+		//fmt.Sprintf("mount --bind -o ro %s %s", config.CacheFolder.Value(), cacheFolderMount),
 	)
 
 	for _, v := range t.Mounts {
