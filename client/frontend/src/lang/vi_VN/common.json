@@ -26,11 +26,11 @@
   "Apply": "Áp dụng",
   "Confirm": "Xác nhận",
   "Condition": "Condition",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Discard": "Hủy bỏ",
+  "ConfirmLeave": "Phát hiện thay đổi chưa lưu, bạn có muốn hủy bỏ những thay đổi đó và rời khỏi trang này không?",
   "theme": {
-    "Theme": "Theme",
-    "Mode": "Mode",
+    "Theme": "Giao diện",
+    "Mode": "Chế độ",
     "mode": {
       "Light": "Sáng",
       "Dark": "Tối",
@@ -38,28 +38,28 @@
       "Auto": "Tự động"
     },
     "BaseColor": "Màu cơ bản",
-    "ServerTypeDisplay": "Kiểu liệt kê máy chủ",
+    "ServerTypeDisplay": "Kiểu danh sách máy chủ",
     "serverTypeDisplay": {
       "IconBackground": "Biểu tượng + hình nền",
       "Icon": "BIểu tượng",
       "None": "Không"
     },
-    "ListType": "List Type",
+    "ListType": "Kiểu danh sách",
     "listType": {
-      "Grid": "Grid",
-      "List": "List"
+      "Grid": "Dạng lưới",
+      "List": "Từng dòng"
     },
     "FontSize": "Cỡ chữ",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Mặc định"
     },
-    "FontFace": "Font Face",
+    "FontFace": "Phông chữ",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Mặc định",
+      "A11y": "Tối ưu tính tiếp cận"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "Không có kết quả",
+  "Yes": "Có",
+  "No": "Không"
 }
