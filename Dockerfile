@@ -60,6 +60,7 @@ RUN xx-verify /pufferpanel/pufferpanel
 FROM alpine
 
 EXPOSE 8080 5657
+RUN apk add --no-cache bash
 RUN mkdir -p /etc/pufferpanel && \
     mkdir -p /var/lib/pufferpanel /var/lib/pufferpanel/servers /var/lib/pufferpanel/binaries /var/lib/pufferpanel/cache && \
     mkdir -p /var/log/pufferpanel
