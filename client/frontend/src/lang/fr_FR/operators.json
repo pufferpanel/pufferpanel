@@ -40,13 +40,13 @@
     "formatted": "Créer le répertoire {target}"
   },
   "archive": {
-    "generic": "Archive files",
+    "generic": "Fichier d'archive",
     "formatted": "Archive {file} to {destination} | Archive {n} files to {destination}",
     "source": "Files to archive"
   },
   "extract": {
-    "generic": "Extract archive",
-    "formatted": "Extract {source} to {destination}",
+    "generic": "Extraire l'archive",
+    "formatted": "Extraire {source} vers {destination}",
     "destination": "Destination"
   },
   "console": {
