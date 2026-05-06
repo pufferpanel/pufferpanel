@@ -42,7 +42,7 @@
   "archive": {
     "generic": "Fichier d'archive",
     "formatted": "Archive {file} to {destination} | Archive {n} files to {destination}",
-    "source": "Files to archive"
+    "source": "Fichiers vers archive"
   },
   "extract": {
     "generic": "Extraire l'archive",
@@ -51,13 +51,13 @@
   },
   "console": {
     "generic": "Console message",
-    "formatted": "Print \"{message}\" to console",
+    "formatted": "Afficher {message} dans la console",
     "message": "Message"
   },
   "sleep": {
     "generic": "Wait",
-    "formatted": "Wait for {duration}",
-    "duration": "Duration",
+    "formatted": "Attendez pendant {duration}",
+    "duration": "Durée",
     "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
   },
   "steamgamedl": {
@@ -99,8 +99,8 @@
   "curseforge": {
     "generic": "Télécharger depuis CurseForge",
     "formatted": "Télécharger depuis CurseForge",
-    "projectId": "Project ID",
-    "fileId": "File ID",
+    "projectId": "ID du projet",
+    "fileId": "ID du fichier",
     "java": "Java"
   },
   "nodejsdl": {
