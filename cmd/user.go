@@ -3,6 +3,9 @@ package main
 import (
 	"errors"
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/pterm/pterm"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/groups"
@@ -11,8 +14,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/spf13/cobra"
 	"gorm.io/gorm"
-	"os"
-	"strings"
 )
 
 var AddUserCmd = &cobra.Command{
@@ -314,11 +315,12 @@ func editUser(cmd *cobra.Command, args []string) {
 
 				//perms.Admin = prompt
 				result = strings.ToLower(result)
-				if result == "yes" || result == "y" {
+				switch result {
+				case "yes", "y":
 					perms.Scopes = scopes.AddScope(perms.Scopes, scopes.ScopeAdmin)
-				} else if result == "no" || result == "n" {
+				case "no", "n":
 					perms.Scopes = scopes.RemoveScope(perms.Scopes, scopes.ScopeAdmin)
-				} else {
+				default:
 					break
 				}
 

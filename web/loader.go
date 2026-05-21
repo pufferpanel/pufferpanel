@@ -117,6 +117,7 @@ func RegisterRoutes(e *gin.Engine) {
 
 		clientFiles = dist.ClientFiles
 		if config.WebRoot.Value() != "" {
+			_ = os.MkdirAll(config.WebRoot.Value(), files.DefaultFolderPermissions)
 			clientFs, err := files.NewFileServer(config.WebRoot.Value(), os.Getuid(), os.Getgid())
 			if err != nil {
 				panic(err)
