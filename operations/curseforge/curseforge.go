@@ -3,19 +3,19 @@ package curseforge
 import (
 	"errors"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/files"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/operations/forgedl"
-	"github.com/pufferpanel/pufferpanel/v3/operations/neoforgedl"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/operations/forgedl"
+	"github.com/pufferpanel/pufferpanel/v3/operations/neoforgedl"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 type CurseForge struct {
@@ -52,6 +52,7 @@ var errNoFile = errors.New("status code 404")
 
 func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
 	env := args.Environment
+	serverFS := args.Server.GetFileServer()
 
 	var clientFile, serverFile File
 	var err error
@@ -127,9 +128,7 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 	logging.Debug.Printf("Extracting modpack from %s\n", serverZipPath)
 	env.DisplayToConsole(true, "Extracting modpack from %s", serverZipPath)
 
-	singleRoot, _ := files.DetermineIfSingleRoot(serverZipPath)
-
-	err = files.Extract(nil, serverZipPath, env.GetRootDirectory(), "*", singleRoot, nil)
+	err = files.Extract(files.CacheFS, serverZipPath, serverFS, "/", "*")
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
@@ -144,7 +143,7 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 	var jar string
 	var vars map[string]string
 	var manifest Manifest
-	if jar, err = findInstallerJar(env); err == nil {
+	if jar, err = findInstallerJar(serverFS); err == nil {
 		logging.Debug.Printf("Found jar: %s\n", jar)
 		if strings.HasPrefix(jar, "neoforgedl") {
 			modLoader = "neoforgedl"
@@ -184,7 +183,7 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 	switch modLoader {
 	case "fabric":
 		{
-			err = installFabric(env, data, c.JavaBinary)
+			err = installFabric(serverFS, env, data, c.JavaBinary)
 			if err != nil {
 				return pufferpanel.OperationResult{Error: err}
 			}
@@ -216,7 +215,7 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 					return pufferpanel.OperationResult{Error: err}
 				}
 				//copy to server
-				err = files.WriteFile(dl, filepath.Join(env.GetRootDirectory(), installerJar))
+				err = files.WriteFile(dl, serverFS, installerJar)
 				if err != nil {
 					return pufferpanel.OperationResult{Error: err}
 				}
@@ -231,17 +230,17 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 			//grab the ServerStarter if there isn't a server.jar, just to help out
 			//would prefer Forge's variant, but this will do
 			runJarFile := filepath.Join(env.GetRootDirectory(), "server.jar")
-			if _, err = os.Stat(runJarFile); os.IsNotExist(err) {
+			if _, err = serverFS.Stat(runJarFile); os.IsNotExist(err) {
 				env.DisplayToConsole(true, "Grabbing ServerStarter")
-				var cachePath = filepath.Join(config.CacheFolder.Value(), "github.com", "neoforgedl", "serverstarter", NeoForgeServerStarterVersion, "server.jar")
-				if _, err = os.Stat(cachePath); os.IsNotExist(err) {
+				var cachePath = filepath.Join("github.com", "neoforgedl", "serverstarter", NeoForgeServerStarterVersion, "server.jar")
+				if _, err = files.CacheFS.Stat(cachePath); os.IsNotExist(err) {
 					env.DisplayToConsole(true, "Downloading "+NeoForgeServerStarter)
 					err = pufferpanel.DownloadFileToCache(NeoForgeServerStarter, cachePath)
 					if err != nil {
 						return pufferpanel.OperationResult{Error: err}
 					}
 				}
-				err = files.CopyFile(cachePath, runJarFile)
+				err = files.CopyFile(files.CacheFS, cachePath, serverFS, runJarFile)
 				if err != nil {
 					return pufferpanel.OperationResult{Error: err}
 				}
@@ -259,8 +258,8 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func findInstallerJar(env *pufferpanel.Environment) (string, error) {
-	entries, err := os.ReadDir(env.GetRootDirectory())
+func findInstallerJar(fs files.FileServer) (string, error) {
+	entries, err := fs.ReadDir("")
 	if err != nil {
 		return "", err
 	}
@@ -294,12 +293,14 @@ func installViaJar(server pufferpanel.DaemonServer, env *pufferpanel.Environment
 		return errors.New("failed to run installer")
 	}
 
+	serverFS := server.GetFileServer()
+
 	//delete installer now
-	err = os.Remove(filepath.Join(env.GetRootDirectory(), jarFile))
+	err = serverFS.Remove(jarFile)
 	if err != nil {
 		env.DisplayToConsole(true, "Failed to delete installer")
 	}
-	err = os.Remove(filepath.Join(env.GetRootDirectory(), jarFile+".log"))
+	err = serverFS.Remove(jarFile + ".log")
 	if err != nil {
 		env.DisplayToConsole(true, "Failed to delete installer")
 	}
@@ -313,13 +314,8 @@ func installViaJar(server pufferpanel.DaemonServer, env *pufferpanel.Environment
 
 	var fi os.FileInfo
 	for _, f := range possibleRenames {
-		if fi, err = os.Lstat(filepath.Join(env.GetRootDirectory(), f)); err == nil && !fi.IsDir() {
-			err = os.Rename(filepath.Join(env.GetRootDirectory(), f), filepath.Join(env.GetRootDirectory(), "server.jar"))
-			if err != nil {
-				return err
-			}
-		} else if fi, err = os.Lstat(filepath.Join(env.GetRootDirectory(), f)); err == nil && !fi.IsDir() {
-			err = os.Rename(filepath.Join(env.GetRootDirectory(), f), filepath.Join(env.GetRootDirectory(), "server.jar"))
+		if fi, err = serverFS.Stat(f); err == nil && !fi.IsDir() {
+			err = serverFS.Rename(f, "server.jar")
 			if err != nil {
 				return err
 			}
@@ -328,7 +324,7 @@ func installViaJar(server pufferpanel.DaemonServer, env *pufferpanel.Environment
 	return nil
 }
 
-func installFabric(env *pufferpanel.Environment, data map[string]string, javaBinary string) error {
+func installFabric(serverFS files.FileServer, env *pufferpanel.Environment, data map[string]string, javaBinary string) error {
 	//this is a mess
 	//there's 2 options that exist for fabric
 	//there is an "improved" launcher, which is just a jar that we need
@@ -339,7 +335,7 @@ func installFabric(env *pufferpanel.Environment, data map[string]string, javaBin
 	targetFile := filepath.Join(env.GetRootDirectory(), "server.jar")
 
 	env.DisplayToConsole(true, "Downloading %s to %s", fabricUrl, targetFile)
-	err := downloadFile(fabricUrl, targetFile)
+	err := downloadFile(fabricUrl, serverFS, targetFile)
 	if err == nil {
 		//this was a good file, we got what we need
 		return nil
@@ -349,7 +345,7 @@ func installFabric(env *pufferpanel.Environment, data map[string]string, javaBin
 		targetFile = filepath.Join(env.GetRootDirectory(), "fabric-installer.jar")
 
 		env.DisplayToConsole(true, "Downloading %s to %s", fabricUrl, targetFile)
-		err = downloadFile(fabricUrl, targetFile)
+		err = downloadFile(fabricUrl, serverFS, targetFile)
 		if err != nil {
 			return err
 		}
@@ -371,22 +367,22 @@ func installFabric(env *pufferpanel.Environment, data map[string]string, javaBin
 		}
 
 		//delete installer now
-		err = os.Remove(filepath.Join(env.GetRootDirectory(), "fabric-installer.jar"))
+		err = serverFS.Remove("fabric-installer.jar")
 		if err != nil {
 			env.DisplayToConsole(true, "Failed to delete installer")
 		}
 
 		//replace jar with the fabric jar
-		_ = os.Remove(filepath.Join(env.GetRootDirectory(), "server.jar"))
-		err = os.Rename(filepath.Join(env.GetRootDirectory(), "fabric-server-launch.jar"), filepath.Join(env.GetRootDirectory(), "server.jar"))
+		_ = serverFS.Remove("server.jar")
+		err = serverFS.Rename("fabric-server-launch.jar", "server.jar")
 		return err
 	} else {
 		return err
 	}
 }
 
-func downloadFile(url, target string) error {
-	file, err := os.Create(target)
+func downloadFile(url string, targetFS files.FileServer, target string) error {
+	file, err := targetFS.Create(target)
 	if err != nil {
 		return err
 	}

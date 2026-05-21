@@ -4,25 +4,25 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/mholt/archiver/v3"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"net/http"
 	"net/url"
-	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 const DownloadBaseUrl = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_${version}/"
 const RepoReleases = "https://api.github.com/repos/SteamRE/DepotDownloader/releases?per_page=1"
 
-func downloadDD(rootBinaryFolder string, version string) error {
+func downloadDD(version string) error {
 	downloader.Lock()
 	defer downloader.Unlock()
 
-	fi, err := os.Stat(filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary))
+	fi, err := files.BinariesFS.Stat(filepath.Join("depotdownloader", DepotDownloaderBinary))
 	if err == nil && fi.Size() > 0 {
 		return nil
 	}
@@ -43,12 +43,12 @@ func downloadDD(rootBinaryFolder string, version string) error {
 		link = strings.Replace(link, "${arch}", arch, 1)
 	}
 
-	err = pufferpanel.HttpExtract(link, filepath.Join(rootBinaryFolder, "depotdownloader"), archiver.DefaultZip)
+	err = pufferpanel.HttpExtract(files.BinariesFS, link, "depotdownloader")
 	if err != nil {
 		return err
 	}
 
-	_ = os.Chmod(filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary), 0755)
+	_ = files.BinariesFS.Chmod(filepath.Join("depotdownloader", DepotDownloaderBinary), 0755)
 	return nil
 }
 

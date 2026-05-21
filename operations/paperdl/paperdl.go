@@ -4,19 +4,20 @@ import (
 	"crypto"
 	"encoding/json"
 	"errors"
+	"net/http"
+	"net/url"
+	"strings"
+
 	"github.com/hashicorp/go-version"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"net/http"
-	"net/url"
-	"path"
-	"strings"
 )
 
 const VersionsUrl = "https://fill.papermc.io/v3/projects/${project}/versions"
 const BuildUrl = "https://fill.papermc.io/v3/projects/${project}/versions/${mcVersion}/builds/${build}"
+
 var UserAgent = pufferpanel.Display + " https://github.com/pufferpanel/pufferpanel"
 
 type PaperDl struct {
@@ -49,7 +50,7 @@ func (op PaperDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRes
 		return pufferpanel.OperationResult{Error: err}
 	}
 
-	err = files.WriteFile(dl, path.Join(env.GetRootDirectory(), op.Filename))
+	err = files.WriteFile(dl, args.Server.GetFileServer(), op.Filename)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
@@ -65,7 +66,7 @@ func (op PaperDl) getLatestMCVersion() (string, error) {
 
 	request := &http.Request{
 		Method: "GET",
-		URL: path,
+		URL:    path,
 		Header: http.Header{},
 	}
 	request.Header.Add("user-agent", UserAgent)
@@ -106,7 +107,7 @@ func (op PaperDl) getDownloadUrlAndHash(env *pufferpanel.Environment) (string, s
 
 	request := &http.Request{
 		Method: "GET",
-		URL: path,
+		URL:    path,
 		Header: http.Header{},
 	}
 	request.Header.Add("User-Agent", UserAgent)

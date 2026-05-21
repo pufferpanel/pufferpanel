@@ -3,10 +3,10 @@ package fabricdl
 import (
 	"encoding/json"
 	"errors"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"path"
 )
 
 const FabricMetadataUrl = "https://meta.fabricmc.net/v2/versions/installer"
@@ -44,7 +44,7 @@ func (f *Fabricdl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 		return pufferpanel.OperationResult{Error: err}
 	}
 
-	err = files.WriteFile(file, path.Join(env.GetRootDirectory(), "fabric-installer.jar"))
+	err = files.WriteFile(file, args.Server.GetFileServer(), "fabric-installer.jar")
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}

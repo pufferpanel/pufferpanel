@@ -4,6 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"mime"
+	"net/http"
+	"os"
+	"path/filepath"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-co-op/gocron/v2"
@@ -17,11 +23,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/spf13/cast"
-	"io"
-	"mime"
-	"net/http"
-	"os"
-	"path/filepath"
 )
 
 var wsupgrader = websocket.Upgrader{
@@ -905,6 +906,10 @@ func createBackup(c *gin.Context) {
 func deleteBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	fileName := c.Query("fileName")
+	if folders, _ := filepath.Split(fileName); len(folders) > 0 {
+		response.HandleError(c, pufferpanel.ErrIllegalFileAccess, http.StatusBadRequest)
+		return
+	}
 
 	err := server.DeleteBackup(fileName)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -923,6 +928,11 @@ func deleteBackup(c *gin.Context) {
 func restoreBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	fileName := c.Query("fileName")
+	if folders, _ := filepath.Split(fileName); len(folders) > 0 {
+		response.HandleError(c, pufferpanel.ErrIllegalFileAccess, http.StatusBadRequest)
+		return
+	}
+
 	isRunning, err := server.IsRunning()
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -949,6 +959,10 @@ func restoreBackup(c *gin.Context) {
 func downloadBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	fileName := c.Query("fileName")
+	if folders, _ := filepath.Split(fileName); len(folders) > 0 {
+		response.HandleError(c, pufferpanel.ErrIllegalFileAccess, http.StatusBadRequest)
+		return
+	}
 
 	data, err := server.GetBackupFile(fileName)
 	defer func() {

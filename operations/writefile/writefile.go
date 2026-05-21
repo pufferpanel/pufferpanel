@@ -2,9 +2,9 @@ package writefile
 
 import (
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"os"
 )
 
 type WriteFile struct {
@@ -19,7 +19,7 @@ func (c WriteFile) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 	logging.Info.Printf("Writing data to file: %s", c.TargetFile)
 	env.DisplayToConsole(true, "Writing some data to file: %s\n", c.TargetFile)
 
-	file, err := fs.OpenFile(c.TargetFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+	file, err := fs.OpenFile(c.TargetFile, files.O_CREATEFILE, files.DefaultFilePermissions)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}

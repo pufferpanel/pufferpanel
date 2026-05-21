@@ -2,15 +2,17 @@ package pufferpanel
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/connections"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
 	"log"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/connections"
+	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
 
 type EnvironmentImpl interface {
@@ -168,12 +170,12 @@ func (e *Environment) Update() error {
 }
 
 func (e *Environment) Delete() (err error) {
-	err = os.RemoveAll(e.RootDirectory)
+	err = files.RootServerFS.RemoveAll(e.RootDirectory)
 	return
 }
 
 func (e *Environment) Create() error {
-	err := os.Mkdir(e.RootDirectory, 0755)
+	err := files.RootServerFS.Mkdir(e.RootDirectory, 0755)
 	if os.IsExist(err) {
 		return nil
 	}

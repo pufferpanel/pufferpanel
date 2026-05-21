@@ -3,14 +3,15 @@ package spongedl
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/operations/forgedl"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"net/http"
-	"os"
-	"path"
-	"strings"
 )
 
 var SpongeApiBaseUrl = "https://dl-api.spongepowered.org/v2/groups/org.spongepowered/artifacts/"
@@ -112,7 +113,7 @@ func (op SpongeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 			}
 
 			//going to stick the spongeforge rename in, to assist with those modpacks
-			err = files.WriteFile(file, path.Join(env.GetRootDirectory(), "mods", "_aspongeforge.jar"))
+			err = files.WriteFile(file, args.Server.GetFileServer(), filepath.Join("mods", "_aspongeforge.jar"))
 			if err != nil {
 				return pufferpanel.OperationResult{Error: err}
 			}
@@ -125,7 +126,7 @@ func (op SpongeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 				return pufferpanel.OperationResult{Error: err}
 			}
 
-			err = files.WriteFile(file, path.Join(env.GetRootDirectory(), "server.jar"))
+			err = files.WriteFile(file, args.Server.GetFileServer(), "server.jar")
 			if err != nil {
 				return pufferpanel.OperationResult{Error: err}
 			}

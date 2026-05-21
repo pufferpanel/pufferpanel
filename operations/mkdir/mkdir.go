@@ -1,10 +1,10 @@
 package mkdir
 
 import (
+	"path/filepath"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"os"
-	"path/filepath"
 )
 
 type Mkdir struct {
@@ -16,6 +16,6 @@ func (m *Mkdir) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResul
 	logging.Info.Printf("Making directory: %s\n", m.TargetFile)
 	env.DisplayToConsole(true, "Creating directory: %s\n", m.TargetFile)
 	target := filepath.Join(env.GetRootDirectory(), m.TargetFile)
-	err := os.MkdirAll(target, 0755)
+	err := args.Server.GetFileServer().MkdirAll(target, 0755)
 	return pufferpanel.OperationResult{Error: err}
 }

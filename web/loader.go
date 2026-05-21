@@ -2,6 +2,11 @@ package web
 
 import (
 	"fmt"
+	"io/fs"
+	"net/http"
+	"os"
+	"strings"
+
 	_ "github.com/alecthomas/template"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
@@ -18,10 +23,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "github.com/swaggo/swag"
-	"io/fs"
-	"net/http"
-	"os"
-	"strings"
 )
 
 var noHtmlRedirectOn404 = []string{"/api/", "/oauth2/", "/daemon/"}
@@ -116,7 +117,11 @@ func RegisterRoutes(e *gin.Engine) {
 
 		clientFiles = dist.ClientFiles
 		if config.WebRoot.Value() != "" {
-			clientFiles = files.NewMergedFS(os.DirFS(config.WebRoot.Value()), clientFiles)
+			clientFs, err := files.NewFileServer(config.WebRoot.Value(), os.Getuid(), os.Getgid())
+			if err != nil {
+				panic(err)
+			}
+			clientFiles = files.NewMergedFS(clientFs, clientFiles)
 		}
 
 		css := e.Group("/css")

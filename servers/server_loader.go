@@ -3,13 +3,13 @@ package servers
 import (
 	"encoding/json"
 	"errors"
+	"path/filepath"
+	"strings"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 var (
@@ -17,11 +17,7 @@ var (
 )
 
 func LoadFromFolder() {
-	err := os.Mkdir(config.ServersFolder.Value(), 0755)
-	if err != nil && !os.IsExist(err) {
-		logging.Error.Fatalf("Error creating server data folder: %s", err)
-	}
-	programFiles, err := os.ReadDir(config.ServersFolder.Value())
+	programFiles, err := files.RootServerFS.ReadDir(".")
 	if err != nil {
 		logging.Error.Fatalf("Error reading from server data folder: %s", err)
 	}
@@ -49,7 +45,7 @@ func GetAll() []*Server {
 
 func Load(id string) (program *Server, err error) {
 	var data []byte
-	data, err = os.ReadFile(filepath.Join(config.ServersFolder.Value(), id+".json"))
+	data, err = files.RootServerFS.ReadFile(id + ".json")
 	if len(data) == 0 || err != nil {
 		return
 	}
@@ -110,7 +106,13 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	data.SetFileServer(fs)
+	data.fileServer = fs
+
+	bfs, err := files.NewFileServer(filepath.Join(config.BackupsFolder.Value(), data.Id()), data.RunningEnvironment.GetUid(), data.RunningEnvironment.GetGid())
+	if err != nil {
+		return nil, err
+	}
+	data.backupFileServer = bfs
 
 	data.Scheduler.Start()
 
@@ -125,8 +127,8 @@ func Create(program *Server) (server *Server, err error) {
 	defer func() {
 		if err != nil {
 			//revert since we have an error
-			_ = os.Remove(filepath.Join(config.ServersFolder.Value(), program.Id()))
-			_ = os.Remove(filepath.Join(config.ServersFolder.Value(), program.Id()+".json"))
+			_ = files.RootServerFS.Remove(program.Id())
+			_ = files.RootServerFS.Remove(program.Id() + ".json")
 			if program.RunningEnvironment != nil {
 				_ = program.RunningEnvironment.Delete()
 			}
@@ -134,7 +136,7 @@ func Create(program *Server) (server *Server, err error) {
 		}
 	}()
 
-	err = os.Mkdir(filepath.Join(config.ServersFolder.Value(), program.Id()), 0755)
+	err = files.RootServerFS.Mkdir(program.Id(), files.DefaultFolderPermissions)
 	if err != nil {
 		logging.Error.Printf("Error writing server: %s", err)
 		return
@@ -198,7 +200,7 @@ func Delete(id string) (err error) {
 	if err != nil {
 		return
 	}
-	err = os.Remove(filepath.Join(config.ServersFolder.Value(), program.Id()+".json"))
+	err = files.RootServerFS.Remove(program.Id() + ".json")
 	if err != nil {
 		logging.Error.Printf("Error removing server: %s", err)
 	}

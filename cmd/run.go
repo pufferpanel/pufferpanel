@@ -4,22 +4,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/braintree/manners"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/securecookie"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/database"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/servers"
-	"github.com/pufferpanel/pufferpanel/v3/servers/docker"
-	"github.com/pufferpanel/pufferpanel/v3/services"
-	"github.com/pufferpanel/pufferpanel/v3/sftp"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"github.com/pufferpanel/pufferpanel/v3/web"
-	"github.com/spf13/cobra"
 	"net"
 	"net/http"
 	"os"
@@ -28,6 +12,24 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/braintree/manners"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/securecookie"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/database"
+	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/servers"
+	"github.com/pufferpanel/pufferpanel/v3/servers/docker"
+	"github.com/pufferpanel/pufferpanel/v3/services"
+	"github.com/pufferpanel/pufferpanel/v3/sftp"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
+	"github.com/pufferpanel/pufferpanel/v3/web"
+	"github.com/spf13/cobra"
 )
 
 var runCmd = &cobra.Command{
@@ -248,6 +250,11 @@ func daemon() error {
 		_ = os.Setenv("PATH", fmt.Sprintf("%s%c%s", newPath, os.PathListSeparator, fullPath))
 	}
 	logging.Debug.Printf("Daemon PATH variable: %s", os.Getenv("PATH"))
+
+	err = files.CreateSharedFS()
+	if err != nil {
+		return err
+	}
 
 	servers.LoadFromFolder()
 

@@ -3,17 +3,17 @@ package nodejsdl
 import (
 	"encoding/json"
 	"errors"
-	"github.com/hashicorp/go-version"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"sync"
+
+	"github.com/hashicorp/go-version"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 var downloader sync.Mutex
@@ -33,9 +33,9 @@ func (op NodejsDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 	downloader.Lock()
 	defer downloader.Unlock()
 
-	rootBinaryFolder := config.BinariesFolder.Value()
-	mainNodeCommand := filepath.Join(rootBinaryFolder, "node"+op.Version)
-	mainNpmCommand := filepath.Join(rootBinaryFolder, "npm"+op.Version)
+	binaryFs := files.BinariesFS
+	mainNodeCommand := "node" + op.Version
+	mainNpmCommand := "npm" + op.Version
 
 	_, err := exec.LookPath("node" + op.Version)
 
@@ -47,29 +47,29 @@ func (op NodejsDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 		}
 
 		//cleanup the existing dir
-		err = os.RemoveAll(filepath.Join(rootBinaryFolder, release.Slug))
+		err = binaryFs.RemoveAll(release.Slug)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
 
 		logging.Debug.Println("Calling " + release.Url)
-		err = pufferpanel.HttpExtract(release.Url, rootBinaryFolder, nil)
+		err = pufferpanel.HttpExtract(binaryFs, release.Url, "")
 
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
 
-		_ = os.Remove(mainNodeCommand)
-		_ = os.Remove(mainNpmCommand)
+		_ = binaryFs.Remove(mainNodeCommand)
+		_ = binaryFs.Remove(mainNpmCommand)
 
 		logging.Debug.Printf("Adding to path: %s\n", mainNodeCommand)
-		err = os.Symlink(filepath.Join(release.Slug, "bin", "node"), mainNodeCommand)
+		err = binaryFs.Symlink(filepath.Join(release.Slug, "bin", "node"), mainNodeCommand)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
 
 		logging.Debug.Printf("Adding to path: %s\n", mainNpmCommand)
-		err = os.Symlink(filepath.Join(release.Slug, "bin", "npm"), mainNpmCommand)
+		err = binaryFs.Symlink(filepath.Join(release.Slug, "bin", "npm"), mainNpmCommand)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}

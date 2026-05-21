@@ -2,19 +2,26 @@ package files
 
 import (
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v3/sys"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"golang.org/x/sys/unix"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/pufferpanel/pufferpanel/v3/sys"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
+	"golang.org/x/sys/unix"
 )
+
+const O_CREATEFILE = os.O_CREATE | os.O_TRUNC | os.O_RDWR
+const DefaultFolderPermissions = 0755
+const DefaultFilePermissions = 0644
 
 type FileServer interface {
 	fs.FS
 	fs.ReadDirFS
 	fs.StatFS
+	fs.ReadFileFS
 
 	Prefix() string
 
@@ -22,11 +29,16 @@ type FileServer interface {
 	Mkdir(path string, mode os.FileMode) error
 	MkdirAll(path string, mode os.FileMode) error
 	OpenFile(path string, flags int, mode os.FileMode) (*os.File, error)
+	OpenRead(name string) (*os.File, error)
 	Remove(path string) error
 	Rename(source, target string) error
 	RemoveAll(path string) error
 	Glob(pattern string) ([]string, error)
 	Symlink(oldname, newname string) error
+	Create(file string) (*os.File, error)
+	ReadFile(file string) ([]byte, error)
+	WriteFile(file string, data []byte) error
+	Chmod(file string, mode os.FileMode) error
 
 	Close() error
 }
@@ -34,6 +46,8 @@ type FileServer interface {
 type fileServer struct {
 	dir  string
 	root *os.File
+
+	wrapperRoot *os.Root
 
 	uid int
 	gid int
@@ -46,6 +60,11 @@ func NewFileServer(prefix string, uid, gid int) (FileServer, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	f.wrapperRoot, err = os.OpenRoot(prefix)
+	if err != nil {
+		return nil, err
+	}
 	return f, nil
 }
 
@@ -53,8 +72,12 @@ func (sfp *fileServer) Prefix() string {
 	return sfp.dir
 }
 
-func (sfp *fileServer) Open(name string) (fs.File, error) {
+func (sfp *fileServer) OpenRead(name string) (*os.File, error) {
 	return sfp.OpenFile(name, os.O_RDONLY, 0644)
+}
+
+func (sfp *fileServer) Open(name string) (fs.File, error) {
+	return sfp.OpenRead(name)
 }
 
 func (sfp *fileServer) Stat(name string) (fs.FileInfo, error) {
@@ -161,6 +184,10 @@ func (sfp *fileServer) OpenFile(path string, flags int, mode os.FileMode) (*os.F
 		err = file.Chown(sfp.uid, sfp.gid)
 	}
 	return file, err
+}
+
+func (sfp *fileServer) Create(path string) (*os.File, error) {
+	return sfp.OpenFile(path, O_CREATEFILE, 0644)
 }
 
 func (sfp *fileServer) MkdirAll(path string, mode os.FileMode) error {
@@ -304,6 +331,30 @@ func (sfp *fileServer) RemoveAll(path string) error {
 
 	err = sfp.Remove(path)
 	return err
+}
+
+func (sfp *fileServer) WriteFile(path string, data []byte) error {
+	file, err := sfp.Create(path)
+	defer utils.Close(file)
+	if err != nil {
+		return err
+	}
+	_, err = file.Write(data)
+	return err
+}
+
+func (sfp *fileServer) ReadFile(path string) ([]byte, error) {
+	file, err := sfp.Open(path)
+	defer utils.Close(file)
+	if err != nil {
+		return nil, err
+	}
+	reader := io.LimitReader(file, 1024)
+	return io.ReadAll(reader)
+}
+
+func (sfp *fileServer) Chmod(path string, mode os.FileMode) error {
+	return nil
 }
 
 func getFd(f *os.File) int {

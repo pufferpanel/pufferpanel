@@ -2,14 +2,14 @@ package servers
 
 import (
 	"encoding/json"
+	"os"
+	"time"
+
 	"github.com/go-co-op/gocron/v2"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"os"
-	"path/filepath"
-	"time"
 )
 
 type Scheduler struct {
@@ -25,7 +25,7 @@ type Scheduler struct {
 // LoadScheduler Loads the scheduler from the serverid.cron file, or defaults
 // This file is a JSON file, but it hooks into everything
 func LoadScheduler(serverId string) (*Scheduler, error) {
-	file, err := os.Open(filepath.Join(config.ServersFolder.Value(), serverId+".cron"))
+	file, err := files.RootServerFS.Open(serverId + ".cron")
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func NewDefaultScheduler(serverId string) *Scheduler {
 }
 
 func (s *Scheduler) Save() error {
-	file, err := os.OpenFile(filepath.Join(config.ServersFolder.Value(), s.serverId+".cron"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	file, err := files.RootServerFS.OpenFile(s.serverId+".cron", files.DefaultFilePermissions, files.DefaultFilePermissions)
 	if err != nil {
 		return err
 	}

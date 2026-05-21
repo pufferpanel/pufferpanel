@@ -34,7 +34,8 @@
             "label": "go-requirements",
             "dependsOn": [
                 "out-configure",
-                "npm-install-client"
+                "npm-install-client",
+                "npm-build"
             ]
         }
     ]

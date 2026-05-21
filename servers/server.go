@@ -8,7 +8,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"runtime"
 	"sync"
@@ -35,6 +34,7 @@ type Server struct {
 	stopChan           chan bool
 	waitForConsole     sync.Locker
 	fileServer         files.FileServer
+	backupFileServer   files.FileServer
 	backingUp          bool
 	restoring          bool
 	keepAlive          *time.Ticker
@@ -434,13 +434,6 @@ func (p *Server) Install() error {
 
 	p.RunningEnvironment.DisplayToConsole(true, "Installing server\n")
 
-	err = os.MkdirAll(p.RunningEnvironment.GetRootDirectory(), 0755)
-	if err != nil && !os.IsExist(err) {
-		p.Log(logging.Error, "Error creating server directory: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to create server directory\n")
-		return err
-	}
-
 	if len(p.Installation) > 0 {
 		var process OperationProcess
 
@@ -514,7 +507,7 @@ func (p *Server) Save() (err error) {
 		return
 	}
 
-	err = os.WriteFile(file, data, 0664)
+	err = p.GetFileServer().WriteFile(file, data)
 	return
 }
 
@@ -652,14 +645,14 @@ func (p *Server) GetItem(name string) (*FileData, error) {
 
 func (p *Server) ArchiveItems(sourceFiles []string, destination string) error {
 	// This may technically error out in other cases
-	if _, err := os.Stat(destination); err != nil && !os.IsNotExist(err) {
+	if _, err := p.GetFileServer().Stat(destination); err != nil && !os.IsNotExist(err) {
 		return pufferpanel.ErrFileExists
 	}
-	return files.Compress(p.GetFileServer(), destination, sourceFiles)
+	return files.Compress(p.GetFileServer(), destination, p.GetFileServer(), sourceFiles)
 }
 
 func (p *Server) Extract(source, destination string) error {
-	return files.Extract(p.GetFileServer(), source, destination, "*", false, nil)
+	return files.Extract(p.GetFileServer(), source, p.GetFileServer(), destination, "*")
 }
 
 func (p *Server) StartBackup() (string, error) {
@@ -680,16 +673,6 @@ func (p *Server) StartBackup() (string, error) {
 	}(c)
 
 	p.RunningEnvironment.DisplayToConsole(true, "Backing up server")
-	backupDirectory := p.GetBackupDirectory()
-
-	_, err := os.Stat(backupDirectory)
-	if err != nil && os.IsNotExist(err) {
-		err = os.MkdirAll(backupDirectory, 0755)
-		if err != nil && !os.IsExist(err) {
-			c <- false
-			return "", err
-		}
-	}
 
 	backupId, err := uuid.NewV4()
 	if err != nil {
@@ -697,7 +680,6 @@ func (p *Server) StartBackup() (string, error) {
 		return "", err
 	}
 	backupFileName := backupId.String() + ".tar.gz"
-	backupFile := path.Join(backupDirectory, backupFileName)
 
 	go func(file string, d chan bool) {
 		defer func() {
@@ -705,25 +687,18 @@ func (p *Server) StartBackup() (string, error) {
 		}()
 		sourceFiles := []string{filepath.Join(p.GetFileServer().Prefix())}
 
-		err = files.Compress(nil, file, sourceFiles)
+		err = files.Compress(p.GetBackupFileServer(), backupFileName, p.fileServer, sourceFiles)
 		if err != nil {
 			p.Log(logging.Error, "Error creating backup file: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to create backup file")
 		}
-	}(backupFile, c)
+	}(backupFileName, c)
 
 	return backupFileName, nil
 }
 
 func (p *Server) DeleteBackup(fileName string) error {
-	backupDirectory := p.GetBackupDirectory()
-	if backupDirectory == "" {
-		return pufferpanel.ErrSettingNotConfigured("backupDirectory")
-	}
-
-	backupFile := path.Join(backupDirectory, fileName)
-
-	err := os.Remove(backupFile)
+	err := p.GetBackupFileServer().Remove(fileName)
 	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
@@ -750,9 +725,7 @@ func (p *Server) StartRestore(fileName string) error {
 
 	p.RunningEnvironment.DisplayToConsole(true, "Restoring server")
 
-	backupFile := filepath.Join(p.GetBackupDirectory(), fileName)
-
-	_, err := os.Stat(backupFile)
+	_, err := p.GetBackupFileServer().Stat(fileName)
 	if err != nil && !os.IsNotExist(err) {
 		c <- false
 		return err
@@ -789,20 +762,18 @@ func (p *Server) StartRestore(fileName string) error {
 			}
 		}
 
-		err = files.Extract(nil, source, p.GetFileServer().Prefix(), "*", true, nil)
+		err = files.Extract(p.GetBackupFileServer(), source, p.GetFileServer(), "", "*")
 		if err != nil {
 			p.Log(logging.Error, "Error restoring files: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to restore files: %s", err)
 		}
-	}(backupFile, c)
+	}(fileName, c)
 
 	return nil
 }
 
 func (p *Server) GetBackup(fileName string) (*FileData, error) {
-	backupFile := filepath.Join(p.GetBackupDirectory(), fileName)
-
-	info, err := os.Stat(backupFile)
+	info, err := p.GetBackupFileServer().Stat(fileName)
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
@@ -810,9 +781,7 @@ func (p *Server) GetBackup(fileName string) (*FileData, error) {
 }
 
 func (p *Server) GetBackupFile(fileName string) (*FileData, error) {
-	backupFile := filepath.Join(p.GetBackupDirectory(), fileName)
-
-	file, err := os.Open(backupFile)
+	file, err := p.GetBackupFileServer().Open(fileName)
 	if err != nil {
 		return nil, err
 	}
@@ -859,15 +828,15 @@ func (p *Server) RunCondition(condition string, extraData map[string]interface{}
 		}
 	}
 
-	return conditions.ResolveIf(condition, data, CreateFunctions(p.GetEnvironment()))
+	return conditions.ResolveIf(condition, data, CreateFunctions(p, p.GetEnvironment()))
 }
 
 func (p *Server) GetFileServer() files.FileServer {
 	return p.fileServer
 }
 
-func (p *Server) SetFileServer(fs files.FileServer) {
-	p.fileServer = fs
+func (p *Server) GetBackupFileServer() files.FileServer {
+	return p.backupFileServer
 }
 
 func (p *Server) IsBackingUp() bool {
@@ -895,6 +864,6 @@ func (p *Server) IsIdle() error {
 	return nil
 }
 
-func (p *Server) GetBackupDirectory() string {
-	return filepath.Join(config.BackupsFolder.Value(), p.Id())
+func (p *Server) SetFileServer(fs files.FileServer) {
+	p.fileServer = fs
 }

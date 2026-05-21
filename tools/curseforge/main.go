@@ -4,6 +4,9 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/files"
@@ -11,8 +14,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/curseforge"
 	"github.com/pufferpanel/pufferpanel/v3/operations/resolveforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
-	"os"
-	"path/filepath"
 )
 
 var tests = []UnitTest{

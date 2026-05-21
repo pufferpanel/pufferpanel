@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/klauspost/compress/zip"
 	"github.com/mholt/archiver/v3"
@@ -15,157 +14,109 @@ import (
 
 const PathSeparator = "/"
 
-type ExtractOptions struct {
-	FileServer   FileServer
-	SourceFile   string
-	TargetPath   string
-	Filter       string
-	SkipRoot     bool
-	ForcedWalker Walker
-}
+func Compress(targetFS FileServer, targetFile string, sourceFS FileServer, files []string) error {
+	if len(files) == 0 {
+		return errors.New("no files to compress")
+	}
 
-func DetermineIfSingleRoot(sourceFile string) (bool, error) {
-	isSingleRoot := true
-
-	var rootName string
-
-	var desired = errors.New("not single root")
-
-	err := archiver.Walk(sourceFile, func(file archiver.File) error {
-		name := getCompressedItemName(file)
-
-		if name == "" || name == PathSeparator {
-			return nil
-		}
-		root := strings.Split(name, PathSeparator)[0]
-		if rootName == "" {
-			rootName = root
-			return nil
-		}
-		if root != rootName {
-			return desired
-		}
-		return nil
-	})
-
+	c, err := archiver.ByExtension(targetFile)
 	if err != nil {
-		isSingleRoot = false
+		return err
+	}
+	var compressor archiver.Writer
+	var ok bool
+	if compressor, ok = c.(archiver.Writer); !ok {
+		return archiver.ErrFormatNotRecognized
 	}
 
-	return isSingleRoot, err
-}
-
-func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool, forcedType Walker) error {
-	if fs != nil {
-		sourceFile = filepath.Join(fs.Prefix(), filepath.Clean("/"+sourceFile))
-	}
-
-	if skipRoot {
-		var err error
-		skipRoot, err = DetermineIfSingleRoot(sourceFile)
+	for _, file := range files {
+		err = writeFileToArchive(compressor, sourceFS, file)
 		if err != nil {
 			return err
 		}
 	}
 
-	if forcedType != nil {
-		return forcedType.Walk(sourceFile, walker(fs, targetPath, filter, skipRoot))
-	}
-
-	return archiver.Walk(sourceFile, walker(fs, targetPath, filter, skipRoot))
+	return nil
 }
 
-func Compress(fs FileServer, targetFile string, files []string) error {
-	if len(files) == 0 {
-		return errors.New("no files to compress")
+func Extract(sourceFS FileServer, sourceFile string, targetFS FileServer, targetPath string, filter string) error {
+	a, err := archiver.ByExtension(sourceFile)
+	if err != nil {
+		return err
 	}
 
-	if fs != nil {
-		p := fs.Prefix()
+	var extractor archiver.Reader
+	var ok bool
+	if extractor, ok = a.(archiver.Reader); !ok {
+		return archiver.ErrFormatNotRecognized
+	}
 
-		targetFile = filepath.Join(p, targetFile)
+	source, err := sourceFS.OpenFile(sourceFile, os.O_RDONLY, 0644)
+	defer utils.Close(source)
+	defer utils.Close(extractor)
 
-		for k, v := range files {
-			v = filepath.Clean("/" + v)
-			files[k] = filepath.Join(p, v)
+	err = extractor.Open(source, 0)
+	if err != nil {
+		return err
+	}
+
+	var file archiver.File
+	for {
+		file, err = extractor.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		err = walk(file, targetFS, targetPath, filter)
+		if err != nil {
+			return err
 		}
 	}
-
-	return archiver.Archive(files, targetFile)
+	return nil
 }
 
-func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.WalkFunc {
-	return func(file archiver.File) (err error) {
-		path := getCompressedItemName(file)
+func walk(file archiver.File, fs FileServer, targetPath, filter string) (err error) {
+	path := getCompressedItemName(file)
 
-		if !utils.CompareWildcard(file.Name(), filter) {
-			return
-		}
-
-		if skipRoot {
-			path = strings.Join(strings.Split(path, PathSeparator)[1:], PathSeparator)
-		}
-
-		parent := filepath.Join(targetPath, filepath.Dir(path))
-		path = filepath.Join(targetPath, path)
-
-		if file.Mode().IsDir() {
-			if fs != nil {
-				if err = fs.MkdirAll(path, 0755); err != nil {
-					return err
-				}
-			} else {
-				if err = os.MkdirAll(path, 0755); err != nil {
-					return err
-				}
-			}
-		} else if file.Mode().IsRegular() {
-			if fs != nil {
-				if err = fs.MkdirAll(parent, 0755); err != nil {
-					return err
-				}
-			} else {
-				if err = os.MkdirAll(parent, 0755); err != nil {
-					return err
-				}
-			}
-			var outFile *os.File
-			if fs != nil {
-				outFile, err = fs.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode()|0600)
-			} else {
-				outFile, err = os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode()|0600)
-			}
-
-			if err != nil {
-				return err
-			}
-			defer utils.Close(outFile)
-			_, err = io.Copy(outFile, file.ReadCloser)
-		} else if file.Mode()&os.ModeSymlink != 0 {
-			target, err := getLinkTarget(file)
-			if err != nil {
-				return err
-			}
-
-			if fs != nil {
-				if err = fs.MkdirAll(parent, 0755); err != nil {
-					return err
-				}
-				if err = fs.Symlink(target, path); err != nil {
-					return err
-				}
-			} else {
-				if err = os.MkdirAll(parent, 0755); err != nil {
-					return err
-				}
-				if err = os.Symlink(target, path); err != nil {
-					return err
-				}
-			}
-		}
-
+	if !utils.CompareWildcard(file.Name(), filter) {
 		return
 	}
+
+	parent := filepath.Join(targetPath, filepath.Dir(path))
+	path = filepath.Join(targetPath, path)
+
+	if file.Mode().IsDir() {
+		if err = fs.MkdirAll(path, 0755); err != nil {
+			return err
+		}
+	} else if file.Mode().IsRegular() {
+		if err = fs.MkdirAll(parent, 0755); err != nil {
+			return err
+		}
+
+		var outFile *os.File
+		outFile, err = fs.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode()|0600)
+		if err != nil {
+			return err
+		}
+		defer utils.Close(outFile)
+		_, err = io.Copy(outFile, file.ReadCloser)
+	} else if file.Mode()&os.ModeSymlink != 0 {
+		target, err := getLinkTarget(file)
+		if err != nil {
+			return err
+		}
+
+		if err = fs.MkdirAll(parent, 0755); err != nil {
+			return err
+		}
+		if err = fs.Symlink(target, path); err != nil {
+			return err
+		}
+	}
+	return
 }
 
 // getCompressedItemName Resolves headers in the event the wrapped interface fails
@@ -199,6 +150,33 @@ func getLinkTarget(file archiver.File) (string, error) {
 	}
 }
 
-type Walker interface {
-	Walk(archive string, walkFn archiver.WalkFunc) error
+func writeFileToArchive(writer archiver.Writer, fs FileServer, path string) error {
+	fi, err := fs.Stat(path)
+	if err != nil {
+		return err
+	}
+
+	if fi.Mode().IsRegular() {
+		file, err := fs.Open(path)
+		defer utils.Close(file)
+		if err != nil {
+			return err
+		}
+		err = writer.Write(archiver.File{
+			ReadCloser: file,
+		})
+		return err
+	} else if fi.Mode().IsDir() {
+		files, err := fs.ReadDir(path)
+		if err != nil {
+			return err
+		}
+		for _, v := range files {
+			err = writeFileToArchive(writer, fs, filepath.Join(path, v.Name()))
+			if err != nil {
+				return err
+			}
+		}
+	} //TODO: Add Symlink support...?
+	return nil
 }

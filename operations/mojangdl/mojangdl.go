@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
@@ -51,7 +53,7 @@ func (op MojangDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 			logging.Info.Printf("Version %s json located, downloading from %s", version.Id, version.Url)
 			env.DisplayToConsole(true, fmt.Sprintf("Version %s json located, downloading from %s\n", version.Id, version.Url))
 			//now, get the version json for this one...
-			err = downloadServerFromJson(version.Url, op.Target, env)
+			err = downloadServerFromJson(version.Url, op.Target, args.Server.GetFileServer(), env)
 			return pufferpanel.OperationResult{Error: err}
 		}
 	}
@@ -61,7 +63,7 @@ func (op MojangDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 	return pufferpanel.OperationResult{Error: err}
 }
 
-func downloadServerFromJson(url, target string, env *pufferpanel.Environment) error {
+func downloadServerFromJson(url, target string, serverFS files.FileServer, env *pufferpanel.Environment) error {
 	response, err := pufferpanel.HttpGet(url)
 	defer utils.CloseResponse(response)
 	if err != nil {
@@ -83,7 +85,7 @@ func downloadServerFromJson(url, target string, env *pufferpanel.Environment) er
 	logging.Info.Printf("Version jar located, downloading from %s", serverBlock.Url)
 	env.DisplayToConsole(true, fmt.Sprintf("Version jar located, downloading from %s\n", serverBlock.Url))
 
-	return pufferpanel.DownloadFile(serverBlock.Url, target, env)
+	return pufferpanel.DownloadFile(serverBlock.Url, target, serverFS, env)
 }
 
 type LauncherJson struct {

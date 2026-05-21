@@ -3,13 +3,13 @@ package neoforgedl
 import (
 	"encoding/xml"
 	"errors"
+	"strings"
+
 	"github.com/hashicorp/go-version"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"path"
-	"strings"
 )
 
 const InstallerUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/${version}/neoforge-${version}-installer.jar"
@@ -41,7 +41,7 @@ func (op NeoforgeDL) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 	}
 
 	//copy from the cache
-	err = files.WriteFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
+	err = files.WriteFile(localFile, args.Server.GetFileServer(), op.Filename)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}

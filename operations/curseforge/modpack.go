@@ -4,31 +4,34 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/files"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
+
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 func downloadModpack(file File) error {
 	var cacheZipFolder = getCacheFolderForFile(file)
 	var cacheZipFileLocation = getCacheFilePath(file)
 
+	cacheFS := files.CacheFS
+
 	//see if the file already exists, if so, use it instead
-	if fi, err := os.Lstat(cacheZipFileLocation); err == nil && !fi.IsDir() && fi.Size() > 0 {
+	if fi, err := cacheFS.Stat(cacheZipFileLocation); err == nil && !fi.IsDir() && fi.Size() > 0 {
 		return nil
 	}
 
-	err := os.MkdirAll(cacheZipFolder, 0755)
+	err := cacheFS.MkdirAll(cacheZipFolder, 0755)
 	if err != nil && !os.IsExist(err) {
 		return err
 	}
-	tmpFile, err := os.CreateTemp(cacheZipFolder, "tmp-*.zip")
+	tmpFile, err := cacheFS.Create(filepath.Join(cacheZipFolder, fmt.Sprintf("tmp-%d.zip", time.Now().UnixNano())))
 	if err != nil {
 		return err
 	}
@@ -49,7 +52,7 @@ func downloadModpack(file File) error {
 	utils.Close(tmpFile)
 	utils.CloseResponse(response)
 
-	err = os.Rename(tmpFile.Name(), cacheZipFileLocation)
+	err = cacheFS.Rename(tmpFile.Name(), cacheZipFileLocation)
 	if err != nil {
 		return err
 	}
@@ -58,7 +61,7 @@ func downloadModpack(file File) error {
 }
 
 func getCacheFolderForFile(file File) string {
-	return filepath.Join(config.CacheFolder.Value(), "curseforge", fmt.Sprintf("%d", file.Id))
+	return filepath.Join("curseforge", fmt.Sprintf("%d", file.Id))
 }
 
 func getCacheFilePath(file File) string {
@@ -84,14 +87,14 @@ func getManifest(clientFile File) (Manifest, error) {
 func extractFile(zipFile, fileName string) (*os.File, error) {
 	folder := filepath.Dir(zipFile)
 
-	file, err := os.Open(filepath.Join(folder, fileName))
+	file, err := files.CacheFS.OpenRead(filepath.Join(folder, fileName))
 	if err != nil && os.IsNotExist(err) {
-		err = files.Extract(nil, zipFile, folder, fileName, false, nil)
+		err = files.Extract(files.CacheFS, zipFile, files.CacheFS, folder, fileName)
 		if err != nil {
 			return nil, err
 		}
 		//re-open file
-		file, err = os.Open(filepath.Join(folder, fileName))
+		file, err = files.CacheFS.OpenRead(filepath.Join(folder, fileName))
 	}
 	return file, err
 }
