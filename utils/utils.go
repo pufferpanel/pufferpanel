@@ -49,3 +49,11 @@ func Remove[T comparable](a []T, b T) []T {
 	}
 	return replacement
 }
+
+func ForEach[T string](a []T, d func(T) T) []T {
+	copy := make([]T, len(a))
+	for i, z := range a {
+		copy[i] = d(z)
+	}
+	return copy
+}

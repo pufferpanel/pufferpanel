@@ -88,7 +88,7 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 		}
 	}
 
-	data.RunningEnvironment, err = CreateEnvironment(environmentType, config.ServersFolder.Value(), config.BackupsFolder.Value(), data.Server)
+	data.RunningEnvironment, err = CreateEnvironment(environmentType, data.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -127,11 +127,12 @@ func Create(program *Server) (server *Server, err error) {
 	defer func() {
 		if err != nil {
 			//revert since we have an error
-			_ = files.RootServerFS.Remove(program.Id())
-			_ = files.RootServerFS.Remove(program.Id() + ".json")
 			if program.RunningEnvironment != nil {
 				_ = program.RunningEnvironment.Delete()
 			}
+
+			_ = files.RootServerFS.RemoveAll(program.Id())
+			_ = files.RootServerFS.Remove(program.Id() + ".json")
 			server = nil
 		}
 	}()

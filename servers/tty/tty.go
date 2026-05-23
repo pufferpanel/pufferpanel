@@ -17,6 +17,7 @@ import (
 	"github.com/creack/pty"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/shirou/gopsutil/process"
@@ -363,13 +364,11 @@ func (t *tty) createCmd(rootDir, workDir string) (pr *exec.Cmd, err error) {
 		return
 	}
 
-	rootDirMount := removeRoot(rootDir)
-	binaryFolderMount := removeRoot(config.BinariesFolder.Value())
-	cacheFolderMount := removeRoot(config.CacheFolder.Value())
+	binaryFolder := files.BinariesFS.Location()
 
-	mountFolders := []string{rootDirMount, binaryFolderMount, cacheFolderMount}
+	mountFolders := []string{rootDir}
 	for _, v := range t.Mounts {
-		mountFolders = append(mountFolders, removeRoot(v))
+		mountFolders = append(mountFolders, v)
 	}
 
 	unshareArgs := make([]string, len(cmdList))
@@ -396,22 +395,20 @@ func (t *tty) createCmd(rootDir, workDir string) (pr *exec.Cmd, err error) {
 		localPath := removeRoot(absPath)
 		dir := removeRoot(filepath.Dir(absPath))
 		unshareArgs = append(unshareArgs,
-			fmt.Sprintf("mkdir -p %s", dir),
+			fmt.Sprintf("mkdir -p %s", removeRoot(dir)),
 			fmt.Sprintf("touch %s", localPath),
 			fmt.Sprintf("mount --rbind %s %s", absPath, localPath),
 		)
 	}
 
 	unshareArgs = append(unshareArgs,
-		fmt.Sprintf("mkdir -p %s", strings.Join(mountFolders, " ")),
-		fmt.Sprintf("mount --bind %s %s", rootDir, rootDirMount),
-		fmt.Sprintf("mount --bind -o ro %s %s", config.BinariesFolder.Value(), binaryFolderMount),
-		//fmt.Sprintf("mount --bind -o ro %s %s", config.CacheFolder.Value(), cacheFolderMount),
+		fmt.Sprintf("mkdir -p %s", strings.Join(utils.ForEach(append(mountFolders, binaryFolder), removeRoot), " ")),
+		fmt.Sprintf("mount --bind -o ro %s %s", binaryFolder, removeRoot(binaryFolder)),
 	)
 
-	for _, v := range t.Mounts {
-		unshareArgs = append(unshareArgs, fmt.Sprintf("mount --bind %s %s", v, removeRoot(v)))
-	}
+	unshareArgs = append(unshareArgs, utils.ForEach(t.Mounts, func(v string) string {
+		return fmt.Sprintf("mount --bind %s %s", v, removeRoot(v))
+	})...)
 
 	unshareArgs = append(unshareArgs,
 		//move cwd to bind mounted instace of .
@@ -423,7 +420,7 @@ func (t *tty) createCmd(rootDir, workDir string) (pr *exec.Cmd, err error) {
 		//needs to be lazy because the old root is considered busy as it's still the root outside the namespace
 		"umount -l /old-root",
 		"rm -r /old-root",
-		fmt.Sprintf("unshare -U -w %s --map-user=%d --map-group=%d %s -c '${PUFFERPANEL_SERVER_COMMAND}'", workDir, os.Getuid(), os.Getgid(), Shell))
+		fmt.Sprintf("unshare -U -w %s --map-user=%d --map-group=%d %s -c 'pwd && ls -l && ${PUFFERPANEL_SERVER_COMMAND}'", workDir, os.Getuid(), os.Getgid(), Shell))
 
 	pr = exec.Command(Shell, "-c", strings.Join(unshareArgs, " && "))
 	pr.Dir, err = os.MkdirTemp("", "unshare-pp-")

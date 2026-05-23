@@ -16,6 +16,9 @@ import (
 const O_CREATEFILE = os.O_CREATE | os.O_TRUNC | os.O_RDWR
 const DefaultFolderPermissions = 0755
 const DefaultFilePermissions = 0644
+const ReadFileLimit = 1024 * 1024 //1MiB
+
+var ErrReadLimitReached = errors.New("read limit reached")
 
 type FileServer interface {
 	fs.FS
@@ -24,6 +27,7 @@ type FileServer interface {
 	fs.ReadFileFS
 
 	Prefix() string
+	Location() string
 
 	Stat(name string) (fs.FileInfo, error)
 	Mkdir(path string, mode os.FileMode) error
@@ -45,6 +49,7 @@ type FileServer interface {
 
 type fileServer struct {
 	dir  string
+	abs  string
 	root *os.File
 
 	wrapperRoot *os.Root
@@ -58,18 +63,39 @@ func NewFileServer(prefix string, uid, gid int) (FileServer, error) {
 	var err error
 	f.root, err = f.resolveRootFd()
 	if err != nil {
-		return nil, err
+		if os.IsNotExist(err) {
+			err = os.MkdirAll(prefix, DefaultFolderPermissions)
+			if err != nil {
+				return nil, err
+			}
+
+			f.root, err = f.resolveRootFd()
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			return nil, err
+		}
 	}
 
 	f.wrapperRoot, err = os.OpenRoot(prefix)
 	if err != nil {
 		return nil, err
 	}
+	f.abs, err = filepath.Abs(f.dir)
+	if err != nil {
+		f.abs = f.dir
+	}
+
 	return f, nil
 }
 
 func (sfp *fileServer) Prefix() string {
 	return sfp.dir
+}
+
+func (sfp *fileServer) Location() string {
+	return sfp.abs
 }
 
 func (sfp *fileServer) OpenRead(name string) (*os.File, error) {
@@ -304,6 +330,9 @@ func (sfp *fileServer) RemoveAll(path string) error {
 
 	folder, err := sfp.OpenFile(path, os.O_RDONLY, 0755)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
 		return err
 	}
 	defer utils.Close(folder)
@@ -349,8 +378,15 @@ func (sfp *fileServer) ReadFile(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	reader := io.LimitReader(file, 1024)
-	return io.ReadAll(reader)
+	reader := io.LimitReader(file, ReadFileLimit)
+
+	var data []byte
+	data, err = io.ReadAll(reader)
+
+	if len(data) == ReadFileLimit {
+		return nil, ErrReadLimitReached
+	}
+	return data, err
 }
 
 func (sfp *fileServer) Chmod(path string, mode os.FileMode) error {

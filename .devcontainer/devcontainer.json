@@ -4,7 +4,8 @@
 		"vscode": {
 			"extensions": [
 				"golang.Go",
-				"GitHub.vscode-github-actions"
+				"GitHub.vscode-github-actions",
+				"Vue.volar"
 			]
 		}
 	}

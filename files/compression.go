@@ -54,6 +54,9 @@ func Extract(sourceFS FileServer, sourceFile string, targetFS FileServer, target
 	source, err := sourceFS.OpenFile(sourceFile, os.O_RDONLY, 0644)
 	defer utils.Close(source)
 	defer utils.Close(extractor)
+	if err != nil {
+		return err
+	}
 
 	err = extractor.Open(source, 0)
 	if err != nil {

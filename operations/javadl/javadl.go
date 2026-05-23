@@ -10,7 +10,6 @@ import (
 	"sync"
 
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
@@ -31,7 +30,6 @@ func (op JavaDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResu
 	downloader.Lock()
 	defer downloader.Unlock()
 
-	rootBinaryFolder := config.BinariesFolder.Value()
 	binaryFS := files.BinariesFS
 
 	mainCommand := filepath.Join("java" + op.Version)
@@ -55,7 +53,7 @@ func (op JavaDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResu
 		url := file.Binaries[0].Package.Link
 
 		logging.Debug.Println("Calling " + url)
-		err = pufferpanel.HttpExtract(binaryFS, url, rootBinaryFolder)
+		err = pufferpanel.HttpExtract(binaryFS, url, "")
 
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}

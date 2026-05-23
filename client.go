@@ -2,6 +2,7 @@ package pufferpanel
 
 import (
 	"net/http"
+	"path/filepath"
 
 	"github.com/cavaliergopher/grab/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -24,8 +25,13 @@ func HttpExtract(serverFS files.FileServer, requestUrl, directory string) error 
 	if err != nil {
 		return err
 	}
-	defer files.CacheFS.Remove(response.Filename)
+	path, err := filepath.Rel(config.CacheFolder.Value(), response.Filename)
+	if err != nil {
+		return err
+	}
 
-	err = files.Extract(files.CacheFS, response.Filename, serverFS, directory, "*")
+	defer files.CacheFS.Remove(path)
+
+	err = files.Extract(files.CacheFS, path, serverFS, directory, "*")
 	return err
 }

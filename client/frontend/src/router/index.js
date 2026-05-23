@@ -23,7 +23,7 @@ export default function(api) {
         return defaultRoute(api)
     }
 
-    if (!to.meta.noAuth && !api.auth.isLoggedIn()) {
+    if (!to.meta.noAuth && !api.auth.isLoggedIn() && to.name != "Logout") {
       sessionStorage.setItem('returnTo', JSON.stringify({
         name: to.name,
         params: to.params,

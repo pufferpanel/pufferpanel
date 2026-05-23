@@ -2,7 +2,6 @@ package servers
 
 import (
 	"fmt"
-	"path/filepath"
 	"sync"
 
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -20,7 +19,7 @@ func init() {
 	envMapping["docker"] = docker.EnvironmentFactory{}
 }
 
-func CreateEnvironment(environmentType, folder string, backupFolder string, server pufferpanel.Server) (*pufferpanel.Environment, error) {
+func CreateEnvironment(environmentType string, server pufferpanel.Server) (*pufferpanel.Environment, error) {
 	factory := envMapping[environmentType]
 
 	if factory == nil {
@@ -28,15 +27,14 @@ func CreateEnvironment(environmentType, folder string, backupFolder string, serv
 	}
 
 	item := &pufferpanel.Environment{
-		Type:            factory.Key(),
-		ServerId:        server.Identifier,
-		ConsoleTracker:  pufferpanel.CreateTracker(),
-		StatusTracker:   pufferpanel.CreateTracker(),
-		StatsTracker:    pufferpanel.CreateTracker(),
-		ConsoleBuffer:   pufferpanel.CreateCache(),
-		BackupDirectory: filepath.Join(backupFolder, server.Identifier),
-		Wait:            &sync.Mutex{},
-		Server:          server,
+		Type:           factory.Key(),
+		ServerId:       server.Identifier,
+		ConsoleTracker: pufferpanel.CreateTracker(),
+		StatusTracker:  pufferpanel.CreateTracker(),
+		StatsTracker:   pufferpanel.CreateTracker(),
+		ConsoleBuffer:  pufferpanel.CreateCache(),
+		Wait:           &sync.Mutex{},
+		Server:         server,
 	}
 	item.Implementation = factory.Create()
 	err := utils.UnmarshalTo(server.Environment.Metadata, item)
@@ -50,7 +48,7 @@ func CreateEnvironment(environmentType, folder string, backupFolder string, serv
 	}
 
 	if item.RootDirectory == "" {
-		item.RootDirectory = filepath.Join(folder, server.Identifier)
+		item.RootDirectory = server.Identifier
 	}
 
 	item.CreateWrapper()
