@@ -142,7 +142,10 @@ func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.Wa
 			defer utils.Close(outFile)
 			_, err = io.Copy(outFile, file.ReadCloser)
 		} else if file.Mode()&os.ModeSymlink != 0 {
-			target, err := getLinkTarget(file)
+			//TODO: Symlinks do not work.. forget this for now
+			return nil
+
+			/*target, err := getLinkTarget(file)
 			if err != nil {
 				return err
 			}
@@ -162,6 +165,7 @@ func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.Wa
 					return err
 				}
 			}
+			*/
 		}
 
 		return

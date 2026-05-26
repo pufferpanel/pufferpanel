@@ -5,14 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/braintree/manners"
-	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/database"
-	"github.com/pufferpanel/pufferpanel/v3/models"
-	"github.com/pufferpanel/pufferpanel/v3/sftp"
-	"github.com/pufferpanel/pufferpanel/v3/web"
 	"math/rand"
 	"net"
 	"net/http"
@@ -22,10 +14,22 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/braintree/manners"
+	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/database"
+	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/sftp"
+	"github.com/pufferpanel/pufferpanel/v3/web"
 )
 
 func TestMain(m *testing.M) {
-	_ = os.Remove("testing.db")
+	_ = os.RemoveAll("test-dir")
+	err := os.Mkdir("test-dir", 0755)
+	os.Chdir("test-dir")
+
 	var exitCode = 1
 
 	_ = config.DatabaseDialect.Set("sqlite3", false)
@@ -35,6 +39,8 @@ func TestMain(m *testing.M) {
 	//_ = config.DatabaseLoggingEnabled.Set(false, false)
 
 	_ = os.Remove("testing.db")
+	_ = os.Remove("testing.db-wal")
+	_ = os.Remove("testing.db-shm")
 	_ = os.RemoveAll("cache")
 	_ = os.RemoveAll("servers")
 	_ = os.RemoveAll("binaries")

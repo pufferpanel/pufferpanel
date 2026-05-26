@@ -2,13 +2,14 @@ package files
 
 import (
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v3/sys"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"golang.org/x/sys/unix"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/pufferpanel/pufferpanel/v3/sys"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
+	"golang.org/x/sys/unix"
 )
 
 type FileServer interface {
@@ -67,7 +68,10 @@ func (sfp *fileServer) Stat(name string) (fs.FileInfo, error) {
 }
 
 func (sfp *fileServer) Symlink(oldpath, newpath string) error {
-	return unix.Symlinkat(oldpath, getFd(sfp.root), newpath)
+	//TODO: Symlinks do not work.. forget this for now
+	return errors.New("symlinks are not supported")
+
+	//return unix.Symlinkat(oldpath, getFd(sfp.root), newpath)
 }
 
 func (sfp *fileServer) ReadDir(name string) ([]fs.DirEntry, error) {
