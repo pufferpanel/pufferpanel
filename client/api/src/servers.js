@@ -269,8 +269,8 @@ export class ServerApi {
     return true
   }
 
-  async delete(id) {
-    await this._api.delete(`/api/servers/${id}`)
+  async delete(id, skipNode = false) {
+    await this._api.delete(`/api/servers/${id}${skipNode ? '?skipNode' : ''}`)
     return true
   }
 }
@@ -494,8 +494,8 @@ class Server {
     return await this._api.server.updateData(this.id, data)
   }
 
-  async delete() {
-    return await this._api.server.delete(this.id)
+  async delete(skipNode = false) {
+    return await this._api.server.delete(this.id, skipNode)
   }
 
   async getUsers() {
