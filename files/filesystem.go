@@ -12,6 +12,9 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+var ErrInvalidAccess = errors.New("invalid access")
+var ErrSymlinkNotSupported = errors.New("symlinks are not supported")
+
 type FileServer interface {
 	fs.FS
 	fs.ReadDirFS
@@ -69,9 +72,17 @@ func (sfp *fileServer) Stat(name string) (fs.FileInfo, error) {
 
 func (sfp *fileServer) Symlink(oldpath, newpath string) error {
 	//TODO: Symlinks do not work.. forget this for now
-	return errors.New("symlinks are not supported")
+	//return ErrSymlinkNotSupported
 
-	//return unix.Symlinkat(oldpath, getFd(sfp.root), newpath)
+	//oldpath is file name
+	//newpath is the target to go to
+
+	result := filepath.Join(sfp.root.Name(), filepath.Dir(oldpath), newpath)
+	if !strings.HasPrefix(result, sfp.root.Name()+string(filepath.Separator)) {
+		return ErrInvalidAccess
+	}
+
+	return unix.Symlinkat(oldpath, getFd(sfp.root), result)
 }
 
 func (sfp *fileServer) ReadDir(name string) ([]fs.DirEntry, error) {
