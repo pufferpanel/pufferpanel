@@ -2,10 +2,11 @@ package pufferpanel
 
 import (
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v3/scopes"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"runtime/debug"
 	"strings"
+
+	"github.com/pufferpanel/pufferpanel/v3/scopes"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"gopkg.in/go-playground/validator.v9"
@@ -191,8 +192,12 @@ func (ge *Error) Error() string {
 	return ge.GetMessage()
 }
 
-func (ge *Error) Is(err *Error) bool {
-	return ge.GetCode() == err.GetCode()
+func (ge *Error) Is(err error) bool {
+	if e, ok := err.(*Error); ok {
+		return ge.GetCode() == e.GetCode()
+	}
+
+	return err == ge
 }
 
 func (ge *Error) Metadata(metadata map[string]interface{}) *Error {

@@ -2,15 +2,16 @@ package pufferpanel
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/connections"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
 	"log"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/connections"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
 
 type EnvironmentImpl interface {
@@ -92,26 +93,27 @@ func (e *Environment) ExecuteAsync(steps ExecutionData) (err error) {
 }
 
 func (e *Environment) CreateConsoleStdinProxy(config StdinConsoleConfiguration, base io.WriteCloser) {
-	if config.Type == "telnet" {
+	switch config.Type {
+	case "telnet":
 		e.Console = &connections.TelnetConnection{
 			IP:       config.IP,
 			Port:     config.Port,
 			Password: config.Password,
 		}
-	} else if config.Type == "rcon" {
+	case "rcon":
 		e.Console = &connections.RCONConnection{
 			IP:       config.IP,
 			Port:     config.Port,
 			Password: config.Password,
 		}
-	} else if config.Type == "rconws" {
+	case "rconws":
 		e.Console = &connections.RCONWSConnection{
 			IP:       config.IP,
 			Port:     config.Port,
 			Password: config.Password,
 			//Environment: e,
 		}
-	} else {
+	default:
 		e.Console = &NoStartConsole{Base: base}
 	}
 }

@@ -20,7 +20,10 @@
             ],
             "options": {
                 "cwd": "${workspaceFolder}/client"
-            }
+            },
+            "dependsOn": [
+                "npm-install-client"
+            ]
         },
         {
             "label": "out-configure",
@@ -34,8 +37,19 @@
             "label": "go-requirements",
             "dependsOn": [
                 "out-configure",
-                "npm-install-client"
+                "npm-install-client",
+                "npm-build"
             ]
+        },
+        {
+            "label": "test-packages",
+            "command": "go",
+            "args": ["test", "-v", "./..."],
+            "dependsOn": [
+                "out-configure",
+                "npm-build"
+            ],
+            "group": "test"
         }
     ]
 }
