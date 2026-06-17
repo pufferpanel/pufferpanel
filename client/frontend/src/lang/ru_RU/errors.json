@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "Найдено несколько контейнеров",
   "ErrNoContainerNoneFound": "Контейнер не найден",
   "ErrNoMountFound": "Монтирование не найдено",
-  "ErrUnsupportedMountType": "Неподдерживаемый тип монтирования"
+  "ErrUnsupportedMountType": "Неподдерживаемый тип монтирования",
+  "ErrServerRunning": "Server is running"
 }
