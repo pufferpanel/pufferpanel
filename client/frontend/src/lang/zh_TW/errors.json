@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "找到多個容器",
   "ErrNoContainerNoneFound": "找不到容器",
   "ErrNoMountFound": "找不到掛載點",
-  "ErrUnsupportedMountType": "不支援的掛載類型"
+  "ErrUnsupportedMountType": "不支援的掛載類型",
+  "ErrServerRunning": "Server is running"
 }
