@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "Több konténert találtunk",
   "ErrNoContainerNoneFound": "Nem található tároló",
   "ErrNoMountFound": "Nem találtunk mountot",
-  "ErrUnsupportedMountType": "Nem támogatot mount fajta"
+  "ErrUnsupportedMountType": "Nem támogatot mount fajta",
+  "ErrServerRunning": "Server is running"
 }
