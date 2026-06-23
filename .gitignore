@@ -29,3 +29,4 @@ favicon.ico
 
 out/
 web/tests/
+web/swagger/docs.go
