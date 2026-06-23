@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -156,15 +157,19 @@ func startServer(c *gin.Context) {
 	}
 }
 
-func doRestart(server *servers.Server) error {
+func doRestart(server *servers.Server, timeout time.Duration) error {
+	server.SkipAutoRestart()
+
 	err := server.Stop()
 	if err != nil {
 		return err
 	}
-	err = server.GetEnvironment().WaitForMainProcess()
-	if err != nil {
-		return err
+	server.RunningEnvironment.WaitForMainProcessFor(timeout)
+
+	if server.IsIdle() != nil {
+		return pufferpanel.ErrServerRunning
 	}
+
 	return server.Start()
 }
 
@@ -173,14 +178,26 @@ func doRestart(server *servers.Server) error {
 // @Success 202 {object} nil
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
+// @Param wait query bool false "Wait"
+// @Param timeout query time.Duration false "Timeout Duration"
 // @Router /api/servers/{id}/restart [post]
 // @Security OAuth2Application[server.start, server.stop]
 func restartServer(c *gin.Context) {
 	server := getServerFromGin(c)
-	_, wait := c.GetQuery("wait")
+	wait := utils.GetQueryBool(c, "wait")
+	dur, _ := c.GetQuery("timeout")
+
+	timeout := cast.ToDuration(dur)
+	if timeout == 0 {
+		timeout = time.Minute
+	} else if timeout < 0 {
+		response.HandleError(c, errors.New("timeout value not allowed"), http.StatusBadRequest)
+	} else if timeout <= 1*time.Minute {
+		response.HandleError(c, errors.New("timeout value not allowed"), http.StatusBadRequest)
+	}
 
 	if wait {
-		err := doRestart(server)
+		err := doRestart(server, timeout)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
@@ -188,7 +205,7 @@ func restartServer(c *gin.Context) {
 		c.Status(http.StatusNoContent)
 	} else {
 		go func() {
-			err := doRestart(server)
+			err := doRestart(server, timeout)
 			if err != nil {
 				logging.Error.Printf("Error restarting server %s: %s", server.Id(), err)
 			}
@@ -202,12 +219,18 @@ func restartServer(c *gin.Context) {
 // @Success 202 {object} nil
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
+// @Param skipRestart query bool false "Skip Restart"
 // @Router /api/servers/{id}/stop [post]
 // @Security OAuth2Application[server.stop]
 func stopServer(c *gin.Context) {
 	server := getServerFromGin(c)
 
-	_, wait := c.GetQuery("wait")
+	skipRestart := utils.GetQueryBool(c, "skipRestart")
+	wait := utils.GetQueryBool(c, "wait")
+
+	if skipRestart {
+		server.SkipAutoRestart()
+	}
 
 	err := server.Stop()
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -233,6 +256,8 @@ func stopServer(c *gin.Context) {
 // @Security OAuth2Application[server.kill]
 func killServer(c *gin.Context) {
 	server := getServerFromGin(c)
+
+	server.SkipAutoRestart()
 
 	err := server.Kill()
 	if response.HandleError(c, err, http.StatusInternalServerError) {

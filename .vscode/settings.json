@@ -1,5 +1,17 @@
 {
     "chat.disableAIFeatures": true,
+    "go.diagnostic.vulncheck": "Off",
+    "go.disableConcurrentTests": true,
+    "go.lintOnSave": "file",
+    "go.playground": {
+        "openbrowser": false,
+        "share": false,
+        "run": false
+    },
+    "go.showWelcome": false,
+    "go.survey.prompt": false,
     "go.testTimeout": "5m",
-    "go.diagnostic.vulncheck": "Off"
+    "chat.agent.enabled": false,
+    "telemetry.feedback.enabled": false,
+    "telemetry.editStats.enabled": false
 }

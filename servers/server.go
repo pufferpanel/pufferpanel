@@ -40,6 +40,7 @@ type Server struct {
 	keepAlive          *time.Ticker
 	keepAliveChan      chan bool
 	isUnsafeRunning    *sync.Mutex
+	skipAutoRestart    bool
 }
 
 var queue *list.List
@@ -590,7 +591,9 @@ func (p *Server) afterExit(exitCode int) {
 
 	p.isUnsafeRunning.Unlock()
 
-	if graceful && p.Execution.AutoRestartFromGraceful {
+	if p.skipAutoRestart {
+		p.skipAutoRestart = false
+	} else if graceful && p.Execution.AutoRestartFromGraceful {
 		StartViaService(p)
 	} else if !graceful && p.Execution.AutoRestartFromCrash && p.CrashCounter < config.CrashLimit.Value() {
 		p.CrashCounter++
@@ -897,4 +900,8 @@ func (p *Server) IsIdle() error {
 
 func (p *Server) GetBackupDirectory() string {
 	return filepath.Join(config.BackupsFolder.Value(), p.Id())
+}
+
+func (p *Server) SkipAutoRestart() {
+	p.skipAutoRestart = true
 }
