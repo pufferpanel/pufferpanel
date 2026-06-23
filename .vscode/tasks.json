@@ -71,6 +71,9 @@
             "dependsOn": [
                 "install-swaggo"
             ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
             "problemMatcher": []
         }
     ]

@@ -14,7 +14,7 @@ RUN yarn install && \
 
 FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
 
-FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
 
 RUN apk add clang lld bash
 COPY --from=xx / /
@@ -22,17 +22,14 @@ COPY --from=xx / /
 ARG tags
 ARG version=devel
 ARG sha=devel
-ARG swagversion=1.16.4
-ARG swagarch=x86_64
 
 ENV CGO_ENABLED=1
 ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
 
+RUN xx-apk add musl-dev gcc
+
 RUN mkdir /pufferpanel && \
-    wget https://github.com/swaggo/swag/releases/download/v${swagversion}/swag_${swagversion}_Linux_$swagarch.tar.gz && \
-    mkdir -p ~/go/bin && \
-    tar -zxvf swag*.tar.gz -C ~/go/bin && \
-    rm -rf swag*.tar.gz
+    go install github.com/swaggo/swag/cmd/swag@latest
 
 WORKDIR /build/pufferpanel
 
@@ -41,14 +38,13 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN ~/go/bin/swag init --pd --md . -o web/swagger -g web/loader.go
+RUN swag init --pd --md . -o web/swagger -g web/loader.go
 
 COPY --from=node /build/frontend/dist /build/pufferpanel/client/frontend/dist
 
 ARG TARGETPLATFORM
 ARG curseforgeKey=''
 
-RUN xx-apk add musl-dev gcc
 RUN xx-go build -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3/config.curseforgeKey=$curseforgeKey' -X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd
 RUN go test ./...
 RUN xx-verify /pufferpanel/pufferpanel

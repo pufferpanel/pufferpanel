@@ -896,12 +896,6 @@ func extract(c *gin.Context) {
 	}
 }
 
-// @Summary Create backup
-// @Description Creates a full backup of the server
-// @Success 200 {object} pufferpanel.ServerBackupResponse
-// @Param id path string true "Server ID"
-// @Router /api/servers/{id}/backup/create [post]
-// @Security OAuth2Application[server.backup.create]
 func createBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	isRunning, err := server.IsRunning()
@@ -921,13 +915,6 @@ func createBackup(c *gin.Context) {
 	c.JSON(http.StatusOK, &pufferpanel.ServerBackupResponse{BackupFileName: id})
 }
 
-// @Summary Delete backup
-// @Description Delete a backup of the server
-// @Success 204 {object} nil
-// @Param id path string true "Server ID"
-// @Param fileName query string true "File Name"
-// @Router /api/servers/{id}/backup/delete [post]
-// @Security OAuth2Application[server.backup.delete]
 func deleteBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	fileName := c.Query("fileName")
@@ -939,13 +926,6 @@ func deleteBackup(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// @Summary Restore backup
-// @Description Restore a full backup of the server
-// @Success 202 {object} nil
-// @Param id path string true "Server ID"
-// @Param fileName query string true "File Name"
-// @Router /api/servers/{id}/backup/restore [post]
-// @Security OAuth2Application[server.backup.restore]
 func restoreBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	fileName := c.Query("fileName")
@@ -965,13 +945,6 @@ func restoreBackup(c *gin.Context) {
 	c.Status(http.StatusAccepted)
 }
 
-// @Summary Download backup
-// @Description Download a backup of the server
-// @Success 204 {object} nil
-// @Param id path string true "Server ID"
-// @Param fileName query string true "File Name"
-// @Router /api/servers/{id}/backup/restore [post]
-// @Security OAuth2Application[server.backup.restore]
 func downloadBackup(c *gin.Context) {
 	server := getServerFromGin(c)
 	fileName := c.Query("fileName")

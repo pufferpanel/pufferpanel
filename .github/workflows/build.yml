@@ -62,10 +62,7 @@ jobs:
       - name: Download Go Binaries
         if: steps.restore-go-bin.outputs.cache-hit != 'true'
         run: |
-          wget https://github.com/swaggo/swag/releases/download/v${{ env.SWAG_VERSION }}/swag_${{ env.SWAG_VERSION }}_Linux_x86_64.tar.gz
-          mkdir -p ~/go/bin
-          tar -zxf swag*.tar.gz -C ~/go/bin
-          rm -rf swag*.tar.gz
+          go install github.com/swaggo/swag/cmd/swag@latest
 
       - name: Download Go modules
         run: |
