@@ -179,7 +179,7 @@ func doRestart(server *servers.Server, timeout time.Duration) error {
 // @Success 204 {object} nil
 // @Param id path string true "Server ID"
 // @Param wait query bool false "Wait"
-// @Param timeout query time.Duration false "Timeout Duration"
+// @Param timeout query string false "Timeout Duration"
 // @Router /api/servers/{id}/restart [post]
 // @Security OAuth2Application[server.start, server.stop]
 func restartServer(c *gin.Context) {
