@@ -4,15 +4,15 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/files"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 func downloadModpack(file File) error {
@@ -34,7 +34,7 @@ func downloadModpack(file File) error {
 	}
 	defer utils.Close(tmpFile)
 
-	response, err := pufferpanel.Http().Get(file.DownloadUrl)
+	response, err := callCurseForge(file.DownloadUrl)
 	defer utils.CloseResponse(response)
 	if err != nil {
 		return err
