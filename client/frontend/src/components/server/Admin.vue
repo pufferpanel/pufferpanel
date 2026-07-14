@@ -48,17 +48,17 @@ function saveDefinition() {
   def.value = edited
 }
 
-function deleteServer() {
+function deleteServer(skipNode = false) {
   events.emit(
     'confirm',
-    t('servers.ConfirmDelete', { name: props.server.name }),
+    t(skipNode ? 'servers.ConfirmForceDelete' : 'servers.ConfirmDelete', { name: props.server.name }),
     {
-      text: t('servers.Delete'),
+      text: t(skipNode ? 'servers.ForceDelete' : 'servers.Delete'),
       icon: 'remove',
       color: 'error',
       action: async () => {
         deleting.value = true
-        await props.server.delete()
+        await props.server.delete(skipNode)
         toast.success(t('servers.Deleted'))
         // delay 500ms to prevent running into sqlite dbs still being locked
         setTimeout(() => {router.push({ name: 'ServerList' })}, 500)
@@ -85,6 +85,7 @@ onMounted(async () => {
     <h2 v-text="t('servers.Admin')" />
     <btn v-if="server.hasScope('server.definition.view')" v-hotkey="'a e'" variant="text" @click="editDefinition()"><icon name="edit" />{{ t('servers.EditDefinition') }}</btn>
     <btn v-if="server.hasScope('server.delete')" color="error" @click="deleteServer()"><icon name="remove" />{{ t('servers.Delete') }}</btn>
+    <btn v-if="server.hasScope('server.delete')" color="error" variant="text" @click="deleteServer(true)"><icon name="remove" />{{ t('servers.ForceDelete') }}</btn>
 
     <overlay v-model="editorOpen" class="server-definition">
       <tabs @tabChanged="definitionTabChanged">
