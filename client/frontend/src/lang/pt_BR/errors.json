@@ -52,5 +52,5 @@
   "ErrNoContainerNoneFound": "Nenhum contêiner encontrado",
   "ErrNoMountFound": "Nenhuma montagem encontrada",
   "ErrUnsupportedMountType": "Tipo de montagem não suportado",
-  "ErrServerRunning": "Server is running"
+  "ErrServerRunning": "Servidor está funcionando"
 }
