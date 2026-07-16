@@ -120,6 +120,13 @@ function confirmEdit() {
   editOpen.value = false
   if (edit.value.oldName && edit.value.oldName !== edit.value.name) {
     delete template.value.data[edit.value.oldName]
+    if (Array.isArray(template.value.groups)) {
+      template.value.groups = template.value.groups.map(group => {
+        const index = group.variables.indexOf(edit.value.oldName)
+        if (index !== -1) group.variables[index] = edit.value.name
+        return group
+      })
+    }
   }
   const name = edit.value.name
   delete edit.value.name
