@@ -28,3 +28,8 @@ Some images used within PufferPanel are Copyright (c) their respective owners.
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
 
 Repositories hosted by [packagecloud](https://packagecloud.io)
+
+## AI Generated Content
+
+We do not accept AI generated content in any form. If we suspect something was done by AI, we will reject it. This includes PR requests,
+security advisories, and issues.
