@@ -1,21 +1,22 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestReplaceTokens(t *testing.T) {
 	mapping := createSourceMap()
 
-	resultTest := ReplaceTokens("TEST ${val1}", mapping)
+	resultTest := ReplaceTokens("TEST ${val1}", mapping, PlainReplace)
 	assert.Equal(t, "TEST RESULT1", resultTest)
 
-	resultTest = ReplaceTokens("TEST val1", mapping)
+	resultTest = ReplaceTokens("TEST val1", mapping, PlainReplace)
 	assert.Equal(t, "TEST val1", resultTest)
 
-	resultTest = ReplaceTokens("TEST val1", mapping)
+	resultTest = ReplaceTokens("TEST val1", mapping, PlainReplace)
 	assert.Equal(t, "TEST val1", resultTest)
 }
 
@@ -138,10 +139,78 @@ func TestMergeArguments(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run("", func(t *testing.T) {
+		t.Run(tt.expected, func(t *testing.T) {
 			result := MergeArguments(tt.args)
 			if result != tt.expected {
 				t.Errorf("MergeArguments() got = %v, want %v", result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestShellReplace(t *testing.T) {
+	tests := []struct {
+		name     string
+		str      string
+		data     map[string]any
+		expected string
+	}{
+		{
+			str:      "",
+			data:     map[string]any{},
+			expected: "",
+		},
+		{
+			str:      "test",
+			data:     map[string]any{},
+			expected: "test",
+		},
+		{
+			str:      "testing \" test",
+			data:     map[string]any{},
+			expected: "testing \" test",
+		},
+		{
+			str: "testing \" test",
+			data: map[string]any{
+				"test": "FAKE",
+			},
+			expected: "testing \" test",
+		},
+		{
+			str: "testing ${test}",
+			data: map[string]any{
+				"test": "FAKE",
+			},
+			expected: "testing FAKE",
+		},
+		{
+			str: "${test}ing ${test}",
+			data: map[string]any{
+				"test": "FAKE",
+			},
+			expected: "FAKEing FAKE",
+		},
+		{
+			str: "testing ${test}",
+			data: map[string]any{
+				"test": " > FAKE",
+			},
+			expected: "testing \" \\> FAKE\"",
+		},
+		{
+			str: "testing ${test}",
+			data: map[string]any{
+				"test": "FAKE \\\"test data\"",
+			},
+			expected: "testing \"FAKE \\\\\\\"test data\\\"\"",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.str, func(t *testing.T) {
+			result := ReplaceTokens(tt.str, tt.data, ShellReplace)
+			if result != tt.expected {
+				t.Errorf("ReplaceTokens() got = %v, want %v", result, tt.expected)
 			}
 		})
 	}

@@ -3,17 +3,18 @@ package nodejsdl
 import (
 	"encoding/json"
 	"errors"
-	"github.com/hashicorp/go-version"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"sync"
+
+	"github.com/hashicorp/go-version"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 var downloader sync.Mutex
@@ -131,8 +132,8 @@ func (op NodejsDl) getRelease() (ReleaseInfo, error) {
 	}
 
 	release := ReleaseInfo{
-		Url:  utils.ReplaceTokens(DownloadLink, replacements),
-		Slug: utils.ReplaceTokens(VersionSlug, replacements),
+		Url:  utils.ReplaceTokens(DownloadLink, replacements, utils.PlainReplace),
+		Slug: utils.ReplaceTokens(VersionSlug, replacements, utils.PlainReplace),
 	}
 	return release, nil
 }

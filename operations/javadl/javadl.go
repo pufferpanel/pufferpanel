@@ -4,15 +4,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"sync"
+
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 var downloader sync.Mutex
@@ -102,7 +103,7 @@ func (op JavaDl) callAdoptiumApi() (File, error) {
 		}
 	}
 
-	url := utils.ReplaceTokens(DownloadLink, replacements)
+	url := utils.ReplaceTokens(DownloadLink, replacements, utils.PlainReplace)
 
 	logging.Debug.Println("Calling " + url)
 	response, err := pufferpanel.HttpGet(url)

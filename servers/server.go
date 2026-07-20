@@ -269,7 +269,7 @@ func (p *Server) Start() (err error) {
 
 	data := p.DataToMap()
 
-	commandLine := utils.ReplaceTokens(command.Command, data)
+	commandLine := utils.ReplaceTokens(command.Command, data, utils.ShellReplace)
 	err = p.RunningEnvironment.ExecuteAsync(pufferpanel.ExecutionData{
 		WorkingDirectory: p.Server.Execution.WorkingDirectory,
 		Command:          commandLine,

@@ -181,7 +181,7 @@ type Error struct {
 } //@name Error
 
 func (ge *Error) GetMessage() string {
-	return utils.ReplaceTokens(ge.Message, ge.Meta)
+	return utils.ReplaceTokens(ge.Message, ge.Meta, utils.PlainReplace)
 }
 
 func (ge *Error) GetCode() string {

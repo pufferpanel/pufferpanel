@@ -2,6 +2,7 @@ package pufferpanel
 
 import (
 	"encoding/json"
+
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
@@ -17,9 +18,9 @@ type stdinConfigAlias StdinConsoleConfiguration
 func (v *StdinConsoleConfiguration) Replace(variables map[string]interface{}) StdinConsoleConfiguration {
 	return StdinConsoleConfiguration{
 		Type:     v.Type,
-		IP:       utils.ReplaceTokens(v.IP, variables),
-		Port:     utils.ReplaceTokens(v.Port, variables),
-		Password: utils.ReplaceTokens(v.Password, variables),
+		IP:       utils.ReplaceTokens(v.IP, variables, utils.PlainReplace),
+		Port:     utils.ReplaceTokens(v.Port, variables, utils.PlainReplace),
+		Password: utils.ReplaceTokens(v.Password, variables, utils.PlainReplace),
 	}
 }
 

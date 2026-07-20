@@ -382,7 +382,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 		}
 	}
 
-	imageName := utils.ReplaceTokens(d.ImageName, data.Variables)
+	imageName := utils.ReplaceTokens(d.ImageName, data.Variables, utils.PlainReplace)
 
 	err := d.PullImage(environment, ctx, imageName, false)
 
@@ -405,7 +405,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 	}
 
 	for k, v := range d.Labels {
-		labels[utils.ReplaceTokens(k, data.Variables)] = utils.ReplaceTokens(v, data.Variables)
+		labels[utils.ReplaceTokens(k, data.Variables, utils.PlainReplace)] = utils.ReplaceTokens(v, data.Variables, utils.PlainReplace)
 	}
 
 	c := d.Config
@@ -451,7 +451,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 
 	containerConfig.Env = make([]string, 0)
 	for k, v := range envVars {
-		containerConfig.Env = append(containerConfig.Env, fmt.Sprintf("%s=%s", k, utils.ReplaceTokens(v, data.Variables)))
+		containerConfig.Env = append(containerConfig.Env, fmt.Sprintf("%s=%s", k, utils.ReplaceTokens(v, data.Variables, utils.PlainReplace)))
 	}
 
 	if len(containerConfig.Entrypoint) == 0 && len(cmdSlice) > 0 {
@@ -505,7 +505,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 	hostConfig := &baseConfig
 	hostConfig.AutoRemove = true
 	if hostConfig.NetworkMode == "" {
-		hostConfig.NetworkMode = container.NetworkMode(utils.ReplaceTokens(d.Network, data.Variables))
+		hostConfig.NetworkMode = container.NetworkMode(utils.ReplaceTokens(d.Network, data.Variables, utils.PlainReplace))
 	}
 
 	hostConfig.Binds = append(hostConfig.Binds, bindDirs...)

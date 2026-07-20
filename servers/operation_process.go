@@ -82,7 +82,7 @@ func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, environme
 			switch r := v.(type) {
 			case string:
 				{
-					mapCopy[k] = utils.ReplaceTokens(r, dataMap)
+					mapCopy[k] = utils.ReplaceTokens(r, dataMap, utils.PlainReplace)
 				}
 			case []string:
 				{

@@ -7,26 +7,40 @@ import (
 	"github.com/spf13/cast"
 )
 
-func ReplaceTokens(msg string, mapping map[string]interface{}) string {
+type StringReplaceFunc func(str string, key string, value any) string
+
+var PlainReplace = func(str string, key string, value any) string {
+	return strings.ReplaceAll(str, key, cast.ToString(value))
+}
+
+var ShellReplace = func(str string, key string, value any) string {
+	return PlainReplace(str, key, shellwords.Quote(cast.ToString(value)))
+}
+
+func ReplaceTokens(msg string, mapping map[string]any, function StringReplaceFunc) string {
+	if function == nil {
+		function = PlainReplace
+	}
+
 	newmsg := msg
 	for key, value := range mapping {
-		newmsg = strings.Replace(newmsg, "${"+key+"}", cast.ToString(value), -1)
+		newmsg = function(newmsg, "${"+key+"}", value)
 	}
 	return newmsg
 }
 
-func ReplaceTokensInArr(msg []string, mapping map[string]interface{}) []string {
+func ReplaceTokensInArr(msg []string, mapping map[string]any) []string {
 	newarr := make([]string, len(msg))
 	for index, element := range msg {
-		newarr[index] = ReplaceTokens(element, mapping)
+		newarr[index] = ReplaceTokens(element, mapping, PlainReplace)
 	}
 	return newarr
 }
 
-func ReplaceTokensInMap(msg map[string]string, mapping map[string]interface{}) map[string]string {
+func ReplaceTokensInMap(msg map[string]string, mapping map[string]any) map[string]string {
 	newarr := make(map[string]string, len(msg))
 	for index, element := range msg {
-		newarr[index] = ReplaceTokens(element, mapping)
+		newarr[index] = ReplaceTokens(element, mapping, PlainReplace)
 	}
 	return newarr
 }

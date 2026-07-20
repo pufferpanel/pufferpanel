@@ -2,12 +2,13 @@ package pufferpanel
 
 import (
 	"context"
-	"github.com/docker/docker/client"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"os/exec"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/docker/docker/client"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
 type Requirements struct {
@@ -75,7 +76,7 @@ func (r Requirements) Test(server Server) error {
 
 			found := true
 			for k, binary := range binaries {
-				parsed := utils.ReplaceTokens(binary, server.DataToMap())
+				parsed := utils.ReplaceTokens(binary, server.DataToMap(), utils.PlainReplace)
 				binaries[k] = parsed
 				_, err := exec.LookPath(parsed)
 				if err != nil {
