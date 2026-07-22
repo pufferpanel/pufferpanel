@@ -7,7 +7,7 @@ if [ ! -f "/var/lib/pufferpanel/database.db" ]; then
   touch /var/lib/pufferpanel/database.db
 fi
 
-pufferpanel --config=/etc/pufferpanel/config.json db upgrade
+runuser -u pufferpanel pufferpanel --config=/etc/pufferpanel/config.json db upgrade
 exitCode=$?
 [ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
 
