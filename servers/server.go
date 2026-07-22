@@ -530,7 +530,7 @@ func (p *Server) EditData(data map[string]interface{}, asAdmin bool) (err error)
 			continue
 		}
 
-		elem.Value = v
+		elem.SetValue(v)
 
 		p.Variables[k] = elem
 	}

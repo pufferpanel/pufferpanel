@@ -2,12 +2,14 @@ package pufferpanel
 
 import (
 	"encoding/json"
+	"errors"
+
 	"github.com/spf13/cast"
 )
 
 type Variable struct {
 	Type
-	Value        interface{}      `json:"value"`
+	Value        any              `json:"value"`
 	Display      string           `json:"display,omitempty"`
 	Description  string           `json:"desc,omitempty"`
 	Required     bool             `json:"required"`
@@ -18,9 +20,59 @@ type Variable struct {
 type variableAlias Variable
 
 type VariableOption struct {
-	Value   interface{} `json:"value"`
-	Display string      `json:"display"`
+	Value   any    `json:"value"`
+	Display string `json:"display"`
 } //@name VariableOption
+
+func (v *Variable) SetValue(val any) (err error) {
+	var tmp any
+	//convert variable to correct typing
+	switch v.Type.Type {
+	case "string":
+		{
+			tmp, err = cast.ToStringE(val)
+			if err == nil {
+				v.Value = tmp
+			}
+		}
+	case "integer":
+		{
+			if tmp, err = cast.ToStringE(val); err == nil && tmp == "" {
+				v.Value = 0
+			} else {
+				tmp, err = cast.ToIntE(val)
+				if err == nil {
+					v.Value = tmp
+				}
+			}
+		}
+	case "boolean":
+		{
+			tmp, err = cast.ToBoolE(val)
+			if err == nil {
+				v.Value = tmp
+			}
+		}
+	case "option":
+		{
+			updated := false
+			for _, k := range v.Options {
+				if k.Value == val {
+					v.Value = k.Value
+					updated = true
+					break
+				}
+			}
+			if !updated {
+				err = errors.New("unknown value")
+			}
+		}
+	default:
+		err = errors.New("unknown variable type")
+	}
+
+	return err
+}
 
 func (v *Variable) UnmarshalJSON(data []byte) (err error) {
 	aux := variableAlias{}
@@ -36,26 +88,7 @@ func (v *Variable) UnmarshalJSON(data []byte) (err error) {
 		aux.Value = ""
 	}
 
-	//convert variable to correct typing
-	switch aux.Type.Type {
-	case "integer":
-		{
-			aux.Value, err = cast.ToIntE(aux.Value)
-			if err != nil {
-				var str string
-				if str, err = cast.ToStringE(aux.Value); err == nil {
-					if str == "" {
-						aux.Value = 0
-					}
-				}
-			}
-		}
-	case "boolean":
-		{
-			aux.Value, err = cast.ToBoolE(aux.Value)
-		}
-	}
-
 	*v = Variable(aux)
+	err = v.SetValue(aux.Value)
 	return
 }
