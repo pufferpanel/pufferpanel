@@ -27,7 +27,7 @@ func InitContainerMountSource() (err error) {
 	}
 
 	path := filepath.Join(os.TempDir(), "puffer-cid")
-	err = os.Mkdir(path, 0755)
+	err = os.MkdirAll(path, 0755)
 	if err != nil {
 		return
 	}
