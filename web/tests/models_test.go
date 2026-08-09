@@ -334,6 +334,40 @@ var CreateServerData = `{
   }
 }`
 
+var RestartServerData = `{
+  "node": {{{INSERTNODEID}}},
+  "type": "minecraft-java",
+  "data": {},
+  "display": "Minecraft: Java Edition",
+  "environment": {
+    "type": "host"
+  },
+  "install": [
+    {
+      "type": "javadl",
+      "version": "25"
+    },
+    {
+      "target": "server.jar",
+      "type": "mojangdl",
+      "version": "latest"
+    },
+    {
+      "target": "eula.txt",
+      "text": "eula=true",
+      "type": "writefile"
+    }
+  ],
+  "run": {
+    "command": [
+      {
+        "command": "java25 -Xmx2048M -Dterminal.jline=false -Dterminal.ansi=true -Dlog4j2.formatMsgNoLookups=true -jar server.jar nogui"
+      }
+    ],
+    "stop": "stop"
+  }
+}`
+
 var TestServerData = []byte(`{
   "type": "testing",
   "display": "API Test Server",

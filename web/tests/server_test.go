@@ -1,14 +1,12 @@
 package tests
 
 import (
-	"archive/tar"
 	"bytes"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/fs"
 	"net/http"
 	"net/url"
 	"os"
@@ -1023,65 +1021,159 @@ func TestServers(t *testing.T) {
 	}
 }
 
-type tarItem struct {
-	Name    string
-	Mode    os.FileMode
-	Content string
-}
+func TestServers_Restarts(t *testing.T) {
+	session, err := createSessionAdmin()
+	if !assert.NoError(t, err) {
+		return
+	}
 
-type tarItemFileInfo struct {
-	name string
-	mode os.FileMode
-	size int64
-}
+	_ = config.SecurityDisableUnshare.Set(true, false)
+	_ = config.ConsoleForward.Set(true, false)
 
-func (t tarItemFileInfo) IsDir() bool {
-	return t.mode&os.ModeDir != 0
-}
-func (t tarItemFileInfo) ModTime() time.Time {
-	return time.Now()
-}
-func (t tarItemFileInfo) Mode() fs.FileMode {
-	return t.mode
-}
-func (t tarItemFileInfo) Name() string {
-	return t.name
-}
-func (t tarItemFileInfo) Size() int64 {
-	return t.size
-}
-func (t tarItemFileInfo) Sys() any {
-	return nil
-}
+	pufferSftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
+	_ = config.ClientSecret.Set(models.LocalNode.Secret, false)
+	var ServerId = "testserver-restarts"
+	data := RestartServerData
+	data = strings.Replace(data, "{{{INSERTNODEID}}}", fmt.Sprintf("%d", models.LocalNode.ID), 1)
+	response := CallAPIRaw("PUT", "/api/servers/"+ServerId, []byte(data), session)
+	if !assert.Equal(t, http.StatusOK, response.Code) {
+		return
+	}
 
-func createBadTarGz(items []tarItem) (writer bytes.Buffer, err error) {
-	var tarWriter bytes.Buffer
-	t := tar.NewWriter(&tarWriter)
+	response = CallAPI("POST", "/api/servers/"+ServerId+"/install", nil, session)
+	if !assert.Equal(t, http.StatusAccepted, response.Code) {
+		return
+	}
 
-	for _, item := range items {
-		fi := tarItemFileInfo{}
-
-		var header *tar.Header
-		if item.Mode&os.ModeSymlink != 0 {
-			header, err = tar.FileInfoHeader(fi, item.Content)
-		} else {
-			header, err = tar.FileInfoHeader(fi, "")
-		}
-		if err != nil {
+	//now we wait for the install to finish
+	timeout := 60
+	counter := 0
+	var msg pufferpanel.ServerRunning
+	for counter < timeout {
+		time.Sleep(time.Second)
+		response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
+		assert.Equal(t, http.StatusOK, response.Code)
+		err = json.NewDecoder(response.Body).Decode(&msg)
+		if !assert.NoError(t, err) {
 			return
 		}
 
-		t.WriteHeader(header)
-
-		if !item.Mode.IsDir() && item.Mode&os.ModeSymlink == 0 {
-			t.Write([]byte(item.Content))
+		if msg.Installing {
+			counter++
+		} else {
+			break
 		}
 	}
-	t.Close()
+	if counter >= timeout {
+		assert.Fail(t, "Server took too long to install, assuming test failed")
+		return
+	}
 
-	tr := tar.NewReader(&tarWriter)
+	addr := fmt.Sprintf("%s:%d", models.LocalNode.PrivateHost, models.LocalNode.PrivatePort)
 
-	gz := archiver.NewGz()
-	err = gz.Compress(tr, &writer)
-	return
+	u := fmt.Sprintf("ws://%s/api/servers/%s/socket", addr, ServerId)
+
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+session)
+
+	c, _, webErr := websocket.DefaultDialer.Dial(u, header)
+	if !assert.NoError(t, webErr) {
+		return
+	}
+	listening := true
+	defer utils.Close(c)
+	restarted := make(chan bool, 5)
+	stopped := false
+
+	go func(conn *websocket.Conn) {
+		for listening {
+			messageType, data, err := conn.ReadMessage()
+			if err != nil {
+				fmt.Printf("Error on websocket: %s\n", err.Error())
+				break
+			}
+			if messageType != websocket.TextMessage {
+				fmt.Printf("Unexpected message type [%d]: %s\n", messageType, data)
+				continue
+			}
+			var msg map[string]any
+			err = json.NewDecoder(bytes.NewReader(data)).Decode(&msg)
+			if err != nil {
+				fmt.Printf("Failed to decode message: %s\n", err.Error())
+				continue
+			}
+
+			msgData := msg["data"]
+
+			switch msg["type"].(string) {
+			case pufferpanel.MessageTypeStatus:
+				var ms pufferpanel.ServerRunning
+				err = utils.UnmarshalTo(msgData, &ms)
+				if err != nil {
+					fmt.Printf("Failed to decode message: %s\n", err.Error())
+					continue
+				}
+				if !ms.Running {
+					stopped = true
+				}
+				if ms.Running && stopped {
+					restarted <- true
+					stopped = false
+				}
+			}
+		}
+	}(c)
+
+	response = CallAPI("POST", "/api/servers/"+ServerId+"/start", nil, session)
+	if !assert.Equal(t, http.StatusAccepted, response.Code) {
+		return
+	}
+
+	counter = 0
+	for counter < 5 {
+		counter++
+
+		//let server run for 30 seconds before we go in and boot it
+		time.Sleep(30 * time.Second)
+
+		emptyChannel(restarted)
+
+		//t.Log("Restarting")
+		response = CallAPI("POST", "/api/servers/"+ServerId+"/restart", nil, session)
+		if !assert.Equal(t, http.StatusAccepted, response.Code) {
+			return
+		}
+
+		timer := time.NewTimer(30 * time.Second)
+		select {
+		case <-timer.C:
+			t.Error("Server failed to restart correctly")
+			counter = 10000
+		case <-restarted:
+		}
+		timer.Stop()
+	}
+
+	time.Sleep(30 * time.Second)
+
+	response = CallAPIRaw("POST", "/api/servers/"+ServerId+"/stop", nil, session)
+	if !assert.Equal(t, http.StatusAccepted, response.Code) {
+		return
+	}
+	time.Sleep(30 * time.Second)
+
+	response = CallAPIRaw("DELETE", "/api/servers/"+ServerId, nil, session)
+	if !assert.Equal(t, http.StatusNoContent, response.Code) {
+		return
+	}
+}
+
+func emptyChannel[T any](c chan T) {
+	for {
+		select {
+		case <-c:
+		default:
+			return
+		}
+	}
 }

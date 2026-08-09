@@ -10,7 +10,7 @@
     },
     "go.showWelcome": false,
     "go.survey.prompt": false,
-    "go.testTimeout": "5m",
+    "go.testTimeout": "10m",
     "go.testEnvVars": {
         "GOTOOLCHAIN": "auto"
     },
