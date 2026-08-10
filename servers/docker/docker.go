@@ -477,7 +477,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 		}
 	}
 
-	bindDirs := []string{convertToBind(dir) + ":" + containerRoot}
+	bindDirs := []string{convertToBind(dir) + ":" + containerRoot, "/etc/timezone:/etc/timezone:ro"}
 
 	binaryFolder := config.BinariesFolder.Value()
 	if containerMountSource != "" {
