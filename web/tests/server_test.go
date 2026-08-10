@@ -1,12 +1,14 @@
 package tests
 
 import (
+	"archive/tar"
 	"bytes"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"net/url"
 	"os"
@@ -1176,4 +1178,67 @@ func emptyChannel[T any](c chan T) {
 			return
 		}
 	}
+}
+
+type tarItem struct {
+	Name    string
+	Mode    os.FileMode
+	Content string
+}
+
+type tarItemFileInfo struct {
+	name string
+	mode os.FileMode
+	size int64
+}
+
+func (t tarItemFileInfo) IsDir() bool {
+	return t.mode&os.ModeDir != 0
+}
+func (t tarItemFileInfo) ModTime() time.Time {
+	return time.Now()
+}
+func (t tarItemFileInfo) Mode() fs.FileMode {
+	return t.mode
+}
+func (t tarItemFileInfo) Name() string {
+	return t.name
+}
+func (t tarItemFileInfo) Size() int64 {
+	return t.size
+}
+func (t tarItemFileInfo) Sys() any {
+	return nil
+}
+
+func createBadTarGz(items []tarItem) (writer bytes.Buffer, err error) {
+	var tarWriter bytes.Buffer
+	t := tar.NewWriter(&tarWriter)
+
+	for _, item := range items {
+		fi := tarItemFileInfo{}
+
+		var header *tar.Header
+		if item.Mode&os.ModeSymlink != 0 {
+			header, err = tar.FileInfoHeader(fi, item.Content)
+		} else {
+			header, err = tar.FileInfoHeader(fi, "")
+		}
+		if err != nil {
+			return
+		}
+
+		t.WriteHeader(header)
+
+		if !item.Mode.IsDir() && item.Mode&os.ModeSymlink == 0 {
+			t.Write([]byte(item.Content))
+		}
+	}
+	t.Close()
+
+	tr := tar.NewReader(&tarWriter)
+
+	gz := archiver.NewGz()
+	err = gz.Compress(tr, &writer)
+	return
 }
