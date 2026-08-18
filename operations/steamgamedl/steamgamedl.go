@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"math/rand"
-	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -46,7 +45,9 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 		return pufferpanel.OperationResult{Error: err}
 	}
 
-	err = downloadMetadata(env)
+	fs := args.Server.GetFileServer()
+
+	err = downloadMetadata(env, fs)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
@@ -56,8 +57,6 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 	//as such, we can kinda send anything we want
 	//our approach will be we hash the server id
 	loginId := cast.ToString(rand.Int31())
-
-	fs := args.Server.GetFileServer()
 
 	_ = fs.RemoveAll(ManifestFolder)
 
@@ -153,7 +152,7 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func downloadMetadata(env *pufferpanel.Environment) error {
+func downloadMetadata(env *pufferpanel.Environment, fs files.FileServer) error {
 	response, err := pufferpanel.HttpGet(SteamMetadataLink)
 	defer utils.CloseResponse(response)
 	if err != nil {
@@ -167,7 +166,7 @@ func downloadMetadata(env *pufferpanel.Environment) error {
 		return err
 	}
 
-	err = os.RemoveAll(filepath.Join(env.GetRootDirectory(), ".steam"))
+	err = fs.RemoveAll(".steam")
 	if err != nil {
 		return err
 	}
@@ -181,7 +180,7 @@ func downloadMetadata(env *pufferpanel.Environment) error {
 }
 
 func walkManifest(fs files.FileServer, filename string) error {
-	file, err := fs.Open(filepath.Join(".manifest", filename))
+	file, err := fs.Open(filepath.Join(ManifestFolder, filename))
 	defer utils.Close(file)
 	if err != nil {
 		return err
