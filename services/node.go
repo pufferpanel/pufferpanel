@@ -4,18 +4,19 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"strings"
+
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
-	"io"
-	"net/http"
-	"net/http/httptest"
-	"net/url"
-	"strconv"
-	"strings"
 )
 
 var wsupgrader = websocket.Upgrader{
@@ -37,10 +38,10 @@ func SyncNodeToConfig() {
 	models.LocalNode.PrivateHost = strings.Split(masterUrl, ":")[0]
 
 	if len(masterParts) == 2 {
-		port, err := strconv.Atoi(masterParts[1])
+		port, err := cast.ToUint16E(masterParts[1])
 		if err == nil {
-			models.LocalNode.PublicPort = uint16(port)
-			models.LocalNode.PrivatePort = uint16(port)
+			models.LocalNode.PublicPort = port
+			models.LocalNode.PrivatePort = port
 		}
 	} else {
 		//default port to 80 or 443 as the url doesn't have one, so we can assume one or other
@@ -57,9 +58,9 @@ func SyncNodeToConfig() {
 	sftpParts := strings.SplitN(sftpHost, ":", 2)
 
 	if len(sftpParts) == 2 {
-		port, err := strconv.Atoi(sftpParts[1])
+		port, err := cast.ToUint16E(sftpParts[1])
 		if err == nil {
-			models.LocalNode.SFTPPort = uint16(port)
+			models.LocalNode.SFTPPort = port
 		}
 	}
 }
