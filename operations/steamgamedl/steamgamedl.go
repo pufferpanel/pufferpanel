@@ -12,6 +12,7 @@ import (
 	"github.com/mholt/archiver/v3"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/spf13/cast"
 )
@@ -19,6 +20,7 @@ import (
 var downloader sync.Mutex
 
 const SteamMetadataServerLink = "https://media.steampowered.com/client/"
+const ManifestFolder = ".manifest"
 
 func init() {
 }
@@ -55,8 +57,9 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 	//our approach will be we hash the server id
 	loginId := cast.ToString(rand.Int31())
 
-	manifestFolder := filepath.Join(env.GetRootDirectory(), ".manifest")
-	_ = os.RemoveAll(manifestFolder)
+	fs := args.Server.GetFileServer()
+
+	_ = fs.RemoveAll(ManifestFolder)
 
 	cmdArgs := []string{filepath.Join(rootBinaryFolder, "depotdownloader", DepotDownloaderBinary), "-app", c.AppId, "-dir", ".manifest", "-loginid", loginId, "-manifest-only"}
 	if c.Username != "" {
@@ -133,7 +136,7 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 
 	//for each file we download, we need to just... chmod +x the files
 	//we rely on the manifests for this
-	manifests, err := os.ReadDir(manifestFolder)
+	manifests, err := fs.ReadDir(ManifestFolder)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
@@ -141,7 +144,7 @@ func (c SteamGameDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.Operation
 		if manifest.Type().IsDir() || !strings.HasSuffix(manifest.Name(), ".txt") {
 			continue
 		}
-		err = walkManifest(env.GetRootDirectory(), manifest.Name())
+		err = walkManifest(fs, manifest.Name())
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
@@ -177,8 +180,8 @@ func downloadMetadata(env *pufferpanel.Environment) error {
 	return err
 }
 
-func walkManifest(folder, filename string) error {
-	file, err := os.Open(filepath.Join(folder, ".manifest", filename))
+func walkManifest(fs files.FileServer, filename string) error {
+	file, err := fs.Open(filepath.Join(".manifest", filename))
 	defer utils.Close(file)
 	if err != nil {
 		return err
@@ -204,7 +207,7 @@ func walkManifest(folder, filename string) error {
 		//we will only work on 0 files, because this mean no other flags were told
 		if parts[3] == "0" {
 			fileToUpdate := parts[4]
-			_ = os.Chmod(filepath.Join(folder, fileToUpdate), 0755)
+			_ = fs.Chmod(fileToUpdate, 0755)
 		}
 	}
 

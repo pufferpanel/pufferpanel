@@ -31,6 +31,8 @@ type FileServer interface {
 	RemoveAll(path string) error
 	Glob(pattern string) ([]string, error)
 	Symlink(oldname, newname string) error
+	Lstat(name string) (fs.FileInfo, error)
+	Chmod(path string, mode os.FileMode) error
 
 	Close() error
 }
@@ -319,6 +321,16 @@ func (sfp *fileServer) RemoveAll(path string) error {
 
 	err = sfp.Remove(path)
 	return err
+}
+
+func (sfp *fileServer) Lstat(path string) (fs.FileInfo, error) {
+	//TODO: Revalidate this does not actually allow getting data about a symlink that isn't in the right path
+	return os.Lstat(filepath.Join(sfp.dir, prepPath(path)))
+}
+
+func (sfp *fileServer) Chmod(path string, mode os.FileMode) error {
+	//TODO: Revalidate this does not actually allow changing a file that isn't in our path
+	return os.Chmod(filepath.Join(sfp.dir, prepPath(path)), mode)
 }
 
 func getFd(f *os.File) int {

@@ -2,14 +2,15 @@ package servers
 
 import (
 	"errors"
+	"os"
+	"os/exec"
+	"path/filepath"
+
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/common/types"
 	"github.com/google/cel-go/common/types/ref"
 	"github.com/google/cel-go/interpreter/functions"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"os"
-	"os/exec"
-	"path/filepath"
 )
 
 func CreateFunctions(env *pufferpanel.Environment) []cel.EnvOption {

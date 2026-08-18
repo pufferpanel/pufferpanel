@@ -3,6 +3,13 @@ package curseforge
 import (
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/files"
@@ -10,12 +17,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/forgedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/neoforgedl"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"io"
-	"net/http"
-	"os"
-	"path/filepath"
-	"regexp"
-	"strings"
 )
 
 type CurseForge struct {
@@ -134,6 +135,8 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 		return pufferpanel.OperationResult{Error: err}
 	}
 
+	fs := args.Server.GetFileServer()
+
 	//modpack now downloaded and extracted
 	//worse case, this is all we could do...
 	//best case, we can get the modpack set up how we need it
@@ -144,7 +147,7 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 	var jar string
 	var vars map[string]string
 	var manifest Manifest
-	if jar, err = findInstallerJar(env); err == nil {
+	if jar, err = findInstallerJar(env, fs); err == nil {
 		logging.Debug.Printf("Found jar: %s\n", jar)
 		if strings.HasPrefix(jar, "neoforgedl") {
 			modLoader = "neoforgedl"
@@ -184,7 +187,7 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 	switch modLoader {
 	case "fabric":
 		{
-			err = installFabric(env, data, c.JavaBinary)
+			err = installFabric(env, fs, data, c.JavaBinary)
 			if err != nil {
 				return pufferpanel.OperationResult{Error: err}
 			}
@@ -230,8 +233,8 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 
 			//grab the ServerStarter if there isn't a server.jar, just to help out
 			//would prefer Forge's variant, but this will do
-			runJarFile := filepath.Join(env.GetRootDirectory(), "server.jar")
-			if _, err = os.Stat(runJarFile); os.IsNotExist(err) {
+			runJarFile := "server.jar"
+			if _, err = fs.Stat(runJarFile); os.IsNotExist(err) {
 				env.DisplayToConsole(true, "Grabbing ServerStarter")
 				var cachePath = filepath.Join(config.CacheFolder.Value(), "github.com", "neoforgedl", "serverstarter", NeoForgeServerStarterVersion, "server.jar")
 				if _, err = os.Stat(cachePath); os.IsNotExist(err) {
@@ -259,8 +262,8 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 	return pufferpanel.OperationResult{Error: nil}
 }
 
-func findInstallerJar(env *pufferpanel.Environment) (string, error) {
-	entries, err := os.ReadDir(env.GetRootDirectory())
+func findInstallerJar(env *pufferpanel.Environment, fs files.FileServer) (string, error) {
+	entries, err := fs.ReadDir(".")
 	if err != nil {
 		return "", err
 	}
@@ -294,12 +297,14 @@ func installViaJar(server pufferpanel.DaemonServer, env *pufferpanel.Environment
 		return errors.New("failed to run installer")
 	}
 
+	fs := server.GetFileServer()
+
 	//delete installer now
-	err = os.Remove(filepath.Join(env.GetRootDirectory(), jarFile))
+	err = fs.Remove(jarFile)
 	if err != nil {
 		env.DisplayToConsole(true, "Failed to delete installer")
 	}
-	err = os.Remove(filepath.Join(env.GetRootDirectory(), jarFile+".log"))
+	err = fs.Remove(jarFile + ".log")
 	if err != nil {
 		env.DisplayToConsole(true, "Failed to delete installer")
 	}
@@ -313,13 +318,13 @@ func installViaJar(server pufferpanel.DaemonServer, env *pufferpanel.Environment
 
 	var fi os.FileInfo
 	for _, f := range possibleRenames {
-		if fi, err = os.Lstat(filepath.Join(env.GetRootDirectory(), f)); err == nil && !fi.IsDir() {
-			err = os.Rename(filepath.Join(env.GetRootDirectory(), f), filepath.Join(env.GetRootDirectory(), "server.jar"))
+		if fi, err = fs.Lstat(f); err == nil && !fi.IsDir() {
+			err = fs.Rename(f, "server.jar")
 			if err != nil {
 				return err
 			}
-		} else if fi, err = os.Lstat(filepath.Join(env.GetRootDirectory(), f)); err == nil && !fi.IsDir() {
-			err = os.Rename(filepath.Join(env.GetRootDirectory(), f), filepath.Join(env.GetRootDirectory(), "server.jar"))
+		} else if fi, err = fs.Lstat(f); err == nil && !fi.IsDir() {
+			err = fs.Rename(f, "server.jar")
 			if err != nil {
 				return err
 			}
@@ -328,7 +333,7 @@ func installViaJar(server pufferpanel.DaemonServer, env *pufferpanel.Environment
 	return nil
 }
 
-func installFabric(env *pufferpanel.Environment, data map[string]string, javaBinary string) error {
+func installFabric(env *pufferpanel.Environment, fs files.FileServer, data map[string]string, javaBinary string) error {
 	//this is a mess
 	//there's 2 options that exist for fabric
 	//there is an "improved" launcher, which is just a jar that we need
@@ -336,20 +341,20 @@ func installFabric(env *pufferpanel.Environment, data map[string]string, javaBin
 
 	//see if improved is available
 	fabricUrl := replaceTokens(ImprovedFabricInstallerUrl, data)
-	targetFile := filepath.Join(env.GetRootDirectory(), "server.jar")
+	targetFile := "server.jar"
 
 	env.DisplayToConsole(true, "Downloading %s to %s", fabricUrl, targetFile)
-	err := downloadFile(fabricUrl, targetFile)
+	err := downloadFile(fabricUrl, fs, targetFile)
 	if err == nil {
 		//this was a good file, we got what we need
 		return nil
 	} else if !errors.Is(err, errNoFile) {
 		//we got a 404, so we can't use the improved version at all
 		fabricUrl = replaceTokens(FabricInstallerUrl, data)
-		targetFile = filepath.Join(env.GetRootDirectory(), "fabric-installer.jar")
+		targetFile = "fabric-installer.jar"
 
 		env.DisplayToConsole(true, "Downloading %s to %s", fabricUrl, targetFile)
-		err = downloadFile(fabricUrl, targetFile)
+		err = downloadFile(fabricUrl, fs, targetFile)
 		if err != nil {
 			return err
 		}
@@ -371,22 +376,22 @@ func installFabric(env *pufferpanel.Environment, data map[string]string, javaBin
 		}
 
 		//delete installer now
-		err = os.Remove(filepath.Join(env.GetRootDirectory(), "fabric-installer.jar"))
+		err = fs.Remove("fabric-installer.jar")
 		if err != nil {
 			env.DisplayToConsole(true, "Failed to delete installer")
 		}
 
 		//replace jar with the fabric jar
-		_ = os.Remove(filepath.Join(env.GetRootDirectory(), "server.jar"))
-		err = os.Rename(filepath.Join(env.GetRootDirectory(), "fabric-server-launch.jar"), filepath.Join(env.GetRootDirectory(), "server.jar"))
+		_ = fs.Remove("server.jar")
+		err = fs.Rename("fabric-server-launch.jar", "server.jar")
 		return err
 	} else {
 		return err
 	}
 }
 
-func downloadFile(url, target string) error {
-	file, err := os.Create(target)
+func downloadFile(url string, fs files.FileServer, target string) error {
+	file, err := fs.OpenFile(target, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0755)
 	if err != nil {
 		return err
 	}
