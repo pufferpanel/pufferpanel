@@ -72,7 +72,6 @@ func GenerateProcess(directions []pufferpanel.ConditionalMetadataType, environme
 		dataMap[k] = v
 	}
 
-	dataMap["rootDir"] = environment.GetRootDirectory()
 	operationList := make(OperationProcess, 0)
 	for _, mapping := range directions {
 		mapCopy := make(map[string]interface{})

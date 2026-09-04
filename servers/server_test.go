@@ -3,12 +3,14 @@ package servers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestProgram_valid(t *testing.T) {
@@ -399,6 +401,10 @@ func TestLoadFromFolder(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	config.ServersFolder.Set(tmpDir, false)
+	files.ServerFS, err = files.NewFileServer(config.ServersFolder.Value(), 0, 0, false)
+	if !assert.NoError(t, err) {
+		return
+	}
 
 	err = os.WriteFile(filepath.Join(tmpDir, "loader.json"), serverData, 0644)
 	if !assert.NoError(t, err) {

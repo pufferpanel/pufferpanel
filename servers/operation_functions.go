@@ -2,9 +2,7 @@ package servers
 
 import (
 	"errors"
-	"os"
 	"os/exec"
-	"path/filepath"
 
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/common/types"
@@ -37,8 +35,9 @@ func CreateFunctions(env *pufferpanel.Environment) []cel.EnvOption {
 
 func cel_file_exists(env *pufferpanel.Environment) functions.UnaryOp {
 	return func(fileName ref.Val) ref.Val {
-		fullPath := filepath.Join(env.GetRootDirectory(), fileName.Value().(string))
-		_, err := os.Stat(fullPath)
+		fs := env.Server.GetFileServer()
+		fullPath := fileName.Value().(string)
+		_, err := fs.Stat(fullPath)
 		return types.Bool(err == nil)
 	}
 }

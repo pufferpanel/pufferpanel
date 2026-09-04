@@ -1,11 +1,10 @@
-package docker
+package servers
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"slices"
 
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 
@@ -19,8 +18,6 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/strslice"
 	"github.com/docker/docker/client"
@@ -42,31 +39,36 @@ type Docker struct {
 	Labels        map[string]string    `json:"labels,omitempty"`
 	Config        container.Config     `json:"config,omitempty"`
 
-	connection       types.HijackedResponse
-	cli              *client.Client
-	downloadingImage bool
-	statLocker       sync.Mutex
-	lastStats        *pufferpanel.ServerStats
-	lastStatTime     time.Time
+	connection   types.HijackedResponse
+	cli          *client.Client
+	statLocker   sync.Mutex
+	lastStats    *pufferpanel.ServerStats
+	lastStatTime time.Time
 	//disableStdin        bool
 	disableSpecialStats bool
 }
 
-func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) error {
-	if d.downloadingImage {
-		return pufferpanel.ErrImageDownloading
+func CreateDockerEnvironment() pufferpanel.EnvironmentImpl {
+	return &Docker{
+		ImageName: "pufferpanel/generic",
+		Network:   "host",
+		Ports:     make([]string, 0),
+		Binds:     make(map[string]string),
+		Labels:    make(map[string]string),
 	}
+}
 
+func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) error {
 	var err error
 	var dockerClient *client.Client
-	dockerClient, err = d.getClient()
+	dockerClient, err = pufferpanel.GetDockerClient()
 	if err != nil {
 		return err
 	}
 
 	ctx := context.Background()
 	//TODO: This logic may not work anymore, it's complicated to use an existing container with install/uninstall
-	exists, err := doesContainerExist(dockerClient, environment.ServerId, ctx)
+	exists, err := pufferpanel.DoesContainerExist(environment.Server.Id(), ctx)
 	if err != nil {
 		return err
 	}
@@ -90,7 +92,7 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 		Stream: true,
 	}
 
-	d.connection, err = dockerClient.ContainerAttach(ctx, environment.ServerId, cfg)
+	d.connection, err = dockerClient.ContainerAttach(ctx, environment.Server.Id(), cfg)
 	if err != nil {
 		return err
 	}
@@ -118,7 +120,7 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 	})
 
 	environment.DisplayToConsole(true, "Starting container\n")
-	err = dockerClient.ContainerStart(ctx, environment.ServerId, startOpts)
+	err = dockerClient.ContainerStart(ctx, environment.Server.Id(), startOpts)
 	if err != nil {
 		return err
 	}
@@ -137,28 +139,28 @@ func (d *Docker) KillImpl(environment *pufferpanel.Environment) error {
 		return nil
 	}
 
-	dockerClient, err := d.getClient()
+	dockerClient, err := pufferpanel.GetDockerClient()
 	if err != nil {
 		return err
 	}
-	err = dockerClient.ContainerKill(context.Background(), environment.ServerId, "SIGKILL")
+	err = dockerClient.ContainerKill(context.Background(), environment.Server.Id(), "SIGKILL")
 	return err
 }
 
 func (d *Docker) IsRunningImpl(environment *pufferpanel.Environment) (bool, error) {
-	dockerClient, err := d.getClient()
+	dockerClient, err := pufferpanel.GetDockerClient()
 	if err != nil {
 		return false, err
 	}
 
 	ctx := context.Background()
 
-	exists, err := doesContainerExist(dockerClient, environment.ServerId, ctx)
+	exists, err := pufferpanel.DoesContainerExist(environment.Server.Id(), ctx)
 	if !exists {
 		return false, err
 	}
 
-	stats, err := dockerClient.ContainerInspect(ctx, environment.ServerId)
+	stats, err := dockerClient.ContainerInspect(ctx, environment.Server.Id())
 	if err != nil {
 		return false, err
 	}
@@ -177,7 +179,7 @@ func (d *Docker) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpane
 			Memory: 0,
 		}
 
-		if environment.Server.Stats.Type == "jcmd" {
+		if environment.Server.Get().Stats.Type == "jcmd" {
 			stats.Jvm = &utils.JvmStats{}
 		}
 
@@ -192,14 +194,14 @@ func (d *Docker) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpane
 		return d.lastStats, nil
 	}
 
-	dockerClient, err := d.getClient()
+	dockerClient, err := pufferpanel.GetDockerClient()
 
 	if err != nil {
 		return nil, err
 	}
 
 	ctx := context.Background()
-	res, err := dockerClient.ContainerStats(ctx, environment.ServerId, false)
+	res, err := dockerClient.ContainerStats(ctx, environment.Server.Id(), false)
 	defer func() {
 		if res.Body != nil {
 			utils.Close(res.Body)
@@ -219,17 +221,17 @@ func (d *Docker) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpane
 	//as such, we'll see if we can
 
 	stats := &pufferpanel.ServerStats{
-		Memory: calculateMemoryPercent(data),
-		Cpu:    calculateCPUPercent(data),
+		Memory: utils.CalculateDockerMemoryPercent(data),
+		Cpu:    utils.CalculateDockerCPUPercent(data),
 	}
 
-	if !d.disableSpecialStats && environment.Server.Stats.Type == "jcmd" {
-		cmd, _ := environment.Server.Stats.Metadata["cmd"].(string)
+	if !d.disableSpecialStats && environment.Server.Get().Stats.Type == "jcmd" {
+		cmd, _ := environment.Server.Get().Stats.Metadata["cmd"].(string)
 		if cmd == "" {
 			cmd = "jcmd"
 		}
 
-		r, e := dockerClient.ContainerExecCreate(context.Background(), environment.ServerId, container.ExecOptions{
+		r, e := dockerClient.ContainerExecCreate(context.Background(), environment.Server.Id(), container.ExecOptions{
 			AttachStderr: true,
 			AttachStdout: true,
 			Cmd:          []string{cmd, "1", "GC.heap_info"},
@@ -266,109 +268,6 @@ func (d *Docker) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpane
 	return stats, nil
 }
 
-func (d *Docker) getClient() (*client.Client, error) {
-	var err error = nil
-	if d.cli == nil {
-		d.cli, err = client.NewClientWithOpts(client.FromEnv)
-		ctx := context.Background()
-		d.cli.NegotiateAPIVersion(ctx)
-	}
-	return d.cli, err
-}
-
-func doesContainerExist(client *client.Client, id string, ctx context.Context) (bool, error) {
-	opts := container.ListOptions{
-		Filters: filters.NewArgs(),
-	}
-
-	opts.All = true
-	opts.Filters.Add("name", id)
-
-	existingContainers, err := client.ContainerList(ctx, opts)
-	if err != nil {
-		return false, err
-	}
-
-	for _, v := range existingContainers {
-		if slices.Contains(v.Names, "/"+id) {
-			return true, nil
-		}
-	}
-
-	return false, nil
-}
-
-func (d *Docker) PullImage(environment *pufferpanel.Environment, ctx context.Context, imageName string, force bool) error {
-	if d.downloadingImage {
-		return pufferpanel.ErrImageDownloading
-	}
-
-	if !force {
-		exists := false
-
-		parts := strings.SplitN(imageName, ":", 2)
-		if len(parts) != 2 {
-			imageName = imageName + ":latest"
-		}
-
-		opts := image.ListOptions{
-			All:     true,
-			Filters: filters.NewArgs(),
-		}
-		opts.Filters.Add("reference", imageName)
-		images, err := d.cli.ImageList(ctx, opts)
-
-		if err != nil {
-			return err
-		}
-
-		for _, v := range images {
-			for _, z := range v.RepoTags {
-				if z == imageName {
-					exists = true
-					break
-				}
-			}
-			if exists {
-				break
-			}
-		}
-
-		environment.Log(logging.Debug, "Does image %v exist? %v", imageName, exists)
-
-		if exists {
-			return nil
-		}
-	}
-
-	op := image.PullOptions{}
-
-	environment.Log(logging.Debug, "Downloading image %v", imageName)
-	environment.DisplayToConsole(true, "Downloading image for container, please wait\n")
-
-	d.downloadingImage = true
-	defer func() {
-		d.downloadingImage = false
-	}()
-
-	r, err := d.cli.ImagePull(ctx, imageName, op)
-	defer utils.Close(r)
-	if err != nil {
-		return err
-	}
-
-	w := &ImageWriter{Parent: environment.ConsoleTracker}
-	_, err = io.Copy(w, r)
-
-	if err != nil {
-		return err
-	}
-
-	environment.Log(logging.Debug, "Downloaded image %v", imageName)
-	environment.DisplayToConsole(true, "Downloaded image for container\n")
-	return err
-}
-
 func (d *Docker) createContainer(environment *pufferpanel.Environment, data pufferpanel.ExecutionData, ctx context.Context) error {
 	environment.Log(logging.Debug, "Creating container")
 	containerRoot := d.ContainerRoot
@@ -384,7 +283,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 
 	imageName := utils.ReplaceTokens(d.ImageName, data.Variables, utils.PlainReplace)
 
-	err := d.PullImage(environment, ctx, imageName, false)
+	err := pufferpanel.PullDockerImage(environment, ctx, imageName, false)
 
 	if err != nil {
 		return err
@@ -401,7 +300,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 	environment.Log(logging.Debug, "Container command: %s\n", cmdSlice)
 
 	labels := map[string]string{
-		"pufferpanel.server": environment.ServerId,
+		"pufferpanel.server": environment.Server.Id(),
 	}
 
 	for k, v := range d.Labels {
@@ -464,9 +363,9 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 
 	var dir string
 	if containerMountSource != "" {
-		dir = filepath.Join(containerMountSource, "servers", environment.ServerId)
+		dir = filepath.Join(containerMountSource, "servers", environment.Server.Id())
 	} else {
-		dir = environment.GetRootDirectory()
+		dir = filepath.Join(environment.Server.GetFileServer().Prefix(), environment.Server.Id())
 	}
 
 	//convert root dir to a full path, so we can bind it
@@ -477,7 +376,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 		}
 	}
 
-	bindDirs := []string{convertToBind(dir) + ":" + containerRoot, "/etc/timezone:/etc/timezone:ro"}
+	bindDirs := []string{utils.ConvertToDockerBind(dir) + ":" + containerRoot, "/etc/timezone:/etc/timezone:ro"}
 
 	binaryFolder := config.BinariesFolder.Value()
 	if containerMountSource != "" {
@@ -493,11 +392,11 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 		}
 	}
 	if binaryFolder != "" {
-		bindDirs = append(bindDirs, convertToBind(binaryFolder)+":"+"/var/lib/pufferpanel/binaries:ro")
+		bindDirs = append(bindDirs, utils.ConvertToDockerBind(binaryFolder)+":"+"/var/lib/pufferpanel/binaries:ro")
 	}
 
 	for k, v := range d.Binds {
-		bindDirs = append(bindDirs, convertToBind(k)+":"+v)
+		bindDirs = append(bindDirs, utils.ConvertToDockerBind(k)+":"+v)
 	}
 
 	baseConfig := d.HostConfig
@@ -539,7 +438,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 	networkConfig := &network.NetworkingConfig{}
 
 	//for now, default to linux across the board. This resolves problems that Windows has when you use it and docker
-	_, err = d.cli.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, &v1.Platform{OS: "linux"}, environment.ServerId)
+	_, err = d.cli.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, &v1.Platform{OS: "linux"}, environment.Server.Id())
 	return err
 }
 
@@ -550,14 +449,14 @@ func (d *Docker) SendCodeImpl(environment *pufferpanel.Environment, code int) er
 		return err
 	}
 
-	dockerClient, err := d.getClient()
+	dockerClient, err := pufferpanel.GetDockerClient()
 
 	if err != nil {
 		return err
 	}
 
 	ctx := context.Background()
-	return dockerClient.ContainerKill(ctx, environment.ServerId, cast.ToString(code))
+	return dockerClient.ContainerKill(ctx, environment.Server.Id(), cast.ToString(code))
 }
 
 func (d *Docker) GetUidImpl(environment *pufferpanel.Environment) int {
@@ -578,7 +477,7 @@ func (d *Docker) GetGidImpl(environment *pufferpanel.Environment) int {
 
 func (d *Docker) handleClose(environment *pufferpanel.Environment, client *client.Client, callback func(int)) {
 	exitCode := -1
-	okChan, errChan := client.ContainerWait(context.Background(), environment.ServerId, container.WaitConditionRemoved)
+	okChan, errChan := client.ContainerWait(context.Background(), environment.Server.Id(), container.WaitConditionRemoved)
 
 	select {
 	case chanErr := <-errChan:
@@ -612,33 +511,4 @@ func (d *Docker) handleClose(environment *pufferpanel.Environment, client *clien
 	if callback != nil {
 		callback(exitCode)
 	}
-}
-
-func calculateCPUPercent(v *container.StatsResponse) float64 {
-	//this math is from https://docs.docker.com/reference/api/engine/version/v1.45/#tag/Container/operation/ContainerStats
-	cpuDelta := v.CPUStats.CPUUsage.TotalUsage - v.PreCPUStats.CPUUsage.TotalUsage
-	systemCpuDelta := v.CPUStats.SystemUsage - v.PreCPUStats.SystemUsage
-	numCpus := int(v.CPUStats.OnlineCPUs)
-	if numCpus == 0 {
-		numCpus = len(v.CPUStats.CPUUsage.PercpuUsage)
-	}
-	return (float64(cpuDelta) / float64(systemCpuDelta)) * float64(numCpus) * 100.0
-}
-
-func calculateMemoryPercent(v *container.StatsResponse) float64 {
-	return float64(v.MemoryStats.Usage)
-}
-
-func convertToBind(source string) string {
-	fullPath, err := filepath.Abs(source)
-	if err != nil {
-		panic(err)
-	}
-
-	fullPath = strings.ReplaceAll(fullPath, "\\", "/")
-	fullPath = strings.ReplaceAll(fullPath, ":", "")
-	//lowercase first character as that's the drive
-	fullPath = strings.ToLower(string(fullPath[0])) + fullPath[1:]
-	fullPath = "/" + fullPath
-	return fullPath
 }

@@ -1,5 +1,5 @@
 {
-    "chat.disableAIFeatures": true,
+    "chat.disableAIFeatures": false,
     "go.diagnostic.vulncheck": "Off",
     "go.disableConcurrentTests": true,
     "go.lintOnSave": "file",
@@ -11,9 +11,6 @@
     "go.showWelcome": false,
     "go.survey.prompt": false,
     "go.testTimeout": "10m",
-    "go.testEnvVars": {
-        "GOTOOLCHAIN": "auto"
-    },
     "chat.agent.enabled": false,
     "telemetry.feedback.enabled": false,
     "telemetry.editStats.enabled": false

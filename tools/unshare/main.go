@@ -10,7 +10,7 @@ import (
 
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/servers/tty"
+	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
@@ -114,14 +114,13 @@ var cmdList = []string{
 }
 
 func unshareImplementation(dir, cmd string, args ...string) {
-	factory := tty.EnvironmentFactory{}
-
 	env := pufferpanel.Environment{
-		RootDirectory: dir, Wait: &sync.Mutex{}, ConsoleBuffer: pufferpanel.CreateCache(), ConsoleTracker: pufferpanel.CreateTracker(),
+		Wait: &sync.Mutex{}, ConsoleBuffer: pufferpanel.CreateCache(), ConsoleTracker: pufferpanel.CreateTracker(),
 		StatsTracker: pufferpanel.CreateTracker(), StatusTracker: pufferpanel.CreateTracker(),
 		Wrapper: os.Stdout,
+		Type:    "host",
 	}
-	env.Implementation = factory.Create()
+	env.Implementation = servers.CreateTTYEnvironment()
 
 	c := cmd
 	if len(args) > 0 {

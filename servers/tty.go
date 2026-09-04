@@ -1,4 +1,4 @@
-package tty
+package servers
 
 import (
 	"errors"
@@ -35,8 +35,13 @@ type tty struct {
 	Mounts         []string `json:"mounts"`
 }
 
+func CreateTTYEnvironment() pufferpanel.EnvironmentImpl {
+	return &tty{}
+}
+
 func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) (err error) {
-	pr, err := t.createCmd(environment.GetRootDirectory(), steps.WorkingDirectory)
+	server := environment.Server
+	pr, err := t.createCmd(server.GetFileServer().Prefix(), steps.WorkingDirectory)
 	if err != nil {
 		return err
 	}
@@ -53,7 +58,7 @@ func (t *tty) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps puffe
 		}
 		envVars[key] = value
 	}
-	envVars["HOME"] = environment.GetRootDirectory()
+	envVars["HOME"] = server.GetFileServer().Prefix()
 	envVars["TERM"] = "xterm-256color"
 	envVars["PUFFERPANEL_SERVER_COMMAND"] = steps.Command
 	for k, v := range steps.Environment {
@@ -121,7 +126,7 @@ func (t *tty) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.S
 			Memory: 0,
 		}
 
-		if environment.Server.Stats.Type == "jcmd" {
+		if environment.Server.Get().Stats.Type == "jcmd" {
 			stats.Jvm = &utils.JvmStats{}
 		}
 
@@ -149,7 +154,7 @@ func (t *tty) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.S
 		Memory: cast.ToFloat64(memMap.RSS),
 	}
 
-	if !t.disableSpecialStats && environment.Server.Stats.Type == "jcmd" {
+	if !t.disableSpecialStats && environment.Server.Get().Stats.Type == "jcmd" {
 		var socket *net.UnixConn
 		if socket, err = t.initiateJCMD(); err == nil && socket != nil {
 			for _, s := range jcmdCommand {

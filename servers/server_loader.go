@@ -3,13 +3,14 @@ package servers
 import (
 	"encoding/json"
 	"errors"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 var (
@@ -17,11 +18,7 @@ var (
 )
 
 func LoadFromFolder() {
-	err := os.Mkdir(config.ServersFolder.Value(), 0755)
-	if err != nil && !os.IsExist(err) {
-		logging.Error.Fatalf("Error creating server data folder: %s", err)
-	}
-	programFiles, err := os.ReadDir(config.ServersFolder.Value())
+	programFiles, err := files.ServerFS.ReadDir("")
 	if err != nil {
 		logging.Error.Fatalf("Error reading from server data folder: %s", err)
 	}
@@ -49,7 +46,7 @@ func GetAll() []*Server {
 
 func Load(id string) (program *Server, err error) {
 	var data []byte
-	data, err = os.ReadFile(filepath.Join(config.ServersFolder.Value(), id+".json"))
+	data, err = files.ServerFS.ReadFile(id + ".json")
 	if len(data) == 0 || err != nil {
 		return
 	}
@@ -92,7 +89,7 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 		}
 	}
 
-	data.RunningEnvironment, err = CreateEnvironment(environmentType, config.ServersFolder.Value(), config.BackupsFolder.Value(), data.Server)
+	data.RunningEnvironment, err = CreateEnvironment(environmentType, config.ServersFolder.Value(), config.BackupsFolder.Value(), data)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +103,7 @@ func LoadFromData(id string, source []byte) (*Server, error) {
 		}
 	}
 
-	fs, err := files.NewFileServer(data.RunningEnvironment.GetRootDirectory(), data.RunningEnvironment.GetUid(), data.RunningEnvironment.GetGid())
+	fs, err := files.NewFileServer(data.GetRootDirectory(), data.RunningEnvironment.GetUid(), data.RunningEnvironment.GetGid(), false)
 	if err != nil {
 		return nil, err
 	}

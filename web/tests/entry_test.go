@@ -20,6 +20,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/database"
+	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/sftp"
 	"github.com/pufferpanel/pufferpanel/v3/web"
@@ -44,15 +45,22 @@ func TestMain(m *testing.M) {
 	_ = os.RemoveAll("cache")
 	_ = os.RemoveAll("servers")
 	_ = os.RemoveAll("binaries")
+	_ = os.RemoveAll("backups")
 
 	_ = os.Mkdir("servers", 0755)
 	_ = os.Mkdir("cache", 0755)
 	_ = os.Mkdir("binaries", 0755)
+	_ = os.Mkdir("backups", 0755)
 
 	newPath := os.Getenv("PATH")
 	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
 	if !strings.Contains(newPath, fullPath) {
 		_ = os.Setenv("PATH", newPath+":"+fullPath)
+	}
+
+	err = files.InitSharedFileSystems()
+	if err != nil {
+		panic(err)
 	}
 
 	//open db connection
@@ -118,6 +126,7 @@ func TestMain(m *testing.M) {
 	_ = os.RemoveAll("cache")
 	_ = os.RemoveAll("servers")
 	_ = os.RemoveAll("binaries")
+	_ = os.RemoveAll("backups")
 
 	os.Exit(exitCode)
 }

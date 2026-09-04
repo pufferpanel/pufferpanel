@@ -4,6 +4,9 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/files"
@@ -11,8 +14,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/curseforge"
 	"github.com/pufferpanel/pufferpanel/v3/operations/resolveforgeversion"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
-	"os"
-	"path/filepath"
 )
 
 var tests = []UnitTest{
@@ -113,7 +114,7 @@ func main() {
 		server := servers.CreateProgram()
 		server.Identifier = serverId
 
-		env, err := servers.CreateEnvironment("host", serverId, "", server.Server)
+		env, err := servers.CreateEnvironment("host", serverId, "", server)
 		if err != nil {
 			results[unitTest] = err
 			continue
@@ -139,7 +140,7 @@ func main() {
 			continue
 		}
 		var fi os.FileInfo
-		if fi, err = os.Lstat(filepath.Join(server.RunningEnvironment.GetRootDirectory(), "server.jar")); err == nil && !fi.IsDir() {
+		if fi, err = os.Lstat(filepath.Join(server.GetRootDirectory(), "server.jar")); err == nil && !fi.IsDir() {
 			results[unitTest] = nil
 		} else {
 			op := resolveforgeversion.ResolveForgeVersion{OutputVariable: "result"}

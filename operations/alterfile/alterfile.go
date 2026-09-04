@@ -38,7 +38,7 @@ func (c AlterFile) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 	}
 
 	var file *os.File
-	file, err = fs.OpenFile(c.TargetFile, os.O_RDWR, 0755)
+	file, err = fs.OpenFile(c.TargetFile, os.O_RDWR, 0644)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}

@@ -171,7 +171,7 @@ func downloadMetadata(env *pufferpanel.Environment, fs files.FileServer) error {
 		return err
 	}
 
-	err = pufferpanel.HttpExtract(SteamMetadataServerLink+metadataName, filepath.Join(env.GetRootDirectory(), ".steam"), archiver.DefaultZip)
+	err = pufferpanel.HttpExtract(SteamMetadataServerLink+metadataName, fs, ".steam", archiver.DefaultZip)
 	if err != nil {
 		return err
 	}

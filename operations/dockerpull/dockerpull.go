@@ -2,8 +2,8 @@ package dockerpull
 
 import (
 	"context"
+
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/servers/docker"
 )
 
 type DockerPull struct {
@@ -12,12 +12,6 @@ type DockerPull struct {
 
 func (d DockerPull) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
 	env := args.Environment
-	dockerEnv, ok := env.Implementation.(*docker.Docker)
-
-	if !ok {
-		return pufferpanel.OperationResult{Error: pufferpanel.ErrEnvironmentNotSupported}
-	}
-
-	err := dockerEnv.PullImage(env, context.Background(), d.ImageName, true)
+	err := pufferpanel.PullDockerImage(env, context.Background(), d.ImageName, true)
 	return pufferpanel.OperationResult{Error: err}
 }

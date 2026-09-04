@@ -1,24 +1,24 @@
 package files
 
 import (
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"io"
-	"os"
 	"path/filepath"
+
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
-func CopyFile(src, dest string) error {
-	source, err := os.Open(src)
+func CopyFile(fs FileServer, src, dest string) error {
+	source, err := fs.Open(src)
 	if err != nil {
 		return err
 	}
 	defer utils.Close(source)
 
-	err = os.MkdirAll(filepath.Dir(dest), 0755)
+	err = fs.MkdirAll(filepath.Dir(dest), 0755)
 	if err != nil {
 		return err
 	}
-	destination, err := os.Create(dest)
+	destination, err := fs.Create(dest)
 	if err != nil {
 		return err
 	}
@@ -27,8 +27,8 @@ func CopyFile(src, dest string) error {
 	return err
 }
 
-func WriteFile(src io.Reader, dest string) error {
-	destination, err := os.Create(dest)
+func WriteFile(fs FileServer, src io.Reader, dest string) error {
+	destination, err := fs.Create(dest)
 	if err != nil {
 		return err
 	}

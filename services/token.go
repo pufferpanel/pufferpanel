@@ -6,11 +6,13 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/base64"
+	"sync"
+	"time"
+
 	"github.com/MicahParks/jwkset"
 	"github.com/MicahParks/keyfunc/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/pufferpanel/pufferpanel/v3/config"
-	"sync"
 )
 
 type TokenService interface {
@@ -106,7 +108,11 @@ func NewTokenService() (TokenService, error) {
 func (ts *tokenService) GenerateRequest() (string, error) {
 	token := jwt.New(jwt.SigningMethodEdDSA)
 	token.Header[jwkset.HeaderKID] = keyId
-	token.Claims = jwt.MapClaims{}
+	t := time.Now()
+	token.Claims = jwt.MapClaims{
+		"iss": t.Unix(),
+		"exp": t.Add(5 * time.Second).Unix(),
+	}
 
 	signed, err := token.SignedString(privateKey)
 	if err != nil {
@@ -116,7 +122,7 @@ func (ts *tokenService) GenerateRequest() (string, error) {
 }
 
 func (ts *tokenService) ValidateRequest(token string) error {
-	parsed, err := jwt.Parse(token, ts.GetKeyFunc())
+	parsed, err := jwt.Parse(token, ts.GetKeyFunc(), jwt.WithExpirationRequired())
 	if err != nil {
 		return err
 	}

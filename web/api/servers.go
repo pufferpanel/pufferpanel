@@ -534,8 +534,6 @@ func editServer(c *gin.Context) {
 		c.Header("Content-Type", "application/json")
 		c.Status(nodeResponse.StatusCode)
 		_, _ = c.Writer.Write(resData)
-		e := c.Error(errors.New("unexpected response from daemon"))
-		response.HandleError(c, e, http.StatusInternalServerError)
 		return
 	}
 
@@ -1312,12 +1310,11 @@ func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *mode
 		pufferpanel.Engine.Handler().ServeHTTP(c.Writer, c.Request)
 	} else {
 		callResponse, err := ns.CallNode(node, c.Request.Method, path, c.Request.Body, c.Request.Header)
+		defer utils.CloseResponse(callResponse)
 
-		if response.HandleError(c, err, http.StatusInternalServerError) {
+		if (callResponse == nil || callResponse.StatusCode == 0) && response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
-
-		defer utils.CloseResponse(callResponse)
 
 		newHeaders := cleanHttpReturnErrors(callResponse.Header)
 

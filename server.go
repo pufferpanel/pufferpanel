@@ -89,6 +89,8 @@ func (s *Server) DataToMap() map[string]interface{} {
 }
 
 type DaemonServer interface {
+	Get() Server
+
 	GetFileServer() files.FileServer
 
 	Extract(source, destination string) error
@@ -96,4 +98,6 @@ type DaemonServer interface {
 	ArchiveItems(files []string, destination string) error
 
 	DataToMap() map[string]interface{}
+
+	Id() string
 }

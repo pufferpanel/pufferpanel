@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/operations/forgedl"
@@ -130,12 +129,12 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 
 	singleRoot, _ := files.DetermineIfSingleRoot(serverZipPath)
 
-	err = files.Extract(nil, serverZipPath, env.GetRootDirectory(), "*", singleRoot, nil)
+	fs := args.Server.GetFileServer()
+
+	err = files.Extract(files.CacheFS, serverZipPath, fs, "/", "*", singleRoot, nil)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}
-
-	fs := args.Server.GetFileServer()
 
 	//modpack now downloaded and extracted
 	//worse case, this is all we could do...
@@ -219,10 +218,18 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 					return pufferpanel.OperationResult{Error: err}
 				}
 				//copy to server
-				err = files.WriteFile(dl, filepath.Join(env.GetRootDirectory(), installerJar))
+				target, err := fs.Create(installerJar)
 				if err != nil {
 					return pufferpanel.OperationResult{Error: err}
 				}
+				defer utils.Close(target)
+				_, err = io.Copy(target, dl)
+				if err != nil {
+					return pufferpanel.OperationResult{Error: err}
+				}
+				utils.Close(dl)
+				utils.Close(target)
+
 				jarFile = installerJar
 			}
 
@@ -236,15 +243,15 @@ func (c CurseForge) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationR
 			runJarFile := "server.jar"
 			if _, err = fs.Stat(runJarFile); os.IsNotExist(err) {
 				env.DisplayToConsole(true, "Grabbing ServerStarter")
-				var cachePath = filepath.Join(config.CacheFolder.Value(), "github.com", "neoforgedl", "serverstarter", NeoForgeServerStarterVersion, "server.jar")
-				if _, err = os.Stat(cachePath); os.IsNotExist(err) {
+				var cachePath = filepath.Join("github.com", "neoforgedl", "serverstarter", NeoForgeServerStarterVersion, "server.jar")
+				if _, err = files.CacheFS.Stat(cachePath); os.IsNotExist(err) {
 					env.DisplayToConsole(true, "Downloading "+NeoForgeServerStarter)
 					err = pufferpanel.DownloadFileToCache(NeoForgeServerStarter, cachePath)
 					if err != nil {
 						return pufferpanel.OperationResult{Error: err}
 					}
 				}
-				err = files.CopyFile(cachePath, runJarFile)
+				err = fs.Copy(files.CacheFS, cachePath, runJarFile)
 				if err != nil {
 					return pufferpanel.OperationResult{Error: err}
 				}
@@ -391,7 +398,7 @@ func installFabric(env *pufferpanel.Environment, fs files.FileServer, data map[s
 }
 
 func downloadFile(url string, fs files.FileServer, target string) error {
-	file, err := fs.OpenFile(target, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0755)
+	file, err := fs.OpenFile(target, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}

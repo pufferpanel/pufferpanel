@@ -14,9 +14,9 @@ func (d Download) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRes
 	env := args.Environment
 
 	for _, file := range d.Files {
-		logging.Info.Printf("Download file from %s to %s", file, env.GetRootDirectory())
+		logging.Info.Printf("Download file from %s", file)
 		env.DisplayToConsole(true, "Downloading file %s\n", file)
-		_, err := grab.Get(env.GetRootDirectory(), file)
+		_, err := grab.Get(args.Server.GetFileServer().Prefix(), file)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}

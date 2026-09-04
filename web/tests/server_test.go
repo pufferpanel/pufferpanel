@@ -83,6 +83,7 @@ func TestServers(t *testing.T) {
 				data = strings.Replace(data, "{{{INSERTNODEID}}}", fmt.Sprintf("%d", test.Node.ID), 1)
 				response := CallAPIRaw("PUT", "/api/servers/"+ServerId, []byte(data), session)
 				if !assert.Equal(t, http.StatusOK, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
@@ -112,6 +113,7 @@ func TestServers(t *testing.T) {
 			t.Run("EnsureServerListContains1", func(t *testing.T) {
 				response := CallAPI("GET", "/api/servers", nil, session)
 				if !assert.Equal(t, http.StatusOK, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
@@ -143,6 +145,7 @@ func TestServers(t *testing.T) {
 				}
 				response := CallAPI("GET", "/api/servers", nil, sess)
 				if !assert.Equal(t, http.StatusOK, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
@@ -160,6 +163,7 @@ func TestServers(t *testing.T) {
 			t.Run("AdminUpdate", func(t *testing.T) {
 				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/definition", EditServerData, session)
 				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
@@ -192,6 +196,7 @@ func TestServers(t *testing.T) {
 			t.Run("AdminDataUpdate", func(t *testing.T) {
 				response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/data", NewVariableChanges, session)
 				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
@@ -253,7 +258,7 @@ func TestServers(t *testing.T) {
 						fmt.Printf("Unexpected message type [%d]: %s\n", messageType, data)
 						continue
 					}
-					var msg map[string]interface{}
+					var msg map[string]any
 					err = json.NewDecoder(bytes.NewReader(data)).Decode(&msg)
 					if err != nil {
 						fmt.Printf("Failed to decode message: %s\n", err.Error())
@@ -292,6 +297,7 @@ func TestServers(t *testing.T) {
 					var data = []byte(`{"scopes": ["server.view", "server.data.view"]}`)
 					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoLoginUser.Email, data, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 				})
@@ -299,6 +305,7 @@ func TestServers(t *testing.T) {
 				t.Run("GetAll", func(t *testing.T) {
 					response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
 					if !assert.Equal(t, http.StatusOK, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					var data []*models.UserPermissionsView
@@ -332,11 +339,13 @@ func TestServers(t *testing.T) {
 					var data = []byte(`{"scopes": ["server.view", "server.data.view", "server.start", "server.users.view", "server.users.edit"]}`)
 					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoLoginUser.Email, data, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
 					response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
 					if !assert.Equal(t, http.StatusOK, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					var perms []*models.UserPermissionsView
@@ -376,11 +385,13 @@ func TestServers(t *testing.T) {
 					var data = []byte(`{"scopes": ["server.view", "server.start", "server.stop"]}`)
 					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/user/"+loginNoAdminWithServersUser.Email, data, testSession)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
 					response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/user", nil, session)
 					if !assert.Equal(t, http.StatusOK, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					var perms []*models.UserPermissionsView
@@ -416,11 +427,13 @@ func TestServers(t *testing.T) {
 				var variables = []byte(`{"motd": "` + motd + `" }`)
 				response := CallAPIRaw("POST", "/api/servers/"+ServerId+"/data", variables, session)
 				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
 				response = CallAPI("GET", "/api/servers/"+ServerId+"/data", variables, session)
 				if !assert.Equal(t, http.StatusOK, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
@@ -440,7 +453,9 @@ func TestServers(t *testing.T) {
 
 			t.Run("GetStats", func(t *testing.T) {
 				response := CallAPI("GET", "/api/servers/"+ServerId+"/stats", nil, session)
-				assert.Equal(t, http.StatusOK, response.Code)
+				if !assert.Equal(t, http.StatusOK, response.Code) {
+					t.Logf("%v", response.Body)
+				}
 			})
 
 			t.Run("GetStatsSecondUserFail", func(t *testing.T) {
@@ -449,7 +464,9 @@ func TestServers(t *testing.T) {
 					return
 				}
 				response := CallAPI("GET", "/api/servers/"+ServerId+"/stats", nil, sess)
-				assert.Equal(t, http.StatusForbidden, response.Code)
+				if !assert.Equal(t, http.StatusForbidden, response.Code) {
+					t.Logf("%v", response.Body)
+				}
 			})
 
 			t.Run("SendStatsForServers", func(t *testing.T) {
@@ -458,12 +475,15 @@ func TestServers(t *testing.T) {
 
 			t.Run("GetEmptyFiles", func(t *testing.T) {
 				response := CallAPI("GET", "/api/servers/"+ServerId+"/file/", nil, session)
-				assert.Equal(t, http.StatusOK, response.Code)
+				if !assert.Equal(t, http.StatusOK, response.Code) {
+					t.Logf("%v", response.Body)
+				}
 			})
 
 			t.Run("InstallServer", func(t *testing.T) {
 				response := CallAPI("POST", "/api/servers/"+ServerId+"/install", nil, session)
 				if !assert.Equal(t, http.StatusAccepted, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
@@ -471,7 +491,10 @@ func TestServers(t *testing.T) {
 
 				//we expect it to take more than 100ms, so ensure there is an install occurring
 				response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
-				assert.Equal(t, http.StatusOK, response.Code)
+				if !assert.Equal(t, http.StatusOK, response.Code) {
+					t.Logf("%v", response.Body)
+					return
+				}
 				var msg pufferpanel.ServerRunning
 				err := json.NewDecoder(response.Body).Decode(&msg)
 				if !assert.NoError(t, err) {
@@ -487,7 +510,11 @@ func TestServers(t *testing.T) {
 				for counter < timeout {
 					time.Sleep(time.Second)
 					response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
-					assert.Equal(t, http.StatusOK, response.Code)
+					if !assert.Equal(t, http.StatusOK, response.Code) {
+						t.Logf("%v", response.Body)
+						counter = timeout
+						break
+					}
 					err = json.NewDecoder(response.Body).Decode(&msg)
 					if !assert.NoError(t, err) {
 						return
@@ -507,13 +534,16 @@ func TestServers(t *testing.T) {
 			t.Run("RunServer", func(t *testing.T) {
 				var startServer = func(t *testing.T) {
 					response := CallAPI("POST", "/api/servers/"+ServerId+"/start?wait=true", nil, session)
-					assert.Equal(t, http.StatusNoContent, response.Code)
+					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
+					}
 
 					time.Sleep(5 * time.Second)
 				}
 				var stopServer = func(t *testing.T) {
 					response := CallAPI("POST", "/api/servers/"+ServerId+"/stop", nil, session)
 					if !assert.Equal(t, http.StatusAccepted, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
@@ -523,10 +553,14 @@ func TestServers(t *testing.T) {
 					for counter < timeout {
 						time.Sleep(time.Second)
 						response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
-						assert.Equal(t, http.StatusOK, response.Code)
+						if !assert.Equal(t, http.StatusOK, response.Code) {
+							t.Logf("%v", response.Body)
+							counter = timeout
+						}
 						var msg pufferpanel.ServerRunning
 						err := json.NewDecoder(response.Body).Decode(&msg)
 						if !assert.NoError(t, err) {
+							t.Logf("%v", err)
 							return
 						}
 
@@ -582,6 +616,7 @@ func TestServers(t *testing.T) {
 				t.Run("Archive", func(t *testing.T) {
 					response := CallAPI("POST", "/api/servers/"+ServerId+"/archive/archive.zip", []string{"testarchive"}, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					_ = os.RemoveAll(dir)
@@ -590,6 +625,7 @@ func TestServers(t *testing.T) {
 				t.Run("Extract", func(t *testing.T) {
 					response := CallAPI("POST", "/api/servers/"+ServerId+"/extract/archive.zip", nil, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					if !assert.FileExists(t, fileLocation) {
@@ -623,6 +659,7 @@ func TestServers(t *testing.T) {
 				}
 				response := CallAPI("POST", "/api/servers/"+ServerId+"/archive/archive.zip", []string{r}, session)
 				if !assert.Equal(t, http.StatusInternalServerError, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
@@ -666,6 +703,7 @@ func TestServers(t *testing.T) {
 				}
 				response := CallAPI("POST", "/api/servers/"+ServerId+"/extract/"+r, []string{r}, session)
 				if !assert.Equal(t, http.StatusInternalServerError, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 				if !assert.NoFileExists(t, filepath.Join(serverDir, filepath.Base(tmpFile.Name()))) {
@@ -749,6 +787,7 @@ func TestServers(t *testing.T) {
 				t.Run("Create", func(t *testing.T) {
 					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/tasks/"+taskId, TaskDefinition, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					assert.FileExists(t, filepath.Join(config.ServersFolder.Value(), ServerId+".cron"))
@@ -757,12 +796,14 @@ func TestServers(t *testing.T) {
 				t.Run("GetAll", func(t *testing.T) {
 					response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks", nil, session)
 					if !assert.Equal(t, http.StatusOK, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
 					var res pufferpanel.ServerTasks
 					err := json.NewDecoder(response.Body).Decode(&res)
 					if !assert.NoError(t, err) {
+						t.Logf("%v", err)
 						return
 					}
 					if !assert.NotEmpty(t, res.Tasks) {
@@ -773,12 +814,14 @@ func TestServers(t *testing.T) {
 				t.Run("Get", func(t *testing.T) {
 					response := CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks/"+taskId, nil, session)
 					if !assert.Equal(t, http.StatusOK, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
 					var res pufferpanel.ServerTask
 					err := json.NewDecoder(response.Body).Decode(&res)
 					if !assert.NoError(t, err) {
+						t.Logf("%v", err)
 						return
 					}
 					assert.NotEmpty(t, res.Operations)
@@ -787,12 +830,14 @@ func TestServers(t *testing.T) {
 				t.Run("Run", func(t *testing.T) {
 					eulaFile := filepath.Join(serverDir, "eula.txt")
 					err := os.Remove(eulaFile)
-					if !assert.NoError(t, err) {
+					if err != nil && !assert.ErrorIs(t, err, os.ErrNotExist) {
+						t.Logf("%v", err)
 						return
 					}
 
 					response := CallAPIRaw("POST", "/api/servers/"+ServerId+"/tasks/"+taskId+"/run", nil, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
@@ -804,6 +849,7 @@ func TestServers(t *testing.T) {
 				t.Run("Edit", func(t *testing.T) {
 					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/tasks/"+taskId, TaskDefinition, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					if !assert.Len(t, servers.GetFromCache(ServerId).Scheduler.GetTasks(), 1) {
@@ -818,17 +864,20 @@ func TestServers(t *testing.T) {
 				t.Run("Delete", func(t *testing.T) {
 					response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/tasks/"+taskId, nil, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
 					response = CallAPIRaw("GET", "/api/servers/"+ServerId+"/tasks", nil, session)
 					if !assert.Equal(t, http.StatusOK, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
 					var res pufferpanel.ServerTasks
 					err := json.NewDecoder(response.Body).Decode(&res)
 					if !assert.NoError(t, err) {
+						t.Logf("%v", err)
 						return
 					}
 					assert.Empty(t, res.Tasks)
@@ -843,6 +892,7 @@ func TestServers(t *testing.T) {
 				t.Run("CreateFolder", func(t *testing.T) {
 					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/file/"+folderName+"?folder=true", nil, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					if !assert.DirExists(t, filepath.Join(serverDir, folderName)) {
@@ -853,6 +903,7 @@ func TestServers(t *testing.T) {
 				t.Run("DeleteFolder", func(t *testing.T) {
 					response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+folderName, nil, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					if !assert.NoDirExists(t, filepath.Join(serverDir, folderName)) {
@@ -863,6 +914,7 @@ func TestServers(t *testing.T) {
 				t.Run("CreateFile", func(t *testing.T) {
 					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/file/"+fileName, fileContents, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 					if !assert.FileExists(t, filepath.Join(serverDir, fileName)) {
@@ -873,6 +925,7 @@ func TestServers(t *testing.T) {
 				t.Run("DeleteFile", func(t *testing.T) {
 					response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+fileName, nil, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
@@ -895,6 +948,7 @@ func TestServers(t *testing.T) {
 
 					response := CallAPIRaw("DELETE", "/api/servers/"+ServerId+"/file/"+u, nil, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
+						t.Logf("%v", response.Body)
 						return
 					}
 
@@ -973,7 +1027,7 @@ func TestServers(t *testing.T) {
 
 					response := CallAPIRaw("PUT", "/api/servers/"+ServerId+"/file/exploit.tar.gz", malTar.Bytes(), session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
-						fmt.Println(response.Body.String())
+						t.Logf("%v", response.Body)
 						return
 					}
 					if !assert.FileExists(t, filepath.Join(serverDir, "exploit.tar.gz")) {
@@ -982,16 +1036,16 @@ func TestServers(t *testing.T) {
 
 					response = CallAPI("POST", "/api/servers/"+ServerId+"/extract/exploit.tar.gz?destination="+backupDir, nil, session)
 					if !assert.Equal(t, http.StatusNoContent, response.Code) {
-						fmt.Println(response.Body.String())
+						t.Logf("%v", response.Body)
 						return
 					}
 					fi, err := os.Lstat(fullPath)
 					if !assert.ErrorIs(t, err, os.ErrNotExist) {
-						fmt.Printf("File: %s (%s)\n", fi.Name(), fi.Mode())
+						t.Logf("File: %s (%s)\n", fi.Name(), fi.Mode())
 						if fi.Mode()&os.ModeSymlink != 0 {
 							var p string
 							p, err = os.Readlink(fullPath)
-							fmt.Printf("Links to: %s\n", p)
+							t.Logf("Links to: %s\n", p)
 						}
 					}
 				})
@@ -1004,6 +1058,7 @@ func TestServers(t *testing.T) {
 			t.Run("Delete", func(t *testing.T) {
 				response := CallAPIRaw("DELETE", "/api/servers/"+ServerId, nil, session)
 				if !assert.Equal(t, http.StatusNoContent, response.Code) {
+					t.Logf("%v", response.Body)
 					return
 				}
 
@@ -1039,11 +1094,13 @@ func TestServers_Restarts(t *testing.T) {
 	data = strings.Replace(data, "{{{INSERTNODEID}}}", fmt.Sprintf("%d", models.LocalNode.ID), 1)
 	response := CallAPIRaw("PUT", "/api/servers/"+ServerId, []byte(data), session)
 	if !assert.Equal(t, http.StatusOK, response.Code) {
+		t.Logf("%v", response.Body)
 		return
 	}
 
 	response = CallAPI("POST", "/api/servers/"+ServerId+"/install", nil, session)
 	if !assert.Equal(t, http.StatusAccepted, response.Code) {
+		t.Logf("%v", response.Body)
 		return
 	}
 
@@ -1054,7 +1111,11 @@ func TestServers_Restarts(t *testing.T) {
 	for counter < timeout {
 		time.Sleep(time.Second)
 		response = CallAPI("GET", "/api/servers/"+ServerId+"/status", nil, session)
-		assert.Equal(t, http.StatusOK, response.Code)
+		if !assert.Equal(t, http.StatusOK, response.Code) {
+			t.Logf("%v", response.Body)
+			counter = timeout
+			return
+		}
 		err = json.NewDecoder(response.Body).Decode(&msg)
 		if !assert.NoError(t, err) {
 			return
@@ -1128,6 +1189,7 @@ func TestServers_Restarts(t *testing.T) {
 
 	response = CallAPI("POST", "/api/servers/"+ServerId+"/start", nil, session)
 	if !assert.Equal(t, http.StatusAccepted, response.Code) {
+		t.Logf("%v", response)
 		return
 	}
 
@@ -1143,6 +1205,8 @@ func TestServers_Restarts(t *testing.T) {
 		//t.Log("Restarting")
 		response = CallAPI("POST", "/api/servers/"+ServerId+"/restart", nil, session)
 		if !assert.Equal(t, http.StatusAccepted, response.Code) {
+			t.Logf("%v", response.Body)
+			counter = 100
 			return
 		}
 
@@ -1160,12 +1224,14 @@ func TestServers_Restarts(t *testing.T) {
 
 	response = CallAPIRaw("POST", "/api/servers/"+ServerId+"/stop", nil, session)
 	if !assert.Equal(t, http.StatusAccepted, response.Code) {
+		t.Logf("%v", response.Body)
 		return
 	}
 	time.Sleep(30 * time.Second)
 
 	response = CallAPIRaw("DELETE", "/api/servers/"+ServerId, nil, session)
 	if !assert.Equal(t, http.StatusNoContent, response.Code) {
+		t.Logf("%v", response.Body)
 		return
 	}
 }

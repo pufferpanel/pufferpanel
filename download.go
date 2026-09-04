@@ -3,17 +3,18 @@ package pufferpanel
 import (
 	"crypto"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/pufferpanel/pufferpanel/v3/files"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
-func DownloadFile(url, fileName string, env *Environment) error {
-	target, err := os.Create(filepath.Join(env.GetRootDirectory(), fileName))
+func DownloadFile(url string, fs files.FileServer, fileName string, env *Environment) error {
+	target, err := fs.Create(fileName)
 	defer utils.Close(target)
 	if err != nil {
 		return err
@@ -33,12 +34,12 @@ func DownloadFile(url, fileName string, env *Environment) error {
 
 func DownloadFileToCache(url, fileName string) error {
 	parent := filepath.Dir(fileName)
-	err := os.MkdirAll(parent, 0755)
+	err := files.CacheFS.MkdirAll(parent, 0755)
 	if err != nil && !os.IsExist(err) {
 		return err
 	}
 
-	target, err := os.Create(fileName)
+	target, err := files.CacheFS.Create(fileName)
 	defer utils.Close(target)
 	if err != nil {
 		return err
@@ -72,12 +73,12 @@ func cacheFile(downloadUrl, localPath string) (io.ReadCloser, error) {
 		return nil, err
 	}
 	parent := filepath.Dir(localPath)
-	err = os.MkdirAll(parent, 0755)
+	err = files.CacheFS.MkdirAll(parent, 0755)
 	if err != nil && !os.IsExist(err) {
 		logging.Info.Printf("Failed directories in cache: %s", err)
 		return dl, nil
 	}
-	f, err := os.Create(localPath)
+	f, err := files.CacheFS.Create(localPath)
 	if err != nil {
 		utils.Close(f)
 		logging.Info.Printf("Failed creating file in cache: %s", err)
@@ -111,14 +112,14 @@ func Download(downloadUrl, hash string, algorithm crypto.Hash, cache bool, env *
 		return downloadFile(downloadUrl)
 	} else {
 		// caching allowed
-		localPath := filepath.Join(config.CacheFolder.Value(), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
+		localPath := filepath.Join(strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
 
 		if os.PathSeparator != '/' {
 			localPath = strings.Replace(localPath, "/", string(os.PathSeparator), -1)
 		}
 
 		// try to open existing cached file
-		f, err := os.Open(localPath)
+		f, err := files.CacheFS.Open(localPath)
 		if os.IsNotExist(err) {
 			// cache miss, need to download
 			return cacheFile(downloadUrl, localPath)
@@ -127,6 +128,10 @@ func Download(downloadUrl, hash string, algorithm crypto.Hash, cache bool, env *
 			return downloadFile(downloadUrl)
 		}
 
+		defer utils.Close(f)
+
+		toReturn, err := files.CacheFS.Open(localPath)
+
 		h := algorithm.New()
 		if _, err := io.Copy(h, f); err != nil {
 			utils.Close(f)
@@ -134,16 +139,12 @@ func Download(downloadUrl, hash string, algorithm crypto.Hash, cache bool, env *
 			return downloadFile(downloadUrl)
 		}
 		actualHash := fmt.Sprintf("%x", h.Sum(nil))
-		_, err = f.Seek(0, io.SeekStart)
-		if err != nil {
-			return nil, err
-		}
 		if hash == actualHash {
 			logging.Info.Printf("Using cached copy of file: %s\n", downloadUrl)
-			return f, nil
+			return toReturn, nil
 		} else {
 			logging.Info.Printf("Cache expected %s but was actually %s, downloading new version and caching to %s", hash, actualHash, localPath)
-			utils.Close(f)
+			utils.Close(toReturn)
 			return cacheFile(downloadUrl, localPath)
 		}
 	}
@@ -156,7 +157,7 @@ func DownloadHash(hashUrl string, algorithm crypto.Hash) (string, error) {
 	if err != nil {
 		return "", err
 	} else {
-		data := make([]byte, algorithm.Size() * 2)
+		data := make([]byte, algorithm.Size()*2)
 		_, err := response.Body.Read(data)
 		if err != nil {
 			return "", err

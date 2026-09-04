@@ -2,6 +2,7 @@ package files
 
 import (
 	"errors"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -34,6 +35,13 @@ type FileServer interface {
 	Lstat(name string) (fs.FileInfo, error)
 	Chmod(path string, mode os.FileMode) error
 
+	Create(name string) (*os.File, error)
+	Copy(sourceFS FileServer, source, target string) error
+
+	WriteFile(name string, content []byte, mode os.FileMode) error
+	CreateTemp(dir, pattern string) (*os.File, error)
+	ReadFile(name string) ([]byte, error)
+
 	Close() error
 }
 
@@ -41,17 +49,19 @@ type fileServer struct {
 	dir  string
 	root *os.File
 
-	uid int
-	gid int
+	symlinkSupport bool
+	uid            int
+	gid            int
 }
 
-func NewFileServer(prefix string, uid, gid int) (FileServer, error) {
+func NewFileServer(prefix string, uid, gid int, symlinkSupport bool) (FileServer, error) {
 	f := &fileServer{dir: prefix, uid: uid, gid: gid}
 	var err error
 	f.root, err = f.resolveRootFd()
 	if err != nil {
 		return nil, err
 	}
+	f.symlinkSupport = symlinkSupport
 	return f, nil
 }
 
@@ -73,22 +83,11 @@ func (sfp *fileServer) Stat(name string) (fs.FileInfo, error) {
 }
 
 func (sfp *fileServer) Symlink(oldpath, newpath string) error {
-	//TODO: Symlinks do not work.. forget this for now
-	//return ErrSymlinkNotSupported
-
-	//oldpath is file name
-	//newpath is the target to go to
-
-	result := filepath.Join(sfp.root.Name(), filepath.Dir(oldpath), newpath)
-	if !strings.HasPrefix(result, sfp.root.Name()+string(filepath.Separator)) {
-		return ErrInvalidAccess
-	}
-
-	return unix.Symlinkat(oldpath, getFd(sfp.root), result)
+	return ErrSymlinkNotSupported
 }
 
 func (sfp *fileServer) ReadDir(name string) ([]fs.DirEntry, error) {
-	folder, err := sfp.OpenFile(name, os.O_RDONLY, 0755)
+	folder, err := sfp.OpenFile(name, os.O_RDONLY, 0644)
 	if err != nil {
 		return nil, err
 	}
@@ -174,9 +173,9 @@ func (sfp *fileServer) OpenFile(path string, flags int, mode os.FileMode) (*os.F
 	}
 
 	file := os.NewFile(uintptr(fd), filepath.Base(path))
-	if flags&os.O_CREATE == 1 && sfp.uid != -1 {
-		err = file.Chown(sfp.uid, sfp.gid)
-	}
+	//if flags&os.O_CREATE == 1 && sfp.uid != -1 {
+	//	err = file.Chown(sfp.uid, sfp.gid)
+	//}
 	return file, err
 }
 
@@ -213,13 +212,13 @@ func (sfp *fileServer) Rename(source, target string) error {
 	sourceName := filepath.Base(source)
 	targetName := filepath.Base(target)
 
-	sourceFolder, err := sfp.OpenFile(sourceParent, os.O_RDONLY, 0755)
+	sourceFolder, err := sfp.OpenFile(sourceParent, os.O_RDONLY, 0644)
 	if err != nil {
 		return err
 	}
 	defer utils.Close(sourceFolder)
 
-	targetFolder, err := sfp.OpenFile(targetParent, os.O_RDONLY, 0755)
+	targetFolder, err := sfp.OpenFile(targetParent, os.O_RDONLY, 0644)
 	if err != nil {
 		return err
 	}
@@ -234,14 +233,14 @@ func (sfp *fileServer) Mkdir(path string, mode os.FileMode) error {
 	parent := filepath.Dir(path)
 	f := filepath.Base(path)
 
-	if parent == "" {
+	if parent == "" || parent == "." || parent == "/" {
 		err := unix.Mkdirat(getFd(sfp.root), f, sys.SyscallMode(mode))
 		if err != nil {
 			return err
 		}
-		if sfp.uid != -1 {
+		/*if sfp.uid != -1 {
 			err = unix.Fchown(getFd(sfp.root), sfp.uid, sfp.gid)
-		}
+		}*/
 
 		return err
 	} else {
@@ -254,9 +253,9 @@ func (sfp *fileServer) Mkdir(path string, mode os.FileMode) error {
 		if err != nil {
 			return err
 		}
-		if sfp.uid != -1 {
+		/*if sfp.uid != -1 {
 			err = unix.Fchown(getFd(folder), sfp.uid, sfp.gid)
-		}
+		}*/
 		return err
 	}
 }
@@ -266,7 +265,7 @@ func (sfp *fileServer) Remove(path string) error {
 	parent := filepath.Dir(path)
 	f := filepath.Base(path)
 
-	folder, err := sfp.OpenFile(parent, os.O_RDONLY, 0755)
+	folder, err := sfp.OpenFile(parent, os.O_RDONLY, 0644)
 	if err != nil {
 		return err
 	}
@@ -289,10 +288,17 @@ func (sfp *fileServer) Remove(path string) error {
 	}
 }
 
-func (sfp *fileServer) RemoveAll(path string) error {
+func (sfp *fileServer) RemoveAll(path string) (err error) {
+	defer func() {
+		if errors.Is(err, os.ErrNotExist) {
+			err = nil
+		}
+	}()
+
 	path = prepPath(path)
 
-	folder, err := sfp.OpenFile(path, os.O_RDONLY, 0755)
+	var folder *os.File
+	folder, err = sfp.OpenFile(path, os.O_RDONLY, 0644)
 	if err != nil {
 		return err
 	}
@@ -331,6 +337,61 @@ func (sfp *fileServer) Lstat(path string) (fs.FileInfo, error) {
 func (sfp *fileServer) Chmod(path string, mode os.FileMode) error {
 	//TODO: Revalidate this does not actually allow changing a file that isn't in our path
 	return os.Chmod(filepath.Join(sfp.dir, prepPath(path)), mode)
+}
+
+func (sfp *fileServer) Copy(sourceFileServer FileServer, sourcePath, targetPath string) error {
+	parent := filepath.Dir(filepath.Clean(targetPath))
+	if parent != "/" && parent != "." && parent != "" {
+		sfp.MkdirAll(parent, 0755)
+	}
+
+	sourceFile, err := sourceFileServer.Open(sourcePath)
+	if err != nil {
+		return err
+	}
+	defer utils.Close(sourceFile)
+
+	targetFile, err := sfp.OpenFile(targetPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return err
+	}
+	defer utils.Close(targetFile)
+
+	_, err = io.Copy(targetFile, sourceFile)
+	return err
+}
+
+func (sfp *fileServer) Create(name string) (*os.File, error) {
+	return sfp.OpenFile(name, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+}
+
+func (sfp *fileServer) WriteFile(name string, content []byte, mode os.FileMode) error {
+	f, err := sfp.OpenFile(name, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, mode)
+	if err != nil {
+		return err
+	}
+	defer utils.Close(f)
+
+	if content != nil {
+		_, err = f.Write(content)
+	}
+
+	return err
+}
+
+func (sfp *fileServer) CreateTemp(dir, pattern string) (*os.File, error) {
+	//TODO: Enforce security
+	return os.CreateTemp(dir, pattern)
+}
+
+func (sfp *fileServer) ReadFile(name string) ([]byte, error) {
+	file, err := sfp.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	defer utils.Close(file)
+
+	return io.ReadAll(file)
 }
 
 func getFd(f *os.File) int {

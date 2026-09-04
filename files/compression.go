@@ -55,10 +55,12 @@ func DetermineIfSingleRoot(sourceFile string) (bool, error) {
 	return isSingleRoot, err
 }
 
-func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool, forcedType Walker) error {
-	if fs != nil {
-		sourceFile = filepath.Join(fs.Prefix(), filepath.Clean("/"+sourceFile))
+func Extract(sourceFS FileServer, sourceFile string, targetFS FileServer, targetPath, filter string, skipRoot bool, forcedType Walker) error {
+	if targetFS == nil {
+		targetFS = sourceFS
 	}
+
+	sourceFile = filepath.Join(sourceFS.Prefix(), filepath.Clean("/"+sourceFile))
 
 	if skipRoot {
 		var err error
@@ -69,28 +71,24 @@ func Extract(fs FileServer, sourceFile, targetPath, filter string, skipRoot bool
 	}
 
 	if forcedType != nil {
-		return forcedType.Walk(sourceFile, walker(fs, targetPath, filter, skipRoot))
+		return forcedType.Walk(sourceFile, walker(targetFS, targetPath, filter, skipRoot))
 	}
 
-	return archiver.Walk(sourceFile, walker(fs, targetPath, filter, skipRoot))
+	return archiver.Walk(sourceFile, walker(targetFS, targetPath, filter, skipRoot))
 }
 
-func Compress(fs FileServer, targetFile string, files []string) error {
+func Compress(sourceFS FileServer, targetFS FileServer, targetFile string, files []string) error {
 	if len(files) == 0 {
 		return errors.New("no files to compress")
 	}
 
-	if fs != nil {
-		p := fs.Prefix()
+	targetFile = filepath.Join(targetFS.Prefix(), filepath.Clean("/"+targetFile))
+	p := sourceFS.Prefix()
 
-		targetFile = filepath.Join(p, targetFile)
-
-		for k, v := range files {
-			v = filepath.Clean("/" + v)
-			files[k] = filepath.Join(p, v)
-		}
+	for k, v := range files {
+		v = filepath.Clean("/" + v)
+		files[k] = filepath.Join(p, v)
 	}
-
 	return archiver.Archive(files, targetFile)
 }
 
@@ -110,31 +108,15 @@ func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.Wa
 		path = filepath.Join(targetPath, path)
 
 		if file.Mode().IsDir() {
-			if fs != nil {
-				if err = fs.MkdirAll(path, 0755); err != nil {
-					return err
-				}
-			} else {
-				if err = os.MkdirAll(path, 0755); err != nil {
-					return err
-				}
+			if err = fs.MkdirAll(path, 0755); err != nil {
+				return err
 			}
 		} else if file.Mode().IsRegular() {
-			if fs != nil {
-				if err = fs.MkdirAll(parent, 0755); err != nil {
-					return err
-				}
-			} else {
-				if err = os.MkdirAll(parent, 0755); err != nil {
-					return err
-				}
+			if err = fs.MkdirAll(parent, 0755); err != nil {
+				return err
 			}
 			var outFile *os.File
-			if fs != nil {
-				outFile, err = fs.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode()|0600)
-			} else {
-				outFile, err = os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode()|0600)
-			}
+			outFile, err = fs.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode()|0600)
 
 			if err != nil {
 				return err
@@ -142,30 +124,7 @@ func walker(fs FileServer, targetPath, filter string, skipRoot bool) archiver.Wa
 			defer utils.Close(outFile)
 			_, err = io.Copy(outFile, file.ReadCloser)
 		} else if file.Mode()&os.ModeSymlink != 0 {
-			//TODO: Symlinks do not work.. forget this for now
 			return nil
-
-			/*target, err := getLinkTarget(file)
-			if err != nil {
-				return err
-			}
-
-			if fs != nil {
-				if err = fs.MkdirAll(parent, 0755); err != nil {
-					return err
-				}
-				if err = fs.Symlink(target, path); err != nil {
-					return err
-				}
-			} else {
-				if err = os.MkdirAll(parent, 0755); err != nil {
-					return err
-				}
-				if err = os.Symlink(target, path); err != nil {
-					return err
-				}
-			}
-			*/
 		}
 
 		return

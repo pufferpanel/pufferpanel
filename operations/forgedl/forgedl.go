@@ -19,11 +19,11 @@ package forgedl
 import (
 	"encoding/json"
 	"errors"
+	"strings"
+
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"path"
-	"strings"
 )
 
 const InstallerUrl = "https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-installer.jar"
@@ -56,7 +56,7 @@ func (op ForgeDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRes
 	}
 
 	//copy from the cache
-	err = files.WriteFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
+	err = files.WriteFile(args.Server.GetFileServer(), localFile, op.Filename)
 	if err != nil {
 		return pufferpanel.OperationResult{Error: err}
 	}

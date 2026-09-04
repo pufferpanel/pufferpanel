@@ -11,6 +11,7 @@ import (
 
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/connections"
+	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
 
@@ -32,11 +33,9 @@ type EnvironmentImpl interface {
 
 type Environment struct {
 	Type            string          `json:"type"`
-	RootDirectory   string          `json:"root,omitempty"`
 	BackupDirectory string          `json:"-"`
 	ConsoleBuffer   *MemoryCache    `json:"-"`
 	Wait            *sync.Mutex     `json:"-"`
-	ServerId        string          `json:"-"`
 	LastExitCode    int             `json:"-"`
 	Wrapper         io.Writer       `json:"-"` //our proxy back to the main
 	ConsoleTracker  *Tracker        `json:"-"`
@@ -45,7 +44,7 @@ type Environment struct {
 	Installing      bool            `json:"-"`
 	BackingUp       bool            `json:"-"`
 	Console         Console         `json:"-"`
-	Server          Server          `json:"-"`
+	Server          DaemonServer    `json:"-"`
 	Implementation  EnvironmentImpl `json:"-"`
 }
 
@@ -118,10 +117,6 @@ func (e *Environment) CreateConsoleStdinProxy(config StdinConsoleConfiguration, 
 	}
 }
 
-func (e *Environment) GetRootDirectory() string {
-	return e.RootDirectory
-}
-
 func (e *Environment) GetConsole() (console []byte, epoch int64) {
 	console, epoch = e.ConsoleBuffer.Read()
 	return
@@ -170,12 +165,12 @@ func (e *Environment) Update() error {
 }
 
 func (e *Environment) Delete() (err error) {
-	err = os.RemoveAll(e.RootDirectory)
+	err = files.ServerFS.RemoveAll(e.Server.Id())
 	return
 }
 
 func (e *Environment) Create() error {
-	err := os.Mkdir(e.RootDirectory, 0755)
+	err := files.ServerFS.Mkdir(e.Server.Id(), 0755)
 	if os.IsExist(err) {
 		return nil
 	}
@@ -226,7 +221,7 @@ func (e *Environment) GetWrapper() io.Writer {
 }
 
 func (e *Environment) Log(l *log.Logger, format string, obj ...interface{}) {
-	msg := fmt.Sprintf("[%s] ", e.ServerId) + format
+	msg := fmt.Sprintf("[%s] ", e.Server.Id()) + format
 	l.Printf(msg, obj...)
 }
 

@@ -6,21 +6,19 @@ import (
 	"sync"
 
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/servers/docker"
-	"github.com/pufferpanel/pufferpanel/v3/servers/tty"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
 
-var envMapping = make(map[string]pufferpanel.EnvironmentFactory)
+var envMapping = make(map[string]func() pufferpanel.EnvironmentImpl)
 
 func init() {
-	envMapping["host"] = tty.EnvironmentFactory{}
-	envMapping["tty"] = tty.EnvironmentFactory{}
-	envMapping["standard"] = tty.EnvironmentFactory{}
-	envMapping["docker"] = docker.EnvironmentFactory{}
+	envMapping["host"] = CreateTTYEnvironment
+	envMapping["tty"] = CreateTTYEnvironment
+	envMapping["standard"] = CreateTTYEnvironment
+	envMapping["docker"] = CreateDockerEnvironment
 }
 
-func CreateEnvironment(environmentType, folder string, backupFolder string, server pufferpanel.Server) (*pufferpanel.Environment, error) {
+func CreateEnvironment(environmentType, folder string, backupFolder string, server *Server) (*pufferpanel.Environment, error) {
 	factory := envMapping[environmentType]
 
 	if factory == nil {
@@ -28,8 +26,7 @@ func CreateEnvironment(environmentType, folder string, backupFolder string, serv
 	}
 
 	item := &pufferpanel.Environment{
-		Type:            factory.Key(),
-		ServerId:        server.Identifier,
+		Type:            environmentType,
 		ConsoleTracker:  pufferpanel.CreateTracker(),
 		StatusTracker:   pufferpanel.CreateTracker(),
 		StatsTracker:    pufferpanel.CreateTracker(),
@@ -38,7 +35,7 @@ func CreateEnvironment(environmentType, folder string, backupFolder string, serv
 		Wait:            &sync.Mutex{},
 		Server:          server,
 	}
-	item.Implementation = factory.Create()
+	item.Implementation = factory()
 	err := utils.UnmarshalTo(server.Environment.Metadata, item)
 	if err != nil {
 		return nil, err
@@ -47,10 +44,6 @@ func CreateEnvironment(environmentType, folder string, backupFolder string, serv
 	err = utils.UnmarshalTo(server.Environment.Metadata, item.Implementation)
 	if err != nil {
 		return nil, err
-	}
-
-	if item.RootDirectory == "" {
-		item.RootDirectory = filepath.Join(folder, server.Identifier)
 	}
 
 	item.CreateWrapper()

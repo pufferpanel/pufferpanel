@@ -8,9 +8,9 @@ import (
 	"io"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 
@@ -35,6 +35,7 @@ type Server struct {
 	stopChan           chan bool
 	waitForConsole     sync.Locker
 	fileServer         files.FileServer
+	backupServer       files.FileServer
 	backingUp          bool
 	restoring          bool
 	keepAlive          *time.Ticker
@@ -147,7 +148,6 @@ type FileData struct {
 
 func (p *Server) DataToMap() map[string]interface{} {
 	var result = p.Server.DataToMap()
-	result["rootDir"] = p.RunningEnvironment.GetRootDirectory()
 	result["core:os"] = runtime.GOOS
 	result["core:arch"] = runtime.GOARCH
 
@@ -435,13 +435,6 @@ func (p *Server) Install() error {
 
 	p.RunningEnvironment.DisplayToConsole(true, "Installing server\n")
 
-	err = os.MkdirAll(p.RunningEnvironment.GetRootDirectory(), 0755)
-	if err != nil && !os.IsExist(err) {
-		p.Log(logging.Error, "Error creating server directory: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to create server directory\n")
-		return err
-	}
-
 	if len(p.Installation) > 0 {
 		var process OperationProcess
 
@@ -500,7 +493,7 @@ func (p *Server) IsAutoStart() (isAutoStart bool) {
 func (p *Server) Save() (err error) {
 	p.Log(logging.Info, "Saving server %s", p.Id())
 
-	file := filepath.Join(config.ServersFolder.Value(), p.Id()+".json")
+	file := p.Id() + ".json"
 
 	if err = p.valid(); err != nil {
 		p.Log(logging.Error, "Server %s contained invalid data, this server is.... broken", p.Identifier)
@@ -515,7 +508,7 @@ func (p *Server) Save() (err error) {
 		return
 	}
 
-	err = os.WriteFile(file, data, 0664)
+	err = files.ServerFS.WriteFile(file, data, 0664)
 	return
 }
 
@@ -655,14 +648,14 @@ func (p *Server) GetItem(name string) (*FileData, error) {
 
 func (p *Server) ArchiveItems(sourceFiles []string, destination string) error {
 	// This may technically error out in other cases
-	if _, err := os.Stat(destination); err != nil && !os.IsNotExist(err) {
+	if _, err := p.GetFileServer().Stat(destination); err != nil && !os.IsNotExist(err) {
 		return pufferpanel.ErrFileExists
 	}
-	return files.Compress(p.GetFileServer(), destination, sourceFiles)
+	return files.Compress(p.GetFileServer(), p.GetFileServer(), destination, sourceFiles)
 }
 
 func (p *Server) Extract(source, destination string) error {
-	return files.Extract(p.GetFileServer(), source, destination, "*", false, nil)
+	return files.Extract(p.GetFileServer(), source, p.GetFileServer(), destination, "*", false, nil)
 }
 
 func (p *Server) StartBackup() (string, error) {
@@ -683,16 +676,6 @@ func (p *Server) StartBackup() (string, error) {
 	}(c)
 
 	p.RunningEnvironment.DisplayToConsole(true, "Backing up server")
-	backupDirectory := p.GetBackupDirectory()
-
-	_, err := os.Stat(backupDirectory)
-	if err != nil && os.IsNotExist(err) {
-		err = os.MkdirAll(backupDirectory, 0755)
-		if err != nil && !os.IsExist(err) {
-			c <- false
-			return "", err
-		}
-	}
 
 	backupId, err := uuid.NewV4()
 	if err != nil {
@@ -700,7 +683,6 @@ func (p *Server) StartBackup() (string, error) {
 		return "", err
 	}
 	backupFileName := backupId.String() + ".tar.gz"
-	backupFile := path.Join(backupDirectory, backupFileName)
 
 	go func(file string, d chan bool) {
 		defer func() {
@@ -708,25 +690,20 @@ func (p *Server) StartBackup() (string, error) {
 		}()
 		sourceFiles := []string{filepath.Join(p.GetFileServer().Prefix())}
 
-		err = files.Compress(nil, file, sourceFiles)
+		err = files.Compress(p.GetFileServer(), p.backupServer, file, sourceFiles)
 		if err != nil {
 			p.Log(logging.Error, "Error creating backup file: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to create backup file")
 		}
-	}(backupFile, c)
+	}(backupFileName, c)
 
 	return backupFileName, nil
 }
 
 func (p *Server) DeleteBackup(fileName string) error {
-	backupDirectory := p.GetBackupDirectory()
-	if backupDirectory == "" {
-		return pufferpanel.ErrSettingNotConfigured("backupDirectory")
-	}
+	backupFile := filepath.Join(p.Id(), strings.TrimPrefix(filepath.Clean(fileName), "/"))
 
-	backupFile := path.Join(backupDirectory, fileName)
-
-	err := os.Remove(backupFile)
+	err := files.BackupFS.Remove(backupFile)
 	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
@@ -753,9 +730,7 @@ func (p *Server) StartRestore(fileName string) error {
 
 	p.RunningEnvironment.DisplayToConsole(true, "Restoring server")
 
-	backupFile := filepath.Join(p.GetBackupDirectory(), fileName)
-
-	_, err := os.Stat(backupFile)
+	_, err := p.backupServer.Stat(fileName)
 	if err != nil && !os.IsNotExist(err) {
 		c <- false
 		return err
@@ -765,6 +740,9 @@ func (p *Server) StartRestore(fileName string) error {
 		defer func() {
 			d <- true
 		}()
+
+		//TODO: FIX THIS TO USE CORRECT PATH
+		//WE NEED TO WRITE TO BACKUP FS
 
 		//Check if any files exist, as remove all errors if its empty
 		existingFiles, err := p.GetFileServer().Glob("*")
@@ -792,20 +770,18 @@ func (p *Server) StartRestore(fileName string) error {
 			}
 		}
 
-		err = files.Extract(nil, source, p.GetFileServer().Prefix(), "*", true, nil)
+		err = files.Extract(p.backupServer, source, p.GetFileServer(), "/", "*", true, nil)
 		if err != nil {
 			p.Log(logging.Error, "Error restoring files: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to restore files: %s", err)
 		}
-	}(backupFile, c)
+	}(fileName, c)
 
 	return nil
 }
 
 func (p *Server) GetBackup(fileName string) (*FileData, error) {
-	backupFile := filepath.Join(p.GetBackupDirectory(), fileName)
-
-	info, err := os.Stat(backupFile)
+	info, err := p.backupServer.Stat(fileName)
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
@@ -813,9 +789,7 @@ func (p *Server) GetBackup(fileName string) (*FileData, error) {
 }
 
 func (p *Server) GetBackupFile(fileName string) (*FileData, error) {
-	backupFile := filepath.Join(p.GetBackupDirectory(), fileName)
-
-	file, err := os.Open(backupFile)
+	file, err := p.backupServer.Open(fileName)
 	if err != nil {
 		return nil, err
 	}
@@ -898,10 +872,14 @@ func (p *Server) IsIdle() error {
 	return nil
 }
 
-func (p *Server) GetBackupDirectory() string {
-	return filepath.Join(config.BackupsFolder.Value(), p.Id())
-}
-
 func (p *Server) SkipAutoRestart() {
 	p.skipAutoRestart = true
+}
+
+func (p *Server) GetRootDirectory() string {
+	return filepath.Join(files.ServerFS.Prefix(), p.Id())
+}
+
+func (p *Server) Get() pufferpanel.Server {
+	return p.Server
 }

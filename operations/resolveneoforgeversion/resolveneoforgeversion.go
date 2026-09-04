@@ -32,10 +32,12 @@ type ResolveNeoForgeVersion struct {
 }
 
 func (op ResolveNeoForgeVersion) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResult {
+	fs := args.Server.GetFileServer()
+
 	//if a specific version wasn't specified, we have to dig around through the files....
 	if op.Version == "" {
-		dir := filepath.Join(args.Environment.GetRootDirectory(), "libraries", "net", "neoforged", "neoforgedl")
-		folders, err := os.ReadDir(dir)
+		dir := filepath.Join("libraries", "net", "neoforged", "neoforgedl")
+		folders, err := fs.ReadDir(dir)
 		if os.IsNotExist(err) {
 			return pufferpanel.OperationResult{VariableOverrides: map[string]interface{}{
 				op.OutputVariable: op.Version,
@@ -52,7 +54,7 @@ func (op ResolveNeoForgeVersion) Run(args pufferpanel.RunOperatorArgs) pufferpan
 				folderName := v.Name()
 				//look for the unix file to accurately confirm this to be supported
 				desiredFile := filepath.Join(dir, folderName, "unix_args.txt")
-				if _, err = os.Lstat(desiredFile); err != nil {
+				if _, err = fs.Stat(desiredFile); err != nil {
 					continue
 				}
 				if op.Version == "" {

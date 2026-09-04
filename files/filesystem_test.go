@@ -12,28 +12,35 @@ import (
 
 func Test_fileServer_Symlink(t *testing.T) {
 	tests := []struct {
-		name    string
-		oldpath string
-		newpath string
-		wantErr error
+		name       string
+		oldpath    string
+		newpath    string
+		wantErr    error
+		skipCreate bool
 	}{
 		{
 			name:    "symlink out of root",
 			oldpath: "testfile",
 			newpath: "../escape",
-			wantErr: ErrInvalidAccess,
+			wantErr: ErrSymlinkNotSupported,
 		},
 		{
 			name:    "symlink within allowed folders",
 			oldpath: "internal/testfile",
 			newpath: "../escape",
-			wantErr: nil,
+			wantErr: ErrSymlinkNotSupported,
 		},
 		{
 			name:    "symlink to a root file resolves to localized",
 			oldpath: "testfile",
 			newpath: "/escape",
-			wantErr: nil,
+			wantErr: ErrSymlinkNotSupported,
+		},
+		{
+			name:    "up directories for days",
+			oldpath: "../../../../../../etc/passwd",
+			newpath: "passwd",
+			wantErr: ErrSymlinkNotSupported,
 		},
 	}
 
@@ -43,24 +50,26 @@ func Test_fileServer_Symlink(t *testing.T) {
 	}
 	defer os.RemoveAll(p)
 
-	sfp, err := NewFileServer(p, 0, 0)
+	sfp, err := NewFileServer(p, 0, 0, true)
 	if !assert.NoError(t, err) {
 		return
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			parent := filepath.Dir(tt.oldpath)
-			if parent != "" {
-				os.MkdirAll(filepath.Join(p, parent), 0755)
-			}
-			defer func() {
-				f, _ := os.ReadDir(p)
-				for _, v := range f {
-					z := filepath.Join(p, v.Name())
-					os.RemoveAll(z)
+			if !tt.skipCreate {
+				parent := filepath.Dir(tt.oldpath)
+				if parent != "" {
+					os.MkdirAll(filepath.Join(p, parent), 0755)
 				}
-			}()
+				defer func() {
+					f, _ := os.ReadDir(p)
+					for _, v := range f {
+						z := filepath.Join(p, v.Name())
+						os.RemoveAll(z)
+					}
+				}()
+			}
 
 			gotErr := sfp.Symlink(tt.oldpath, tt.newpath)
 			if gotErr != tt.wantErr {

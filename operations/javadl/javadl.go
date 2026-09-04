@@ -11,7 +11,7 @@ import (
 	"sync"
 
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
@@ -31,9 +31,8 @@ func (op JavaDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResu
 	downloader.Lock()
 	defer downloader.Unlock()
 
-	rootBinaryFolder := config.BinariesFolder.Value()
-	mainCommand := filepath.Join(rootBinaryFolder, "java"+op.Version)
-	mainCCommand := filepath.Join(rootBinaryFolder, "javac"+op.Version)
+	mainCommand := "java" + op.Version
+	mainCCommand := "javac" + op.Version
 
 	_, err := exec.LookPath("java" + op.Version)
 
@@ -45,7 +44,7 @@ func (op JavaDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResu
 		}
 
 		//cleanup the existing dir
-		err = os.RemoveAll(filepath.Join(rootBinaryFolder, file.ReleaseName))
+		err = files.BinaryFS.RemoveAll(file.ReleaseName)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
@@ -53,23 +52,27 @@ func (op JavaDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResu
 		url := file.Binaries[0].Package.Link
 
 		logging.Debug.Println("Calling " + url)
-		err = pufferpanel.HttpExtract(url, rootBinaryFolder, nil)
+		err = pufferpanel.HttpExtract(url, files.BinaryFS, "/", nil)
 
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
 
-		_ = os.Remove(mainCommand)
-		_ = os.Remove(mainCCommand)
+		_ = files.BinaryFS.Remove(mainCommand)
+		_ = files.BinaryFS.Remove(mainCCommand)
 
 		logging.Debug.Printf("Adding to path: %s\n", mainCommand)
-		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "java"), mainCommand)
+		//TODO: This cannot use the FileSystem for now, because symlink protection is a pain
+		//for now, we know this is safe, so we'll do it ourselves
+		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "java"), filepath.Join(files.BackupFS.Prefix(), mainCommand))
+		//err = files.BinaryFS.Symlink(filepath.Join(file.ReleaseName, "bin", "java"), mainCommand)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
 
 		logging.Debug.Printf("Adding to path: %s\n", mainCCommand)
-		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "javac"), mainCCommand)
+		//err = files.BinaryFS.Symlink(filepath.Join(file.ReleaseName, "bin", "javac"), mainCCommand)
+		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "javac"), filepath.Join(files.BackupFS.Prefix(), mainCCommand))
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
