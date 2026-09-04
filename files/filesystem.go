@@ -22,6 +22,7 @@ type FileServer interface {
 	fs.StatFS
 
 	Prefix() string
+	GetRootFD() int
 
 	Stat(name string) (fs.FileInfo, error)
 	Mkdir(path string, mode os.FileMode) error
@@ -63,6 +64,10 @@ func NewFileServer(prefix string, uid, gid int, symlinkSupport bool) (FileServer
 	}
 	f.symlinkSupport = symlinkSupport
 	return f, nil
+}
+
+func (sfp *fileServer) GetRootFD() int {
+	return getFd(sfp.root)
 }
 
 func (sfp *fileServer) Prefix() string {

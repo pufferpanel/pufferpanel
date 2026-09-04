@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
@@ -14,6 +13,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
+	"golang.org/x/sys/unix"
 )
 
 var downloader sync.Mutex
@@ -58,13 +58,11 @@ func (op JavaDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResu
 			return pufferpanel.OperationResult{Error: err}
 		}
 
-		_ = files.BinaryFS.Remove(mainCommand)
-		_ = files.BinaryFS.Remove(mainCCommand)
-
 		logging.Debug.Printf("Adding to path: %s\n", mainCommand)
 		//TODO: This cannot use the FileSystem for now, because symlink protection is a pain
 		//for now, we know this is safe, so we'll do it ourselves
-		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "java"), filepath.Join(files.BackupFS.Prefix(), mainCommand))
+		_ = unix.Unlinkat(files.BinaryFS.GetRootFD(), mainCommand, 0)
+		err = unix.Symlinkat(filepath.Join(file.ReleaseName, "bin", "java"), files.BinaryFS.GetRootFD(), mainCommand)
 		//err = files.BinaryFS.Symlink(filepath.Join(file.ReleaseName, "bin", "java"), mainCommand)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
@@ -72,7 +70,8 @@ func (op JavaDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResu
 
 		logging.Debug.Printf("Adding to path: %s\n", mainCCommand)
 		//err = files.BinaryFS.Symlink(filepath.Join(file.ReleaseName, "bin", "javac"), mainCCommand)
-		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "javac"), filepath.Join(files.BackupFS.Prefix(), mainCCommand))
+		_ = unix.Unlinkat(files.BinaryFS.GetRootFD(), mainCommand, 0)
+		err = unix.Symlinkat(filepath.Join(file.ReleaseName, "bin", "javac"), files.BinaryFS.GetRootFD(), mainCCommand)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}

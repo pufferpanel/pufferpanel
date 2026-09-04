@@ -14,6 +14,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/files"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
+	"golang.org/x/sys/unix"
 )
 
 var downloader sync.Mutex
@@ -58,17 +59,18 @@ func (op NodejsDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationRe
 			return pufferpanel.OperationResult{Error: err}
 		}
 
-		_ = files.BinaryFS.Remove(mainNodeCommand)
-		_ = files.BinaryFS.Remove(mainNpmCommand)
-
 		logging.Debug.Printf("Adding to path: %s\n", mainNodeCommand)
-		err = files.BinaryFS.Symlink(filepath.Join(release.Slug, "bin", "node"), mainNodeCommand)
+		//err = files.BinaryFS.Symlink(filepath.Join(release.Slug, "bin", "node"), mainNodeCommand)
+		_ = unix.Unlinkat(files.BinaryFS.GetRootFD(), mainNodeCommand, 0)
+		err = unix.Symlinkat(filepath.Join(release.Slug, "bin", "node"), files.BinaryFS.GetRootFD(), mainNodeCommand)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}
 
 		logging.Debug.Printf("Adding to path: %s\n", mainNpmCommand)
-		err = files.BinaryFS.Symlink(filepath.Join(release.Slug, "bin", "npm"), mainNpmCommand)
+		//err = files.BinaryFS.Symlink(filepath.Join(release.Slug, "bin", "npm"), mainNpmCommand)
+		_ = unix.Unlinkat(files.BinaryFS.GetRootFD(), mainNpmCommand, 0)
+		err = unix.Symlinkat(filepath.Join(release.Slug, "bin", "npm"), files.BinaryFS.GetRootFD(), mainNpmCommand)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
 		}

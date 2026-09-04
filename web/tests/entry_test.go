@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"path/filepath"
-	"strings"
 	"testing"
 	"time"
 
@@ -53,10 +51,7 @@ func TestMain(m *testing.M) {
 	_ = os.Mkdir("backups", 0755)
 
 	newPath := os.Getenv("PATH")
-	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
-	if !strings.Contains(newPath, fullPath) {
-		_ = os.Setenv("PATH", newPath+":"+fullPath)
-	}
+	_ = os.Setenv("PATH", newPath+string(os.PathSeparator)+config.BinariesFolder.Value())
 
 	err = files.InitSharedFileSystems()
 	if err != nil {
