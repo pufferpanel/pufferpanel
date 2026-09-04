@@ -121,7 +121,7 @@ func main() {
 		}
 		server.RunningEnvironment = env
 
-		fs, err := files.NewFileServer(serverId, os.Getuid(), os.Getgid())
+		fs, err := files.NewFileServer(serverId, os.Getuid(), os.Getgid(), false)
 		if err != nil {
 			results[unitTest] = err
 			continue

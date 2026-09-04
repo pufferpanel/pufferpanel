@@ -70,7 +70,7 @@ func (op JavaDl) Run(args pufferpanel.RunOperatorArgs) pufferpanel.OperationResu
 
 		logging.Debug.Printf("Adding to path: %s\n", mainCCommand)
 		//err = files.BinaryFS.Symlink(filepath.Join(file.ReleaseName, "bin", "javac"), mainCCommand)
-		_ = unix.Unlinkat(files.BinaryFS.GetRootFD(), mainCommand, 0)
+		_ = unix.Unlinkat(files.BinaryFS.GetRootFD(), mainCCommand, 0)
 		err = unix.Symlinkat(filepath.Join(file.ReleaseName, "bin", "javac"), files.BinaryFS.GetRootFD(), mainCCommand)
 		if err != nil {
 			return pufferpanel.OperationResult{Error: err}
