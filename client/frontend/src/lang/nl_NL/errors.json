@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "Meerdere containers gevonden",
   "ErrNoContainerNoneFound": "Geen container gevonden",
   "ErrNoMountFound": "Geen mount gevonden",
-  "ErrUnsupportedMountType": "Niet-ondersteund mount type"
+  "ErrUnsupportedMountType": "Niet-ondersteund mount type",
+  "ErrServerRunning": "Server is running"
 }

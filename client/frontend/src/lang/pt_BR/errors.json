@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "Vários contêineres encontrados",
   "ErrNoContainerNoneFound": "Nenhum contêiner encontrado",
   "ErrNoMountFound": "Nenhuma montagem encontrada",
-  "ErrUnsupportedMountType": "Tipo de montagem não suportado"
+  "ErrUnsupportedMountType": "Tipo de montagem não suportado",
+  "ErrServerRunning": "Servidor está funcionando"
 }

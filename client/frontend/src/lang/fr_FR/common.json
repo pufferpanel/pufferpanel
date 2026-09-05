@@ -3,7 +3,7 @@
   "Language": "Langue",
   "Online": "En ligne",
   "Offline": "Hors-ligne",
-  "Installing": "Installation en cours...",
+  "Installing": "Installation en cours",
   "Unknown": "Inconnu",
   "Loading": "Chargement ...",
   "Description": "Description",
@@ -40,7 +40,7 @@
     "BaseColor": "Couleur de base",
     "ServerTypeDisplay": "Affichage du type de serveur",
     "serverTypeDisplay": {
-      "IconBackground": "Icon + Background",
+      "IconBackground": "Icône + Arrière-plan",
       "Icon": "Icône",
       "None": "Nul"
     },
