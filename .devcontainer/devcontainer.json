@@ -1,10 +1,15 @@
 {
-	"image": "mcr.microsoft.com/devcontainers/universal:5",
+	"image": "mcr.microsoft.com/devcontainers/go:1-bookworm",
+	"features": {
+		"ghcr.io/devcontainers/features/node:2": {},
+		"ghcr.io/devcontainers/features/docker-in-docker": {},
+		"ghcr.io/devcontainers/features/git-lfs": {}
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"golang.Go",
-				"GitHub.vscode-github-actions",
+				"GitHub.vscode-github-ations",
 				"Vue.volar",
 				"dbaeumer.vscode-eslint"
 			]

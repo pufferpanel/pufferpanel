@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseJCMDResponse(t *testing.T) {
@@ -41,10 +42,31 @@ func TestParseJCMDResponse(t *testing.T) {
 			},
 			want: &JvmStats{HeapUsed: (36054 + 145245) * 1024, HeapTotal: (104576 + 232236) * 1024, MetaspaceUsed: 79381 * 1024, MetaspaceTotal: 80384 * 1024},
 		},
+		{
+			name: "java 25 docker",
+			args: args{
+				data: []byte(`1:
+garbage-first heap   total reserved 3063808K, committed 995328K, used 409990K [0x0000000745000000, 0x0000000800000000)
+ region size 2048K, 30 young (61440K), 10 survivors (20480K)`),
+			},
+			want: &JvmStats{HeapUsed: 409990 * 1024, HeapTotal: 995328 * 1024},
+		},
+		{
+			name: "java 25 raw docker",
+			args: args{
+				data: []byte("\x01\x00\x00\x00\x00\x00\x00\x031:\n\x01\x00\x00\x00\x00\x00\x00\xb2garbage-first heap   total reserved 2097152K, committed 630784K, used 285591K [0x0000000080000000, 0x0000000100000000)\n region size 1024K, 66 young (67584K), 9 survivors (9216K)\n"),
+			},
+			want: &JvmStats{
+				HeapUsed:  285591 * 1024,
+				HeapTotal: 630784 * 1024,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.want, ParseJCMDResponse(tt.args.data), "ParseJCMDResponse(%v)", tt.args.data)
 		})
 	}
+
+	//"�garbage-first heap   total reserved 2097152K, committed 630784K, used 285591K [0x0000000080000000, 0x0000000100000000)"
 }

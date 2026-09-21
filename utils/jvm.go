@@ -3,9 +3,10 @@ package utils
 import (
 	"bufio"
 	"bytes"
-	"github.com/spf13/cast"
 	"strings"
 	"unicode"
+
+	"github.com/spf13/cast"
 )
 
 // ParseJCMDResponse Parses the results of a jcmd command that is executed
@@ -24,7 +25,7 @@ func ParseJCMDResponse(data []byte) *JvmStats {
 		line := scanner.Text()
 
 		line = strings.Map(func(r rune) rune {
-			if unicode.IsGraphic(r) {
+			if unicode.IsGraphic(r) && unicode.IsPrint(r) && r < 128 {
 				return r
 			}
 			return -1
@@ -78,26 +79,19 @@ func ParseJCMDResponse(data []byte) *JvmStats {
 
 func parseLine(line string) map[string]int64 {
 	result := make(map[string]int64)
-	z := strings.Split(line, "[")[0]
+	z, _, _ := strings.Cut(line, "[")
 	z = strings.TrimSpace(z)
-	parts := strings.Split(z, ", ")
-	for _, v := range parts {
-		if strings.HasPrefix(v, "used ") {
-			d := strings.TrimPrefix(v, "used ")
-			d = strings.TrimSuffix(d, "K")
-			result["used"] = cast.ToInt64(d) * 1024
-		} else if strings.HasPrefix(v, "total ") {
-			d := strings.TrimPrefix(v, "total ")
-			d = strings.TrimSuffix(d, "K")
-			result["total"] = cast.ToInt64(d) * 1024
-		} else if strings.HasPrefix(v, "reserved ") {
-			d := strings.TrimPrefix(v, "reserved ")
-			d = strings.TrimSuffix(d, "K")
-			result["reserved"] = cast.ToInt64(d) * 1024
-		} else if strings.HasPrefix(v, "committed ") {
-			d := strings.TrimPrefix(v, "committed ")
-			d = strings.TrimSuffix(d, "K")
-			result["committed"] = cast.ToInt64(d) * 1024
+	parts := strings.SplitSeq(z, ", ")
+	for v := range parts {
+		v = strings.TrimSuffix(v, "K")
+		if after, ok := strings.CutPrefix(v, "used "); ok {
+			result["used"] = cast.ToInt64(after) * 1024
+		} else if after, ok := strings.CutPrefix(v, "total "); ok {
+			result["total"] = cast.ToInt64(after) * 1024
+		} else if after, ok := strings.CutPrefix(v, "reserved "); ok {
+			result["reserved"] = cast.ToInt64(after) * 1024
+		} else if after, ok := strings.CutPrefix(v, "committed "); ok {
+			result["committed"] = cast.ToInt64(after) * 1024
 		}
 	}
 	return result
