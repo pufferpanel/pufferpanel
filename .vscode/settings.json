@@ -1,5 +1,5 @@
 {
-    "chat.disableAIFeatures": false,
+    "chat.disableAIFeatures": true,
     "go.diagnostic.vulncheck": "Off",
     "go.disableConcurrentTests": true,
     "go.lintOnSave": "file",

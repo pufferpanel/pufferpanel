@@ -6,12 +6,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/pufferpanel/pufferpanel/v3"
-
-	"github.com/docker/docker/api/types/container"
-	mountType "github.com/docker/docker/api/types/mount"
-	"github.com/docker/docker/client"
 	"github.com/gofrs/uuid/v5"
+	"github.com/moby/moby/api/types/container"
+	"github.com/moby/moby/api/types/mount"
+	"github.com/moby/moby/client"
+
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
@@ -47,29 +47,30 @@ func InitContainerMountSource() (err error) {
 	// we only need the file to exist, we never read or write, so close it right away
 	utils.Close(file)
 
-	docker, err := client.NewClientWithOpts(client.FromEnv)
+	docker, err := client.New(client.FromEnv)
 	if err != nil {
 		return
 	}
 	defer utils.Close(docker)
 	ctx := context.Background()
-	docker.NegotiateAPIVersion(ctx)
 
-	containers, err := docker.ContainerList(ctx, container.ListOptions{})
+	containers, err := docker.ContainerList(ctx, client.ContainerListOptions{})
 	if err != nil {
 		return
 	}
 
 	var found []string
 	var self container.Summary
-	for _, c := range containers {
-		rc, _, err := docker.CopyFromContainer(ctx, c.ID, path)
+	for _, c := range containers.Items {
+		rc, err := docker.CopyFromContainer(ctx, c.ID, client.CopyFromContainerOptions{
+			SourcePath: path,
+		})
 		if err != nil {
 			// failed, so either file or container doesn't exist, meaning that's not us
 			continue
 		}
 		// not interested in the contents, just need to know the file existed in the container
-		utils.Close(rc)
+		utils.Close(rc.Content)
 		found = append(found, c.ID)
 		self = c
 	}
@@ -107,7 +108,7 @@ func InitContainerMountSource() (err error) {
 		return pufferpanel.ErrNoMountFound
 	}
 
-	if dataMount.Type != mountType.TypeBind && dataMount.Type != mountType.TypeVolume {
+	if dataMount.Type != mount.TypeBind && dataMount.Type != mount.TypeVolume {
 		logging.Debug.Printf("Unsupported mount type found: %s\n", dataMount.Type)
 		return pufferpanel.ErrUnsupportedMountType
 	}

@@ -1,11 +1,23 @@
 package utils
 
 import (
+	"net/netip"
 	"path/filepath"
+	"regexp"
 	"strings"
 
-	"github.com/docker/docker/api/types/container"
+	"github.com/moby/moby/api/types/container"
+	"github.com/moby/moby/api/types/network"
 )
+
+var dockerPortBindingRegex = regexp.MustCompile(`^((?P<ip>[0-9]{0,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}):)?((?P<hostport>\d+):)?(?P<port>\d+(\/((tcp)|(udp)))?)$`)
+var dockerPortBindingRegexComponents map[string]int = make(map[string]int)
+
+func init() {
+	for _, v := range dockerPortBindingRegex.SubexpNames() {
+		dockerPortBindingRegexComponents[v] = dockerPortBindingRegex.SubexpIndex(v)
+	}
+}
 
 func CalculateDockerCPUPercent(v *container.StatsResponse) float64 {
 	//this math is from https://docs.docker.com/reference/api/engine/version/v1.45/#tag/Container/operation/ContainerStats
@@ -34,4 +46,37 @@ func ConvertToDockerBind(source string) string {
 	fullPath = strings.ToLower(string(fullPath[0])) + fullPath[1:]
 	fullPath = "/" + fullPath
 	return fullPath
+}
+
+func ParsePortMap(str string) (network.PortMap, error) {
+	parts := dockerPortBindingRegex.FindStringSubmatch(str)
+
+	res := make(network.PortMap)
+
+	portPart := parts[dockerPortBindingRegexComponents["port"]]
+	port, err := network.ParsePort(portPart)
+	if err != nil {
+		return nil, err
+	}
+
+	ipPart := parts[dockerPortBindingRegexComponents["ip"]]
+	if ipPart == "" {
+		ipPart = "0.0.0.0"
+	}
+	ip, err := netip.ParseAddr(ipPart)
+	if err != nil {
+		return nil, err
+	}
+
+	hostPortPart := parts[dockerPortBindingRegexComponents["hostport"]]
+	if hostPortPart == "" {
+		hostPortPart = port.Port()
+	}
+
+	res[port] = []network.PortBinding{{
+		HostIP:   ip,
+		HostPort: hostPortPart,
+	}}
+
+	return res, nil
 }

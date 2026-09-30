@@ -6,10 +6,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/api/types/image"
-	"github.com/docker/docker/client"
+	"github.com/moby/moby/client"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 )
@@ -19,32 +16,28 @@ var dockerClient *client.Client
 func GetDockerClient() (*client.Client, error) {
 	var err error = nil
 	if dockerClient == nil {
-		dockerClient, err = client.NewClientWithOpts(client.FromEnv)
-		ctx := context.Background()
-		dockerClient.NegotiateAPIVersion(ctx)
+		dockerClient, err = client.New(client.FromEnv)
 	}
 	return dockerClient, err
 }
 
 func DoesContainerExist(id string, ctx context.Context) (bool, error) {
-	client, err := GetDockerClient()
+	dc, err := GetDockerClient()
 	if err != nil {
 		return false, err
 	}
 
-	opts := container.ListOptions{
-		Filters: filters.NewArgs(),
+	opts := client.ContainerListOptions{
+		Filters: make(client.Filters).Add("name", id),
+		All:     true,
 	}
 
-	opts.All = true
-	opts.Filters.Add("name", id)
-
-	existingContainers, err := client.ContainerList(ctx, opts)
+	existingContainers, err := dc.ContainerList(ctx, opts)
 	if err != nil {
 		return false, err
 	}
 
-	for _, v := range existingContainers {
+	for _, v := range existingContainers.Items {
 		if slices.Contains(v.Names, "/"+id) {
 			return true, nil
 		}
@@ -54,7 +47,7 @@ func DoesContainerExist(id string, ctx context.Context) (bool, error) {
 }
 
 func PullDockerImage(environment *Environment, ctx context.Context, imageName string, force bool) error {
-	client, err := GetDockerClient()
+	dc, err := GetDockerClient()
 	if err != nil {
 		return err
 	}
@@ -67,18 +60,17 @@ func PullDockerImage(environment *Environment, ctx context.Context, imageName st
 			imageName = imageName + ":latest"
 		}
 
-		opts := image.ListOptions{
+		opts := client.ImageListOptions{
 			All:     true,
-			Filters: filters.NewArgs(),
+			Filters: make(client.Filters).Add("reference", imageName),
 		}
-		opts.Filters.Add("reference", imageName)
-		images, err := client.ImageList(ctx, opts)
+		images, err := dc.ImageList(ctx, opts)
 
 		if err != nil {
 			return err
 		}
 
-		for _, v := range images {
+		for _, v := range images.Items {
 			for _, z := range v.RepoTags {
 				if z == imageName {
 					exists = true
@@ -97,12 +89,12 @@ func PullDockerImage(environment *Environment, ctx context.Context, imageName st
 		}
 	}
 
-	op := image.PullOptions{}
+	op := client.ImagePullOptions{}
 
 	environment.Log(logging.Debug, "Downloading image %v", imageName)
 	environment.DisplayToConsole(true, "Downloading image for container, please wait\n")
 
-	r, err := client.ImagePull(ctx, imageName, op)
+	r, err := dc.ImagePull(ctx, imageName, op)
 	defer utils.Close(r)
 	if err != nil {
 		return err

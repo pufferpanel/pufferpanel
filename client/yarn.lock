@@ -1021,7 +1021,7 @@ form-data@^4.0.4:
     hasown "^2.0.2"
     mime-types "^2.1.12"
 
-"frontend@file:/workspaces/PufferPanel/client/frontend":
+"frontend@file:/workspaces/pufferpanel/client/frontend":
   version "0.0.0"
   resolved "file:frontend"
   dependencies:
@@ -1471,7 +1471,7 @@ pufferpanel-conditions@^1.0.8:
   resolved "https://registry.npmjs.org/pufferpanel-conditions/-/pufferpanel-conditions-1.0.8.tgz"
   integrity sha512-3HDUJU/Aesw0Yeph4kWrH+o3/97ZpgcMwwzS786YSKJfUa546y/HT7JC6qLdttYB7kJ3HbOC6rLI5dgQlz5ZMg==
 
-pufferpanel@0.0.0, "pufferpanel@file:/workspaces/PufferPanel/client/api":
+pufferpanel@0.0.0, "pufferpanel@file:/workspaces/pufferpanel/client/api":
   version "0.0.0"
   resolved "file:api"
   dependencies:

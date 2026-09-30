@@ -2,16 +2,17 @@ package daemon
 
 import (
 	"context"
-	"github.com/docker/docker/client"
+	"net/http"
+	"runtime"
+	"time"
+
 	"github.com/gin-gonic/gin"
+	"github.com/moby/moby/client"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/servers"
 	"github.com/pufferpanel/pufferpanel/v3/utils"
-	"net/http"
-	"runtime"
-	"time"
 )
 
 func RegisterDaemonRoutes(e *gin.RouterGroup) {
@@ -68,7 +69,7 @@ func getFeatures(c *gin.Context) {
 }
 
 func testDocker() bool {
-	d, err := client.NewClientWithOpts(client.FromEnv)
+	d, err := client.New(client.FromEnv)
 	if err != nil {
 		return false
 	}
@@ -76,7 +77,7 @@ func testDocker() bool {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	_, err = d.Ping(ctx)
+	_, err = d.Ping(ctx, client.PingOptions{})
 	return err == nil
 }
 

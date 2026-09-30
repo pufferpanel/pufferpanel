@@ -5,10 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-
-	"github.com/pufferpanel/pufferpanel/v3/utils"
-
 	"io"
+	"net/netip"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -16,16 +14,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/network"
-	"github.com/docker/docker/api/types/strslice"
-	"github.com/docker/docker/client"
-	"github.com/docker/go-connections/nat"
+	"github.com/moby/moby/api/types/container"
+	"github.com/moby/moby/api/types/network"
+	"github.com/moby/moby/client"
 	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/spf13/cast"
 )
 
@@ -39,23 +35,24 @@ type Docker struct {
 	Labels        map[string]string    `json:"labels,omitempty"`
 	Config        container.Config     `json:"config,omitempty"`
 
-	connection   types.HijackedResponse
-	cli          *client.Client
-	statLocker   sync.Mutex
-	lastStats    *pufferpanel.ServerStats
-	lastStatTime time.Time
-	//disableStdin        bool
+	connection          client.HijackedResponse
+	cli                 *client.Client
+	statLocker          sync.Mutex
+	lastStats           *pufferpanel.ServerStats
+	lastStatTime        time.Time
+	disableStdin        bool
 	disableSpecialStats bool
 }
 
 func CreateDockerEnvironment() pufferpanel.EnvironmentImpl {
-	return &Docker{
+	/*return &Docker{
 		ImageName: "pufferpanel/generic",
 		Network:   "host",
 		Ports:     make([]string, 0),
 		Binds:     make(map[string]string),
 		Labels:    make(map[string]string),
-	}
+	}*/
+	return nil
 }
 
 func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pufferpanel.ExecutionData) error {
@@ -85,17 +82,18 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 	d.disableSpecialStats = steps.DisableStats
 	//d.disableStdin = steps.DisableStdin
 
-	cfg := container.AttachOptions{
+	cfg := client.ContainerAttachOptions{
 		Stdin:  true,
 		Stdout: true,
 		Stderr: true,
 		Stream: true,
 	}
 
-	d.connection, err = dockerClient.ContainerAttach(ctx, environment.Server.Id(), cfg)
+	res, err := dockerClient.ContainerAttach(ctx, environment.Server.Id(), cfg)
 	if err != nil {
 		return err
 	}
+	d.connection = res.HijackedResponse
 
 	go func() {
 		defer d.connection.Close()
@@ -109,7 +107,7 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 
 	environment.Console.Start()
 
-	startOpts := container.StartOptions{}
+	startOpts := client.ContainerStartOptions{}
 
 	_ = environment.StatusTracker.WriteMessage(pufferpanel.Transmission{
 		Message: pufferpanel.ServerRunning{
@@ -120,7 +118,7 @@ func (d *Docker) ExecuteAsyncImpl(environment *pufferpanel.Environment, steps pu
 	})
 
 	environment.DisplayToConsole(true, "Starting container\n")
-	err = dockerClient.ContainerStart(ctx, environment.Server.Id(), startOpts)
+	_, err = dockerClient.ContainerStart(ctx, environment.Server.Id(), startOpts)
 	if err != nil {
 		return err
 	}
@@ -143,7 +141,9 @@ func (d *Docker) KillImpl(environment *pufferpanel.Environment) error {
 	if err != nil {
 		return err
 	}
-	err = dockerClient.ContainerKill(context.Background(), environment.Server.Id(), "SIGKILL")
+	_, err = dockerClient.ContainerKill(context.Background(), environment.Server.Id(), client.ContainerKillOptions{
+		Signal: "SIGKILL",
+	})
 	return err
 }
 
@@ -160,11 +160,11 @@ func (d *Docker) IsRunningImpl(environment *pufferpanel.Environment) (bool, erro
 		return false, err
 	}
 
-	stats, err := dockerClient.ContainerInspect(ctx, environment.Server.Id())
+	stats, err := dockerClient.ContainerInspect(ctx, environment.Server.Id(), client.ContainerInspectOptions{})
 	if err != nil {
 		return false, err
 	}
-	return stats.State.Running, nil
+	return stats.Container.State.Running, nil
 }
 
 func (d *Docker) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpanel.ServerStats, error) {
@@ -201,7 +201,10 @@ func (d *Docker) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpane
 	}
 
 	ctx := context.Background()
-	res, err := dockerClient.ContainerStats(ctx, environment.Server.Id(), false)
+	res, err := dockerClient.ContainerStats(ctx, environment.Server.Id(), client.ContainerStatsOptions{
+		Stream:                false,
+		IncludePreviousSample: false,
+	})
 	defer func() {
 		if res.Body != nil {
 			utils.Close(res.Body)
@@ -231,23 +234,22 @@ func (d *Docker) GetStatsImpl(environment *pufferpanel.Environment) (*pufferpane
 			cmd = "jcmd"
 		}
 
-		r, e := dockerClient.ContainerExecCreate(context.Background(), environment.Server.Id(), container.ExecOptions{
+		r, e := dockerClient.ExecCreate(context.Background(), environment.Server.Id(), client.ExecCreateOptions{
 			AttachStderr: true,
 			AttachStdout: true,
 			Cmd:          []string{cmd, "1", "GC.heap_info"},
 		})
 
 		if e == nil {
-			rw, e := dockerClient.ContainerExecAttach(context.Background(), r.ID, container.ExecAttachOptions{
-				Detach: false,
-				Tty:    false,
+			rw, e := dockerClient.ExecAttach(context.Background(), r.ID, client.ExecAttachOptions{
+				TTY: false,
 			})
 			if e != nil {
 				logging.Error.Printf("Could not exec JCMD: %s", e.Error())
 			} else {
-				defer func(z types.HijackedResponse) {
+				defer func(z client.HijackedResponse) {
 					z.Close()
-				}(rw)
+				}(rw.HijackedResponse)
 
 				jcmdData, err := io.ReadAll(rw.Reader)
 				if err != nil {
@@ -291,7 +293,7 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 
 	cmd, args := utils.SplitArguments(data.Command)
 
-	cmdSlice := strslice.StrSlice{}
+	cmdSlice := []string{}
 	if data.Command != "" {
 		cmdSlice = append(cmdSlice, cmd)
 		cmdSlice = append(cmdSlice, args...)
@@ -409,26 +411,33 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 
 	hostConfig.Binds = append(hostConfig.Binds, bindDirs...)
 
-	_, hostConfig.PortBindings, err = nat.ParsePortSpecs(utils.ReplaceTokensInArr(d.Ports, data.Variables))
-	if err != nil {
-		return err
-	}
-
-	if hostConfig.PortBindings == nil {
-		hostConfig.PortBindings = nat.PortMap{}
-	}
-
+	hostConfig.PortBindings = network.PortMap{}
 	if data.StdInConfig.Port != "" {
-		if _, exists := hostConfig.PortBindings[nat.Port(data.StdInConfig.Port+"/tcp")]; !exists {
+		if _, exists := hostConfig.PortBindings[network.MustParsePort(data.StdInConfig.Port+"/tcp")]; !exists {
 			//we have a port defined for stdin, we need to also export it
-			hostConfig.PortBindings[nat.Port(data.StdInConfig.Port+"/tcp")] = []nat.PortBinding{{
-				HostIP: "127.0.0.1", HostPort: data.StdInConfig.Port,
+			hostConfig.PortBindings[network.MustParsePort(data.StdInConfig.Port+"/tcp")] = []network.PortBinding{{
+				HostIP: netip.MustParseAddr("127.0.0.1"), HostPort: data.StdInConfig.Port,
 			}}
 		}
 	}
 
+	portBinds := utils.ReplaceTokensInArr(d.Ports, data.Variables)
+	for _, v := range portBinds {
+		m, err := utils.ParsePortMap(v)
+		if err != nil {
+			return err
+		}
+		for k, z := range m {
+			if i, ok := hostConfig.PortBindings[k]; ok {
+				hostConfig.PortBindings[k] = append(i, z...)
+			} else {
+				hostConfig.PortBindings[k] = z
+			}
+		}
+	}
+
 	if containerConfig.ExposedPorts == nil {
-		containerConfig.ExposedPorts = make(nat.PortSet)
+		containerConfig.ExposedPorts = make(network.PortSet)
 	}
 
 	for k := range hostConfig.PortBindings {
@@ -438,7 +447,13 @@ func (d *Docker) createContainer(environment *pufferpanel.Environment, data puff
 	networkConfig := &network.NetworkingConfig{}
 
 	//for now, default to linux across the board. This resolves problems that Windows has when you use it and docker
-	_, err = d.cli.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, &v1.Platform{OS: "linux"}, environment.Server.Id())
+	_, err = d.cli.ContainerCreate(ctx, client.ContainerCreateOptions{
+		Config:           containerConfig,
+		HostConfig:       hostConfig,
+		NetworkingConfig: networkConfig,
+		Platform:         &v1.Platform{OS: "linux"},
+		Name:             environment.Server.Id(),
+	})
 	return err
 }
 
@@ -456,7 +471,10 @@ func (d *Docker) SendCodeImpl(environment *pufferpanel.Environment, code int) er
 	}
 
 	ctx := context.Background()
-	return dockerClient.ContainerKill(ctx, environment.Server.Id(), cast.ToString(code))
+	_, err = dockerClient.ContainerKill(ctx, environment.Server.Id(), client.ContainerKillOptions{
+		Signal: cast.ToString(code),
+	})
+	return err
 }
 
 func (d *Docker) GetUidImpl(environment *pufferpanel.Environment) int {
@@ -475,17 +493,19 @@ func (d *Docker) GetGidImpl(environment *pufferpanel.Environment) int {
 	return cast.ToInt(strings.Split(user, ":")[1])
 }
 
-func (d *Docker) handleClose(environment *pufferpanel.Environment, client *client.Client, callback func(int)) {
+func (d *Docker) handleClose(environment *pufferpanel.Environment, dc *client.Client, callback func(int)) {
 	exitCode := -1
-	okChan, errChan := client.ContainerWait(context.Background(), environment.Server.Id(), container.WaitConditionRemoved)
+	res := dc.ContainerWait(context.Background(), environment.Server.Id(), client.ContainerWaitOptions{
+		Condition: container.WaitConditionRemoved,
+	})
 
 	select {
-	case chanErr := <-errChan:
+	case chanErr := <-res.Error:
 		{
 			exitCode = -999
 			environment.Log(logging.Error, "Error from error channel: %s\n", chanErr.Error())
 		}
-	case info := <-okChan:
+	case info := <-res.Result:
 		{
 			exitCode = cast.ToInt(info.StatusCode)
 			if info.Error != nil {

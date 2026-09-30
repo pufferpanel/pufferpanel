@@ -1,6 +1,10 @@
 package files
 
-import "github.com/pufferpanel/pufferpanel/v3/config"
+import (
+	"os"
+
+	"github.com/pufferpanel/pufferpanel/v3/config"
+)
 
 var BinaryFS FileServer
 var ServerFS FileServer
@@ -10,21 +14,25 @@ var BackupFS FileServer
 func InitSharedFileSystems() error {
 	var err error
 
+	os.MkdirAll(config.BackupsFolder.Value(), 0755)
 	BinaryFS, err = NewFileServer(config.BinariesFolder.Value(), 0, 0, true)
 	if err != nil {
 		return err
 	}
 
+	os.MkdirAll(config.BackupsFolder.Value(), 0755)
 	ServerFS, err = NewFileServer(config.ServersFolder.Value(), 0, 0, false)
 	if err != nil {
 		return err
 	}
 
+	os.MkdirAll(config.BackupsFolder.Value(), 0755)
 	CacheFS, err = NewFileServer(config.CacheFolder.Value(), 0, 0, false)
 	if err != nil {
 		return err
 	}
 
+	os.MkdirAll(config.BackupsFolder.Value(), 0755)
 	BackupFS, err = NewFileServer(config.BackupsFolder.Value(), 0, 0, false)
 	if err != nil {
 		return err
