@@ -71,6 +71,22 @@ func TestParsePortMap(t *testing.T) {
 			wantProtocol:      "udp",
 			wantErr:           false,
 		},
+		{
+			str:               "[2001:db8:85a3:8d3:1319:8a2e:370:7348]:1234:80/udp",
+			wantIp:            "2001:db8:85a3:8d3:1319:8a2e:370:7348",
+			wantHostPort:      "1234",
+			wantContainerPort: "80",
+			wantProtocol:      "udp",
+			wantErr:           false,
+		},
+		{
+			str:               "[::1]:1234:80/udp",
+			wantIp:            "::1",
+			wantHostPort:      "1234",
+			wantContainerPort: "80",
+			wantProtocol:      "udp",
+			wantErr:           false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.str, func(t *testing.T) {
@@ -87,16 +103,16 @@ func TestParsePortMap(t *testing.T) {
 
 			for k, v := range got {
 				if k.Port() != tt.wantContainerPort {
-					t.Errorf("ParsePortMap() Container Port = %v, want %v", got, tt.wantContainerPort)
+					t.Errorf("ParsePortMap() Container Port = %v, want %v", k.Port(), tt.wantContainerPort)
 				}
 				if len(v) != 1 {
 					t.Errorf("ParsePortMap() = want 1 binding, got %v", len(v))
 				}
 				if v[0].HostPort != tt.wantHostPort {
-					t.Errorf("ParsePortMap() Host Port = %v, want %v", got, tt.wantHostPort)
+					t.Errorf("ParsePortMap() Host Port = %v, want %v", v[0].HostPort, tt.wantHostPort)
 				}
 				if v[0].HostIP.String() != tt.wantIp {
-					t.Errorf("ParsePortMap() Host IP = %v, want %v", got, tt.wantIp)
+					t.Errorf("ParsePortMap() Host IP = %v, want %v", v[0].HostIP.String(), tt.wantIp)
 				}
 			}
 		})

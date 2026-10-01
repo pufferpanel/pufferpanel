@@ -10,7 +10,7 @@ import (
 	"github.com/moby/moby/api/types/network"
 )
 
-var dockerPortBindingRegex = regexp.MustCompile(`^((?P<ip>[0-9]{0,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}):)?((?P<hostport>\d+):)?(?P<port>\d+(\/((tcp)|(udp)))?)$`)
+var dockerPortBindingRegex = regexp.MustCompile(`^((?P<ip>([0-9]{0,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(\[([0-9a-f:]+)\])):)?((?P<hostport>\d+):)?(?P<port>\d+(\/((tcp)|(udp)))?)$`)
 var dockerPortBindingRegexComponents map[string]int = make(map[string]int)
 
 func init() {
@@ -63,7 +63,7 @@ func ParsePortMap(str string) (network.PortMap, error) {
 	if ipPart == "" {
 		ipPart = "0.0.0.0"
 	}
-	ip, err := netip.ParseAddr(ipPart)
+	ip, err := netip.ParseAddr(strings.Trim(ipPart, "[]"))
 	if err != nil {
 		return nil, err
 	}
