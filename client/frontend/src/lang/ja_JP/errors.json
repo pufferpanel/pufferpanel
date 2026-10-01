@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "複数のコンテナが見つかりました",
   "ErrNoContainerNoneFound": "コンテナが見つかりません",
   "ErrNoMountFound": "マウントが見つかりません",
-  "ErrUnsupportedMountType": "サポートされていないマウントタイプ"
+  "ErrUnsupportedMountType": "サポートされていないマウントタイプ",
+  "ErrServerRunning": "Server is running"
 }

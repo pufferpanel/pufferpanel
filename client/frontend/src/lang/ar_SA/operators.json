@@ -33,7 +33,7 @@
     "generic": "Move or rename a file",
     "formatted": "Move file {source} to {target}",
     "source": "Source Path",
-    "target": "Target Path"
+    "target": "المسار المستهدف"
   },
   "mkdir": {
     "generic": "Create a directory",

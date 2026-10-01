@@ -1,9 +1,9 @@
 {
-  "Name": "nimi",
+  "Name": "Nimi",
   "Language": "Kieli",
-  "Online": "päällä",
+  "Online": "Päällä",
   "Offline": "Poissa päältä",
-  "Installing": "Installing",
+  "Installing": "Asennetaan",
   "Unknown": "Tuntematon",
   "Loading": "Ladataan...",
   "Description": "Kuvaus",
@@ -14,9 +14,9 @@
   "Port": "Portti",
   "Collapse": "Romahdus",
   "Expand": "Laajenna",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copy": "Kopioi leikepöydälle",
+  "Copied": "Kopioitu leikepöydälle",
+  "Back": "Takaisin",
   "Next": "Seuraava",
   "Details": "Lisätiedot",
   "ErrorDetails": "Virheen Tiedot",
@@ -26,21 +26,21 @@
   "Apply": "Toteuta",
   "Confirm": "Vahvista",
   "Condition": "Tila",
-  "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "Discard": "Hylkää",
+  "ConfirmLeave": "Sinulla on tallentamattomia muutoksia, halutako hylätä muutokset ja poistua sivulta?",
   "theme": {
     "Theme": "Teema",
     "Mode": "Tila",
     "mode": {
       "Light": "Vaalea",
       "Dark": "Tumma",
-      "DarkHighContrast": "Dark (High Contrast)",
+      "DarkHighContrast": "Tumma (High Contrast)",
       "Auto": "Automaattinen"
     },
     "BaseColor": "Pohjaväri",
     "ServerTypeDisplay": "Palvelimen Tyypin Näyttö",
     "serverTypeDisplay": {
-      "IconBackground": "Icon + Background",
+      "IconBackground": "Ikoni + Tausta",
       "Icon": "Kuvake",
       "None": "Tyhjä"
     },
@@ -49,17 +49,17 @@
       "Grid": "Ruudukko",
       "List": "Luettelo"
     },
-    "FontSize": "Font Size",
+    "FontSize": "Fonttikoko",
     "fontSize": {
-      "Default": "Default"
+      "Default": "Oletus"
     },
     "FontFace": "Font Face",
     "fontFace": {
-      "Default": "Default",
-      "A11y": "Accessibility optimized"
+      "Default": "Oletus",
+      "A11y": "Esteettömyys optimoitu"
     }
   },
-  "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "NoResults": "Ei tuloksia",
+  "Yes": "Kyllä",
+  "No": "Ei"
 }

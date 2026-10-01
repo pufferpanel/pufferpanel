@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "Mehrere Container gefunden",
   "ErrNoContainerNoneFound": "Kein Container gefunden",
   "ErrNoMountFound": "Kein Mount gefunden",
-  "ErrUnsupportedMountType": "Nicht unterstützter Mount-Typ"
+  "ErrUnsupportedMountType": "Nicht unterstützter Mount-Typ",
+  "ErrServerRunning": "Server is running"
 }
