@@ -35,7 +35,7 @@
   "ErrSessionTimedOut": "Session expirée, merci de vous reconnecter",
   "ErrMissingScope": "Vous n'êtes pas autorisé à effectuer cette action",
   "ErrInvalidJson": "Les données JSON sont invalides",
-  "ErrSocketFailed": "La connexion WebSocket a rencontré une erreur, certaines fonctionnalités peuvent être ralenties ou indisponibles",
+  "ErrSocketFailed": "La connexion WebSocket a rencontré une erreur, certaines fonctionnalités peuvent être lentes ou indisponibles",
   "ErrInviteLinkInvalid": "Votre lien d'invitation semble être invalide",
   "ErrSavingInvitedUser": "Une erreur s'est produite lors de la création de votre compte",
   "ErrDuplicateServerName": "Un serveur avec ce nom existe déjà",
@@ -52,5 +52,5 @@
   "ErrNoContainerNoneFound": "Aucun conteneur trouvé",
   "ErrNoMountFound": "Aucun montage trouvé",
   "ErrUnsupportedMountType": "Type de montage non supporté",
-  "ErrServerRunning": "Server is running"
+  "ErrServerRunning": "Le serveur est en cours d'exécution"
 }
