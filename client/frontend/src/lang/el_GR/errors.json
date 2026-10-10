@@ -43,7 +43,7 @@
   "ErrDirectoryUploadNotSupported": "Αδυναμία μεταφόρτωσης φακέλων",
   "ErrDockerNotSupported": "Docker is not supported on this node",
   "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedOS": "Το λειτουργικό σύστημα ({actual}) δεν είναι υποστηριγμένο. Υποστηριγμένο λειτουργικό σύστημα: {expected}",
   "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}",
   "ErrNoCommand": "No command could be determined to be used for this server",
   "ErrBackupInProgress": "The server is currently performing a backup or restore. Please wait for this process to complete",
@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "Multiple containers found",
   "ErrNoContainerNoneFound": "No container found",
   "ErrNoMountFound": "No mount found",
-  "ErrUnsupportedMountType": "Unsupported mount type"
+  "ErrUnsupportedMountType": "Unsupported mount type",
+  "ErrServerRunning": "Server is running"
 }

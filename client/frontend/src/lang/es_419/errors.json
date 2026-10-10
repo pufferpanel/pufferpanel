@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "Más de un contenedor encontrado",
   "ErrNoContainerNoneFound": "No se encuentra el contenedor",
   "ErrNoMountFound": "No se encuentra la montura",
-  "ErrUnsupportedMountType": "Tipo de montura no compatible"
+  "ErrUnsupportedMountType": "Tipo de montura no compatible",
+  "ErrServerRunning": "Server is running"
 }

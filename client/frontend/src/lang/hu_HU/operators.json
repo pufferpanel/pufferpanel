@@ -58,14 +58,14 @@
     "generic": "Kérem Várjon",
     "formatted": "Kérem várjon {duration}",
     "duration": "Időtartam",
-    "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
+    "durationHint": "A valódi idő lehetőségek az ns, us, ms, s, m és a h. A időformátumok lehetnek kombináltak. Plédául: 1m45s"
   },
   "steamgamedl": {
     "generic": "Steamről telepítése",
     "formatted": "Streamről App id-ben telepítése {appId}",
     "appId": "Steam App ID",
-    "branch": "Branch (leave blank for default)",
-    "branchPassword": "Branch Password (if needed)"
+    "branch": "Branch (hagyd üresen az alapértelmezetthez)",
+    "branchPassword": "Branch Jelszó (ha szükséges)"
   },
   "javadl": {
     "generic": "Java telepítése",
@@ -74,12 +74,12 @@
   "forgedl": {
     "generic": "Minecraft Forge Letöltése",
     "formatted": "Minecraft Forge Letöltése",
-    "outputVariable": "Output variable"
+    "outputVariable": "Output változó"
   },
   "neoforgedl": {
-    "generic": "Download Minecraft Neoforge",
-    "formatted": "Download Minecraft Neoforge",
-    "outputVariable": "Output variable"
+    "generic": "Minecraft Neoforge letöltése",
+    "formatted": "Minecraft Neoforge letöltése",
+    "outputVariable": "Output változó"
   },
   "spongeforgedl": {
     "generic": "Minecraft SpongeForge Letöltése",
@@ -91,16 +91,16 @@
     "formatted": "Minecraft Fabric Letöltése"
   },
   "paperdl": {
-    "generic": "Download PaperMC project",
-    "formatted": "Download {project} to {target}",
-    "project": "PaperMC project",
-    "build": "Build number"
+    "generic": "Minecraft PaperMC letöltése",
+    "formatted": "{project} letöltése {target} számára",
+    "project": "PaperMC projekt",
+    "build": "Build szám"
   },
   "curseforge": {
     "generic": "Curseforgeról letöltés",
     "formatted": "Curseforgeról letöltés",
-    "projectId": "Project ID",
-    "fileId": "File ID",
+    "projectId": "Projekt ID",
+    "fileId": "Fájl ID",
     "java": "Java"
   },
   "nodejsdl": {

@@ -3,20 +3,20 @@
   "Language": "Γλώσσα",
   "Online": "Σε σύνδεση",
   "Offline": "Εκτός σύνδεσης",
-  "Installing": "Installing",
+  "Installing": "Κατεβαίνει",
   "Unknown": "Άγνωστο",
   "Loading": "Φόρτωση...",
-  "Description": "Description",
+  "Description": "Περιγραφή",
   "Save": "Αποθήκευση",
   "Cancel": "Ακύρωση",
-  "Close": "Close",
+  "Close": "Κλείσε",
   "Host": "Διακομιστής",
   "Port": "Θύρα",
   "Collapse": "Σύμπτυξη",
   "Expand": "Expand",
-  "Copy": "Copy to clipboard",
-  "Copied": "Copied to clipboard",
-  "Back": "Back",
+  "Copy": "Αντιγράψτε' το στο πρόχειρο",
+  "Copied": "Αντιγράφηκε στο πρόχειρο",
+  "Back": "Πίσω",
   "Next": "Επόμενο",
   "Details": "Λεπτομέρειες",
   "ErrorDetails": "Λεπτομέρειες Σφάλματος",
@@ -27,17 +27,17 @@
   "Confirm": "Confirm",
   "Condition": "Condition",
   "Discard": "Discard",
-  "ConfirmLeave": "You have unsaved changes, do you want to discard these changes and leave this page?",
+  "ConfirmLeave": "Έχεις μη αποθηκευμένες αλλαγές, είσαι σίγουρος ότι θες να βγεις από αυτή τη σελίδα;",
   "theme": {
-    "Theme": "Theme",
+    "Theme": "Θέμα",
     "Mode": "Mode",
     "mode": {
       "Light": "Light",
       "Dark": "Dark",
       "DarkHighContrast": "Dark (High Contrast)",
-      "Auto": "Auto"
+      "Auto": "Αυτόματο"
     },
-    "BaseColor": "Base Color",
+    "BaseColor": "Βασικό Χρώμα",
     "ServerTypeDisplay": "Server Type Display",
     "serverTypeDisplay": {
       "IconBackground": "Icon + Background",
@@ -60,6 +60,6 @@
     }
   },
   "NoResults": "No Results",
-  "Yes": "Yes",
-  "No": "No"
+  "Yes": "Ναι",
+  "No": "Όχι"
 }

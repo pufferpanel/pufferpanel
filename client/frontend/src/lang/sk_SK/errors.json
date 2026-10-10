@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "Boli nájdené viaceré kontajnery",
   "ErrNoContainerNoneFound": "Kontajner sa nenašiel",
   "ErrNoMountFound": "Neexistujú žiadne pripojenia ciest (mount)",
-  "ErrUnsupportedMountType": "Nepodporovaný typ pripojenia (mount)"
+  "ErrUnsupportedMountType": "Nepodporovaný typ pripojenia (mount)",
+  "ErrServerRunning": "Server is running"
 }
