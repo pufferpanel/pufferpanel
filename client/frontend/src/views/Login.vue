@@ -33,7 +33,8 @@ const oidcErrors = {
   unverified: 'users.OidcErrorUnverified',
   denied: 'users.OidcErrorDenied',
   state: 'users.OidcErrorState',
-  unavailable: 'users.OidcErrorUnavailable'
+  unavailable: 'users.OidcErrorUnavailable',
+  nologin: 'users.OidcErrorNoLogin'
 }
 
 onMounted(async () => {

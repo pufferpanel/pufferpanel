@@ -25,6 +25,7 @@
   "OidcErrorDenied": "The SSO login was cancelled or denied.",
   "OidcErrorState": "The SSO login expired or was started in another tab. Please try again.",
   "OidcErrorUnavailable": "The SSO provider cannot be reached right now.",
+  "OidcErrorNoLogin": "This account is not allowed to log in.",
   "OidcErrorGeneric": "The SSO login failed.",
   "Username": "Username",
   "Password": "Password",

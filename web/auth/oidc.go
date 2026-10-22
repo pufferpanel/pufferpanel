@@ -15,6 +15,7 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
@@ -214,7 +215,12 @@ func OidcCallback(c *gin.Context) {
 		return
 	}
 
-	if _, ok = startSession(c, user); !ok {
+	if _, _, err = startSession(c, user); errors.Is(err, pufferpanel.ErrLoginNotPermitted) {
+		oidcFail(c, "nologin")
+		return
+	} else if err != nil {
+		logging.Error.Printf("OIDC: cannot start the session: %s\n", err)
+		oidcFail(c, "error")
 		return
 	}
 	// the frontend loads the scopes there before it renders, like after a password login
