@@ -49,6 +49,7 @@ var OidcButtonText = asString("panel.oidc.buttonText", "")
 var OidcUserMatch = asString("panel.oidc.userMatch", "email")
 var OidcUsernameClaim = asString("panel.oidc.usernameClaim", "preferred_username")
 var OidcRequireVerifiedEmail = asBool("panel.oidc.requireVerifiedEmail", true)
+var OidcHidePasswordLogin = asBool("panel.oidc.hidePasswordLogin", false)
 
 var DaemonEnabled = asBool("daemon.enable", true)
 var ConsoleBuffer = asInt("daemon.console.buffer", 50)

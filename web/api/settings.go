@@ -208,6 +208,7 @@ var editableBoolEntries = []config.BoolEntry{
 	config.RegistrationEnabled,
 	config.OidcEnabled,
 	config.OidcRequireVerifiedEmail,
+	config.OidcHidePasswordLogin,
 }
 
 // writeOnlyEntries can be set through the API but are never returned

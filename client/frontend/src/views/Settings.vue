@@ -49,7 +49,8 @@ const oidc = ref({
   buttonText: '',
   userMatch: 'email',
   usernameClaim: '',
-  requireVerifiedEmail: true
+  requireVerifiedEmail: true,
+  hidePasswordLogin: false
 })
 const oidcUserMatchOptions = [
   { label: t('settings.oidc.userMatchEmail'), value: 'email' },
@@ -140,7 +141,7 @@ onMounted(async () => {
   for (const key of Object.keys(oidc.value)) {
     if (key === 'clientSecret') continue
     const value = await api.settings.get('panel.oidc.' + key)
-    if (key === 'enabled' || key === 'requireVerifiedEmail') {
+    if (key === 'enabled' || key === 'requireVerifiedEmail' || key === 'hidePasswordLogin') {
       oidc.value[key] = (value === "true" || value === true)
     } else {
       oidc.value[key] = value
@@ -187,6 +188,7 @@ function updateThemeSetting(name, newSetting) {
     <div class="oidc">
       <h1 v-text="t('settings.OidcSettings')" />
       <toggle v-model="oidc.enabled" :label="t('settings.oidc.enabled')" :hint="t('settings.oidc.enabledHint')" />
+      <toggle v-model="oidc.hidePasswordLogin" :label="t('settings.oidc.hidePasswordLogin')" :hint="t('settings.oidc.hidePasswordLoginHint')" />
       <text-field v-model="oidc.issuer" :label="t('settings.oidc.issuer')" :hint="t('settings.oidc.issuerHint')" />
       <text-field v-model="oidc.clientId" :label="t('settings.oidc.clientId')" />
       <text-field v-model="oidc.clientSecret" type="password" :label="t('settings.oidc.clientSecret')" :hint="t('settings.oidc.clientSecretHint')" />

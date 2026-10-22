@@ -19,6 +19,7 @@
   "Register": "Register",
   "RegisterLink": "Or register here",
   "OidcLogin": "Login with SSO",
+  "OidcUsePassword": "Login with password instead",
   "OidcErrorNoUser": "There is no account in this panel for that SSO identity. Ask an administrator to create one.",
   "OidcErrorUnverified": "The SSO provider did not confirm your email address.",
   "OidcErrorDenied": "The SSO login was cancelled or denied.",

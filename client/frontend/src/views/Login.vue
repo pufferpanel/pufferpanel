@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, nextTick, onMounted } from 'vue'
+import { ref, computed, inject, nextTick, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import TextField from '@/components/ui/TextField.vue'
@@ -19,6 +19,14 @@ const route = useRoute()
 
 // $config is loaded once when the app starts; the OIDC setting can change while the app stays open (e.g. after a logout)
 const oidc = ref(config.oidc || { enabled: false })
+// with hidePasswordLogin only the SSO button is shown; the link below it brings the password form back
+const passwordRevealed = ref(false)
+const showPasswordForm = computed(() => !(oidc.value.enabled && oidc.value.hidePasswordLogin) || passwordRevealed.value)
+
+function revealPasswordForm() {
+  passwordRevealed.value = true
+  nextTick(() => emailInput.value && emailInput.value.focus())
+}
 
 const oidcErrors = {
   nouser: 'users.OidcErrorNoUser',
@@ -200,6 +208,7 @@ async function nextStep(e) {
   <div :class="['login', step]">
     <h1 v-text="t('users.Login')" />
     <form @keydown.enter="nextStep($event)">
+      <template v-if="showPasswordForm">
       <text-field
         ref="emailInput"
         v-model="email"
@@ -259,15 +268,24 @@ async function nextStep(e) {
         <loader v-if="loading" />
         <span v-else v-text="t('common.Next')" />
       </btn>
+      </template>
       <btn
         v-if="oidc.enabled"
         :disabled="loading || oidcLoading"
-        variant="text"
+        :color="showPasswordForm ? undefined : 'primary'"
+        :variant="showPasswordForm ? 'text' : undefined"
         @click="oidcLogin()"
       >
         <loader v-if="oidcLoading" />
         <span v-else v-text="oidc.buttonText || t('users.OidcLogin')" />
       </btn>
+      <btn
+        v-if="!showPasswordForm"
+        :disabled="oidcLoading"
+        variant="text"
+        @click="revealPasswordForm()"
+        v-text="t('users.OidcUsePassword')"
+      />
       <btn
         v-if="$config.registrationEnabled"
         variant="text"
