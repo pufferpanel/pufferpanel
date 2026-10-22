@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from 'vue'
+import { ref, inject, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { List, ListItem, ListItemContent, ListItemIcon } from '@/components/ui/list'
@@ -13,10 +13,17 @@ const api = inject('api')
 const events = inject('events')
 const { t } = useI18n()
 const router = useRouter()
-const routes = router.getRoutes().filter(e => {
-  if (e.meta.permission === true) return true
-  return e.meta.permission && api.auth.isLoggedIn() && api.auth.hasScope(e.meta.permission)
-})
+function visibleRoutes() {
+  return router.getRoutes().filter(e => {
+    if (e.meta.permission === true) return true
+    return e.meta.permission && api.auth.isLoggedIn() && api.auth.hasScope(e.meta.permission)
+  })
+}
+const routes = ref(visibleRoutes())
+// the scopes can arrive after the sidebar was created, e.g. on the page an OIDC login returns to
+onUnmounted(events.on('login', () => {
+  routes.value = visibleRoutes()
+}))
 
 const mini = ref(localStorage.getItem('sidebar.mini') === 'true')
 
