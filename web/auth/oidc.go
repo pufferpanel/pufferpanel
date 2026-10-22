@@ -20,6 +20,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/services"
+	"github.com/spf13/cast"
 	"golang.org/x/oauth2"
 	"gorm.io/gorm"
 )
@@ -254,7 +255,7 @@ func matchOidcUser(lookup oidcUserLookup, claims map[string]interface{}, mode, u
 		if email == "" {
 			return nil, errOidcNoUser
 		}
-		if requireVerifiedEmail && !oidcClaimTrue(claims["email_verified"]) {
+		if requireVerifiedEmail && !cast.ToBool(claims["email_verified"]) {
 			return nil, errOidcEmailNotVerified
 		}
 		user, err = lookup.GetByEmail(email)
@@ -267,17 +268,6 @@ func matchOidcUser(lookup oidcUserLookup, claims map[string]interface{}, mode, u
 		return nil, err
 	}
 	return user, nil
-}
-
-// oidcClaimTrue accepts true and "true": some providers send booleans as strings
-func oidcClaimTrue(value interface{}) bool {
-	switch v := value.(type) {
-	case bool:
-		return v
-	case string:
-		return strings.EqualFold(v, "true")
-	}
-	return false
 }
 
 func oidcFail(c *gin.Context, reason string) {
