@@ -16,6 +16,8 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 	rg.PUT("passkey", middleware.NeedsDatabase, PasskeyFinish)
 	rg.POST("register", middleware.NeedsDatabase, RegisterPost)
 	rg.POST("reauth", middleware.AuthMiddleware, middleware.NeedsDatabase, Reauth)
+	rg.GET("oidc/login", OidcLogin)
+	rg.GET("oidc/callback", middleware.NeedsDatabase, OidcCallback)
 
 	rg.GET("publickey", TokenServiceGetPublicKey)
 }
