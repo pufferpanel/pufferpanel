@@ -1111,7 +1111,8 @@ html[dir="rtl"] {
   .panel, .email, .oidc {
     @include card;
     @include cols(12);
-    @include cols(6, md);
+    // the width the panel card had, but every card in its own row
+    @include cols(6, md, 0);
     & {
       height: -moz-fit-content;
       height: fit-content;
