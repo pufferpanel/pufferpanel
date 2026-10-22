@@ -39,6 +39,23 @@ const registrationEnabled = ref(true)
 const theme = ref('PufferPanel')
 const themeSettings = ref([])
 
+const oidc = ref({
+  enabled: false,
+  issuer: '',
+  clientId: '',
+  clientSecret: '',
+  scopes: '',
+  redirectUrl: '',
+  buttonText: '',
+  userMatch: 'email',
+  usernameClaim: '',
+  requireVerifiedEmail: true
+})
+const oidcUserMatchOptions = [
+  { label: t('settings.oidc.userMatchEmail'), value: 'email' },
+  { label: t('settings.oidc.userMatchUsername'), value: 'username' }
+]
+
 const emailProviders = []
 Object.keys(emailProviderConfigs).map(provider => {
   emailProviders.push({
@@ -84,6 +101,22 @@ async function savePanelSettings() {
   toast.success(t('settings.Saved'))
 }
 
+function autofillOidcRedirectUrl() {
+  oidc.value.redirectUrl = window.location.origin + '/auth/oidc/callback'
+}
+
+async function saveOidcSettings() {
+  const data = {}
+  Object.keys(oidc.value).map(key => {
+    // the secret is never sent back by the panel: only overwrite it when a new one was entered
+    if (key === 'clientSecret' && oidc.value[key] === '') return
+    data['panel.oidc.' + key] = oidc.value[key]
+  })
+  await api.settings.set(data)
+  oidc.value.clientSecret = ''
+  toast.success(t('settings.Saved'))
+}
+
 async function saveEmailSettings() {
   const data = { 'panel.email.provider': emailProvider.value }
   emailFields.value.map(elem => {
@@ -104,6 +137,15 @@ onMounted(async () => {
   const regEnabled = await api.settings.get('panel.registrationEnabled')
   registrationEnabled.value = (regEnabled === "true" || regEnabled === true)
   theme.value = await api.settings.get('panel.settings.defaultTheme')
+  for (const key of Object.keys(oidc.value)) {
+    if (key === 'clientSecret') continue
+    const value = await api.settings.get('panel.oidc.' + key)
+    if (key === 'enabled' || key === 'requireVerifiedEmail') {
+      oidc.value[key] = (value === "true" || value === true)
+    } else {
+      oidc.value[key] = value
+    }
+  }
   emailProvider.value = await api.settings.get('panel.email.provider')
   emailProviderChanged(emailProvider.value)
   Object.keys(email.value).map(async key => {
@@ -141,6 +183,23 @@ function updateThemeSetting(name, newSetting) {
       <text-field v-for="elem in emailFields" :key="elem.key" v-model="email[elem.key]" :type="elem.type" :label="t('settings.email.' + elem.key)" />
       <btn color="primary" @click="saveEmailSettings()"><icon name="save" />{{ t('settings.SaveEmailSettings') }}</btn>
       <btn color="primary" @click="testEmailSettings()"><icon name="test" />{{ t('settings.TestEmail' )}}</btn>
+    </div>
+    <div class="oidc">
+      <h1 v-text="t('settings.OidcSettings')" />
+      <toggle v-model="oidc.enabled" :label="t('settings.oidc.enabled')" :hint="t('settings.oidc.enabledHint')" />
+      <text-field v-model="oidc.issuer" :label="t('settings.oidc.issuer')" :hint="t('settings.oidc.issuerHint')" />
+      <text-field v-model="oidc.clientId" :label="t('settings.oidc.clientId')" />
+      <text-field v-model="oidc.clientSecret" type="password" :label="t('settings.oidc.clientSecret')" :hint="t('settings.oidc.clientSecretHint')" />
+      <div class="master-url">
+        <text-field v-model="oidc.redirectUrl" :label="t('settings.oidc.redirectUrl')" :hint="t('settings.oidc.redirectUrlHint')" />
+        <icon name="auto-fix" @click="autofillOidcRedirectUrl()" />
+      </div>
+      <text-field v-model="oidc.buttonText" :label="t('settings.oidc.buttonText')" :hint="t('settings.oidc.buttonTextHint')" />
+      <dropdown v-model="oidc.userMatch" :options="oidcUserMatchOptions" :label="t('settings.oidc.userMatch')" />
+      <text-field v-if="oidc.userMatch === 'username'" v-model="oidc.usernameClaim" :label="t('settings.oidc.usernameClaim')" :hint="t('settings.oidc.usernameClaimHint')" />
+      <toggle v-if="oidc.userMatch !== 'username'" v-model="oidc.requireVerifiedEmail" :label="t('settings.oidc.requireVerifiedEmail')" :hint="t('settings.oidc.requireVerifiedEmailHint')" />
+      <text-field v-model="oidc.scopes" :label="t('settings.oidc.scopes')" :hint="t('settings.oidc.scopesHint')" />
+      <btn color="primary" @click="saveOidcSettings()"><icon name="save" />{{ t('settings.SaveOidcSettings') }}</btn>
     </div>
   </div>
 </template>

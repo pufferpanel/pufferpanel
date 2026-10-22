@@ -1108,7 +1108,7 @@ html[dir="rtl"] {
   & {
     margin: unset;
   }
-  .panel, .email {
+  .panel, .email, .oidc {
     @include card;
     @include cols(12);
     @include cols(6, md);
@@ -1139,7 +1139,8 @@ html[dir="rtl"] {
   }
 }
 
-html[dir="rtl"] .settings .panel .master-url .icon {
+html[dir="rtl"] .settings .panel .master-url .icon,
+html[dir="rtl"] .settings .oidc .master-url .icon {
   margin-right: 0.5em;
   margin-left: unset;
 }

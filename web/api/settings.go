@@ -33,6 +33,13 @@ func registerSettings(g *gin.RouterGroup) {
 func getSetting(c *gin.Context) {
 	key := c.Param("key")
 
+	for _, v := range writeOnlyEntries {
+		if v.Key() == key {
+			c.JSON(http.StatusOK, models.Setting{Value: ""})
+			return
+		}
+	}
+
 	for _, v := range editableStringEntries {
 		if v.Key() == key {
 			c.JSON(http.StatusOK, models.Setting{Value: v.Value()})
@@ -188,8 +195,23 @@ var editableStringEntries = []config.StringEntry{
 	config.DefaultTheme,
 	config.ThemeSettings,
 	config.MasterUrl,
+	config.OidcIssuer,
+	config.OidcClientId,
+	config.OidcClientSecret,
+	config.OidcScopes,
+	config.OidcRedirectUrl,
+	config.OidcButtonText,
+	config.OidcUserMatch,
+	config.OidcUsernameClaim,
 }
 var editableBoolEntries = []config.BoolEntry{
 	config.RegistrationEnabled,
+	config.OidcEnabled,
+	config.OidcRequireVerifiedEmail,
+}
+
+// writeOnlyEntries can be set through the API but are never returned
+var writeOnlyEntries = []config.StringEntry{
+	config.OidcClientSecret,
 }
 var editableIntEntries = []config.IntEntry{}
