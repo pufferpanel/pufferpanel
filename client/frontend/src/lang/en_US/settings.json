@@ -38,7 +38,7 @@
   "OidcIssuer": "Issuer URL",
   "OidcIssuerHint": "The provider's issuer, e.g. https://sso.example.com/application/o/pufferpanel/ (its /.well-known/openid-configuration must be reachable from the panel)",
   "OidcClientId": "Client ID",
-  "OidcCallbackHint": "Register {url} as redirect URL at the provider",
+  "OidcCallbackHint": "Register {url} as redirect URL at the provider. It is built from the Master URL, which has to be the public URL users open the panel under",
   "OidcClientSecret": "Client Secret",
   "OidcClientSecretHint": "Never shown again after saving; leave empty to keep the current secret",
   "OidcButtonText": "Button Label",
