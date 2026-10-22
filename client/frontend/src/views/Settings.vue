@@ -53,8 +53,8 @@ const oidc = ref({
   hidePasswordLogin: false
 })
 const oidcUserMatchOptions = [
-  { label: t('settings.oidc.userMatchEmail'), value: 'email' },
-  { label: t('settings.oidc.userMatchUsername'), value: 'username' }
+  { label: t('settings.OidcUserMatchEmail'), value: 'email' },
+  { label: t('settings.OidcUserMatchUsername'), value: 'username' }
 ]
 
 const emailProviders = []
@@ -187,20 +187,20 @@ function updateThemeSetting(name, newSetting) {
     </div>
     <div class="oidc">
       <h1 v-text="t('settings.OidcSettings')" />
-      <toggle v-model="oidc.enabled" :label="t('settings.oidc.enabled')" :hint="t('settings.oidc.enabledHint')" />
-      <toggle v-model="oidc.hidePasswordLogin" :label="t('settings.oidc.hidePasswordLogin')" :hint="t('settings.oidc.hidePasswordLoginHint')" />
-      <text-field v-model="oidc.issuer" :label="t('settings.oidc.issuer')" :hint="t('settings.oidc.issuerHint')" />
-      <text-field v-model="oidc.clientId" :label="t('settings.oidc.clientId')" />
-      <text-field v-model="oidc.clientSecret" type="password" :label="t('settings.oidc.clientSecret')" :hint="t('settings.oidc.clientSecretHint')" />
+      <toggle v-model="oidc.enabled" :label="t('settings.OidcEnabled')" :hint="t('settings.OidcEnabledHint')" />
+      <toggle v-model="oidc.hidePasswordLogin" :label="t('settings.OidcHidePasswordLogin')" :hint="t('settings.OidcHidePasswordLoginHint')" />
+      <text-field v-model="oidc.issuer" :label="t('settings.OidcIssuer')" :hint="t('settings.OidcIssuerHint')" />
+      <text-field v-model="oidc.clientId" :label="t('settings.OidcClientId')" />
+      <text-field v-model="oidc.clientSecret" type="password" :label="t('settings.OidcClientSecret')" :hint="t('settings.OidcClientSecretHint')" />
       <div class="master-url">
-        <text-field v-model="oidc.redirectUrl" :label="t('settings.oidc.redirectUrl')" :hint="t('settings.oidc.redirectUrlHint')" />
+        <text-field v-model="oidc.redirectUrl" :label="t('settings.OidcRedirectUrl')" :hint="t('settings.OidcRedirectUrlHint')" />
         <icon name="auto-fix" @click="autofillOidcRedirectUrl()" />
       </div>
-      <text-field v-model="oidc.buttonText" :label="t('settings.oidc.buttonText')" :hint="t('settings.oidc.buttonTextHint')" />
-      <dropdown v-model="oidc.userMatch" :options="oidcUserMatchOptions" :label="t('settings.oidc.userMatch')" />
-      <text-field v-if="oidc.userMatch === 'username'" v-model="oidc.usernameClaim" :label="t('settings.oidc.usernameClaim')" :hint="t('settings.oidc.usernameClaimHint')" />
-      <toggle v-if="oidc.userMatch !== 'username'" v-model="oidc.requireVerifiedEmail" :label="t('settings.oidc.requireVerifiedEmail')" :hint="t('settings.oidc.requireVerifiedEmailHint')" />
-      <text-field v-model="oidc.scopes" :label="t('settings.oidc.scopes')" :hint="t('settings.oidc.scopesHint')" />
+      <text-field v-model="oidc.buttonText" :label="t('settings.OidcButtonText')" :hint="t('settings.OidcButtonTextHint')" />
+      <dropdown v-model="oidc.userMatch" :options="oidcUserMatchOptions" :label="t('settings.OidcUserMatch')" />
+      <text-field v-if="oidc.userMatch === 'username'" v-model="oidc.usernameClaim" :label="t('settings.OidcUsernameClaim')" :hint="t('settings.OidcUsernameClaimHint')" />
+      <toggle v-if="oidc.userMatch !== 'username'" v-model="oidc.requireVerifiedEmail" :label="t('settings.OidcRequireVerifiedEmail')" :hint="t('settings.OidcRequireVerifiedEmailHint')" />
+      <text-field v-model="oidc.scopes" :label="t('settings.OidcScopes')" :hint="t('settings.OidcScopesHint')" />
       <btn color="primary" @click="saveOidcSettings()"><icon name="save" />{{ t('settings.SaveOidcSettings') }}</btn>
     </div>
   </div>
