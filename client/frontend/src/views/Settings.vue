@@ -45,7 +45,6 @@ const oidc = ref({
   clientId: '',
   clientSecret: '',
   scopes: '',
-  redirectUrl: '',
   buttonText: '',
   userMatch: 'email',
   usernameClaim: '',
@@ -100,10 +99,6 @@ async function savePanelSettings() {
     'panel.registrationEnabled': registrationEnabled.value
   })
   toast.success(t('settings.Saved'))
-}
-
-function autofillOidcRedirectUrl() {
-  oidc.value.redirectUrl = window.location.origin + '/auth/oidc/callback'
 }
 
 async function saveOidcSettings() {
@@ -190,12 +185,8 @@ function updateThemeSetting(name, newSetting) {
       <toggle v-model="oidc.enabled" :label="t('settings.OidcEnabled')" :hint="t('settings.OidcEnabledHint')" />
       <toggle v-model="oidc.hidePasswordLogin" :label="t('settings.OidcHidePasswordLogin')" :hint="t('settings.OidcHidePasswordLoginHint')" />
       <text-field v-model="oidc.issuer" :label="t('settings.OidcIssuer')" :hint="t('settings.OidcIssuerHint')" />
-      <text-field v-model="oidc.clientId" :label="t('settings.OidcClientId')" />
+      <text-field v-model="oidc.clientId" :label="t('settings.OidcClientId')" :hint="t('settings.OidcCallbackHint', { url: masterUrl.replace(/\/$/, '') + '/auth/oidc/callback' })" />
       <text-field v-model="oidc.clientSecret" type="password" :label="t('settings.OidcClientSecret')" :hint="t('settings.OidcClientSecretHint')" />
-      <div class="master-url">
-        <text-field v-model="oidc.redirectUrl" :label="t('settings.OidcRedirectUrl')" :hint="t('settings.OidcRedirectUrlHint')" />
-        <icon name="auto-fix" @click="autofillOidcRedirectUrl()" />
-      </div>
       <text-field v-model="oidc.buttonText" :label="t('settings.OidcButtonText')" :hint="t('settings.OidcButtonTextHint')" />
       <dropdown v-model="oidc.userMatch" :options="oidcUserMatchOptions" :label="t('settings.OidcUserMatch')" />
       <text-field v-if="oidc.userMatch === 'username'" v-model="oidc.usernameClaim" :label="t('settings.OidcUsernameClaim')" :hint="t('settings.OidcUsernameClaimHint')" />

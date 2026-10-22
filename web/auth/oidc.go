@@ -95,9 +95,6 @@ func oidcOAuth2Config(provider *oidc.Provider) *oauth2.Config {
 }
 
 func oidcRedirectUrl() string {
-	if redirectUrl := config.OidcRedirectUrl.Value(); redirectUrl != "" {
-		return redirectUrl
-	}
 	return strings.TrimSuffix(config.MasterUrl.Value(), "/") + "/auth/oidc/callback"
 }
 
