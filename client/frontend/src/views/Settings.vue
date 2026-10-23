@@ -44,8 +44,8 @@ const oidc = ref({
   issuer: '',
   clientId: '',
   clientSecret: '',
-  scopes: '',
   buttonText: '',
+  scopes: '',
   userMatch: 'email',
   usernameClaim: '',
   requireVerifiedEmail: true
@@ -186,10 +186,10 @@ function updateThemeSetting(name, newSetting) {
       <text-field v-model="oidc.clientId" :label="t('settings.OidcClientId')" :hint="t('settings.OidcCallbackHint', { url: masterUrl.replace(/\/$/, '') + '/auth/oidc/callback' })" />
       <text-field v-model="oidc.clientSecret" type="password" :label="t('settings.OidcClientSecret')" :hint="t('settings.OidcClientSecretHint')" />
       <text-field v-model="oidc.buttonText" :label="t('settings.OidcButtonText')" :hint="t('settings.OidcButtonTextHint')" />
+      <text-field v-model="oidc.scopes" :label="t('settings.OidcScopes')" :hint="t('settings.OidcScopesHint')" />
       <dropdown v-model="oidc.userMatch" :options="oidcUserMatchOptions" :label="t('settings.OidcUserMatch')" />
       <text-field v-if="oidc.userMatch === 'username'" v-model="oidc.usernameClaim" :label="t('settings.OidcUsernameClaim')" :hint="t('settings.OidcUsernameClaimHint')" />
       <toggle v-if="oidc.userMatch !== 'username'" v-model="oidc.requireVerifiedEmail" :label="t('settings.OidcRequireVerifiedEmail')" :hint="t('settings.OidcRequireVerifiedEmailHint')" />
-      <text-field v-model="oidc.scopes" :label="t('settings.OidcScopes')" :hint="t('settings.OidcScopesHint')" />
       <btn color="primary" @click="saveOidcSettings()"><icon name="save" />{{ t('settings.SaveOidcSettings') }}</btn>
     </div>
   </div>

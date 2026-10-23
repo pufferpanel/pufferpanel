@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"slices"
 	"testing"
 
 	"github.com/pufferpanel/pufferpanel/v3/models"
@@ -87,6 +88,20 @@ type failingLookup struct{}
 func (f *failingLookup) Get(string) (*models.User, error) { return nil, errors.New("db down") }
 
 func (f *failingLookup) GetByEmail(string) (*models.User, error) { return nil, errors.New("db down") }
+
+func TestOidcScopes(t *testing.T) {
+	for value, want := range map[string][]string{
+		"openid email":         {"openid", "email"},
+		"email profile":        {"openid", "email", "profile"},
+		"  email   openid  ":   {"email", "openid"},
+		"":                     {"openid"},
+		"openid email profile": {"openid", "email", "profile"},
+	} {
+		if got := oidcScopes(value); !slices.Equal(got, want) {
+			t.Errorf("oidcScopes(%q) = %v, want %v", value, got, want)
+		}
+	}
+}
 
 func TestDecodeOidcState(t *testing.T) {
 	encode := func(s oidcState) string {

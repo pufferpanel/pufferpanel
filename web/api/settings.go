@@ -198,8 +198,8 @@ var editableStringEntries = []config.StringEntry{
 	config.OidcIssuer,
 	config.OidcClientId,
 	config.OidcClientSecret,
-	config.OidcScopes,
 	config.OidcButtonText,
+	config.OidcScopes,
 	config.OidcUserMatch,
 	config.OidcUsernameClaim,
 }

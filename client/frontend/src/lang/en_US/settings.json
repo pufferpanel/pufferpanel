@@ -41,13 +41,13 @@
   "OidcClientSecretHint": "Never shown again after saving; leave empty to keep the current secret",
   "OidcButtonText": "Button Label",
   "OidcButtonTextHint": "Text of the login button, e.g. \"Login with Example SSO\". Empty: \"Login with SSO\"",
+  "OidcScopes": "Scopes",
+  "OidcScopesHint": "Space-separated, e.g. openid profile. openid is always requested",
   "OidcUserMatch": "Match Users By",
   "OidcUserMatchEmail": "Email address",
   "OidcUserMatchUsername": "Username",
   "OidcUsernameClaim": "Username Claim",
   "OidcUsernameClaimHint": "Claim that holds the panel username. Empty: preferred_username",
   "OidcRequireVerifiedEmail": "Require a verified email address",
-  "OidcRequireVerifiedEmailHint": "Only accept the email when the provider reports it as verified (email_verified)",
-  "OidcScopes": "Scopes",
-  "OidcScopesHint": "Space-separated. Empty: openid profile email"
+  "OidcRequireVerifiedEmailHint": "Only accept the email when the provider reports it as verified (email_verified)"
 }

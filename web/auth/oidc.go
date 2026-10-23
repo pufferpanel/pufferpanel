@@ -9,6 +9,7 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -72,27 +73,22 @@ func getOidcProvider(ctx context.Context) (*oidc.Provider, error) {
 }
 
 func oidcOAuth2Config(provider *oidc.Provider) *oauth2.Config {
-	scopeList := strings.Fields(config.OidcScopes.Value())
-	if len(scopeList) == 0 {
-		scopeList = []string{oidc.ScopeOpenID, "profile", "email"}
-	}
-	hasOpenId := false
-	for _, v := range scopeList {
-		if v == oidc.ScopeOpenID {
-			hasOpenId = true
-		}
-	}
-	if !hasOpenId {
-		scopeList = append([]string{oidc.ScopeOpenID}, scopeList...)
-	}
-
 	return &oauth2.Config{
 		ClientID:     config.OidcClientId.Value(),
 		ClientSecret: config.OidcClientSecret.Value(),
 		Endpoint:     provider.Endpoint(),
 		RedirectURL:  oidcRedirectUrl(),
-		Scopes:       scopeList,
+		Scopes:       oidcScopes(config.OidcScopes.Value()),
 	}
+}
+
+// oidcScopes splits the space-separated setting; openid is always requested, the protocol requires it
+func oidcScopes(value string) []string {
+	scopeList := strings.Fields(value)
+	if !slices.Contains(scopeList, oidc.ScopeOpenID) {
+		scopeList = append([]string{oidc.ScopeOpenID}, scopeList...)
+	}
+	return scopeList
 }
 
 func oidcRedirectUrl() string {
