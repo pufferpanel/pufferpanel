@@ -19,8 +19,8 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/services"
-	"github.com/spf13/cast"
 	"golang.org/x/oauth2"
 	"gorm.io/gorm"
 )
@@ -32,18 +32,12 @@ const oidcStateCookie = "puffer_oidc"
 const oidcStateCookiePath = "/auth/oidc"
 const oidcStateMaxAge = 10 * time.Minute
 
-var errOidcNoUser = errors.New("no user matches the identity")
-var errOidcEmailNotVerified = errors.New("email of the identity is not verified")
-
 type oidcState struct {
 	State    string `json:"s"`
 	Nonce    string `json:"n"`
 	Verifier string `json:"v"`
-}
-
-type oidcUserLookup interface {
-	Get(username string) (*models.User, error)
-	GetByEmail(email string) (*models.User, error)
+	// Link is set when a signed-in user links their account from the security settings
+	Link bool `json:"l,omitempty"`
 }
 
 func oidcOAuth2Config(provider *oidc.Provider) *oauth2.Config {
@@ -85,6 +79,7 @@ func OidcLogin(c *gin.Context) {
 		State:    randomOidcValue(),
 		Nonce:    randomOidcValue(),
 		Verifier: oauth2.GenerateVerifier(),
+		Link:     c.Query("link") == "1",
 	}
 	data, err := json.Marshal(state)
 	if err != nil {
@@ -116,16 +111,25 @@ func OidcCallback(c *gin.Context) {
 		return
 	}
 
+	// a failed link goes back to the security settings, where the user is still signed in
+	fail := func(reason string) {
+		if state.Link {
+			c.Redirect(http.StatusFound, "/self?oidc="+url.QueryEscape(reason)+"#security")
+		} else {
+			oidcFail(c, reason)
+		}
+	}
+
 	if providerError := c.Query("error"); providerError != "" {
 		logging.Info.Printf("OIDC: the identity provider returned %s\n", providerError)
-		oidcFail(c, "denied")
+		fail("denied")
 		return
 	}
 
 	ctx := c.Request.Context()
 	provider := services.GetOidcProvider()
 	if provider == nil {
-		oidcFail(c, "unavailable")
+		fail("unavailable")
 		return
 	}
 
@@ -133,48 +137,37 @@ func OidcCallback(c *gin.Context) {
 	token, err := oauthConfig.Exchange(ctx, c.Query("code"), oauth2.VerifierOption(state.Verifier))
 	if err != nil {
 		logging.Error.Printf("OIDC: code exchange failed: %s\n", err)
-		oidcFail(c, "error")
+		fail("error")
 		return
 	}
 
 	rawIdToken, ok := token.Extra("id_token").(string)
 	if !ok {
 		logging.Error.Printf("OIDC: token response has no id_token\n")
-		oidcFail(c, "error")
+		fail("error")
 		return
 	}
 	idToken, err := provider.Verifier(&oidc.Config{ClientID: oauthConfig.ClientID}).Verify(ctx, rawIdToken)
 	if err != nil {
 		logging.Error.Printf("OIDC: id_token rejected: %s\n", err)
-		oidcFail(c, "error")
+		fail("error")
 		return
 	}
 	if subtle.ConstantTimeCompare([]byte(idToken.Nonce), []byte(state.Nonce)) != 1 {
-		oidcFail(c, "state")
+		fail("state")
 		return
-	}
-
-	claims := map[string]interface{}{}
-	if err = idToken.Claims(&claims); err != nil {
-		oidcFail(c, "error")
-		return
-	}
-	// providers that keep profile and email claims out of the id_token deliver them from the userinfo endpoint
-	if _, has := claims[oidcMatchClaim()]; !has {
-		userInfo, err := provider.UserInfo(ctx, oauth2.StaticTokenSource(token))
-		if err == nil && userInfo.Subject == idToken.Subject {
-			_ = userInfo.Claims(&claims)
-		}
 	}
 
 	db := middleware.GetDatabase(c)
-	user, err := matchOidcUser(&services.User{DB: db}, claims, config.OidcUserMatch.Value(), oidcUsernameClaim(), config.OidcRequireVerifiedEmail.Value())
-	if errors.Is(err, errOidcNoUser) {
-		oidcFail(c, "nouser")
+	oi := &services.OidcIdentity{DB: db}
+	if state.Link {
+		linkOidcIdentity(c, oi, idToken, fail)
 		return
 	}
-	if errors.Is(err, errOidcEmailNotVerified) {
-		oidcFail(c, "unverified")
+
+	user, err := oi.GetUser(idToken.Issuer, idToken.Subject)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		oidcFail(c, "notlinked")
 		return
 	}
 	if err != nil {
@@ -210,54 +203,54 @@ func OidcCallback(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/")
 }
 
-func oidcMatchClaim() string {
-	if strings.EqualFold(config.OidcUserMatch.Value(), "username") {
-		return oidcUsernameClaim()
+// linkOidcIdentity links the provider account to the user who is signed in to the panel in this browser; the
+// session cookie is sent along because the provider redirects back with a top-level navigation
+func linkOidcIdentity(c *gin.Context, oi *services.OidcIdentity, idToken *oidc.IDToken, fail func(string)) {
+	user := oidcSessionUser(c)
+	if user == nil {
+		fail("error")
+		return
 	}
-	return "email"
+
+	linked, err := oi.GetUser(idToken.Issuer, idToken.Subject)
+	if err == nil && linked.ID != user.ID {
+		fail("taken")
+		return
+	}
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		logging.Error.Printf("OIDC: user lookup failed: %s\n", err)
+		fail("error")
+		return
+	}
+
+	if err = oi.Link(user.ID, idToken.Issuer, idToken.Subject); err != nil {
+		logging.Error.Printf("OIDC: cannot link the identity to user %d: %s\n", user.ID, err)
+		fail("error")
+		return
+	}
+	c.Redirect(http.StatusFound, "/self?oidc=linked#security")
 }
 
-// oidcUsernameClaim falls back to preferred_username when the setting was saved empty
-func oidcUsernameClaim() string {
-	if claim := config.OidcUsernameClaim.Value(); claim != "" {
-		return claim
+// oidcSessionUser returns the user of this browser's panel session if they may edit their own account
+func oidcSessionUser(c *gin.Context) *models.User {
+	token, err := c.Cookie("puffer_auth")
+	if err != nil || token == "" {
+		return nil
 	}
-	return "preferred_username"
-}
-
-// matchOidcUser finds the panel user for the identity: by email (default) or by the configured username claim
-func matchOidcUser(lookup oidcUserLookup, claims map[string]interface{}, mode, usernameClaim string, requireVerifiedEmail bool) (*models.User, error) {
-	var user *models.User
-	var err error
-
-	if strings.EqualFold(mode, "username") {
-		username, _ := claims[usernameClaim].(string)
-		if username == "" {
-			return nil, errOidcNoUser
-		}
-		user, err = lookup.Get(username)
-	} else {
-		email, _ := claims["email"].(string)
-		if email == "" {
-			return nil, errOidcNoUser
-		}
-		if requireVerifiedEmail && !cast.ToBool(claims["email_verified"]) {
-			return nil, errOidcEmailNotVerified
-		}
-		user, err = lookup.GetByEmail(email)
+	db := middleware.GetDatabase(c)
+	session, err := (&services.Session{DB: db}).Validate(token)
+	if err != nil || session.UserId == nil {
+		return nil
 	}
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, errOidcNoUser
+	perms, err := (&services.Permission{DB: db}).GetForUserAndServer(session.User.ID, "")
+	if err != nil || !scopes.ContainsScope(perms.Scopes, scopes.ScopeSelfEdit) {
+		return nil
 	}
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return &session.User
 }
 
 func oidcFail(c *gin.Context, reason string) {
-	c.Redirect(http.StatusFound, "/auth/login?oidcError="+url.QueryEscape(reason))
+	c.Redirect(http.StatusFound, "/auth/oidc/error/"+url.PathEscape(reason))
 }
 
 func setOidcStateCookie(c *gin.Context, value string, maxAge int) {

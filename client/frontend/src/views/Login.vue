@@ -1,6 +1,6 @@
 <script setup>
 import { ref, inject, nextTick, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import TextField from '@/components/ui/TextField.vue'
 import OtpInput from '@/components/ui/OtpInput.vue'
@@ -12,22 +12,11 @@ const { t } = useI18n()
 const api = inject('api')
 const events = inject('events')
 const validate = inject('validate')
-const toast = inject('toast')
 const config = inject('config')
 const router = useRouter()
-const route = useRoute()
 
 // $config is loaded once when the app starts; the OIDC setting can change while the app stays open (e.g. after a logout)
 const oidc = ref(config.oidc || { enabled: false })
-const oidcErrors = {
-  nouser: 'users.OidcErrorNoUser',
-  unverified: 'users.OidcErrorUnverified',
-  denied: 'users.OidcErrorDenied',
-  state: 'users.OidcErrorState',
-  unavailable: 'users.OidcErrorUnavailable',
-  nologin: 'users.OidcErrorNoLogin'
-}
-
 onMounted(async () => {
   try {
     const fresh = await api.getConfig()
@@ -35,12 +24,11 @@ onMounted(async () => {
   } catch {
     // keep the state from the app start
   }
-  const reason = route.query.oidcError
-  if (reason) {
-    toast.error(t(oidcErrors[reason] || 'users.OidcErrorGeneric'))
-    router.replace({ name: 'Login' })
-  }
 })
+
+function oidcLoginEnabled() {
+  return oidc.value.enabled
+}
 
 const oidcLoading = ref(false)
 
@@ -209,7 +197,7 @@ async function nextStep(e) {
         :label="t('users.Email')"
         :error="emailErrorMsg()"
         icon="email"
-        :autofocus="!oidc.enabled"
+        :autofocus="!oidcLoginEnabled()"
         @blur="validateEmail"
         @change="validateEmail(true)"
       />
@@ -260,7 +248,7 @@ async function nextStep(e) {
         <span v-else v-text="t('common.Next')" />
       </btn>
       <btn
-        v-if="oidc.enabled"
+        v-if="oidcLoginEnabled()"
         :disabled="loading || oidcLoading"
         variant="text"
         @click="oidcLogin()"

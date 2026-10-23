@@ -45,15 +45,8 @@ const oidc = ref({
   clientId: '',
   clientSecret: '',
   buttonText: '',
-  scopes: '',
-  userMatch: 'email',
-  usernameClaim: '',
-  requireVerifiedEmail: true
+  scopes: ''
 })
-const oidcUserMatchOptions = [
-  { label: t('settings.OidcUserMatchEmail'), value: 'email' },
-  { label: t('settings.OidcUserMatchUsername'), value: 'username' }
-]
 
 const emailProviders = []
 Object.keys(emailProviderConfigs).map(provider => {
@@ -135,7 +128,7 @@ onMounted(async () => {
   for (const key of Object.keys(oidc.value)) {
     if (key === 'clientSecret') continue
     const value = await api.settings.get('panel.oidc.' + key)
-    if (key === 'enabled' || key === 'requireVerifiedEmail') {
+    if (key === 'enabled') {
       oidc.value[key] = (value === "true" || value === true)
     } else {
       oidc.value[key] = value
@@ -187,9 +180,6 @@ function updateThemeSetting(name, newSetting) {
       <text-field v-model="oidc.clientSecret" type="password" :label="t('settings.OidcClientSecret')" :hint="t('settings.OidcClientSecretHint')" />
       <text-field v-model="oidc.buttonText" :label="t('settings.OidcButtonText')" :hint="t('settings.OidcButtonTextHint')" />
       <text-field v-model="oidc.scopes" :label="t('settings.OidcScopes')" :hint="t('settings.OidcScopesHint')" />
-      <dropdown v-model="oidc.userMatch" :options="oidcUserMatchOptions" :label="t('settings.OidcUserMatch')" />
-      <text-field v-if="oidc.userMatch === 'username'" v-model="oidc.usernameClaim" :label="t('settings.OidcUsernameClaim')" :hint="t('settings.OidcUsernameClaimHint')" />
-      <toggle v-if="oidc.userMatch !== 'username'" v-model="oidc.requireVerifiedEmail" :label="t('settings.OidcRequireVerifiedEmail')" :hint="t('settings.OidcRequireVerifiedEmailHint')" />
       <btn color="primary" @click="saveOidcSettings()"><icon name="save" />{{ t('settings.SaveOidcSettings') }}</btn>
     </div>
   </div>

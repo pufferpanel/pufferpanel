@@ -202,13 +202,10 @@ var editableStringEntries = []config.StringEntry{
 	config.OidcClientSecret,
 	config.OidcButtonText,
 	config.OidcScopes,
-	config.OidcUserMatch,
-	config.OidcUsernameClaim,
 }
 var editableBoolEntries = []config.BoolEntry{
 	config.RegistrationEnabled,
 	config.OidcEnabled,
-	config.OidcRequireVerifiedEmail,
 }
 
 // writeOnlyEntries can be set through the API but are never returned

@@ -14,6 +14,14 @@ export default (api) => [
     }
   },
   {
+    path: '/auth/oidc/error/:reason?',
+    component: () => import('@/views/OidcError.vue'),
+    name: 'OidcError',
+    meta: {
+      noAuth: true
+    }
+  },
+  {
     path: '/auth/register',
     component: () => import('@/views/Registration.vue'),
     name: 'Register',

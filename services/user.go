@@ -172,6 +172,7 @@ func (us *User) Delete(model *models.User) (err error) {
 		tx.Delete(models.Permissions{}, "user_id = ?", model.ID)
 		tx.Delete(models.Client{}, "user_id = ?", model.ID)
 		tx.Delete(models.Session{}, "user_id = ?", model.ID)
+		tx.Delete(models.OidcIdentity{}, "user_id = ?", model.ID)
 		tx.Delete(models.User{}, "id = ?", model.ID)
 		return nil
 	})
