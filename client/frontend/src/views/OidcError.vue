@@ -17,17 +17,13 @@ const errors = {
 }
 
 const errorMessage = computed(() => t(errors[route.params.reason] || 'users.OidcErrorGeneric'))
-
-function retry() {
-  window.location.href = '/auth/oidc/login'
-}
 </script>
 
 <template>
   <div class="login oidc-error">
     <h1 v-text="t('users.OidcFailedTitle')" />
     <p v-text="errorMessage" />
-    <btn color="primary" @click="retry()" v-text="t('users.OidcTryAgain')" />
+    <a href="/auth/oidc/login"><btn color="primary" v-text="t('users.OidcTryAgain')" /></a>
     <btn variant="text" @click="$router.push({ name: 'Login' })" v-text="t('users.OidcBackToLogin')" />
   </div>
 </template>

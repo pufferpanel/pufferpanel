@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, nextTick, onMounted } from 'vue'
+import { ref, inject, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import TextField from '@/components/ui/TextField.vue'
@@ -12,30 +12,7 @@ const { t } = useI18n()
 const api = inject('api')
 const events = inject('events')
 const validate = inject('validate')
-const config = inject('config')
 const router = useRouter()
-
-// $config is loaded once when the app starts; the OIDC setting can change while the app stays open (e.g. after a logout)
-const oidc = ref(config.oidc || { enabled: false })
-onMounted(async () => {
-  try {
-    const fresh = await api.getConfig()
-    oidc.value = fresh.oidc || { enabled: false }
-  } catch {
-    // keep the state from the app start
-  }
-})
-
-function oidcLoginEnabled() {
-  return oidc.value.enabled
-}
-
-const oidcLoading = ref(false)
-
-function oidcLogin() {
-  oidcLoading.value = true
-  window.location.href = '/auth/oidc/login'
-}
 
 // isSecureContext is true on localhost, but localhost isn't allowed for webauthn, using location instead
 const passkeysSupported = location.protocol === 'https:' && (location.port === "" || location.port === "443") && window.navigator && navigator.credentials
@@ -193,11 +170,11 @@ async function nextStep(e) {
         v-model="email"
         type="email"
         name="email"
-        :disabled="step !== 'email' || loading || oidcLoading"
+        :disabled="step !== 'email' || loading"
         :label="t('users.Email')"
         :error="emailErrorMsg()"
         icon="email"
-        :autofocus="!oidcLoginEnabled()"
+        :autofocus="!$config.oidc?.enabled"
         @blur="validateEmail"
         @change="validateEmail(true)"
       />
@@ -243,19 +220,13 @@ async function nextStep(e) {
         @click="attemptPasskey2fa(true)"
         v-text="t('users.RetryPasskey')"
       />
-      <btn color="primary" :disabled="loading || oidcLoading || !canNextStep()" @click="nextStep()">
+      <btn color="primary" :disabled="loading || !canNextStep()" @click="nextStep()">
         <loader v-if="loading" />
         <span v-else v-text="t('common.Next')" />
       </btn>
-      <btn
-        v-if="oidcLoginEnabled()"
-        :disabled="loading || oidcLoading"
-        variant="text"
-        @click="oidcLogin()"
-      >
-        <loader v-if="oidcLoading" />
-        <span v-else v-text="oidc.buttonText || t('users.OidcLogin')" />
-      </btn>
+      <a v-if="$config.oidc?.enabled" class="oidc-login" href="/auth/oidc/login">
+        <btn variant="text" v-text="$config.oidc.buttonText || t('users.OidcLogin')" />
+      </a>
       <btn
         v-if="$config.registrationEnabled"
         variant="text"

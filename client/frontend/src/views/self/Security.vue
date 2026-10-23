@@ -64,10 +64,6 @@ function showOidcLinkResult() {
   router.replace({ query: {}, hash: route.hash })
 }
 
-function linkOidc() {
-  window.location.href = '/auth/oidc/login?link=1'
-}
-
 async function loadPasskeys() {
   passkeys.value = await api.self.getPasskeys()
   const self = await api.self.get()
@@ -272,7 +268,7 @@ async function setPasswordless(e) {
       </template>
       <template v-else>
         <span class="description" v-text="t('users.OidcNotLinked')" />
-        <btn v-if="config.oidc?.enabled" color="primary" @click="linkOidc()"><icon name="lock" />{{ t('users.OidcLink') }}</btn>
+        <a v-if="config.oidc?.enabled" href="/auth/oidc/login?link=1"><btn color="primary"><icon name="lock" />{{ t('users.OidcLink') }}</btn></a>
       </template>
     </div>
   </div>
