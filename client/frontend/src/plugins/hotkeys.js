@@ -39,7 +39,7 @@ export default {
     app.directive('hotkey', {
       beforeMount(el, binding, vnode) {
         if (!binding.value) return
-        const group = getGroup(binding.instance)
+        const group = getGroup(binding.instance.$.proxy)
         if (!currentHotkeys[group]) currentHotkeys[group] = []
         currentHotkeys[group].push({ el, keys: binding.value })
         if (typeof binding.value === 'string') {
