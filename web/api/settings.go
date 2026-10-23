@@ -110,6 +110,7 @@ func setSetting(c *gin.Context) {
 	}
 
 	services.SyncNodeToConfig()
+	services.LoadOidcProvider()
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -163,6 +164,7 @@ func setSettings(c *gin.Context) {
 	}
 
 	services.SyncNodeToConfig()
+	services.LoadOidcProvider()
 
 	c.Status(http.StatusNoContent)
 }

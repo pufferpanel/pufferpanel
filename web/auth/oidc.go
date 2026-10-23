@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"context"
 	"crypto/rand"
 	"crypto/subtle"
 	"encoding/base64"
@@ -11,7 +10,6 @@ import (
 	"net/url"
 	"slices"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -48,30 +46,6 @@ type oidcUserLookup interface {
 	GetByEmail(email string) (*models.User, error)
 }
 
-var oidcProvider *oidc.Provider
-var oidcProviderIssuer string
-var oidcProviderLock sync.Mutex
-
-// getOidcProvider reads the issuer's discovery document once per issuer (it can be changed in the settings);
-// after a failure the next login tries again
-func getOidcProvider(ctx context.Context) (*oidc.Provider, error) {
-	oidcProviderLock.Lock()
-	defer oidcProviderLock.Unlock()
-
-	issuer := config.OidcIssuer.Value()
-	if oidcProvider != nil && oidcProviderIssuer == issuer {
-		return oidcProvider, nil
-	}
-
-	provider, err := oidc.NewProvider(ctx, issuer)
-	if err != nil {
-		return nil, err
-	}
-	oidcProvider = provider
-	oidcProviderIssuer = issuer
-	return provider, nil
-}
-
 func oidcOAuth2Config(provider *oidc.Provider) *oauth2.Config {
 	return &oauth2.Config{
 		ClientID:     config.OidcClientId.Value(),
@@ -101,9 +75,8 @@ func OidcLogin(c *gin.Context) {
 		return
 	}
 
-	provider, err := getOidcProvider(c.Request.Context())
-	if err != nil {
-		logging.Error.Printf("OIDC: cannot read the issuer's configuration: %s\n", err)
+	provider := services.GetOidcProvider()
+	if provider == nil {
 		oidcFail(c, "unavailable")
 		return
 	}
@@ -150,9 +123,8 @@ func OidcCallback(c *gin.Context) {
 	}
 
 	ctx := c.Request.Context()
-	provider, err := getOidcProvider(ctx)
-	if err != nil {
-		logging.Error.Printf("OIDC: cannot read the issuer's configuration: %s\n", err)
+	provider := services.GetOidcProvider()
+	if provider == nil {
 		oidcFail(c, "unavailable")
 		return
 	}
