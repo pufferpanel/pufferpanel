@@ -25,9 +25,9 @@ import (
 	"gorm.io/gorm"
 )
 
-// The OIDC login only signs in users that already exist in the panel; it never creates them.
-// State, nonce and PKCE verifier live in their own short-lived cookie instead of the session: the session cookie
-// defaults to SameSite=Strict and is not sent on the redirect back from the identity provider.
+// The OIDC login only signs in users that already exist in the panel and linked their provider account; it never
+// creates users. State, nonce and PKCE verifier live in their own short-lived cookie: gin's session cookie is
+// SameSite=Strict and is not sent on the redirect back from the identity provider.
 const oidcStateCookie = "puffer_oidc"
 const oidcStateCookiePath = "/auth/oidc"
 const oidcStateMaxAge = 10 * time.Minute
@@ -36,8 +36,7 @@ type oidcState struct {
 	State    string `json:"s"`
 	Nonce    string `json:"n"`
 	Verifier string `json:"v"`
-	// Link is set when a signed-in user links their account from the security settings
-	Link bool `json:"l,omitempty"`
+	Link     bool   `json:"l,omitempty"`
 }
 
 func oidcOAuth2Config(provider *oidc.Provider) *oauth2.Config {
@@ -106,19 +105,11 @@ func OidcCallback(c *gin.Context) {
 		return
 	}
 	state, err := decodeOidcState(rawState)
-	if err != nil || subtle.ConstantTimeCompare([]byte(state.State), []byte(c.Query("state"))) != 1 {
+	if err != nil || !oidcValuesMatch(state.State, c.Query("state")) {
 		oidcFail(c, "state")
 		return
 	}
-
-	// a failed link goes back to the security settings, where the user is still signed in
-	fail := func(reason string) {
-		if state.Link {
-			c.Redirect(http.StatusFound, "/self?oidc="+url.QueryEscape(reason)+"#security")
-		} else {
-			oidcFail(c, reason)
-		}
-	}
+	fail := oidcFailFor(c, state)
 
 	if providerError := c.Query("error"); providerError != "" {
 		logging.Info.Printf("OIDC: the identity provider returned %s\n", providerError)
@@ -153,7 +144,7 @@ func OidcCallback(c *gin.Context) {
 		fail("error")
 		return
 	}
-	if subtle.ConstantTimeCompare([]byte(idToken.Nonce), []byte(state.Nonce)) != 1 {
+	if !oidcValuesMatch(idToken.Nonce, state.Nonce) {
 		fail("state")
 		return
 	}
@@ -186,25 +177,15 @@ func OidcCallback(c *gin.Context) {
 		return
 	}
 
-	// after a password login the frontend stores the scopes from the response in this cookie; setting it here
-	// means the first page after the redirect already knows the user's permissions
-	data, err := json.Marshal(userScopes)
-	if err != nil {
+	if err = setOidcScopesCookie(c, userScopes); err != nil {
 		oidcFail(c, "error")
 		return
 	}
-	http.SetCookie(c.Writer, &http.Cookie{
-		Name:     "puffer_scopes",
-		Value:    url.QueryEscape(string(data)),
-		Path:     "/",
-		Secure:   c.Request.TLS != nil,
-		SameSite: http.SameSiteLaxMode,
-	})
 	c.Redirect(http.StatusFound, "/")
 }
 
-// linkOidcIdentity links the provider account to the user who is signed in to the panel in this browser; the
-// session cookie is sent along because the provider redirects back with a top-level navigation
+// linkOidcIdentity links the provider account to the user who is signed in to the panel in this browser; the login
+// cookie puffer_auth has no SameSite attribute, so it arrives with the provider's redirect
 func linkOidcIdentity(c *gin.Context, oi *services.OidcIdentity, idToken *oidc.IDToken, fail func(string)) {
 	user := oidcSessionUser(c)
 	if user == nil {
@@ -213,13 +194,15 @@ func linkOidcIdentity(c *gin.Context, oi *services.OidcIdentity, idToken *oidc.I
 	}
 
 	linked, err := oi.GetUser(idToken.Issuer, idToken.Subject)
-	if err == nil && linked.ID != user.ID {
-		fail("taken")
-		return
-	}
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	switch {
+	case errors.Is(err, gorm.ErrRecordNotFound):
+		// not linked to anyone yet
+	case err != nil:
 		logging.Error.Printf("OIDC: user lookup failed: %s\n", err)
 		fail("error")
+		return
+	case linked.ID != user.ID:
+		fail("taken")
 		return
 	}
 
@@ -239,7 +222,7 @@ func oidcSessionUser(c *gin.Context) *models.User {
 	}
 	db := middleware.GetDatabase(c)
 	session, err := (&services.Session{DB: db}).Validate(token)
-	if err != nil || session.UserId == nil {
+	if err != nil || !isUserSession(session) {
 		return nil
 	}
 	perms, err := (&services.Permission{DB: db}).GetForUserAndServer(session.User.ID, "")
@@ -249,8 +232,46 @@ func oidcSessionUser(c *gin.Context) *models.User {
 	return &session.User
 }
 
+// isUserSession is false for sessions of OAuth2 clients, which belong to no user
+func isUserSession(session *models.Session) bool {
+	return session.UserId != nil
+}
+
+// oidcValuesMatch compares state and nonce values in constant time
+func oidcValuesMatch(expected, actual string) bool {
+	return subtle.ConstantTimeCompare([]byte(expected), []byte(actual)) == 1
+}
+
 func oidcFail(c *gin.Context, reason string) {
 	c.Redirect(http.StatusFound, "/auth/oidc/error/"+url.PathEscape(reason))
+}
+
+// oidcFailFor sends a failed login to the error page and a failed link back to the security settings, where the
+// user is still signed in
+func oidcFailFor(c *gin.Context, state oidcState) func(reason string) {
+	if !state.Link {
+		return func(reason string) { oidcFail(c, reason) }
+	}
+	return func(reason string) {
+		c.Redirect(http.StatusFound, "/self?oidc="+url.QueryEscape(reason)+"#security")
+	}
+}
+
+// setOidcScopesCookie stores the scopes where the frontend keeps them after a password login, so the first page
+// after the redirect already knows the user's permissions
+func setOidcScopesCookie(c *gin.Context, userScopes []*scopes.Scope) error {
+	data, err := json.Marshal(userScopes)
+	if err != nil {
+		return err
+	}
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "puffer_scopes",
+		Value:    url.QueryEscape(string(data)),
+		Path:     "/",
+		Secure:   c.Request.TLS != nil,
+		SameSite: http.SameSiteLaxMode,
+	})
+	return nil
 }
 
 func setOidcStateCookie(c *gin.Context, value string, maxAge int) {

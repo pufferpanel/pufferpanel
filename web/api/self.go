@@ -393,7 +393,7 @@ func getOidcIdentities(c *gin.Context) {
 }
 
 // @Summary Unlink SSO accounts
-// @Description Removes the links to OpenID Connect accounts; the next SSO login asks for the password again
+// @Description Removes the links to OpenID Connect accounts; the SSO button no longer signs the user in until they link again
 // @Success 204 {object} nil
 // @Failure 403 {object} pufferpanel.ErrorResponse
 // @Failure 500 {object} pufferpanel.ErrorResponse

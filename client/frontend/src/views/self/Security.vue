@@ -45,6 +45,15 @@ onMounted(async () => {
   showOidcLinkResult()
 })
 
+// the card stays visible while a link exists, so users can still unlink after SSO was switched off
+function showOidcCard() {
+  return config.oidc?.enabled || isOidcLinked()
+}
+
+function isOidcLinked() {
+  return oidcIdentities.value.length > 0
+}
+
 // the SSO provider sends the user back here after linking, with the result in ?oidc=
 const oidcLinkErrors = {
   taken: 'users.OidcErrorTaken',
@@ -260,9 +269,9 @@ async function setPasswordless(e) {
         <btn variant="primary" :disabled="passkeyName.trim().length === 0" @click="enrollPasskey()"><icon name="lock" />{{ t('users.EnrollPasskey') }}</btn>
       </overlay>
     </div>
-    <div v-if="config.oidc?.enabled || oidcIdentities.length > 0" class="oidc">
+    <div v-if="showOidcCard()" class="oidc">
       <h2 v-text="t('users.OidcAccount')" />
-      <template v-if="oidcIdentities.length > 0">
+      <template v-if="isOidcLinked()">
         <span class="description" v-text="t('users.OidcLinked', { issuer: oidcIdentities[0].issuer })" />
         <btn color="error" @click="unlinkOidc()"><icon name="lock-off" />{{ t('users.OidcUnlink') }}</btn>
       </template>

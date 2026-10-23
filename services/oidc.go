@@ -27,7 +27,7 @@ func LoadOidcProvider() {
 		oidcProvider.Store(nil)
 		return
 	}
-	if loaded := oidcProvider.Load(); loaded != nil && loaded.issuer == issuer {
+	if oidcProviderLoadedFor(issuer) {
 		return
 	}
 
@@ -40,6 +40,11 @@ func LoadOidcProvider() {
 		return
 	}
 	oidcProvider.Store(&loadedOidcProvider{issuer: issuer, provider: provider})
+}
+
+func oidcProviderLoadedFor(issuer string) bool {
+	loaded := oidcProvider.Load()
+	return loaded != nil && loaded.issuer == issuer
 }
 
 // GetOidcProvider returns nil when the issuer cannot be reached; if it could not be reached before, it tries once more

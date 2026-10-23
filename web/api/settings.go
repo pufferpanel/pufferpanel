@@ -208,7 +208,6 @@ var editableBoolEntries = []config.BoolEntry{
 	config.OidcEnabled,
 }
 
-// writeOnlyEntries can be set through the API but are never returned
 var writeOnlyEntries = []config.StringEntry{
 	config.OidcClientSecret,
 }

@@ -12,6 +12,7 @@ const { t } = useI18n()
 const api = inject('api')
 const events = inject('events')
 const validate = inject('validate')
+const config = inject('config')
 const router = useRouter()
 
 // isSecureContext is true on localhost, but localhost isn't allowed for webauthn, using location instead
@@ -36,6 +37,11 @@ function loggedIn() {
     router.push(defaultRoute(api))
   }
   events.emit('login')
+}
+
+// with SSO on, the SSO button is the likely choice: don't pull the focus (and phone keyboards) into the email field
+function autofocusEmail() {
+  return !config.oidc?.enabled
 }
 
 function validateEmail(onChange = false) {
@@ -174,7 +180,7 @@ async function nextStep(e) {
         :label="t('users.Email')"
         :error="emailErrorMsg()"
         icon="email"
-        :autofocus="!$config.oidc?.enabled"
+        :autofocus="autofocusEmail()"
         @blur="validateEmail"
         @change="validateEmail(true)"
       />

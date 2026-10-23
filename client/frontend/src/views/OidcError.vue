@@ -7,7 +7,6 @@ import Btn from '@/components/ui/Btn.vue'
 const { t } = useI18n()
 const route = useRoute()
 
-// the OIDC callback redirects here when the SSO login did not end in a session
 const errors = {
   notlinked: 'users.OidcErrorNotLinked',
   denied: 'users.OidcErrorDenied',

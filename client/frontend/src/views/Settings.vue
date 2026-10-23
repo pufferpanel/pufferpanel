@@ -93,11 +93,26 @@ async function savePanelSettings() {
   toast.success(t('settings.Saved'))
 }
 
+function isWriteOnlyOidcSetting(key) {
+  return key === 'clientSecret'
+}
+
+function isOidcToggle(key) {
+  return key === 'enabled'
+}
+
+function oidcCallbackUrl() {
+  return masterUrl.value.replace(/\/$/, '') + '/auth/oidc/callback'
+}
+
+function keepsStoredOidcSetting(key) {
+  return isWriteOnlyOidcSetting(key) && oidc.value[key] === ''
+}
+
 async function saveOidcSettings() {
   const data = {}
   Object.keys(oidc.value).map(key => {
-    // the secret is never sent back by the panel: only overwrite it when a new one was entered
-    if (key === 'clientSecret' && oidc.value[key] === '') return
+    if (keepsStoredOidcSetting(key)) return
     data['panel.oidc.' + key] = oidc.value[key]
   })
   await api.settings.set(data)
@@ -126,13 +141,9 @@ onMounted(async () => {
   registrationEnabled.value = (regEnabled === "true" || regEnabled === true)
   theme.value = await api.settings.get('panel.settings.defaultTheme')
   for (const key of Object.keys(oidc.value)) {
-    if (key === 'clientSecret') continue
+    if (isWriteOnlyOidcSetting(key)) continue
     const value = await api.settings.get('panel.oidc.' + key)
-    if (key === 'enabled') {
-      oidc.value[key] = (value === "true" || value === true)
-    } else {
-      oidc.value[key] = value
-    }
+    oidc.value[key] = isOidcToggle(key) ? (value === "true" || value === true) : value
   }
   emailProvider.value = await api.settings.get('panel.email.provider')
   emailProviderChanged(emailProvider.value)
@@ -176,7 +187,7 @@ function updateThemeSetting(name, newSetting) {
       <h1 v-text="t('settings.OidcSettings')" />
       <toggle v-model="oidc.enabled" :label="t('settings.OidcEnabled')" :hint="t('settings.OidcEnabledHint')" />
       <text-field v-model="oidc.issuer" :label="t('settings.OidcIssuer')" :hint="t('settings.OidcIssuerHint')" />
-      <text-field v-model="oidc.clientId" :label="t('settings.OidcClientId')" :hint="t('settings.OidcCallbackHint', { url: masterUrl.replace(/\/$/, '') + '/auth/oidc/callback' })" />
+      <text-field v-model="oidc.clientId" :label="t('settings.OidcClientId')" :hint="t('settings.OidcCallbackHint', { url: oidcCallbackUrl() })" />
       <text-field v-model="oidc.clientSecret" type="password" :label="t('settings.OidcClientSecret')" :hint="t('settings.OidcClientSecretHint')" />
       <text-field v-model="oidc.buttonText" :label="t('settings.OidcButtonText')" :hint="t('settings.OidcButtonTextHint')" />
       <text-field v-model="oidc.scopes" :label="t('settings.OidcScopes')" :hint="t('settings.OidcScopesHint')" />
