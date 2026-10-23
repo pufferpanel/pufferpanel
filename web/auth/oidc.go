@@ -183,7 +183,8 @@ func OidcCallback(c *gin.Context) {
 		return
 	}
 
-	if _, _, err = startSession(c, user); errors.Is(err, pufferpanel.ErrLoginNotPermitted) {
+	userScopes, _, err := startSession(c, user)
+	if errors.Is(err, pufferpanel.ErrLoginNotPermitted) {
 		oidcFail(c, "nologin")
 		return
 	} else if err != nil {
@@ -191,8 +192,22 @@ func OidcCallback(c *gin.Context) {
 		oidcFail(c, "error")
 		return
 	}
-	// the frontend loads the scopes there before it renders, like after a password login
-	c.Redirect(http.StatusFound, "/auth/oidc/complete")
+
+	// after a password login the frontend stores the scopes from the response in this cookie; setting it here
+	// means the first page after the redirect already knows the user's permissions
+	data, err := json.Marshal(userScopes)
+	if err != nil {
+		oidcFail(c, "error")
+		return
+	}
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "puffer_scopes",
+		Value:    url.QueryEscape(string(data)),
+		Path:     "/",
+		Secure:   c.Request.TLS != nil,
+		SameSite: http.SameSiteLaxMode,
+	})
+	c.Redirect(http.StatusFound, "/")
 }
 
 func oidcMatchClaim() string {

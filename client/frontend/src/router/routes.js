@@ -14,11 +14,6 @@ export default (api) => [
     }
   },
   {
-    path: '/auth/oidc/complete',
-    component: () => import('@/views/OidcComplete.vue'),
-    name: 'OidcComplete'
-  },
-  {
     path: '/auth/register',
     component: () => import('@/views/Registration.vue'),
     name: 'Register',
