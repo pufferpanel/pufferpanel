@@ -35,9 +35,8 @@ func panelConfig(c *gin.Context) {
 		},
 		RegistrationEnabled: config.RegistrationEnabled.Value(),
 		Oidc: OidcLoginConfig{
-			Enabled:           config.OidcEnabled.Value(),
-			ButtonText:        config.OidcButtonText.Value(),
-			HidePasswordLogin: config.OidcHidePasswordLogin.Value(),
+			Enabled:    config.OidcEnabled.Value(),
+			ButtonText: config.OidcButtonText.Value(),
 		},
 	})
 }
@@ -50,9 +49,8 @@ type EditableConfig struct {
 } //@name EditableConfigSettings
 
 type OidcLoginConfig struct {
-	Enabled           bool   `json:"enabled"`
-	ButtonText        string `json:"buttonText" example:"Login with SSO"`
-	HidePasswordLogin bool   `json:"hidePasswordLogin"`
+	Enabled    bool   `json:"enabled"`
+	ButtonText string `json:"buttonText" example:"Login with SSO"`
 } //@name OidcLoginConfig
 
 type ThemeConfig struct {
