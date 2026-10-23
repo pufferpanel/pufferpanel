@@ -47,7 +47,7 @@ onMounted(async () => {
 
 // the card stays visible while a link exists, so users can still unlink after SSO was switched off
 function showOidcCard() {
-  return config.oidc?.enabled || isOidcLinked()
+  return config.oidcEnabled || isOidcLinked()
 }
 
 function isOidcLinked() {
@@ -277,7 +277,7 @@ async function setPasswordless(e) {
       </template>
       <template v-else>
         <span class="description" v-text="t('users.OidcNotLinked')" />
-        <a v-if="config.oidc?.enabled" href="/auth/oidc/login?link=1"><btn color="primary"><icon name="lock" />{{ t('users.OidcLink') }}</btn></a>
+        <a v-if="config.oidcEnabled" href="/auth/oidc/login?link=1"><btn color="primary"><icon name="lock" />{{ t('users.OidcLink') }}</btn></a>
       </template>
     </div>
   </div>

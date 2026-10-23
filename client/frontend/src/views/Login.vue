@@ -41,7 +41,7 @@ function loggedIn() {
 
 // with SSO on, the SSO button is the likely choice: don't pull the focus (and phone keyboards) into the email field
 function autofocusEmail() {
-  return !config.oidc?.enabled
+  return !config.oidcEnabled
 }
 
 function validateEmail(onChange = false) {
@@ -230,8 +230,8 @@ async function nextStep(e) {
         <loader v-if="loading" />
         <span v-else v-text="t('common.Next')" />
       </btn>
-      <a v-if="$config.oidc?.enabled" class="oidc-login" href="/auth/oidc/login">
-        <btn variant="text" v-text="$config.oidc.buttonText || t('users.OidcLogin')" />
+      <a v-if="$config.oidcEnabled" class="oidc-login" href="/auth/oidc/login">
+        <btn variant="text" v-text="$config.oidcButtonText || t('users.OidcLogin')" />
       </a>
       <btn
         v-if="$config.registrationEnabled"

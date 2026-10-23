@@ -39,8 +39,8 @@ const registrationEnabled = ref(true)
 const theme = ref('PufferPanel')
 const themeSettings = ref([])
 
-const oidc = ref({
-  enabled: false,
+const oidcEnabled = ref(false)
+const oidcSettings = ref({
   issuer: '',
   clientId: '',
   clientSecret: '',
@@ -97,26 +97,22 @@ function isWriteOnlyOidcSetting(key) {
   return key === 'clientSecret'
 }
 
-function isOidcToggle(key) {
-  return key === 'enabled'
-}
-
 function oidcCallbackUrl() {
   return masterUrl.value.replace(/\/$/, '') + '/auth/oidc/callback'
 }
 
 function keepsStoredOidcSetting(key) {
-  return isWriteOnlyOidcSetting(key) && oidc.value[key] === ''
+  return isWriteOnlyOidcSetting(key) && oidcSettings.value[key] === ''
 }
 
 async function saveOidcSettings() {
-  const data = {}
-  Object.keys(oidc.value).map(key => {
+  const data = { 'panel.oidc.enabled': oidcEnabled.value }
+  Object.keys(oidcSettings.value).map(key => {
     if (keepsStoredOidcSetting(key)) return
-    data['panel.oidc.' + key] = oidc.value[key]
+    data['panel.oidc.' + key] = oidcSettings.value[key]
   })
   await api.settings.set(data)
-  oidc.value.clientSecret = ''
+  oidcSettings.value.clientSecret = ''
   toast.success(t('settings.Saved'))
 }
 
@@ -140,10 +136,11 @@ onMounted(async () => {
   const regEnabled = await api.settings.get('panel.registrationEnabled')
   registrationEnabled.value = (regEnabled === "true" || regEnabled === true)
   theme.value = await api.settings.get('panel.settings.defaultTheme')
-  for (const key of Object.keys(oidc.value)) {
+  const oidcEnabledSetting = await api.settings.get('panel.oidc.enabled')
+  oidcEnabled.value = (oidcEnabledSetting === "true" || oidcEnabledSetting === true)
+  for (const key of Object.keys(oidcSettings.value)) {
     if (isWriteOnlyOidcSetting(key)) continue
-    const value = await api.settings.get('panel.oidc.' + key)
-    oidc.value[key] = isOidcToggle(key) ? (value === "true" || value === true) : value
+    oidcSettings.value[key] = await api.settings.get('panel.oidc.' + key)
   }
   emailProvider.value = await api.settings.get('panel.email.provider')
   emailProviderChanged(emailProvider.value)
@@ -185,12 +182,12 @@ function updateThemeSetting(name, newSetting) {
     </div>
     <div class="oidc">
       <h1 v-text="t('settings.OidcSettings')" />
-      <toggle v-model="oidc.enabled" :label="t('settings.OidcEnabled')" :hint="t('settings.OidcEnabledHint')" />
-      <text-field v-model="oidc.issuer" :label="t('settings.OidcIssuer')" :hint="t('settings.OidcIssuerHint')" />
-      <text-field v-model="oidc.clientId" :label="t('settings.OidcClientId')" :hint="t('settings.OidcCallbackHint', { url: oidcCallbackUrl() })" />
-      <text-field v-model="oidc.clientSecret" type="password" :label="t('settings.OidcClientSecret')" :hint="t('settings.OidcClientSecretHint')" />
-      <text-field v-model="oidc.buttonText" :label="t('settings.OidcButtonText')" :hint="t('settings.OidcButtonTextHint')" />
-      <text-field v-model="oidc.scopes" :label="t('settings.OidcScopes')" :hint="t('settings.OidcScopesHint')" />
+      <toggle v-model="oidcEnabled" :label="t('settings.OidcEnabled')" :hint="t('settings.OidcEnabledHint')" />
+      <text-field v-model="oidcSettings.issuer" :label="t('settings.OidcIssuer')" :hint="t('settings.OidcIssuerHint')" />
+      <text-field v-model="oidcSettings.clientId" :label="t('settings.OidcClientId')" :hint="t('settings.OidcCallbackHint', { url: oidcCallbackUrl() })" />
+      <text-field v-model="oidcSettings.clientSecret" type="password" :label="t('settings.OidcClientSecret')" :hint="t('settings.OidcClientSecretHint')" />
+      <text-field v-model="oidcSettings.buttonText" :label="t('settings.OidcButtonText')" :hint="t('settings.OidcButtonTextHint')" />
+      <text-field v-model="oidcSettings.scopes" :label="t('settings.OidcScopes')" :hint="t('settings.OidcScopesHint')" />
       <btn color="primary" @click="saveOidcSettings()"><icon name="save" />{{ t('settings.SaveOidcSettings') }}</btn>
     </div>
   </div>

@@ -34,24 +34,18 @@ func panelConfig(c *gin.Context) {
 			Name: config.CompanyName.Value(),
 		},
 		RegistrationEnabled: config.RegistrationEnabled.Value(),
-		Oidc: OidcLoginConfig{
-			Enabled:    config.OidcEnabled.Value(),
-			ButtonText: config.OidcButtonText.Value(),
-		},
+		OidcEnabled:         config.OidcEnabled.Value(),
+		OidcButtonText:      config.OidcButtonText.Value(),
 	})
 }
 
 type EditableConfig struct {
-	Themes              ThemeConfig     `json:"themes"`
-	Branding            BrandingConfig  `json:"branding"`
-	RegistrationEnabled bool            `json:"registrationEnabled"`
-	Oidc                OidcLoginConfig `json:"oidc"`
+	Themes              ThemeConfig    `json:"themes"`
+	Branding            BrandingConfig `json:"branding"`
+	RegistrationEnabled bool           `json:"registrationEnabled"`
+	OidcEnabled         bool           `json:"oidcEnabled"`
+	OidcButtonText      string         `json:"oidcButtonText" example:"Login with SSO"`
 } //@name EditableConfigSettings
-
-type OidcLoginConfig struct {
-	Enabled    bool   `json:"enabled"`
-	ButtonText string `json:"buttonText" example:"Login with SSO"`
-} //@name OidcLoginConfig
 
 type ThemeConfig struct {
 	Active    string   `json:"active" example:"default"`
