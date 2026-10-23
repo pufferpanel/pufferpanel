@@ -14,7 +14,8 @@
   "scripts": {
     "dev": "vite build  --mode development",
     "build": "vite build",
-    "lint": "eslint --ext .js --ignore-path .gitignore --fix src"
+    "lint": "eslint --ext .js --ignore-path .gitignore --fix src",
+    "clean": "vite clean"
   },
   "devDependencies": {
     "vite": "^7.1.4",

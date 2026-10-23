@@ -2,8 +2,8 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "npm-install-client",
-            "command": "npm",
+            "label": "yarn-install-client",
+            "command": "yarn",
             "args": [
                 "install"
             ],
@@ -12,11 +12,11 @@
             }
         },
         {
-            "label": "npm-build",
-            "command": "npm",
+            "label": "yarn-build",
+            "command": "yarn",
             "args": [
-                "run-script",
-                "build"
+                "run",
+                "dev"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/client"
@@ -37,8 +37,8 @@
             "label": "go-requirements",
             "dependsOn": [
                 "out-configure",
-                "npm-install-client",
-                "npm-build"
+                "yarn-install-client",
+                "yarn-build"
             ]
         },
         {
@@ -51,7 +51,7 @@
             ],
             "dependsOn": [
                 "out-configure",
-                "npm-build"
+                "yarn-build"
             ],
             "group": "test"
         },

@@ -9,7 +9,10 @@
             "program": "${workspaceFolder}/cmd",
             "cwd": "${workspaceFolder}/out",
             "args": ["runService"],
-            "preLaunchTask": "go-requirements"
+            "preLaunchTask": "go-requirements",
+            "env": {
+                "PUFFER_PANEL_WEB_FILES": "${workspaceFolder}/client/frontend/dist"
+            }
         },
         {
             "name": "Go: Add user",
@@ -23,19 +26,19 @@
             "preLaunchTask": "out-configure"
         },
         {
-            "name": "NPM: Build",
+            "name": "Yarn: Build",
             "request": "launch",
             "runtimeArgs": [
-                "run-script",
-                "build"
+                "run",
+                "dev"
             ],
-            "runtimeExecutable": "npm",
+            "runtimeExecutable": "yarn",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "type": "node",
             "cwd": "${workspaceFolder}/client",
-            "preLaunchTask": "npm-install-client"
+            "preLaunchTask": "yarn-install-client"
         }
     ]
 }
