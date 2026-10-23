@@ -32,7 +32,7 @@
   "TestEmailSent": "Test email sent",
   "TestEmailFailed": "Test email failed to send",
   "OidcEnabled": "Allow login through OpenID Connect",
-  "OidcEnabledHint": "Adds a login button for users who already exist in this panel. Each user links their SSO account once under Account → Security. Users are never created automatically",
+  "OidcEnabledHint": "Adds a login button for users who already exist in this panel. Each user links their SSO account once under Profile → Two factor authentication → Single Sign-On. Users are never created automatically",
   "OidcIssuer": "Issuer URL",
   "OidcIssuerHint": "The provider's issuer, e.g. https://sso.example.com/application/o/pufferpanel/ (its /.well-known/openid-configuration must be reachable from the panel)",
   "OidcClientId": "Client ID",

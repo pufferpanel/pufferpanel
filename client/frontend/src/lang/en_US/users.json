@@ -24,7 +24,7 @@
   "OidcNotLinked": "Not linked. Link your SSO account to sign in with the SSO button on the login page.",
   "OidcUnlink": "Unlink SSO account",
   "OidcUnlinked": "SSO account unlinked",
-  "OidcErrorNotLinked": "This SSO account is not linked to a panel account. Sign in with your password and link it under Account → Security.",
+  "OidcErrorNotLinked": "This SSO account is not linked to a panel account. Sign in with your password and link it under Profile → Two factor authentication → Single Sign-On.",
   "OidcErrorTaken": "This SSO account is already linked to another panel account.",
   "OidcErrorDenied": "The SSO login was cancelled or denied.",
   "OidcErrorState": "The SSO login expired or was started in another tab. Please try again.",
