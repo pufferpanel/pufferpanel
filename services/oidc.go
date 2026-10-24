@@ -224,7 +224,7 @@ func (oi *OidcIdentity) LinkingUser(sessionToken string) *models.User {
 		return nil
 	}
 	session, err := (&Session{DB: oi.DB}).Validate(sessionToken)
-	if err != nil || !isUserSession(session) {
+	if err != nil || !session.IsUser() {
 		return nil
 	}
 	perms, err := (&Permission{DB: oi.DB}).GetForUserAndServer(session.User.ID, "")
@@ -232,11 +232,6 @@ func (oi *OidcIdentity) LinkingUser(sessionToken string) *models.User {
 		return nil
 	}
 	return &session.User
-}
-
-// isUserSession is false for sessions of OAuth2 clients, which belong to no user
-func isUserSession(session *models.Session) bool {
-	return session.UserId != nil
 }
 
 func (oi *OidcIdentity) GetForUser(userId uint) ([]*models.OidcIdentity, error) {
