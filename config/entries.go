@@ -39,6 +39,13 @@ var SessionKey = asString("panel.sessionKey", "")
 var RegistrationEnabled = asBool("panel.registrationEnabled", true)
 var PrivateKey = asString("panel.token", "")
 
+var OidcEnabled = asBool("panel.oidc.enabled", false)
+var OidcIssuer = asString("panel.oidc.issuer", "")
+var OidcClientId = asString("panel.oidc.clientId", "")
+var OidcClientSecret = asString("panel.oidc.clientSecret", "")
+var OidcButtonText = asString("panel.oidc.buttonText", "")
+var OidcScopes = asString("panel.oidc.scopes", "openid")
+
 var DaemonEnabled = asBool("daemon.enable", true)
 var ConsoleBuffer = asInt("daemon.console.buffer", 50)
 var ConsoleForward = asBool("daemon.console.forward", false)

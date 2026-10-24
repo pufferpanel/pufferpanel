@@ -46,6 +46,10 @@ func registerSelf(g *gin.RouterGroup) {
 	g.Handle("PUT", "/passwordless/:value", middleware.RequiresPermission(scopes.ScopeSelfEdit), setPasswordlessLogin)
 	g.Handle("OPTIONS", "/passwordless/:value", response.CreateOptions("PUT"))
 
+	g.Handle("GET", "/oidc", middleware.RequiresPermission(scopes.ScopeSelfEdit), getOidcIdentities)
+	g.Handle("DELETE", "/oidc", middleware.RequiresPermission(scopes.ScopeSelfEdit), unlinkOidcIdentities)
+	g.Handle("OPTIONS", "/oidc", response.CreateOptions("GET", "DELETE"))
+
 	g.Handle("GET", "/oauth2", middleware.RequiresPermission(scopes.ScopeSelfClients), getPersonalOAuth2Clients)
 	g.Handle("POST", "/oauth2", middleware.RequiresPermission(scopes.ScopeSelfClients), createPersonalOAuth2Client)
 	g.Handle("OPTIONS", "/oauth2", response.CreateOptions("GET", "POST"))
@@ -362,6 +366,44 @@ func validatePasskeyEnroll(c *gin.Context) {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+// @Summary Get linked SSO accounts
+// @Description Gets the OpenID Connect accounts linked to the logged-in user
+// @Success 200 {object} []models.OidcIdentity
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/oidc [GET]
+// @Security OAuth2Application[self.edit]
+func getOidcIdentities(c *gin.Context) {
+	oi := &services.OidcIdentity{DB: middleware.GetDatabase(c)}
+	user := c.MustGet("user").(*models.User)
+
+	identities, err := oi.GetForUser(user.ID)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, identities)
+}
+
+// @Summary Unlink SSO accounts
+// @Description Removes the links to OpenID Connect accounts; the SSO button no longer signs the user in until they link again
+// @Success 204 {object} nil
+// @Failure 403 {object} pufferpanel.ErrorResponse
+// @Failure 500 {object} pufferpanel.ErrorResponse
+// @Router /api/self/oidc [DELETE]
+// @Security OAuth2Application[self.edit]
+func unlinkOidcIdentities(c *gin.Context) {
+	oi := &services.OidcIdentity{DB: middleware.GetDatabase(c)}
+	user := c.MustGet("user").(*models.User)
+
+	err := oi.DeleteForUser(user.ID)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

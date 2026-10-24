@@ -4,6 +4,8 @@
   "SavePanelSettings": "Save Panel Settings",
   "EmailSettings": "Email Settings",
   "SaveEmailSettings": "Save Email Settings",
+  "OidcSettings": "Single Sign-On (OpenID Connect)",
+  "SaveOidcSettings": "Save Single Sign-On Settings",
   "MasterUrl": "Master URL",
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
   "CompanyName": "Company Name",
@@ -28,5 +30,17 @@
   "Saved": "Saved",
   "TestEmail": "Test Email",
   "TestEmailSent": "Test email sent",
-  "TestEmailFailed": "Test email failed to send"
+  "TestEmailFailed": "Test email failed to send",
+  "OidcEnabled": "Allow login through OpenID Connect",
+  "OidcEnabledHint": "Adds a login button for users who already exist in this panel. Each user links their SSO account once under Profile → Two factor authentication → Single Sign-On. Users are never created automatically",
+  "OidcIssuer": "Issuer URL",
+  "OidcIssuerHint": "The provider's issuer, e.g. https://sso.example.com/application/o/pufferpanel/ (its /.well-known/openid-configuration must be reachable from the panel)",
+  "OidcClientId": "Client ID",
+  "OidcCallbackHint": "Register {url} as redirect URL at the provider. It is built from the Master URL, which has to be the public URL users open the panel under",
+  "OidcClientSecret": "Client Secret",
+  "OidcClientSecretHint": "Never shown again after saving; leave empty to keep the current secret",
+  "OidcButtonText": "Button Label",
+  "OidcButtonTextHint": "Text of the login button, e.g. \"Login with Example SSO\". Empty: \"Login with SSO\"",
+  "OidcScopes": "Scopes",
+  "OidcScopesHint": "Space-separated, e.g. openid profile. openid is always requested"
 }

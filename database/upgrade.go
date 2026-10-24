@@ -28,6 +28,7 @@ var dbObjects = []interface{}{
 	&models.Backup{},
 	&models.RecoveryCode{},
 	&models.WebauthnCredential{},
+	&models.OidcIdentity{},
 }
 
 func Upgrade(dbConn *gorm.DB, prettyPrint bool) error {

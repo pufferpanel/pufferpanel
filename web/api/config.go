@@ -34,6 +34,8 @@ func panelConfig(c *gin.Context) {
 			Name: config.CompanyName.Value(),
 		},
 		RegistrationEnabled: config.RegistrationEnabled.Value(),
+		OidcEnabled:         config.OidcEnabled.Value(),
+		OidcButtonText:      config.OidcButtonText.Value(),
 	})
 }
 
@@ -41,6 +43,8 @@ type EditableConfig struct {
 	Themes              ThemeConfig    `json:"themes"`
 	Branding            BrandingConfig `json:"branding"`
 	RegistrationEnabled bool           `json:"registrationEnabled"`
+	OidcEnabled         bool           `json:"oidcEnabled"`
+	OidcButtonText      string         `json:"oidcButtonText" example:"Login with SSO"`
 } //@name EditableConfigSettings
 
 type ThemeConfig struct {

@@ -155,27 +155,37 @@ func PasskeyFinish(c *gin.Context) {
 }
 
 func createSession(c *gin.Context, user *models.User) {
+	userScopes, status, err := startSession(c, user)
+	if response.HandleError(c, err, status) {
+		return
+	}
+
+	data := &LoginResponse{}
+	data.Scopes = userScopes
+
+	c.JSON(http.StatusOK, data)
+}
+
+// startSession checks that the user may log in, creates a session and sets the session cookies.
+// On failure it returns the error with its HTTP status and leaves the response to the caller.
+func startSession(c *gin.Context, user *models.User) ([]*scopes.Scope, int, error) {
 	db := middleware.GetDatabase(c)
 	ps := &services.Permission{DB: db}
 	ss := &services.Session{DB: db}
 
 	perms, err := ps.GetForUserAndServer(user.ID, "")
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
 	}
 
 	if !scopes.ContainsScope(perms.Scopes, scopes.ScopeLogin) {
-		response.HandleError(c, pufferpanel.ErrLoginNotPermitted, http.StatusForbidden)
-		return
+		return nil, http.StatusForbidden, pufferpanel.ErrLoginNotPermitted
 	}
 
 	session, err := ss.CreateForUser(user)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
 	}
-
-	data := &LoginResponse{}
-	data.Scopes = perms.Scopes
 
 	secure := false
 	if c.Request.TLS != nil {
@@ -187,7 +197,7 @@ func createSession(c *gin.Context, user *models.User) {
 	c.SetCookie("puffer_auth", session, maxAge, "/", "", secure, true)
 	c.SetCookie("puffer_auth_expires", "", maxAge, "/", "", secure, false)
 
-	c.JSON(http.StatusOK, data)
+	return perms.Scopes, http.StatusOK, nil
 }
 
 type LoginRequestData struct {

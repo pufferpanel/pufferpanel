@@ -207,6 +207,8 @@ func closePanel() {
 
 func panel() {
 	services.LoadEmailService()
+	// in the background, so an unreachable identity provider does not hold up the start
+	go services.LoadOidcProvider()
 
 	//if we have the web, then let's use our sftp auth instead
 	sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})

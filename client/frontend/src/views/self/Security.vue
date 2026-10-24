@@ -1,6 +1,7 @@
 <script setup>
 import { ref, inject, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import Btn from '@/components/ui/Btn.vue'
 import Collapse from '@/components/ui/Collapse.vue'
 import Icon from '@/components/ui/Icon.vue'
@@ -8,10 +9,14 @@ import OtpInput from '@/components/ui/OtpInput.vue'
 import Overlay from '@/components/ui/Overlay.vue'
 import TextField from '@/components/ui/TextField.vue'
 import Toggle from '@/components/ui/Toggle.vue'
+import { oidcErrorMessage } from '@/utils/oidc'
 
 const { t } = useI18n()
 const api = inject('api')
 const toast = inject('toast')
+const config = inject('config')
+const route = useRoute()
+const router = useRouter()
 
 // isSecureContext is true on localhost, but localhost isn't allowed for webauthn, using location instead
 const passkeysSupported = location.protocol === 'https:' && (location.port === "" || location.port === "443") && window.navigator && navigator.credentials
@@ -30,13 +35,37 @@ const passkeys = ref([])
 const passkeyName = ref('')
 const enrollingPasskey = ref(false)
 const allowPasswordless = ref(false)
+const oidcIdentities = ref([])
 
 onMounted(async () => {
   loading.value = true
   otpEnabled.value = await api.self.isOtpEnabled()
   await loadPasskeys()
+  oidcIdentities.value = await api.self.getOidcIdentities()
   loading.value = false
+  showOidcLinkResult()
 })
+
+// the card stays visible while a link exists, so users can still unlink after SSO was switched off
+function showOidcCard() {
+  return config.oidcEnabled || isOidcLinked()
+}
+
+function isOidcLinked() {
+  return oidcIdentities.value.length > 0
+}
+
+// the SSO provider sends the user back here after linking, with the result in ?oidc=
+function showOidcLinkResult() {
+  const result = route.query.oidc
+  if (!result) return
+  if (result === 'linked') {
+    toast.success(t('users.OidcLinkSuccess'))
+  } else {
+    toast.error(oidcErrorMessage(t, result))
+  }
+  router.replace({ query: {}, hash: route.hash })
+}
 
 async function loadPasskeys() {
   passkeys.value = await api.self.getPasskeys()
@@ -123,6 +152,12 @@ async function removePasskey(id) {
   loading.value = true
   await loadPasskeys()
   loading.value = false
+}
+
+async function unlinkOidc() {
+  await api.self.unlinkOidc()
+  oidcIdentities.value = await api.self.getOidcIdentities()
+  toast.success(t('users.OidcUnlinked'))
 }
 
 async function setPasswordless(e) {
@@ -227,6 +262,17 @@ async function setPasswordless(e) {
         <text-field v-model="passkeyName" autofocus :label="t('common.Name')" @keydown.enter="enrollPasskey()" />
         <btn variant="primary" :disabled="passkeyName.trim().length === 0" @click="enrollPasskey()"><icon name="lock" />{{ t('users.EnrollPasskey') }}</btn>
       </overlay>
+    </div>
+    <div v-if="showOidcCard()" class="oidc">
+      <h2 v-text="t('users.OidcAccount')" />
+      <template v-if="isOidcLinked()">
+        <span class="description" v-text="t('users.OidcLinked', { issuer: oidcIdentities[0].issuer })" />
+        <btn color="error" @click="unlinkOidc()"><icon name="lock-off" />{{ t('users.OidcUnlink') }}</btn>
+      </template>
+      <template v-else>
+        <span class="description" v-text="t('users.OidcNotLinked')" />
+        <a v-if="config.oidcEnabled" href="/auth/oidc/login?link=1"><btn color="primary"><icon name="lock" />{{ t('users.OidcLink') }}</btn></a>
+      </template>
     </div>
   </div>
 </template>

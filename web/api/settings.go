@@ -33,6 +33,13 @@ func registerSettings(g *gin.RouterGroup) {
 func getSetting(c *gin.Context) {
 	key := c.Param("key")
 
+	for _, v := range writeOnlyEntries {
+		if v.Key() == key {
+			c.JSON(http.StatusOK, models.Setting{Value: ""})
+			return
+		}
+	}
+
 	for _, v := range editableStringEntries {
 		if v.Key() == key {
 			c.JSON(http.StatusOK, models.Setting{Value: v.Value()})
@@ -103,6 +110,7 @@ func setSetting(c *gin.Context) {
 	}
 
 	services.SyncNodeToConfig()
+	services.LoadOidcProvider()
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -156,6 +164,7 @@ func setSettings(c *gin.Context) {
 	}
 
 	services.SyncNodeToConfig()
+	services.LoadOidcProvider()
 
 	c.Status(http.StatusNoContent)
 }
@@ -188,8 +197,18 @@ var editableStringEntries = []config.StringEntry{
 	config.DefaultTheme,
 	config.ThemeSettings,
 	config.MasterUrl,
+	config.OidcIssuer,
+	config.OidcClientId,
+	config.OidcClientSecret,
+	config.OidcButtonText,
+	config.OidcScopes,
 }
 var editableBoolEntries = []config.BoolEntry{
 	config.RegistrationEnabled,
+	config.OidcEnabled,
+}
+
+var writeOnlyEntries = []config.StringEntry{
+	config.OidcClientSecret,
 }
 var editableIntEntries = []config.IntEntry{}

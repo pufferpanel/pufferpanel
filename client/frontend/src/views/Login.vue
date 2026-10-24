@@ -12,6 +12,7 @@ const { t } = useI18n()
 const api = inject('api')
 const events = inject('events')
 const validate = inject('validate')
+const config = inject('config')
 const router = useRouter()
 
 // isSecureContext is true on localhost, but localhost isn't allowed for webauthn, using location instead
@@ -36,6 +37,11 @@ function loggedIn() {
     router.push(defaultRoute(api))
   }
   events.emit('login')
+}
+
+// with SSO on, the SSO button is the likely choice: don't pull the focus (and phone keyboards) into the email field
+function autofocusEmail() {
+  return !config.oidcEnabled
 }
 
 function validateEmail(onChange = false) {
@@ -174,7 +180,7 @@ async function nextStep(e) {
         :label="t('users.Email')"
         :error="emailErrorMsg()"
         icon="email"
-        autofocus
+        :autofocus="autofocusEmail()"
         @blur="validateEmail"
         @change="validateEmail(true)"
       />
@@ -224,6 +230,9 @@ async function nextStep(e) {
         <loader v-if="loading" />
         <span v-else v-text="t('common.Next')" />
       </btn>
+      <a v-if="$config.oidcEnabled" class="oidc-login" href="/auth/oidc/login">
+        <btn variant="text" v-text="$config.oidcButtonText || t('users.OidcLogin')" />
+      </a>
       <btn
         v-if="$config.registrationEnabled"
         variant="text"

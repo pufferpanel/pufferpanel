@@ -19,3 +19,8 @@ type Session struct {
 	ServerIdentifier *string `gorm:"column:server_identifier" json:"-"`
 	Server           Server  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 }
+
+// IsUser is false for sessions of OAuth2 clients, which belong to no user
+func (s *Session) IsUser() bool {
+	return s.UserId != nil
+}

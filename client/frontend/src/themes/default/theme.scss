@@ -1061,7 +1061,7 @@ html[dir="rtl"] .menu.open {
         }
       }
     }
-    .otp:not(:last-child), .passkeys {
+    .otp:not(:last-child), .passkeys, .oidc {
       @include card;
       @include cols(12);
       @include cols(6, md);
@@ -1108,7 +1108,7 @@ html[dir="rtl"] {
   & {
     margin: unset;
   }
-  .panel, .email {
+  .panel, .email, .oidc {
     @include card;
     @include cols(12);
     @include cols(6, md);

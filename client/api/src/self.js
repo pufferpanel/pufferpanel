@@ -71,6 +71,16 @@ export class SelfApi {
     return true
   }
 
+  async getOidcIdentities() {
+    const res = await this._api.get('/api/self/oidc')
+    return res.data
+  }
+
+  async unlinkOidc() {
+    await this._api.delete('/api/self/oidc')
+    return true
+  }
+
   async setAllowPasswordlessLogin(value) {
     await this._api.put(`/api/self/passwordless/${value}`)
     return true
