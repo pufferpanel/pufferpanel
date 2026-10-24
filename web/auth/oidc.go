@@ -112,7 +112,7 @@ func OidcCallback(c *gin.Context) {
 	fail := oidcFailFor(c, state)
 
 	if providerError := c.Query("error"); providerError != "" {
-		logging.Info.Printf("OIDC: the identity provider returned %s\n", providerError)
+		logging.Error.Printf("OIDC: the identity provider returned %s\n", providerError)
 		fail("denied")
 		return
 	}
