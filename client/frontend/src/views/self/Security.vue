@@ -9,6 +9,7 @@ import OtpInput from '@/components/ui/OtpInput.vue'
 import Overlay from '@/components/ui/Overlay.vue'
 import TextField from '@/components/ui/TextField.vue'
 import Toggle from '@/components/ui/Toggle.vue'
+import { oidcErrorMessage } from '@/utils/oidc'
 
 const { t } = useI18n()
 const api = inject('api')
@@ -55,20 +56,13 @@ function isOidcLinked() {
 }
 
 // the SSO provider sends the user back here after linking, with the result in ?oidc=
-const oidcLinkErrors = {
-  taken: 'users.OidcErrorTaken',
-  denied: 'users.OidcErrorDenied',
-  state: 'users.OidcErrorState',
-  unavailable: 'users.OidcErrorUnavailable'
-}
-
 function showOidcLinkResult() {
   const result = route.query.oidc
   if (!result) return
   if (result === 'linked') {
     toast.success(t('users.OidcLinkSuccess'))
   } else {
-    toast.error(t(oidcLinkErrors[result] || 'users.OidcErrorGeneric'))
+    toast.error(oidcErrorMessage(t, result))
   }
   router.replace({ query: {}, hash: route.hash })
 }

@@ -3,19 +3,12 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
+import { oidcErrorMessage } from '@/utils/oidc'
 
 const { t } = useI18n()
 const route = useRoute()
 
-const errors = {
-  notlinked: 'users.OidcErrorNotLinked',
-  denied: 'users.OidcErrorDenied',
-  state: 'users.OidcErrorState',
-  unavailable: 'users.OidcErrorUnavailable',
-  nologin: 'users.OidcErrorNoLogin'
-}
-
-const errorMessage = computed(() => t(errors[route.params.reason] || 'users.OidcErrorGeneric'))
+const errorMessage = computed(() => oidcErrorMessage(t, route.params.reason))
 </script>
 
 <template>
