@@ -45,10 +45,3 @@ func TestDecodeOidcState(t *testing.T) {
 		}
 	}
 }
-
-func TestRandomOidcValue(t *testing.T) {
-	a, b := randomOidcValue(), randomOidcValue()
-	if a == b || len(a) < 40 {
-		t.Fatalf("values must be long and unique: %q %q", a, b)
-	}
-}

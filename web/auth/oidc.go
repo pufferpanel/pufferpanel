@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"crypto/rand"
 	"crypto/subtle"
 	"encoding/base64"
 	"encoding/json"
@@ -21,6 +20,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/scopes"
 	"github.com/pufferpanel/pufferpanel/v3/services"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"golang.org/x/oauth2"
 	"gorm.io/gorm"
 )
@@ -74,9 +74,19 @@ func OidcLogin(c *gin.Context) {
 		return
 	}
 
+	stateValue, err := utils.GenerateRandomString(32)
+	if err != nil {
+		oidcFail(c, "error")
+		return
+	}
+	nonce, err := utils.GenerateRandomString(32)
+	if err != nil {
+		oidcFail(c, "error")
+		return
+	}
 	state := oidcState{
-		State:    randomOidcValue(),
-		Nonce:    randomOidcValue(),
+		State:    stateValue,
+		Nonce:    nonce,
 		Verifier: oauth2.GenerateVerifier(),
 		Link:     c.Query("link") == "1",
 	}
@@ -299,10 +309,4 @@ func decodeOidcState(raw string) (oidcState, error) {
 		return state, errors.New("incomplete oidc state")
 	}
 	return state, nil
-}
-
-func randomOidcValue() string {
-	data := make([]byte, 32)
-	_, _ = rand.Read(data)
-	return base64.RawURLEncoding.EncodeToString(data)
 }
