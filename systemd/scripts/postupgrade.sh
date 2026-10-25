@@ -11,14 +11,6 @@ wasRunning=$?
 
 systemctl stop pufferpanel
 
-runuser pufferpanel -c "pufferpanel --config=/etc/pufferpanel/config.json db upgrade"
-exitCode=$?
-[ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
-
-chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/log/pufferpanel /var/lib/pufferpanel /var/www/pufferpanel
-exitCode=$?
-[ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
-
 if command -v apparmor_parser >/dev/null 2>&1
 then
     apparmor_parser -r /etc/apparmor.d/pufferpanel
@@ -26,6 +18,14 @@ fi
 
 chmod o-rx /etc/pufferpanel
 chmod o-rx /var/lib/pufferpanel
+
+chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/log/pufferpanel /var/lib/pufferpanel /var/www/pufferpanel
+exitCode=$?
+[ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
+
+runuser pufferpanel -c "pufferpanel --config=/etc/pufferpanel/config.json db upgrade"
+exitCode=$?
+[ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
 
 
 if [ $wasRunning -eq 0 ]; then
