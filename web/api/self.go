@@ -381,9 +381,11 @@ func deletePasskey(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
+	user := c.MustGet("user").(*models.User)
+
 	id := c.Param("id")
 
-	err := us.DeletePasskey(id)
+	err := us.DeletePasskey(user.ID, id)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

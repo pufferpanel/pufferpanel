@@ -2,11 +2,12 @@ package conditions
 
 import (
 	"fmt"
-	"github.com/google/cel-go/cel"
 	"reflect"
 	"regexp"
 	"runtime"
 	"strings"
+
+	"cel.dev/cel-go/cel"
 )
 
 var GlobalConstantValues = map[string]interface{}{

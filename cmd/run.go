@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,7 +12,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/braintree/manners"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -38,7 +36,7 @@ var runCmd = &cobra.Command{
 	Hidden: true,
 }
 
-var webService *manners.GracefulServer
+var webService *http.Server
 
 func executeRun(cmd *cobra.Command, args []string) {
 	term, _ := internalRun()
@@ -157,19 +155,15 @@ func internalRun() (terminate chan bool, success bool) {
 
 	web.RegisterRoutes(router)
 
-	l, err := net.Listen("tcp", config.WebHost.Value())
-	if err != nil {
-		logging.Error.Printf("error starting http server: %s", err.Error())
-		terminate <- true
-		return
+	webService = &http.Server{
+		Handler: router,
+		Addr:    config.WebHost.Value(),
 	}
 
-	logging.Info.Printf("Listening for HTTP requests on %s", l.Addr().String())
-	webService = manners.NewWithServer(&http.Server{Handler: router})
-
 	go func() {
-		err = webService.Serve(l)
-		if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		logging.Info.Printf("Listening for HTTP requests on %s", webService.Addr)
+
+		if err := webService.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
 			logging.Error.Printf("error listening for http requests: %s", err.Error())
 			terminate <- true
 		}

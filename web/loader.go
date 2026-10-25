@@ -2,7 +2,11 @@ package web
 
 import (
 	"fmt"
-	_ "github.com/alecthomas/template"
+	"io/fs"
+	"net/http"
+	"os"
+	"strings"
+
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -18,10 +22,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "github.com/swaggo/swag"
-	"io/fs"
-	"net/http"
-	"os"
-	"strings"
 )
 
 var noHtmlRedirectOn404 = []string{"/api/", "/oauth2/", "/daemon/"}

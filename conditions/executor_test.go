@@ -1,9 +1,10 @@
 package conditions
 
 import (
-	"github.com/google/cel-go/cel"
 	"runtime"
 	"testing"
+
+	"cel.dev/cel-go/cel"
 )
 
 func TestResolveIf(t *testing.T) {
