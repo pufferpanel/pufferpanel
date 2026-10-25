@@ -11,7 +11,7 @@ wasRunning=$?
 
 systemctl stop pufferpanel
 
-runuser -u pufferpanel pufferpanel --config=/etc/pufferpanel/config.json db upgrade
+runuser pufferpanel -c "pufferpanel --config=/etc/pufferpanel/config.json db upgrade"
 exitCode=$?
 [ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
 
