@@ -23,7 +23,7 @@ chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/log/pufferpanel /var/lib/
 exitCode=$?
 [ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
 
-runuser pufferpanel -c "pufferpanel --config=/etc/pufferpanel/config.json db upgrade"
+runuser -u pufferpanel -- /usr/sbin/pufferpanel --config=/etc/pufferpanel/config.json db upgrade
 exitCode=$?
 [ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode
 
