@@ -26,7 +26,7 @@
   "Selected": "1 file selected | {n} files selected",
   "ArchiveSelected": "Archive selected files",
   "ArchiveSelectedName": "Archive Name",
-  "DeselectAll": "Deselect all",
+  "DeselectAll": "Deseleziona tutto",
   "DeleteSelected": "Delete 1 file | Delete {n} files",
   "ConfirmDeleteSelected": "Do you really want to delete this file? | Do you really want to delete these {n} files?"
 }
