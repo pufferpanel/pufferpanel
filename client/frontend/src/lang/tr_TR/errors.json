@@ -51,5 +51,6 @@
   "ErrContainerNotUnique": "Birden fazla birim bulundu",
   "ErrNoContainerNoneFound": "Çalışacak birim bulunamadı",
   "ErrNoMountFound": "Bağlanacak disk/klasör bulunamadı",
-  "ErrUnsupportedMountType": "Desteklenmeyen bağlantı türü"
+  "ErrUnsupportedMountType": "Desteklenmeyen bağlantı türü",
+  "ErrServerRunning": "Server is running"
 }
