@@ -51,11 +51,11 @@
   },
   "console": {
     "generic": "Console message",
-    "formatted": "Print \"{message}\" to console",
-    "message": "Message"
+    "formatted": "Stampa \"{message}\" sulla console",
+    "message": "Messaggio"
   },
   "sleep": {
-    "generic": "Wait",
+    "generic": "Attendi",
     "formatted": "Wait for {duration}",
     "duration": "Duration",
     "durationHint": "Valid time units are ns, us, ms, s, m and h. Multiple units can be combined. For example `1m45s`"
@@ -99,12 +99,12 @@
   "curseforge": {
     "generic": "Scarica Da CurseForge",
     "formatted": "Scarica Da CurseForge",
-    "projectId": "Project ID",
-    "fileId": "File ID",
+    "projectId": "ID Progetto",
+    "fileId": "ID File",
     "java": "Java"
   },
   "nodejsdl": {
-    "generic": "Install Node.js",
-    "formatted": "Install Node.js {version}"
+    "generic": "Installa Node.js",
+    "formatted": "Installa Node.js {version}"
   }
 }
