@@ -52,5 +52,5 @@
   "ErrNoContainerNoneFound": "Nessun container trovato",
   "ErrNoMountFound": "Nessun mount trovato",
   "ErrUnsupportedMountType": "Tipo di mount non supportato",
-  "ErrServerRunning": "Server is running"
+  "ErrServerRunning": "Il server è in funzione"
 }
