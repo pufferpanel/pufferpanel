@@ -9,7 +9,7 @@
   "Extract": "Извлечь",
   "Download": "Скачать",
   "Delete": "Удалить",
-  "ConfirmDelete": "Вы уверены, что хотите удалить этот файл?",
+  "ConfirmDelete": "Вы уверены, что хотите удалить {name}?",
   "UploadSuccess": "Файлы успешно загружены",
   "UploadFailed": "Не удалось загрузить файлы",
   "UploadProgress": "Прогресс загрузки",

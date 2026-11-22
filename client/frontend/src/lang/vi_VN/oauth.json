@@ -1,13 +1,13 @@
 {
   "Credentials": "Thông tin xác thực OAuth2",
-  "ClientId": "Client ID",
-  "ClientSecret": "Mã Bí mật Client",
-  "NewClientWarning": "Ghi chú Mã Bí mật Client, sau khi đóng hộp thoại này thì sẽ không hiển thị lần nữa. Nếu bạn làm mất hoặc quên nó thì máy này sẽ không thể sử dụng được.",
+  "ClientId": "ID client",
+  "ClientSecret": "Mã bí mật client",
+  "NewClientWarning": "Hãy ghi lại mã bí mật, sau khi tắt thông báo này mã bí mật sẽ không thể được xem lại nữa. Đánh mất hoặc quên mã sẽ khiến client này hoàn toàn không thể sử dụng được.",
   "Create": "Tạo Client OAuth2",
-  "UnnamedClient": "Client OAuth2 khuyết danh",
-  "Docs": "Tham khảo API ở đây",
-  "Clients": "Các Client OAuth2",
+  "UnnamedClient": "Client OAuth2 không tên",
+  "Docs": "Tham khảo tài liệu API tại đây",
+  "Clients": "Client OAuth2",
   "Delete": "Xoá {clientName}?",
-  "ConfirmDelete": "Tôi biết tác động của việc xoá Client OAuth2 này và tôi xin tiến hành.",
+  "ConfirmDelete": "Bạn có chắc chắn muốn xóa client OAuth2 {name} không? Bạn sẽ không thể tạo lại nó với cùng với thông tin xác thực đã sử dụng!",
   "AccountDescription": "Các Client OAuth2 được liệt kê ở đây thừa hưởng tất cả quyền từ tài khoản của bạn"
 }
