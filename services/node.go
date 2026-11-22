@@ -15,6 +15,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
 )
@@ -256,7 +257,9 @@ func doesDaemonUseSSL(node *models.Node) (bool, error) {
 	}
 
 	request := &http.Request{Method: http.MethodOptions, URL: u}
-	_, err = pufferpanel.Http().Do(request)
+	var r *http.Response
+	r, err = pufferpanel.Http().Do(request)
+	utils.CloseResponse(r)
 
 	if err != nil {
 		u, err = url.Parse("http" + path)
@@ -265,7 +268,8 @@ func doesDaemonUseSSL(node *models.Node) (bool, error) {
 		}
 
 		request = &http.Request{Method: http.MethodOptions, URL: u}
-		_, err = pufferpanel.Http().Do(request)
+		r, err = pufferpanel.Http().Do(request)
+		utils.CloseResponse(r)
 		return false, err
 	}
 

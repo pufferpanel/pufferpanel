@@ -21,6 +21,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/utils"
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
+	"golang.org/x/sys/unix"
 )
 
 type tty struct {
@@ -30,6 +31,7 @@ type tty struct {
 	lastStatTime time.Time
 	//disableStdin        bool
 	disableSpecialStats bool
+	tmpDirFD            int
 
 	DisableUnshare bool     `json:"disableUnshare"`
 	Mounts         []string `json:"mounts"`
@@ -250,7 +252,13 @@ func (t *tty) handleClose(environment *pufferpanel.Environment, callback func(ex
 	t.statLocker.Unlock()
 
 	//if we are using unshare AND we're in tmp, we can nuke the workspace at this point
-	if !t.DisableUnshare && strings.HasPrefix(t.mainProcess.Dir, os.TempDir()) {
+	if !t.DisableUnshare && t.tmpDirFD != 0 {
+		err = unix.Flock(t.tmpDirFD, unix.LOCK_UN)
+		if err != nil {
+			logging.Debug.Printf("Failed to unlock %s: %s", t.mainProcess.Dir, err.Error())
+		}
+
+		t.tmpDirFD = 0
 		err = os.RemoveAll(t.mainProcess.Dir)
 		if err != nil {
 			logging.Debug.Printf("Failed to delete %s: %s", t.mainProcess.Dir, err.Error())
@@ -432,6 +440,13 @@ func (t *tty) createCmd(rootDir, workDir string) (pr *exec.Cmd, err error) {
 
 	pr = exec.Command(Shell, "-c", strings.Join(unshareArgs, " && "))
 	pr.Dir, err = os.MkdirTemp("", "unshare-pp-")
+	if err != nil {
+		return
+	}
+	t.tmpDirFD, err = unix.Openat2(0, pr.Dir, &unix.OpenHow{
+		Flags: unix.O_DIRECTORY | unix.O_RDONLY,
+		Mode:  0,
+	})
 	if err != nil {
 		return
 	}

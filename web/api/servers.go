@@ -13,6 +13,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid/v5"
+	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
@@ -133,7 +134,7 @@ func registerServers(g *gin.RouterGroup) {
 		p.GET("", middleware.RequiresPermission(scopes.ScopeServerView), cors.New(cors.Config{
 			AllowAllOrigins:  true,
 			AllowCredentials: true,
-		}), middleware.ResolveServerPanel, proxyServerRequest)
+		}), middleware.ResolveServerPanel, stripQuery, proxyServerRequest)
 		p.Handle("CONNECT", "", middleware.RequiresPermission(scopes.ScopeServerView), func(c *gin.Context) {
 			c.Header("Access-Control-Allow-Origin", "*")
 			c.Header("Access-Control-Allow-Credentials", "false")
@@ -1256,7 +1257,7 @@ func proxyServerRequest(c *gin.Context) {
 	//switch to our token for auth
 	c.Request.Header.Set("Authorization", "Bearer "+token)
 
-	if c.IsWebsocket() {
+	if websocket.IsWebSocketUpgrade(c.Request) {
 		//for websocket, nuke the query params to avoid trying to escalate
 		resolvedPath = strings.SplitN(resolvedPath, "?", 2)[0]
 		if !strings.HasPrefix(resolvedPath, "/") {
@@ -1357,4 +1358,9 @@ func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *mo
 
 func getServerFromGin(c *gin.Context) *models.Server {
 	return c.MustGet("server").(*models.Server)
+}
+
+func stripQuery(c *gin.Context) {
+	c.Params = make(gin.Params, 0)
+	c.Request.URL.RawQuery = ""
 }
